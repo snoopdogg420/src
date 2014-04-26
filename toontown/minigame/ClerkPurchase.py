@@ -27,6 +27,7 @@ class ClerkPurchase(PurchaseBase):
     def unload(self):
         PurchaseBase.unload(self)
         del self.backToPlayground
+        self.timer.removeNode()
         del self.timer
 
     def __handleBackToPlayground(self):
