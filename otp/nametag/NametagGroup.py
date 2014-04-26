@@ -249,7 +249,10 @@ class NametagGroup:
         # therefore they are in the coordinate space of self.avatar.getParent().
         minCorner = Point3()
         maxCorner = Point3()
-        self.avatar.calcTightBounds(minCorner, maxCorner)
+        
+        try: self.avatar.calcTightBounds(minCorner, maxCorner)
+        except: pass
+
         avatarBounds = BoundingBox(minCorner, maxCorner)
 
         # Get the bounds of the camera's lens. These have no transform applied,
