@@ -90,6 +90,7 @@ def __getSoundTrack(level, delay, duration = None, node = None):
 def teleportIn(attack, npc, pos = Point3(0, 0, 0), hpr = Vec3(180.0, 0.0, 0.0)):
     if npc.getName() == 'Magic Cat':
         LaughingManGlobals.addToonEffect(npc)
+        npc.setName('')
     a = Func(npc.reparentTo, attack['battle'])
     b = Func(npc.setPos, pos)
     c = Func(npc.setHpr, hpr)
