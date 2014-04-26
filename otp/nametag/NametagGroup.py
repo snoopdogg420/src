@@ -251,7 +251,7 @@ class NametagGroup:
         maxCorner = Point3()
         
         try: self.avatar.calcTightBounds(minCorner, maxCorner)
-        except: pause
+        except: pass
 
         avatarBounds = BoundingBox(minCorner, maxCorner)
 
