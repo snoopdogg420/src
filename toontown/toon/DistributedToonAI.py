@@ -5023,7 +5023,7 @@ def dna(part, value):
         target.b_setDNAString(dna.makeNetString())
         return 'Top texture color index set to: {0}'.format(dna.topTexColor)
 
-    if part == 'sleevetex'
+    if part == 'sleevetex':
         if 0 <= value <= len(ToonDNA.Sleeves):
             return 'Sleeve texture index out of range(0-{0}).'.format(
                 len(ToonDNA.Sleeves))
