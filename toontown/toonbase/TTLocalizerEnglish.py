@@ -7660,7 +7660,8 @@ NPCToonNames = {20000: 'Tutorial Tom',
 91914: 'Sir Max',  # Feel free to add other TTR members in as needed.
 91915: 'McQuack',
 91916: 'Hawkheart',
-91917: 'Magic Cat'}
+91917: 'Magic Cat',
+91918: 'Trap Cat'}
 zone2TitleDict = {2513: ('Toon Hall', ''),
  2514: ('Toontown Bank', ''),
  2516: ('Toontown School House', ''),

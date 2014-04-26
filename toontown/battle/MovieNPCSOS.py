@@ -97,11 +97,18 @@ def teleportIn(attack, npc, pos = Point3(0, 0, 0), hpr = Vec3(180.0, 0.0, 0.0)):
     d = Func(npc.pose, 'teleport', npc.getNumFrames('teleport') - 1)
     e = npc.getTeleportInTrack()
     ee = Func(npc.addActive)
-    f = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGreeting % attack['toon'].getName(), CFSpeech | CFTimeout)
-    g = ActorInterval(npc, 'wave')
+    if npc.getName() == 'Trap Cat':
+        f = Func(npc.setChatAbsolute, 'We are team trap! Fear me %s' % attack['toon'].getName() + ' for I am the Notorious T-Cat', CFSpeech | CFTimeout)
+    else:
+		f = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGreeting % attack['toon'].getName(), CFSpeech | CFTimeout)
+    if npc.getName() == 'Trap Cat':
+        g = ActorInterval(npc, 'angry')
+    else:
+        g = ActorInterval(npc, 'wave')
     h = Func(npc.loop, 'neutral')
     i = Func(npc.clearChat)
-    seq = Sequence(a, b, c, d, e, ee, f, g, h, i)
+    j = Wait(3)
+    seq = Sequence(a, b, c, d, e, ee, f, g, h, j, i)
     if npc.getName() == 'Magic Cat':
         seq2 = Sequence()
         seq2.append(Wait(seq.getDuration()))
@@ -113,16 +120,26 @@ def teleportIn(attack, npc, pos = Point3(0, 0, 0), hpr = Vec3(180.0, 0.0, 0.0)):
 
 
 def teleportOut(attack, npc):
-    if npc.style.getGender() == 'm':
-        a = ActorInterval(npc, 'bow')
+    if npc.getName() == 'Trap Cat':
+        a = ActorInterval(npc, 'neutral')
     else:
-        a = ActorInterval(npc, 'curtsy')
-    b = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGoodbye, CFSpeech | CFTimeout)
-    c = npc.getTeleportOutTrack()
+        if npc.style.getGender() == 'm':
+            a = ActorInterval(npc, 'bow')
+        else:
+            a = ActorInterval(npc, 'curtsy')
+    if npc.getName() == 'Trap Cat':
+        b = Func(npc.setChatAbsolute, 'Drat, my hacks failed... Oh well, I will just disconnect you all!', CFSpeech | CFTimeout)
+    else:
+        b = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGoodbye, CFSpeech | CFTimeout)
+    if not npc.getName() == 'Trap Cat':
+        c = npc.getTeleportOutTrack()
+    else:
+        c = ActorInterval(npc, 'neutral')
     d = Func(npc.removeActive)
     e = Func(npc.detachNode)
     f = Func(npc.delete)
-    return Sequence(a, b, c, d, e, f)
+    g = Wait(3)
+    return Sequence(a, b, g, c, d, e, f, g)
 
 
 def __getPartTrack(particleEffect, startDelay, durationDelay, partExtraArgs):
