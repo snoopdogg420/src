@@ -888,15 +888,10 @@ group "donaldsDreamland" [
       ]
      ]
     ]
-    prop "d_linktunnel_dl_9201_DNARoot" [
+    prop "linktunnel_dl_9201_DNARoot" [
      code [ "prop_safe_zone_tunnel" ]
      pos [ 55 195 -6.65 ]
      nhpr [ 180 0 0 ]
-     prop "tunnelBlocker" [	 
-     code [ "prop_construction_sign" ]
-      pos [ 59.8 91 7 ]
-      hpr [ 180 0 0 ]
-     ]
      sign [
       code [ "tunnel_sign_magenta" ]
       color [ 0.501961 0.501961 0.501961 1 ]
@@ -1070,12 +1065,6 @@ group "donaldsDreamland" [
    title [ "Toon HQ" ]
    pos [ -40.875 -1.37841 -15 ]
    nhpr [ 180 0 0 ]
-  ]
-  prop "animated_prop_HQTelescopeAnimatedProp_DNARoot" [
-   code [ "animated_prop_HQTelescopeAnimatedProp" ]
-   pos [ -36.29 -8.86 3.82 ]
-   nhpr [ 29.05 53.13 0 ]
-   scale [ 4 4 4 ]
   ]
   landmark_building "tb8:toon_landmark_DL_pet_shop_DNARoot" [
    code [ "toon_landmark_DL_pet_shop" ]

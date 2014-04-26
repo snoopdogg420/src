@@ -97,7 +97,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             PetLookerAI.PetLookerAI.__init__(self)
         self.air = air
         self.dna = ToonDNA.ToonDNA()
-        self.mwDNABackup = {}
+        self.magicWordDNABackups = {}
         self.inventory = None
         self.fishCollection = None
         self.fishTank = None
@@ -262,7 +262,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if not isinstance(self, DistributedNPCToonBaseAI):
             self.sendUpdate('setDefaultShard', [self.air.districtId])
             self.applyAlphaModifications()
-            
+
             if hasattr(self.air, 'aprilToonsMgr'):
                 if self.air.aprilToonsMgr.isEventActive(AprilToonsGlobals.EventRandomDialogue):
                     # Give them a random animal sound.
@@ -292,7 +292,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                 if not hood in hoodsVisited:
                     hoodsVisited.append(hood)
                     self.b_setHoodsVisited(hoodsVisited)
-                    
+
                 if zoneId == ToontownGlobals.GoofySpeedway:
                     tpAccess = self.getTeleportAccess()
                     if not ToontownGlobals.GoofySpeedway in tpAccess:
@@ -368,7 +368,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def ban(self, comment):
         #simbase.air.banManager.ban(self.doId, self.DISLid, comment)
         pass
-        
+
     def disconnect(self):
         self.requestDelete()
 
@@ -545,13 +545,13 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                 allowedColors = ToonDNA.defaultBoyColorList
             else:
                 allowedColors = ToonDNA.defaultGirlColorList
-            
+
             # No idea why this wasn't done by disney, but add sanity checks for black (and now white) toons.
             if self.dna.getAnimal() == 'bear':
                 allowedColors = allowedColors + [0]
             if self.dna.getAnimal() == 'cat':
                 allowedColors = allowedColors + [26]
-                
+
             if self.dna.legColor not in allowedColors:
                 self.dna.legColor = allowedColors[0]
                 changed = True
@@ -1996,7 +1996,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             if simbase.config.GetBool('want-ban-teleport', False):
                 commentStr = 'Toon %s teleporting to a zone %s they do not have access to' % (self.doId, zoneId)
                 #simbase.air.banManager.ban(self.doId, self.DISLid, commentStr)
-                
+
     def setTeleportOverride(self, flag):
         self.teleportOverride = flag
         self.b_setHoodsVisited([1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000])
@@ -2619,10 +2619,10 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def b_setPieThrowType(self, pieThrowType):
         self.setPieThrowType(pieThrowType)
         self.d_setPieThrowType(pieThrowType)
- 
+
     def d_setPieThrowType(self, pieThrowType):
         self.sendUpdate('setPieThrowType', [pieThrowType])
- 
+
     def setPieThrowType(self, pieThrowType):
         self.pieThrowType = pieThrowType
 
@@ -4433,17 +4433,17 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setAnimalSound(self, index):
         self.animalSound = index
-        
+
     def d_setAnimalSound(self, index):
         self.sendUpdate('setAnimalSound', [index])
-        
+
     def b_setAnimalSound(self, index):
         self.setAnimalSound(index)
         self.d_setAnimalSound(index)
-        
+
     def getAnimalSound(self):
         return self.animalSound
-        
+
     def randomToonEffects(self, task):
         if self is None or not hasattr(self.air, 'aprilToonsMgr'):
             # Object deleted.
@@ -4459,7 +4459,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def applyAlphaModifications(self):
         # Apply all of the temporary changes that we want the alpha testers to
         # have:
-        
+
         # Their fishing rod should be level 4.
         self.b_setFishingRod(4)
 
@@ -4496,7 +4496,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         #Toons with cheesy effects 16, 17 and 18 shouldn't stay persistant.
         if self.savedCheesyEffect in [16, 17, 18]:
             self.b_setCheesyEffect(0, 0, 0)
-        
+
         # Remove effects and accessories from non-admins.
         # This decision was made after so many toons complained about how it is unfair
         # that some toons are allowed accessories/effects and they aren't.
@@ -4555,11 +4555,11 @@ def setMaxHp(hpVal):
     spellbook.getTarget().b_setMaxHp(hpVal)
     spellbook.getTarget().toonUp(hpVal)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int, int, int, int, int, int])   
+@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int, int, int, int, int, int])
 def setTrackAccess(toonup, trap, lure, sound, throw, squirt, drop):
     """Set target's gag track access."""
     spellbook.getTarget().b_setTrackAccess([toonup, trap, lure, sound, throw, squirt, drop])
-    
+
 @magicWord(category=CATEGORY_OVERRIDE, types=[str])
 def maxToon(missingTrack=None):
     """
@@ -4664,14 +4664,14 @@ def setMaxMoney(moneyVal):
     spellbook.getTarget().b_setMoney(moneyVal)
     return 'maxMoney set to %s' % moneyVal
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])    
+@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
 def setFishingRod(rodVal):
     """Set target's fishing rod value."""
     if not 0 <= rodVal <= 4:
         return 'Rod value must be between 0 and 4.'
     spellbook.getTarget().b_setFishingRod(rodVal)
     return 'Rod changed to ' + str(rodVal)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
 def setMaxFishTank(tankVal):
     """Set target's max fish tank value."""
@@ -4679,7 +4679,7 @@ def setMaxFishTank(tankVal):
         return 'Max fish tank value must be between 20 and 99'
     spellbook.getTarget().b_setMaxFishTank(tankVal)
     return 'Max size of fish tank changed to ' + str(tankVal)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[str])
 def setName(nameStr):
     """Set target's name."""
@@ -4691,7 +4691,7 @@ def gibunites():
     """Restock all CFO phrases."""
     spellbook.getTarget().restockAllResistanceMessages(99)
     return 'i gib %s all dem unitez' % spellbook.getTarget().getName()
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
 def setHat(hatId, hatTex=0):
     """Set hat of target toon."""
@@ -4700,7 +4700,7 @@ def setHat(hatId, hatTex=0):
     if not 0 <= hatTex <= 20:
         return 'Invalid hat texture specified.'
     spellbook.getTarget().b_setHat(hatId, hatTex, 0)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
 def setGlasses(glassesId, glassesTex=0):
     """Set glasses of target toon."""
@@ -4709,7 +4709,7 @@ def setGlasses(glassesId, glassesTex=0):
     if not 0 <= glassesTex <= 4:
         return 'Invalid glasses texture specified.'
     spellbook.getTarget().b_setGlasses(glassesId, glassesTex, 0)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
 def setBackpack(bpId, bpTex=0):
     """Set backpack of target toon."""
@@ -4718,7 +4718,7 @@ def setBackpack(bpId, bpTex=0):
     if not 0 <= bpTex <= 6:
         return 'Invalid backpack texture specified.'
     spellbook.getTarget().b_setBackpack(bpId, bpTex, 0)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
 def setShoes(shoesId, shoesTex=0):
     """Set shoes of target toon."""
@@ -4727,7 +4727,7 @@ def setShoes(shoesId, shoesTex=0):
     if not 0 <= shoesTex <= 48:
         return 'Invalid shoe specified.'
     spellbook.getTarget().b_setShoes(shoesId, shoesTex, 0)
-    
+
 @magicWord(category=CATEGORY_MODERATION, types=[bool])
 def kick(overrideSelfKick=False):
     """Kick the player from the game server."""
@@ -4756,7 +4756,7 @@ def ban(reason="Unknown reason.", confirmed=False, overrideSelfBan=False):
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, str])
 def ut(doField, doData=None):
     """Update a toons field in the db."""
-    
+
     methodExists = hasattr(spellbook.getTarget(), doField)
     b_methodExists = hasattr(spellbook.getTarget(), 'b_'+doField)
     access = spellbook.getInvokerAccess()
@@ -4805,10 +4805,10 @@ def ut(doField, doData=None):
             spellbook.getTarget().sendUpdate(doField)
         #else:
             #return "Unable to send to Astron. Access 500 required."
-           
+
     return "Method " + doField + " was called on " + spellbook.getTarget().name + " successfully."
 '''
-            
+
 @magicWord(category=CATEGORY_MODERATION)
 def togGM():
     """Toggle GM Icon for toon."""
@@ -4822,7 +4822,7 @@ def togGM():
         elif access>=200:
             spellbook.getInvoker().b_setGM(3)
         return 'You have enabled your GM icon.'
-            
+
 @magicWord(category=CATEGORY_MODERATION)
 def ghost():
     """Set toon to invisible. (Access 400+ can invoke on anyone)"""
@@ -4833,7 +4833,7 @@ def ghost():
     else:
         av.b_setGhostMode(0)
         return 'Disabled ghost for %s' % av.getName()
-        
+
 @magicWord(category=CATEGORY_MODERATION)
 def badName():
     """Set target's name to the 'REJECTED' state and rename them to their <COLOR SPECIES> name."""
@@ -4856,7 +4856,7 @@ def setGM(gmId):
         spellbook.getTarget().b_setGM(0)
     spellbook.getTarget().b_setGM(gmId)
     return 'You have set %s to GM type %s' % (spellbook.getTarget().getName(), gmId)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
 def setTickets(tixVal):
     """Set the target's racing ticket's value."""
@@ -4864,136 +4864,220 @@ def setTickets(tixVal):
         return 'Ticket value out of range (0-99999)'
     spellbook.getTarget().b_setTickets(tixVal)
     return "%s's tickets were set to %s." % (spellbook.getTarget().getName(), tixVal)
-    
+
 @magicWord(category=CATEGORY_OVERRIDE, types=[int])
 def setCogIndex(indexVal):
     """Transform into a cog/suit. THIS SHOULD ONLY BE USED WHERE NEEDED, E.G. ELECTIONS"""
     if not -1 <= indexVal <= 3:
         return 'CogIndex value %s is invalid.' % str(indexVal)
     spellbook.getTarget().b_setCogIndex(indexVal)
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, str])
 def dna(part, value):
-    # This is where the fun begins, woo!
-    """Set a specific part of DNA for the target toon. Be careful, you don't want to break anyone!"""
-    
-    av = spellbook.getTarget()
-    
+    """Modify a DNA part on the target."""
+    target = spellbook.getTarget()
+
     dna = ToonDNA.ToonDNA()
-    dna.makeFromNetString(av.getDNAString())
-    
-    def isValidColor(colorIndex):
-        if not 0 <= colorIndex <= 26: # This could actually be selected from ToonDNA, but I prefer this :D
-            return False
-        if colorIndex == 0 and dna.getAnimal() != 'bear':
-            return False
-        if colorIndex == 26 and dna.getAnimal() != 'cat':
-            return False
-        return True
-    
-    # Body Part Colors
-    if part=='headColor':
+    dna.makeFromNetString(target.getDNAString())
+
+    part = part.lower()
+    if part.endswith('color') or part.endswith('tex') or part.endswith('size'):
         value = int(value)
-        if not isValidColor(value):
-            return "DNA: Invalid color specified for head."
-        dna.headColor = value
-    elif part=='armColor':
-        value = int(value)
-        if not isValidColor(value):
-            return "DNA: Invalid color specified for arms."
-        dna.armColor = value
-    elif part=='legColor':
-        value = int(value)
-        if not isValidColor(value):
-            return "DNA: Invalid color specified for legs."
-        dna.legColor = value
-    elif part=='color':
-        value = int(value)
-        if not isValidColor(value):
-            return "DNA: Invalid color specified for toon."
-        dna.headColor = value
-        dna.armColor = value
-        dna.legColor = value
-    elif part == 'scolor':
-        value = int(value)
-        if not isValidColor(value):
-            return 'DNA: Invalid color specified for shirt.'
-        dna.topTexColor = value
-    elif part=='gloves': # Incase anyone tries to change glove color for whatever reason...
-        if not simbase.config.GetBool('want-glove-colors', False):
-            return "DNA: Change of glove colors are not allowed."
-        # If you ever want to be able to edit gloves, feel free to comment out this return.
-        # However, since DToonAI checks ToonDNA, this would be impossible unless changes
-        # are made.
-        value = int(value)
-        if not 0 <= value <= 26:
-            return "DNA: Color index out of range."
-        dna.gloveColor = value
-        
-    # Body Sizes, Species & Gender (y u want to change gender pls)
-    elif part=='gender':
-        if value=='male':
-            dna.gender = 'm'
-        elif value=='female':
-            dna.gender = 'f'
-        else:
-            return "DNA: Invalid gender. Stick to 'male' or 'female'."
-    elif part=='species':
-        species = ['dog', 'cat', 'horse', 'mouse', 'rabbit', 'duck', 'monkey', 'bear', 'pig']
-        if value not in species:
-            return "DNA: Invalid head type specified."
-        if dna.headColor == 0x1a and value != 'cat':
-            return "DNA: Cannot have a black toon (non-cat)!"
-        if dna.headColor == 0 and value != 'bear':
-            return "DNA: Cannot have a white toon (non-bear)!"
-        species = dict(map(None, species, ToonDNA.toonSpeciesTypes))
-        headSize = dna.head[1:3]
-        dna.head = (species.get(value) + headSize)
-    elif part=='headSize':
-        sizes = ['ls', 'ss', 'sl', 'll']
-        value = int(value)
-        if not 0 <= value <= 3:
-            return "DNA: Invalid head size index."
-        species = dna.head[0]
-        dna.head = (species + sizes[value])
-    elif part=='torso':
-        value = int(value)
-        if dna.gender == 'm':
-            if not 0 <= value <= 2:
-                return "DNA: Male torso index out of range (0-2)."
-        elif dna.gender == 'f':
-            if not 3 <= value <= 8:
-                return "DNA: Female torso index out of range (3-8)."
-        else:
-            return "DNA: Unable to determine gender. Aborting DNA change."
+
+    if part == 'gender':
+        if value not in ('m', 'f', 'male', 'female'):
+            return 'Invalid gender: {0}'.format(value)
+        dna.gender = value[0]
+        target.b_setDNAString(dna.makeNetString())
+        return 'Gender set to: {0}'.format(dna.gender)
+
+    if part in ('head', 'species'):
+        speciesNames = (
+            'dog', 'cat', 'horse', 'mouse', 'rabbit', 'duck', 'monkey', 'bear',
+            'pig'
+        )
+        if value in speciesNames:
+            speciesIndex = speciesNames.index(value)
+            value = ToonDNA.toonSpeciesTypes[speciesIndex]
+        if value not in ToonDNA.toonSpeciesTypes:
+            return 'Invalid species: {0}'.format(value)
+        if (dna.headColor == 0x1a) and (value == 'c'):
+            return 'Invalid species for color: black'
+        if (dna.headColor == 0x00) and (value == 'b'):
+            return 'Invalid species for color: white'
+        dna.head = value + dna.head[1:3]
+        target.b_setDNAString(dna.makeNetString())
+        return 'Species set to: {0}'.format(dna.head[0])
+
+    if part == 'headsize':
+        sizes = ('ls', 'ss', 'sl', 'll')
+        if not 0 <= value <= len(sizes):
+            return 'Invalid head size index: {0}'.format(value)
+        dna.head = dna.head[0] + sizes[value]
+        target.b_setDNAString(dna.makeNetString())
+        return 'Head size index set to: {0}'.format(dna.head[1:])
+
+    if part == 'torso':
+        if dna.gender not in ('m', 'f'):
+            return 'Unknown gender.'
+        if (dna.gender == 'm') and (not 0 <= value <= 2):
+            return 'Male torso index out of range (0-2).'
+        if (dna.gender == 'f') and (not 3 <= value <= 8):
+            return 'Female torso index out of range (3-8).'
         dna.torso = ToonDNA.toonTorsoTypes[value]
-    elif part=='legs':
-        value = int(value)
-        if not 0 <= value <= 2:
-            return "DNA: Legs index out of range."
+        target.b_setDNAString(dna.makeNetString())
+        return 'Torso set to: {0}'.format(dna.torso)
+
+    if part == 'legs':
+        if not 0 <= value <= len(ToonDNA.toonLegTypes):
+            return 'Legs index out of range (0-{0}).'.format(
+                len(ToonDNA.toonLegTypes))
         dna.legs = ToonDNA.toonLegTypes[value]
-    
-    # Allow Admins to back up a toons current DNA before making changes.
-    elif part=='save':
-        av.mwDNABackup[spellbook.getInvoker().doId] = av.getDNAString()
-        return "Saved DNA to toon's DToonAI. Note: If the toon logs out, the save will be lost!"
-        
-    # Restore from a previous back up of DNA.
-    elif part=='restore':
-        if spellbook.getInvoker().doId in av.mwDNABackup:
-            dna.makeFromNetString(av.mwDNABackup.get(spellbook.getInvoker().doId))
-            av.b_setDNAString(dna.makeNetString())
-            return "Restored %s's DNA to last save." % av.getName()
+        target.b_setDNAString(dna.makeNetString())
+        return 'Legs set to: {0}'.format(dna.legs)
+
+    if part == 'headcolor':
+        if dna.gender not in ('m', 'f'):
+            return 'Unknown gender.'
+        if (value == 0x1a) or (0x1a in (dna.headColor, dna.armColor, dna.legColor)):
+            return 'Toon contains black parts!'
+        if (value == 0x00) or (0x00 in (dna.headColor, dna.armColor, dna.legColor)):
+            return 'Toon contains white parts!'
+        if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
+            return 'Invalid male head color index: {0}'.format(value)
+        if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
+            return 'Invalid female head color index: {0}'.format(value)
+        dna.headColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Head color index set to: {0}'.format(dna.headColor)
+
+    if part == 'armcolor':
+        if dna.gender not in ('m', 'f'):
+            return 'Unknown gender.'
+        if (value == 0x1a) or (0x1a in (dna.headColor, dna.armColor, dna.legColor)):
+            return 'Toon contains black parts!'
+        if (value == 0x00) or (0x00 in (dna.headColor, dna.armColor, dna.legColor)):
+            return 'Toon contains white parts!'
+        if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
+            return 'Invalid male arm color index: {0}'.format(value)
+        if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
+            return 'Invalid female arm color index: {0}'.format(value)
+        dna.armColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Arm color index set to: {0}'.format(dna.armColor)
+
+    if part == 'legcolor':
+        if dna.gender not in ('m', 'f'):
+            return 'Unknown gender.'
+        if (value == 0x1a) or (0x1a in (dna.headColor, dna.armColor, dna.legColor)):
+            return 'Toon contains black parts!'
+        if (value == 0x00) or (0x00 in (dna.headColor, dna.armColor, dna.legColor)):
+            return 'Toon contains white parts!'
+        if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
+            return 'Invalid male leg color index: {0}'.format(value)
+        if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
+            return 'Invalid female leg color index: {0}'.format(value)
+        dna.legColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Leg color index set to: {0}'.format(dna.legColor)
+
+    if part == 'color':
+        if dna.gender not in ('m', 'f'):
+            return 'Unknown gender.'
+        if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
+            if (value != 0x1a) and (value != 0x00):
+                return 'Invalid male color index: {0}'.format(value)
+        if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
+            if (value != 0x1a) and (value != 0x00):
+                return 'Invalid female color index: {0}'.format(value)
+        if (value == 0x1a) and (dna.getAnimal() != 'cat'):
+            return 'Invalid color index for species: {0}'.format(dna.getAnimal())
+        if (value == 0x00) and (dna.getAnimal() != 'bear'):
+            return 'Invalid color index for species: {0}'.format(dna.getAnimal())
+        dna.headColor = value
+        dna.armColor = value
+        dna.legColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Color index set to: {0}'.format(dna.headColor)
+
+    if part == 'gloves':
+        if value != 0:
+            return 'Invalid glove color: {0}'.format(value)
+        dna.gloveColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Glove color set to: {0}'.format(dna.gloveColor)
+
+    if part == 'toptex':
+        if 0 <= value <= len(ToonDNA.Shirts):
+            return 'Top texture index out of range (0-{0}).'.format(
+                len(ToonDNA.Shirts))
+        dna.topTex = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Top texture index set to: {0}'.format(dna.topTex)
+
+    if part == 'toptexcolor':
+        if 0 <= value <= len(ToonDNa.ClothesColors):
+            return 'Top texture color index out of range(0-{0}).'.format(
+                len(ToonDNA.ClothesColors))
+        dna.topTexColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Top texture color index set to: {0}'.format(dna.topTexColor)
+
+    if part == 'sleevetex'
+        if 0 <= value <= len(ToonDNA.Sleeves):
+            return 'Sleeve texture index out of range(0-{0}).'.format(
+                len(ToonDNA.Sleeves))
+        dna.sleeveTex = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Sleeve texture index set to: {0}'.format(dna.sleeveTex)
+
+    if part == 'sleevetexcolor':
+        if 0 <= value <= len(ToonDNa.ClothesColors):
+            return 'Sleeve texture color index out of range(0-{0}).'.format(
+                len(ToonDNA.ClothesColors))
+        dna.sleeveTexColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Sleeve texture color index set to: {0}'.format(
+            dna.sleeveTexColor)
+
+    if part == 'bottex':
+        if dna.gender not in ('m', 'f'):
+            return 'Unknown gender.'
+        if dna.gender == 'm':
+            bottoms = ToonDNA.BoyShorts
         else:
-            return "DNA: There are no backups available."
-    
-    # Don't allow them to submit any changes if they don't enter a valid DNA part.
-    else:
-        return "DNA: Invalid part specified."
-    
-    av.b_setDNAString(dna.makeNetString())
-    return "Completed DNA change successfully."
-    
+            bottoms = ToonDNA.GirlBottoms
+        if not 0 <= value <= len(bottoms):
+            return 'Bottom texture index out of range (0-{0}).'.format(
+                len(bottoms))
+        dna.botTex = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Bottom texture index set to: {0}'.format(dna.botTex)
+
+    if part == 'bottexcolor':
+        if 0 <= value <= len(ToonDNa.ClothesColors):
+            return 'Sleeve texture color index out of range(0-{0}).'.format(
+                len(ToonDNA.ClothesColors))
+        dna.botTexColor = value
+        target.b_setDNAString(dna.makeNetString())
+        return 'Bottom texture color index set to: {0}'.format(dna.botTexColor)
+
+    if part == 'save':
+        target.magicWordDNABackups[value] = target.getDNAString()
+        return "Saved a DNA backup for {0} under file: {1}".format(
+            target.getName(), value)
+
+    if part == 'restore':
+        if value not in target.magicWordDNABackups:
+            return 'Could not find DNA backup for {0} under file: {1}'.format(
+                target.getName(), value)
+        dna.makeFromNetString(target.magicWordDNABackups[value])
+        target.b_setDNAString(dna.makeNetString())
+        return 'Restored DNA backup for {0} under file: {1}'.format(
+            target.getName(), value)
+
+    return 'Invalid part: {0}'.format(part)
+
 @magicWord(category=CATEGORY_OVERRIDE, types=[int])
 def setTrophyScore(value):
     """Set the trophy score of target"""
@@ -5016,7 +5100,7 @@ def givePies(pieType, numPies=0):
         return "numPies value out of range (0-99)"
     av.b_setPieType(pieType)
     av.b_setNumPies(numPies)
-    
+
 @magicWord(category=CATEGORY_MODERATION, types=[int, str])
 def locate(avIdShort=0, returnType=''):
     """Locate an avatar anywhere on the [CURRENT] AI."""
@@ -5028,26 +5112,26 @@ def locate(avIdShort=0, returnType=''):
     av = simbase.air.doId2do.get(avIdFull, None)
     if not av:
         return "Could not find the avatar on the current AI."
-    
+
     # Get the avatar's location.
     zoneId = av.getLocation()[1] # This returns: (parentId, zoneId)
     trueZoneId = zoneId
     interior = False
-    
+
     if returnType == 'zone':
         # The avatar that called the MagicWord wants a zoneId... Provide them with the untouched zoneId.
         return "%s is in zoneId %d." % (av.getName(), trueZoneId)
-        
+
     if returnType == 'playground':
         # The avatar that called the MagicWord wants the playground name that the avatar is currently in.
         zoneId = ZoneUtil.getCanonicalHoodId(zoneId)
-    
+
     if ZoneUtil.isInterior(zoneId):
         # If we're in an interior, we want to fetch the street/playground zone, since there isn't
         # any mapping for interiorId -> shop name (afaik).
         zoneId -= 500
         interior = True
-    
+
     if ZoneUtil.isPlayground(zoneId):
         # If it's a playground, TTG contains a map of all hoodIds -> playground names.
         where = ToontownGlobals.hoodNameMap.get(zoneId, None)
@@ -5058,7 +5142,7 @@ def locate(avIdShort=0, returnType=''):
 
     if not where:
         return "Failed to map the zoneId %d [trueZoneId: %d] to a location..." % (zoneId, trueZoneId)
-    
+
     if interior:
         return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
     return "%s has been located %s %s." % (av.getName(), where[1], where[2])

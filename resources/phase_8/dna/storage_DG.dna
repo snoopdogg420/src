@@ -128,10 +128,6 @@ hood_model "phase_8/models/modules/hqDG" [
 	store_node [ "toon_landmark" "toon_landmark_hqDG" "" ]
 	]
 
-hood_model "phase_3.5/models/props/HQ_periscope-mod" [
-	store_node [ "prop" "animated_prop_HQPeriscopeAnimatedProp" "periscope" ]
-	]
-
 hood_model "phase_8/models/char/tt_r_ara_dga_hydrant" [
 	store_node [ "anim_prop" "animated_prop_generic_phase_8_models_char__dga_hydrant" ""]
 	]

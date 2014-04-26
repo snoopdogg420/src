@@ -1,0 +1,10 @@
+group "toontownCentral" [
+ visgroup "2000:safe_zone" [
+  vis [   "2000:safe_zone"   ]
+  prop "npc_origin_3" [
+   code [ "DCS" ]
+   pos [ -124 -77.5 0.525 ]
+   nhpr [ -15 0 0 ]
+  ]
+ ]
+]

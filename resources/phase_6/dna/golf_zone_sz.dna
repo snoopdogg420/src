@@ -72,101 +72,49 @@ group "golfZone" [
     pos [ 0 0 0 ]
     nhpr [ 0 0 0 ]
    ]
-   /*prop "linktunnel_bosshq_10000_DNARoot" [
+   prop "linktunnel_bosshq_10000_DNARoot" [
     code [ "prop_golf_cog_tunnel" ]
     pos [ 100 -95 0.05 ]
     nhpr [ 45 0 0 ]
-   ]*/
-  prop "linktunnel_gz_17000_DNARoot" [
-    code [ "prop_golf_NoSign_entrance" ]
-    pos [ 100 -95 0.05 ]
-    scale [ 2.5 1 2.5 ]
-    nhpr [ 225 0 0 ]
-    sign [
+	sign [
+     scale [ 1.5 1 1.5 ]
      baseline [
       code [ "mickey" ]
-      color [ 0.705882 0.156863 0.235294 1 ]
-      scale [ 2 1 2 ]
+      color [ 1 1 0 1 ]
+      pos [ -0.3 0 0 ]
+      nhpr [ 0 0 3.88713 ]
+      scale [ 0.7 1 0.7 ]
+      width [ -8.33333 ]
+      height [ -8.33333 ]
       text [
-       letters [ "C" ]
-      ]
-      text [
-       letters [ "h" ]
-      ]
-      text [
-       letters [ "i" ]
-      ]
-      text [
-       letters [ "p" ]
-      ]
-      text [
-       letters [ " " ]
-      ]
-      text [
-       letters [ "n" ]
-      ]
-      text [
-       letters [ "'" ]
-      ]
-      text [
-       letters [ " " ]
-      ]
-      text [
-       letters [ "D" ]
-      ]
-      text [
-       letters [ "a" ]
-      ]
-      text [
-       letters [ "l" ]
-      ]
-      text [
-       letters [ "e" ]
-      ]
-      text [
-       letters [ "'" ]
-      ]
-      text [
-       letters [ "s" ]
-      ]
-     ]
-     baseline [
-      code [ "mickey" ]
-      color [ 0.705882 0.156863 0.235294 1 ]
-      pos [ 0 0 -4 ]
-      scale [ 3 1 3 ]
-      text [
-       letters [ "A" ]
-      ]
-      text [
-       letters [ "c" ]
+       letters [ "B" ]
       ]
       text [
        letters [ "o" ]
       ]
       text [
-       letters [ "r" ]
+       letters [ "s" ]
       ]
       text [
-       letters [ "n" ]
+       letters [ "s" ]
+      ]
+      text [
+       letters [ "b" ]
+      ]
+      text [
+       letters [ "o" ]
+      ]
+      text [
+       letters [ "t" ]
       ]
       text [
        letters [ " " ]
       ]
       text [
-       letters [ "A" ]
+       letters [ "H" ]
       ]
       text [
-       letters [ "c" ]
-      ]
-      text [
-       letters [ "r" ]
-      ]
-      text [
-       letters [ "e" ]
-      ]
-      text [
-       letters [ "s" ]
+       letters [ "Q" ]
       ]
      ]
     ]

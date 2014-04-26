@@ -1847,7 +1847,7 @@ group "toontownCentral" [
    street "street_40x40_DNARoot" [
     code [ "street_40x40" ]
     pos [ -330 -140 0 ]
-    hpr [ -90 0 0 ]
+    nhpr [ -90 0 -0 ]
     texture [ "street_street_TT_tex" ]
     texture [ "street_sidewalk_TT_tex" ]
     texture [ "street_curb_TT_tex" ]
@@ -1856,7 +1856,7 @@ group "toontownCentral" [
   group "buildings" [
    flat_building "tb5:random20_DNARoot" [
     pos [ -330 -180 0 ]
-    hpr [ 90 0 0 ]
+    nhpr [ 90 0 -0 ]
     width [ 10 ]
     wall [
      height [ 10 ]
@@ -1885,7 +1885,7 @@ group "toontownCentral" [
    ]
    flat_building "tb5:random20_DNARoot" [
     pos [ -330 -155 0 ]
-    hpr [ 90 0 0 ]
+    nhpr [ 90 0 -0 ]
     width [ 15 ]
     wall [
      height [ 10 ]
@@ -1914,18 +1914,16 @@ group "toontownCentral" [
     prop "prop_post_sign_DNARoot" [
      code [ "prop_post_sign" ]
      pos [ 5 -5 0 ]
-     hpr [ 90 0 0 ]
+     nhpr [ 90 0 -0 ]
     ]
    ]
-   landmark_building "tb5:toon_landmark_TT_B2_DNARoot" [
-    code [ "toon_landmark_TT_B2" ]
+   anim_building "tb5:animated_building_phase_5_models_char__ttc_B2_DNARoot" [
+    code [ "animated_building_phase_5_models_char__ttc_B2" ]
+    building_type [ "animbldg" ]
     title [ "Toontown Sign Factory" ]
-    pos [ -330 -170 0 ]
-    hpr [ 90 0 0 ]
-    door [
-     code [ "door_double_square_ur" ]
-     color [ 1 0.87 0.38 1 ]
-    ]
+    anim [ "tt_a_ara_ttc_B2_dance" ]
+    pos [ -331.374 -162 0 ]
+    nhpr [ 90 0 -0 ]
     sign [
      code [ "TTC_sign2" ]
      color [ 1 0.88 0.56 1 ]
@@ -1938,7 +1936,7 @@ group "toontownCentral" [
       kern [ 0.122954 ]
       wiggle [ 4.88131 ]
       text [
-       letters [ "T" ]
+       letters [ "t" ]
       ]
       text [
        letters [ "o" ]

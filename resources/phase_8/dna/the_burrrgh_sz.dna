@@ -970,12 +970,6 @@ group "theBurrrgh" [
     title [ "Toon HQ" ]
     pos [ -94.2041 58.7136 6.16669 ]
     nhpr [ -90 0 0 ]
-    prop "animated_prop_HQPeriscopeAnimatedProp_DNARoot" [
-     code [ "animated_prop_HQPeriscopeAnimatedProp" ]
-     pos [ 6.17 -10.67 16.07 ]
-     nhpr [ 110 0 0 ]
-     scale [ 4 4 4 ]
-    ]
    ]
    landmark_building "tb9:toon_landmark_BR_clothes_shop_DNARoot" [
     code [ "toon_landmark_BR_clothes_shop" ]
@@ -1038,15 +1032,10 @@ group "theBurrrgh" [
      ]
     ]
    ]
-   prop "d_linktunnel_br_3301_DNARoot" [
+   prop "linktunnel_br_3301_DNARoot" [
     code [ "prop_safe_zone_tunnel" ]
     pos [ 100.11 152.01 -0.54 ]
     nhpr [ 150 0 0 ]
-    prop "tunnelBlocker" [
-      code [ "prop_construction_sign" ]
-      pos [ 59.8 91 7 ]
-      hpr [ 180 0 0 ]
-    ]
     sign [
      code [ "tunnel_sign_blue" ]
      pos [ 0 0 -0.830334 ]

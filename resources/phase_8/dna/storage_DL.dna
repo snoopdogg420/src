@@ -80,9 +80,6 @@ hood_model "phase_8/models/props/signs_DL" [
 hood_model "phase_8/models/modules/hqDL" [
 	store_node [ "toon_landmark" "toon_landmark_hqDL" "" ]
 	]
-hood_model "phase_3.5/models/props/HQ_telescope-mod" [
-	store_node [ "prop" "animated_prop_HQTelescopeAnimatedProp" "telescope" ]
-	]
 
 hood_model "phase_8/models/props/neighborhood_sign_cashBotHQ" [
 	store_node [ "prop" "neighborhood_sign_cashBotHQ" "" ]

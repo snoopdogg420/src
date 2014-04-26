@@ -189,4 +189,19 @@ group "daisysGarden" [
    ]
   ]
  ]
+ prop "prop_golf_construction_sign_DNARoot" [
+  code [ "prop_golf_construction_sign" ]
+  pos [ -48.1255 -136.145 0.0177824 ]
+  nhpr [ 180 0 0 ]
+ ]
+ prop "prop_outdoor_zone_entrance_DNARoot" [
+  code [ "prop_outdoor_zone_entrance" ]
+  pos [ -47.8387 -143.259 0.1 ]
+  nhpr [ 180 0 0.1 ]
+  sign [
+   pos [ 0 0 -0.65 ]
+   nhpr [ 0 0 -4 ]
+   scale [ 1.33009 1 0.849568 ]
+  ]
+ ]
 ]

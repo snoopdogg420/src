@@ -1022,15 +1022,10 @@ group "daisysGarden" [
      ]
     ]
    ]
-   prop "d_linktunnel_dg_5301_DNARoot" [
+   prop "linktunnel_dg_5301_DNARoot" [
     code [ "prop_safe_zone_tunnel" ]
     pos [ -60.12 -94.82 -6.63 ]
     nhpr [ 0 0 0 ]
-	 prop "tunnelBlocker" [
-	  code [ "prop_construction_sign" ]
-	  pos [ 59.8 91 6.7 ]
-	  hpr [ 180 0 0 ]
-	 ]
     sign [
      code [ "tunnel_sign_green" ]
      pos [ 0 0 0.53 ]
@@ -1205,12 +1200,6 @@ group "daisysGarden" [
    title [ "Toon HQ" ]
    pos [ -45.9641 39.1958 0 ]
    nhpr [ -45 0 0 ]
-   prop "animated_prop_HQPeriscopeAnimatedProp_DNARoot" [
-    code [ "animated_prop_HQPeriscopeAnimatedProp" ]
-    pos [ 7.17 3.17 20.07 ]
-    nhpr [ 180 0 0 ]
-    scale [ 4 4 4 ]
-   ]
   ]
   landmark_building "tb5:toon_landmark_DG_pet_shop_DNARoot" [
    code [ "toon_landmark_DG_pet_shop" ]
