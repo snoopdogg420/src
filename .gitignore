@@ -1,5 +1,5 @@
 # Python / Compiled / Optimized
-# *.py[cod]
+*.py[cod]
 
 # C extensions
 *.so
