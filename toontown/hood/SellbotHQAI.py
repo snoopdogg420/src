@@ -32,6 +32,7 @@ class SellbotHQAI(HoodAI):
         intDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.INT_COGHQ, ToontownGlobals.SellbotHQ, doorIndex=0)
         intDoor0.setOtherDoor(extDoor0)
         intDoor0.zoneId = ToontownGlobals.SellbotLobby
+        
         for extDoor in extDoorList:
             extDoor.setOtherDoor(intDoor0)
             extDoor.zoneId = ToontownGlobals.SellbotHQ
@@ -41,10 +42,12 @@ class SellbotHQAI(HoodAI):
         intDoor0.generateWithRequired(ToontownGlobals.SellbotLobby)
         intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
         
-        # Create factories!
-        # Front entrance:
         self.factoryFrontElevator = DistributedFactoryElevatorExtAI(self.air, self.air.factoryMgr, ToontownGlobals.SellbotFactoryInt, 0)
         self.factoryFrontElevator.generateWithRequired(ToontownGlobals.SellbotFactoryExt)
-        # Side entrance:
-        self.factoryFrontElevator = DistributedFactoryElevatorExtAI(self.air, self.air.factoryMgr, ToontownGlobals.SellbotFactoryInt, 1)
-        self.factoryFrontElevator.generateWithRequired(ToontownGlobals.SellbotFactoryExt)
+
+        self.factorySideElevator = DistributedFactoryElevatorExtAI(self.air, self.air.factoryMgr, ToontownGlobals.SellbotFactoryInt, 1)
+        self.factorySideElevator.generateWithRequired(ToontownGlobals.SellbotFactoryExt)
+        
+        if simbase.config.GetBool('want-boarding-groups', 1):
+            self.boardingFactoryParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.factoryFrontElevator.doId, self.factorySideElevator.doId], 4)
+            self.boardingFactoryParty.generateWithRequired(ToontownGlobals.SellbotFactoryExt)

@@ -30,6 +30,7 @@ class CashbotHQAI(HoodAI):
         intDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.INT_COGHQ, ToontownGlobals.CashbotHQ, doorIndex=0)
         intDoor0.setOtherDoor(extDoor0)
         intDoor0.zoneId = ToontownGlobals.CashbotLobby
+        
         for extDoor in extDoorList:
             extDoor.setOtherDoor(intDoor0)
             extDoor.zoneId = ToontownGlobals.CashbotHQ
@@ -45,9 +46,15 @@ class CashbotHQAI(HoodAI):
             ToontownGlobals.CashbotMintIntB,
             ToontownGlobals.CashbotMintIntC,
         ]
+        
         mins = ToontownGlobals.FactoryLaffMinimums[1]
         self.elevators = []
+        
         for index, mintType in enumerate(mintTypes):
             elevator = DistributedMintElevatorExtAI(self.air, self.air.mintMgr, mintType, antiShuffle=0, minLaff=mins[index])
             elevator.generateWithRequired(self.HOOD)
             self.elevators.append(elevator)
+            
+        if simbase.config.GetBool('want-boarding-groups', 1):
+            self.boardingFactoryParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.elevators[0].doId, self.elevators[1].doId, self.elevators[2].doId], 4)
+            self.boardingFactoryParty.generateWithRequired(self.HOOD)
