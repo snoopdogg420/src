@@ -4920,6 +4920,7 @@ def dna(part, value):
     if part == 'torso':
         if dna.gender not in ('m', 'f'):
             return 'Unknown gender.'
+        value = int(value)
         if (dna.gender == 'm') and (not 0 <= value <= 2):
             return 'Male torso index out of range (0-2).'
         if (dna.gender == 'f') and (not 3 <= value <= 8):
@@ -4929,6 +4930,7 @@ def dna(part, value):
         return 'Torso set to: {0}'.format(dna.torso)
 
     if part == 'legs':
+        value = int(value)
         if not 0 <= value <= len(ToonDNA.toonLegTypes):
             return 'Legs index out of range (0-{0}).'.format(
                 len(ToonDNA.toonLegTypes))
@@ -5001,6 +5003,7 @@ def dna(part, value):
         return 'Color index set to: {0}'.format(dna.headColor)
 
     if part == 'gloves':
+        value = int(value)
         if value != 0:
             return 'Invalid glove color: {0}'.format(value)
         dna.gloveColor = value
@@ -5008,7 +5011,7 @@ def dna(part, value):
         return 'Glove color set to: {0}'.format(dna.gloveColor)
 
     if part == 'toptex':
-        if 0 <= value <= len(ToonDNA.Shirts):
+        if not 0 <= value <= len(ToonDNA.Shirts):
             return 'Top texture index out of range (0-{0}).'.format(
                 len(ToonDNA.Shirts))
         dna.topTex = value
@@ -5016,7 +5019,7 @@ def dna(part, value):
         return 'Top texture index set to: {0}'.format(dna.topTex)
 
     if part == 'toptexcolor':
-        if 0 <= value <= len(ToonDNa.ClothesColors):
+        if not 0 <= value <= len(ToonDNA.ClothesColors):
             return 'Top texture color index out of range(0-{0}).'.format(
                 len(ToonDNA.ClothesColors))
         dna.topTexColor = value
@@ -5024,7 +5027,7 @@ def dna(part, value):
         return 'Top texture color index set to: {0}'.format(dna.topTexColor)
 
     if part == 'sleevetex':
-        if 0 <= value <= len(ToonDNA.Sleeves):
+        if not 0 <= value <= len(ToonDNA.Sleeves):
             return 'Sleeve texture index out of range(0-{0}).'.format(
                 len(ToonDNA.Sleeves))
         dna.sleeveTex = value
@@ -5032,7 +5035,7 @@ def dna(part, value):
         return 'Sleeve texture index set to: {0}'.format(dna.sleeveTex)
 
     if part == 'sleevetexcolor':
-        if 0 <= value <= len(ToonDNa.ClothesColors):
+        if not 0 <= value <= len(ToonDNA.ClothesColors):
             return 'Sleeve texture color index out of range(0-{0}).'.format(
                 len(ToonDNA.ClothesColors))
         dna.sleeveTexColor = value
@@ -5055,8 +5058,8 @@ def dna(part, value):
         return 'Bottom texture index set to: {0}'.format(dna.botTex)
 
     if part == 'bottexcolor':
-        if 0 <= value <= len(ToonDNa.ClothesColors):
-            return 'Sleeve texture color index out of range(0-{0}).'.format(
+        if not 0 <= value <= len(ToonDNA.ClothesColors):
+            return 'Bottom texture color index out of range(0-{0}).'.format(
                 len(ToonDNA.ClothesColors))
         dna.botTexColor = value
         target.b_setDNAString(dna.makeNetString())
