@@ -6,12 +6,14 @@ from direct.showbase import Loader
 from direct.stdpy.file import *
 import math, random
 from DNATypesetter import DNATypesetter
+
 tokens = [
   'FLOAT',
   'INTEGER',
   'UNQUOTED_STRING',
   'QUOTED_STRING'
 ]
+
 reserved = {
   'store_suit_point' : 'STORE_SUIT_POINT',
   'group' : 'GROUP',
@@ -138,41 +140,52 @@ class DNAStorage:
         self.blockDoors = {}
         self.textures = {}
         self.catalogCodes = {}
+        
     def storeSuitPoint(self, suitPoint):
         if not isinstance(suitPoint, DNASuitPoint):
             raise TypeError("suit_point must be an instance of DNASuitPoint")
         self.suitPoints += [suitPoint]
         self.suitPointMap[suitPoint.getIndex()] = suitPoint
+        
     def getSuitPointAtIndex(self, index):
         if index in self.suitPoints:
             return self.suitPoints[index]
         return None
+        
     def getSuitPointWithIndex(self, index):
         if index in self.suitPointMap:
             return self.suitPointMap[index]
         return None
+        
     def resetSuitPoints(self):
         self.suitPoints = []
         self.suitPointMap = {}
         self.suitEdges = {}
+        
     def findDNAGroup(self, node):
         return DNAGroups[node]
+        
     def removeDNAGroup(self, dnagroup):
         for node, group in self.DNAGroups.items():
             if group == dnagroup:
                 del self.DNAGroups[node]
+                
     def resetDNAGroups(self):
         self.DNAGroups = {}
+        
     def getNumDNAVisGroups(self):
         return len(self.DNAVisGroups)
+        
     def getDNAVisGroupName(self, i):
         if i < len(self.DNAVisGroups):
             return self.DNAVisGroups[i].getName()
         else:
             print 'DNAVisGroup ' + str(i) + ' not found, returning empty string'
             return ''
+            
     def storeDNAVisGroup(self, group):
         self.DNAVisGroups.append(group)
+        
     def storeSuitEdge(self, startIndex, endIndex, zoneId):
         startPoint = self.getSuitPointWithIndex(startIndex)
         endPoint = self.getSuitPointWithIndex(endIndex)
@@ -181,6 +194,7 @@ class DNAStorage:
         if not startIndex in self.suitEdges:
             self.suitEdges[startIndex] = []
         self.suitEdges[startIndex] += [DNASuitEdge(startPoint, endPoint, zoneId)]
+        
     def getSuitEdge(self, startIndex, endIndex):
         if not startIndex in self.suitEdges:
             return None
@@ -188,12 +202,16 @@ class DNAStorage:
             if edge.getEndPoint().getIndex() == endIndex:
                 return edge
         return None
+        
     def removeBattleCell(self, cell):
         self.battleCells.remove(cell)
+        
     def storeBattleCell(self, cell):
         self.battleCells += [cell]
+        
     def resetBattleCells(self):
         self.battleCells = []
+        
     def findNode(self, code):
         if code in self.nodes:
             return self.nodes[code]
@@ -202,69 +220,95 @@ class DNAStorage:
         if code in self.placeNodes:
             return self.placeNodes[code]
         return None
+        
     def resetNodes(self):
         self.nodes = {}
+        
     def resetHoodNodes(self):
         self.hoodNodes = {}
+        
     def resetPlaceNodes(self):
         self.placeNodes = {}
+        
     def storeNode(self, node, code):
         self.nodes[code] = node
+        
     def storeHoodNode(self, node, code):
         self.hoodNodes[code] = node
+        
     def storePlaceNode(self, node, code):
         self.placeNodes[code] = node
+        
     def findFont(self, code):
         if code in self.fonts:
             return self.fonts[code]
         return None
+        
     def resetFonts(self):
         self.fonts = {}
+        
     def storeFont(self, font, code):
         self.fonts[code] = font
+        
     def getBlock(self, name):
         block = name[name.find(':')-2:name.find(':')]
         if block[0] > '9' or block[0] < '0':
             block = block[1:]
         return block
+        
     def getTitleFromBlockNumber(self, index):
         if self.blockTitles.has_key(index):
             return self.blockTitles[index]
         return ''
+        
     def getDoorPosHprFromBlockNumber(self, index):
         return self.blockDoors[str(index)]
+        
     def storeBlockDoor(self, index, door):
         self.blockDoors[index] = door
+        
     def storeBlockTitle(self, index, title):
         self.blockTitles[index] = title
+        
     def storeBlockArticle(self, index, article):
         self.blockArticles[index] = article
+        
     def storeBlockBuildingType(self, index, type):
         self.blockBuildingTypes[index] = type
+        
     def storeTexture(self, name, texture):
         self.textures[name] = texture
+        
     def resetDNAVisGroups(self):
         self.DNAVisGroups = []
+        
     def resetDNAVisGroupsAI(self):
         pass #TODO
+        
     def getNumVisiblesInDNAVisGroup(self, i):
         return self.DNAVisGroups[i].getNumVisibles()
+        
     def getVisibleName(self, i, j):
         return self.DNAVisGroups[i].getVisibleName(j)
+        
     def storeCatalogCode(self, category, code):
         if not category in self.catalogCodes:
             self.catalogCodes[category] = []
         self.catalogCodes[category].append(code)
+        
     def getNumCatalogCodes(self, category):
         if not category in self.catalogCodes:
             return -1
         return len(self.catalogCodes[category])
+        
     def getCatalogCode(self, category, index):
         return self.catalogCodes[category][index]
+        
     def findTexture(self, name):
         if name in self.textures:
             return self.textures[name]
         return None
+        
     def ls(self):
         print 'DNASuitPoints:'
         for suitPoint in self.suitPoints:
@@ -282,34 +326,45 @@ class DNASuitPoint:
       'COGHQ_OUT_POINT' : 4
     }
     ivPointTypeMap = {v: k for k, v in pointTypeMap.items()}
+    
     def __init__(self, index, pointType, pos, landmarkBuildingIndex = -1):
         self.index = index
         self.pointType = pointType
         self.pos = pos
         self.graphId = 0
         self.landmarkBuildingIndex = landmarkBuildingIndex
+        
     def __str__(self):
         pointTypeStr = ''#bring it into scope
         for k, v in DNASuitPoint.pointTypeMap.items():
             if v == self.pointType:
                 pointTypeStr = k
         return 'DNASuitPoint index: ' + str(self.index) + ', pointType: ' + pointTypeStr + ', pos: ' + str(self.pos)
+        
     def getIndex(self):
         return self.index
+        
     def getGraphId(self):
         return self.graphId
+        
     def getLandmarkBuildingIndex(self):
         return self.landmarkBuildingIndex
+        
     def getPos(self):
         return self.pos
+        
     def isTerminal(self):
         return self.pointType <= 2
+        
     def setGraphId(self, id):
         self.graphId = id
+        
     def setIndex(self, index):
         self.index = index
+        
     def setLandmarkBuildingIndex(self, index):
         self.landmarkBuildingIndex = index
+        
     def setPointType(self, type):
         if isinstance(type, int):
             if type in DNASuitPoint.ivPointTypeMap:
@@ -321,6 +376,7 @@ class DNASuitPoint:
                 self.pointType = DNASuitPoint.pointTypeMap[type]
             else:
                 raise TypeError('%s is not a valid DNASuitPointType' % type)
+                
     def setPos(self, pos):
         self.pos = pos
 
@@ -329,14 +385,19 @@ class DNABattleCell:
         self.width = width
         self.height = height
         self.pos = pos
+        
     def __str__(self):
         return 'DNABattleCell width: ' + str(self.width) + ' height: ' + str(self.height) + ' pos: ' + str(self.pos)
+        
     def getWidth(self):
         return self.width
+        
     def getHeight(self):
         return self.height
+        
     def getPos(self):
         return self.pos
+        
     def setWidthHeight(width, height):
         self.width = width
         self.height = height
@@ -346,12 +407,16 @@ class DNASuitEdge:
         self.startpt = startpt
         self.endpt = endpt
         self.zoneId = zoneId
+        
     def getEndPoint(self):
         return self.endpt
+        
     def getStartPoint(self):
         return seld.startpt
+        
     def getZoneId(self):
         return self.zoneId
+        
     def setZoneId(self, zoneId):
         self.zoneId = zoneId
 
@@ -361,26 +426,36 @@ class DNAGroup:
         self.children = []
         self.parent = None
         self.visGroup = None
+        
     def add(self, child):
         self.children += [child]
+        
     def at(self, index):
         return self.children[index]
+        
     def clearParent(self):
         self.parent = None
         self.visGroup = None
+        
     def getVisGroup(self):
         return self.visGroup
+        
     def getNumChildren(self):
         return len(self.children)
+        
     def getParent(self):
         return self.parent
+        
     def remove(self, child):
         self.children.remove(child)
+        
     def setParent(self, parent):
         self.parent = parent
         self.visGroup = parent.getVisGroup()
+        
     def getName(self):
         return self.name
+        
     def traverse(self, nodePath, dnaStorage):
         node = PandaNode(self.name)
         nodePath = nodePath.attachNewNode(node, 0)
@@ -393,32 +468,46 @@ class DNAVisGroup(DNAGroup):
         self.visibles = []
         self.suitEdges = []
         self.battleCells = []
+        
     def getVisGroup(self):
         return self
+        
     def addBattleCell(self, cell):
         self.battleCells += [cell]
+        
     def addSuitEdge(self, edge):
         self.suitEdges += [edge]
+        
     def addVisible(self, visible):
         self.visibles += [visible]
+        
     def getBattleCell(self, index):
         return self.battleCells[index]
+        
     def getNumBattleCells(self):
         return len(self.battleCells)
+        
     def getNumSuitEdges(self):
         return len(self.suitEdges)
+        
     def getNumVisibles(self):
         return len(self.visibles)
+        
     def getSuitEdge(self, index):
         return self.suitEdges[index]
+        
     def getVisibleName(self, index):
         return self.visibles[index]
+        
     def removeBattleCell(self, cell):
         self.battleCells.remove(cell)
+        
     def removeSuitEdge(self, edge):
         self.suitEdges.remove(edge)
+        
     def removeVisible(self, visible):
         self.visibles.remove(visible)
+        
     def traverse(self, nodePath, dnaStorage):
         dnaStorage.storeDNAVisGroup(self)
         DNAGroup.traverse(self, nodePath, dnaStorage)
@@ -429,20 +518,27 @@ class DNAData(DNAGroup):
         self.coordSystem = 0
         self.dnaFilename = ''
         self.dnaStorage = None
+        
     def getCoordSystem(self):
         return self.coordSystem
+        
     def getDnaFilename(self):
         return self.dnaFilename
+        
     def getDnaStorage(self):
         if self.dnaStorage is None:
             self.dnaStorage = DNAStorage()
         return self.dnaStorage
+        
     def setCoordSystem(self, system):
         self.coordSystem = system
+        
     def setDnaFilename(self, filename):
         self.dnaFilename = filename
+        
     def setDnaStorage(self, storage):
         self.dnaStorage = storage
+        
     def read(self, stream):
         parser = yacc.yacc(debug=0, optimize=0)
         parser.dnaData = self
@@ -457,19 +553,26 @@ class DNANode(DNAGroup):
         self.pos = LVector3f()
         self.hpr = LVector3f()
         self.scale = LVector3f(1,1,1)
+        
     def getPos(self):
         return self.pos
+        
     def getHpr(self):
         return self.hpr
+        
     def getScale(self):
         return self.scale
+        
     def setPos(self, pos):
         self.pos = pos
+        
     def setHpr(self, hpr):
         self.hpr = hpr
         #self.hpr[0] *= -1
+        
     def setScale(self, scale):
         self.scale = scale
+        
     def traverse(self, nodePath, dnaStorage):
         node = PandaNode(self.name)
         node = nodePath.attachNewNode(node, 0)
@@ -482,14 +585,19 @@ class DNAProp(DNANode):
         DNANode.__init__(self, name)
         self.code = ''
         self.color = LVector4f(1, 1, 1, 1)
+        
     def setCode(self, code):
         self.code = code
+        
     def setColor(self, color):
         self.color = color
+        
     def getCode(self):
         return self.code
+        
     def getColor(self):
         return self.color
+        
     def traverse(self, nodePath, dnaStorage):
         if self.code == 'DCS':
             node = ModelNode(self.name)
@@ -511,14 +619,19 @@ class DNASign(DNANode):
         DNANode.__init__(self, '')
         self.code = ''
         self.color = LVector4f(1, 1, 1, 1)
+        
     def setCode(self, code):
         self.code = code
+        
     def setColor(self, color):
         self.color = color
+        
     def getCode(self):
         return self.code
+        
     def getColor(self):
         return self.color
+        
     def traverse(self, nodePath, dnaStorage):
         decNode = nodePath.find('**/sign_decal')
         if decNode.isEmpty():
@@ -555,50 +668,73 @@ class DNASignBaseline(DNANode):
         self.stomp = 0.0
         self.width = 0
         self.height = 0
+        
     def setCode(self, code):
         self.code = code
+        
     def setColor(self, color):
         self.color = color
+        
     def getCode(self):
         return self.code
+        
     def getColor(self):
         return self.color
+        
     def getFont(self):
         return self.font
+        
     def getHeight(self):
         return self.height
+        
     def getIndent(self):
         return self.indent
+        
     def getKern(self):
         return self.kern
+        
     def getStomp(self):
         return self.stomp
+        
     def getStumble(self):
         return self.stumble
+        
     def getWidth(self):
         return self.width
+        
     def getWiggle(self):
         return self.wiggle
+        
     def setFont(self, font):
         self.font = font
+        
     def setHeight(self, height):
         self.height = height
+        
     def setIndent(self, indent):
         self.indent = indent
+        
     def setKern(self, kern):
         self.kern = kern
+        
     def setStomp(self, stomp):
         self.stomp = stomp
+        
     def setStumble(self, stumble):
         self.stumble = stumble
+        
     def setWidth(self, width):
         self.width = width
+        
     def setWiggle(self, wiggle):
         self.wiggle = wiggle
+        
     def setFlags(self, flags):
         self.flags = flags
+        
     def getFlags(self):
         return self.flags
+        
     def traverse(self, nodePath, dnaStorage):
         nodePath = nodePath.attachNewNode('baseline', 0)
         nodePath.setPos(self.pos)
@@ -621,8 +757,10 @@ class DNASignText(DNANode):
     def __init__(self):
         DNANode.__init__(self, '')
         self.letters = ''
+        
     def setLetters(self, letters):
         self.letters = letters
+        
     def traverse(self, nodePath, dnaStorage):
         return
 
@@ -630,12 +768,16 @@ class DNAFlatBuilding(DNANode): #TODO: finish me
     currentWallHeight = 0 #In the asm this is a global, we can refactor it later
     def __init__(self, name):
         DNANode.__init__(self, name)
+        
     def getWidth(self):
         return self.width
+        
     def setWidth(self, width):
         self.width = width
+        
     def getCurrentWallHeight(self): #this is never used in the asm, only exported. probably optimized out?
         return DNAFlatBuilding.currentWallHeight
+        
     def traverse(self, nodePath, dnaStorage):
         DNAFlatBuilding.currentWallHeight = 0
         node = nodePath.attachNewNode(self.getName())
@@ -693,18 +835,25 @@ class DNAWall(DNANode):
         self.code = ''
         self.height = 10
         self.color = LVector4f(1, 1, 1, 1)
+        
     def getCode(self):
         return self.code
+        
     def getColor(self):
         return self.color
+        
     def getHeight(self):
         return self.height
+        
     def setCode(self, code):
         self.code = code
+        
     def setColor(self, color):
         self.color = color
+        
     def setHeight(self, height):
         self.height = height
+        
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
@@ -721,82 +870,139 @@ class DNAWall(DNANode):
 class DNAWindows(DNAGroup):
     def __init__(self, name):
         DNAGroup.__init__(self, name)
-        self.code = ''
-        self.color = LVector4f(1, 1, 1, 1)
-        self.windowCount = 1
+        self.setCode('')
+        self.setColor(LVector4f(1, 1, 1, 1))
+        self.setWindowCount(1)
+
     def getCode(self):
         return self.code
+
     def getColor(self):
         return self.color
+
     def getWindowCount(self):
         return self.windowCount
+
     def setCode(self, code):
         self.code = code
+
     def setColor(self, color):
         self.color = color
+
     def setWindowCount(self, count):
         self.windowCount = count
+
+    @staticmethod
+    def setupWindows(parentNode, dnaStorage, code, windowCount, color, hpr,
+                     scale):
+        stripped = code[:-1]
+        node_r = dnaStorage.findNode(stripped + 'r')
+        node_l = dnaStorage.findNode(stripped + 'l')
+        if (node_r is None) or (node_l is None):
+            raise DNAError('DNAWindows code {0} not found in'
+                           'DNAStorage'.format(code))
+
+        def makeWindow(x, y, z, parentNode, color, scale, hpr, flip=False):
+            node = node_r if not flip else node_l
+            window = node.copyTo(parentNode, 0)
+            window.setColor(color)
+            window.setScale(NodePath(), scale)
+            window.setHpr(hpr)
+            window.setPos(x, 0, z)
+            return window
+
+        offset = lambda: random.random() % 0.0375
+        if windowCount == 1:
+            makeWindow(offset() + 0.5, 0, offset() + 0.5,
+                       parentNode, color, scale, hpr)
+        elif windowCount == 2:
+            makeWindow(offset() + 0.33, 0, offset() + 0.5,
+                       parentNode, color, scale, hpr)
+            makeWindow(offset() + 0.66, 0, offset() + 0.5,
+                       parentNode, color, scale, hpr, True)
+        elif windowCount == 3:
+            makeWindow(offset() + 0.33, 0, offset() + 0.66,
+                       parentNode, color, scale, hpr)
+            makeWindow(offset() + 0.66, 0, offset() + 0.66,
+                       parentNode, color, scale, hpr, True)
+            makeWindow(offset() + 0.5, 0, offset() + 0.33,
+                       parentNode, color, scale, hpr)
+        elif windowCount == 4:
+            makeWindow(offset() + 0.33, 0, offset() + 0.25,
+                       parentNode, color, scale, hpr)
+            makeWindow(offset() + 0.66, 0, offset() + 0.25,
+                       parentNode, color, scale, hpr, True)
+            makeWindow(offset() + 0.33, 0, offset() + 0.66,
+                       parentNode, color, scale, hpr)
+            makeWindow(offset() + 0.66, 0, offset() + 0.66,
+                       parentNode, color, scale, hpr, True)
+        else:
+            raise NotImplementedError(
+                'Invalid window count {0}'.format(windowCount))
+                
     def traverse(self, nodePath, dnaStorage):
-        if self.windowCount != 0:
-            #Do some crazy shit with the parent's scale here
-            parentX = nodePath.getScale().getX()
-            scale = random.randint(0, 0x7fff)
-            scale *= 0.000030517578125
-            scale *= 0.02500000037252903
-            scale -= 0.0125
-            if parentX <= 5.0:
-                scale += 1.0
-            elif parentX <= 10.0:
-                scale += 1.15
-            else:
-                scale -= 0.0125
-            self.windowCount = 1 #TODO: removeme
-            if self.windowCount == 1:
-                node = dnaStorage.findNode(self.code)
-                if not node is None:
-                    node = node.copyTo(nodePath, 0)
-                    node.setColor(self.color)
-                    node.setScale(NodePath(), scale)
-                    float = random.randint(0, 0x7fff)
-                    float *= 0.000030517578125
-                    float *= 0.02500000037252903
-                    float -= 0.0125
-                    float += 0.5
-                    float2 = random.randint(0, 0x7fff)
-                    float2 *= 0.000030517578125
-                    float2 *= 0.02500000037252903
-                    float2 -= 0.0125
-                    float2 += 0.5
-                    node.setPos(float2, 0, float)
-                    node.setHpr(0, 0, 0)
-                else:
-                    raise KeyError('DNAWindows code ' + self.code + ' not found in DNAStorage')#Should this be a keyerror or something else?
-            else:
-                raise NotImplementedError('Only one window per DNAWindows at this time')
+        if self.getWindowCount() == 0:
+            return
+        parentX = nodePath.getParent().getScale().getX()
+        scale = random.random() % 0.0375
+        if parentX <= 5.0:
+            scale += 1.0
+        elif parentX <= 10.0:
+            scale += 1.15
+        else:
+            scale += 1.3
+        hpr = (0, 0, 0)
+        DNAWindows.setupWindows(nodePath, dnaStorage, self.getCode(),
+                                self.getWindowCount(), self.getColor(), hpr,
+                                scale)
+
 
 class DNACornice(DNAGroup):
     def __init__(self, name):
         DNAGroup.__init__(self, name)
-        self.code = ''
-        self.color = LVector4f(1,1,1,1)
+        self.setCode('')
+        self.setColor(LVector4f(1, 1, 1, 1))
+
     def setCode(self, code):
         self.code = code
+
     def setColor(self, color):
         self.color = color
+
     def getCode(self):
         return self.code
+
     def getColor(self):
         return self.color
+
     def traverse(self, nodePath, dnaStorage):
+        pParentXScale = nodePath.getParent().getScale().getX()
         parentZScale = nodePath.getScale().getZ()
-        pparentXScale = nodePath.getParent().getScale().getX()
-        node = dnaStorage.findNode(self.code)
+        node = dnaStorage.findNode(self.getCode())
         if node is None:
-            raise KeyError('DNACornice code ' + self.code + ' not found in DNAStorage')#Should this be a keyerror or something else?
+            raise DNAError('DNACornice code {0} not found in '
+                           'DNAStorage'.format(self.getCode()))
+        nodePathA = nodePath.attachNewNode('cornice-internal', 0)
         node = node.find('**/*_d')
-        nodePath = node.copyTo(nodePath, 0)
-        nodePath.setPosHprScale(LVector3f(0,0,0), LVector3f(0,0,0), LVector3f(1, pparentXScale/parentZScale, pparentXScale/parentZScale))
-        nodePath.setColor(self.color)
+        np = node.copyTo(nodePathA, 0)
+        np.setPosHprScale(
+            LVector3f(0, 0, 0),
+            LVector3f(0, 0, 0),
+            LVector3f(1, pParentXScale/parentZScale,
+                      pParentXScale/parentZScale))
+        np.setEffect(DecalEffect.make())
+        node = node.getParent().find('**/*_nd')
+        np = node.copyTo(nodePathA, 1)
+        np.setPosHprScale(
+            LVector3f(0, 0, 0),
+            LVector3f(0, 0, 0),
+            LVector3f(1, pParentXScale/parentZScale,
+                      pParentXScale/parentZScale))
+        nodePathA.setPosHprScale(
+            LVector3f(0, 0, node.getScale().getZ()),
+            LVector3f(0, 0, 0),
+            LVector3f(1, 1, 1))
+        nodePathA.setColor(self.getColor())
 
 class DNALandmarkBuilding(DNANode):
     def __init__(self, name):
@@ -807,26 +1013,37 @@ class DNALandmarkBuilding(DNANode):
         self.article = ''
         self.buildingType = ''
         self.door = None
+        
     def getArticle(self):
         return self.article
+        
     def getBuildingType(self):
         return self.buildingType
+        
     def getTitle(self):
         return self.title
+        
     def setCode(self, code):
         self.code = code
+        
     def setWallColor(self, color):
         self.wallColor = color
+        
     def getCode(self):
         return self.code
+        
     def getWallColor(self):
         return self.wallColor
+        
     def setArticle(self, article):
         self.article = article
+        
     def setBuildingType(self, buildingType):
         self.buildingType = buildingType
+        
     def setTitle(self, title):
         self.title = title
+        
     def setupSuitBuildingOrigin(self, nodePathA, nodePathB):
         if self.getName()[0:2] == 'tb' and self.getName()[3].isdigit() and self.getName().find(':') != -1:
             name = self.getName()
@@ -839,6 +1056,7 @@ class DNALandmarkBuilding(DNANode):
             else:
                 node.wrtReparentTo(nodePathA, 0)
                 node.setName(name)
+                
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
@@ -860,14 +1078,19 @@ class DNADoor(DNAGroup):
         DNAGroup.__init__(self, name)
         self.code = ''
         self.color = LVector4f(1,1,1,1)
+        
     def setCode(self, code):
         self.code = code
+        
     def setColor(self, color):
         self.color = color
+        
     def getCode(self):
         return self.code
+        
     def getColor(self):
         return self.color
+        
     @staticmethod
     def setupDoor(doorNodePath, parentNode, doorOrigin, dnaStore, block, color):
         doorNodePath.setPosHprScale(doorOrigin, (0,0,0), (0,0,0), (1,1,1))
@@ -900,6 +1123,7 @@ class DNADoor(DNAGroup):
         store = NodePath('door-%s' % block)
         store.setPosHprScale(doorNodePath, (0,0,0), (0,0,0), (1,1,1))
         dnaStore.storeBlockDoor(block, store)
+        
     def traverse(self, nodePath, dnaStorage):
         frontNode = nodePath.find('**/*_front')
         if not frontNode.getNode(0).isGeomNode():
@@ -924,34 +1148,49 @@ class DNAStreet(DNANode):
         self.curbColor = LVector4f(1,1,1,1)
         self.setTexCnt = 0
         self.setColCnt = 0
+        
     def setCode(self, code):
         self.code = code
+        
     def getCode(self):
         return self.code
+        
     def getStreetTexture(self):
         return self.streetTexture
+        
     def getSidewalkTexture(self):
         return self.sidewalkTexture
+        
     def getCurbTexture(self):
         return self.curbTexture
+        
     def getStreetColor(self):
         return self.streetColor
+        
     def getSidewalkColor(self):
         return self.sidewalkColor
+        
     def getCurbColor(self):
         return self.curbColor
+        
     def setStreetTexture(self, texture):
         self.streetTexture = texture
+        
     def setSidewalkTexture(self, texture):
         self.sidewalkTexture = texture
+        
     def setCurbTexture(self, texture):
         self.curbTexture = texture
+        
     def setStreetColor(self, color):
         self.streetColor = color
+        
     def setSidewalkColor(self, color):
         self.SidewalkColor = color
+        
     def setTextureColor(self, color):
         self.Color = color
+        
     def setTexture(self, texture):
         if self.setTexCnt == 0:
             self.streetTexture = texture
@@ -960,6 +1199,7 @@ class DNAStreet(DNANode):
         if self.setTexCnt == 2:
             self.curbTexture = texture
         self.setTexCnt += 1
+        
     def setColor(self, color):
         if self.setColCnt == 0:
             self.streetColor = color
@@ -968,6 +1208,7 @@ class DNAStreet(DNANode):
         if self.setColCnt == 2:
             self.curbColor = color
         self.setColCnt += 1
+        
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
@@ -1007,23 +1248,32 @@ class DNASignGraphic(DNANode):
         self.width = 0
         self.height = 0
         self.bDefaultColor = True
+        
     def getWidth(self):
         return self.width
+        
     def getHeight(self):
         return self.height
+        
     def getCode(self):
         return self.code
+        
     def getColor(self):
         return self.Color
+        
     def setWidth(self, width):
         self.width = width
+        
     def setHeight(self, height):
         self.height = height
+        
     def setCode(self, code):
         self.code = code
+        
     def setColor(self, color):
         self.color = color
         self.bDefaultColor = False
+        
     def traverse(self, nodePath, dnaStorage):
         nodePath.getTop().getNode(0).setEffect(DecalEffect.make())
         node = dnaStorage.findNode(self.code)
@@ -1049,10 +1299,13 @@ class DNAAnimProp(DNAProp):
     def __init__(self, name):
         DNAProp.__init__(self, name)
         self.animName = ''
+        
     def setAnim(self, anim):
         self.animName = anim
+        
     def getAnim(self):
         return self.animName
+        
     def traverse(self, nodePath, dnaStorage):
         node = None
         if self.getCode() == "DCS":
@@ -1074,10 +1327,13 @@ class DNAInteractiveProp(DNAAnimProp):
     def __init__(self, name):
         DNAAnimProp.__init__(self, name)
         self.cellId = -1
+        
     def setCellId(self, id):
         self.cellId = id
+        
     def getCellId(self):
         return cellId
+        
     def traverse(self, nodePath, dnaStorage):
         node = None
         if self.getCode() == "DCS":
@@ -1099,10 +1355,13 @@ class DNAAnimBuilding(DNALandmarkBuilding):
     def __init__(self, name):
         DNALandmarkBuilding.__init__(self, name)
         self.animName = ''
+        
     def setAnim(self, anim):
         self.animName = anim
+        
     def getAnim(self):
         return self.animName
+        
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.getCode())
         if node is None:
@@ -1122,12 +1381,14 @@ class DNALoader:
         node = PandaNode('dna')
         self.nodePath = NodePath(node)
         self.data = DNAData("loader_data")
+        
     def buildGraph(self):
         '''Traverses the DNAGroup tree and builds a NodePath'''
         self.data.traverse(self.nodePath, self.data.getDnaStorage())
         if self.nodePath.getChild(0).getNumChildren() == 0:
             return None
         return self.nodePath.getChild(0).getChild(0)
+        
     def getData(self):
         return self.data    
 
