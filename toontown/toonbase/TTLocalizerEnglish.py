@@ -5143,13 +5143,12 @@ BattleGlobalLureAccMedium = 'Medium'
 AttackMissed = 'MISSED'
 NPCCallButtonLabel = 'CALL'
 LoaderLabel = 'Loading...'
-StarringIn = 'Starring In...'
-HeadingToHood = '%(hood)s'
-HeadingToYourEstate = 'The Estate'
-HeadingToEstate = "%s's Estate"
-HeadingToFriend = "%s's Friend's Estate"
-HeadingToPlayground = 'The Playground'
-HeadingToStreet = '%(street)s'
+HeadingToHood = 'Heading %(to)s %(hood)s...'
+HeadingToYourEstate = 'Heading to your estate...'
+HeadingToEstate = "Heading to %s's estate..."
+HeadingToFriend = "Heading to %s's friend's estate..."
+HeadingToPlayground = 'Heading to the Playground...'
+HeadingToStreet = 'Heading %(to)s %(street)s...'
 TownBattleRun = 'Run all the way back to the playground?'
 TownBattleChooseAvatarToonTitle = 'WHICH TOON?'
 TownBattleChooseAvatarCogTitle = 'WHICH ' + Cog.upper() + '?'
@@ -7659,8 +7658,7 @@ NPCToonNames = {20000: 'Tutorial Tom',
 91913: 'Shockley', # 9/19/13 = Closing of Toontown, just a random number to start with so we don't take up other IDs
 91914: 'Sir Max',  # Feel free to add other TTR members in as needed.
 91915: 'McQuack',
-91916: 'Hawkheart',
-91917: 'Magic Cat'}
+91916: 'Hawkheart'}
 zone2TitleDict = {2513: ('Toon Hall', ''),
  2514: ('Toontown Bank', ''),
  2516: ('Toontown School House', ''),
@@ -8317,7 +8315,7 @@ FireworksNewYearsEveEnding =  'Flippy: Hope you enjoyed the show. Don\'t forget 
 FireworksComboBeginning = 'Flippy: Hiya, Toons! Get ready to see some fireworks to celebrate this last week of the election!'
 FireworksComboEnding = 'Flippy: Hope you enjoyed the show. Don\'t forget to stop by Toontown Central for some pies!'
 BlockerTitle = 'LOADING TOONTOWN...'
-BlockerLoadingTexts = ['Rewriting history',
+BlockerLoadingTexts = ['Scrubbing pie tins',
  'Baking pie crusts',
  'Heating pie filling',
  'Loading Doodle chow',
