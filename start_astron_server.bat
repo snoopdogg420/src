@@ -1,4 +1,4 @@
 @echo off
 cd config
-astrond astrond-dev.yml
+astrond --loglevel info astrond-dev.yml
 pause

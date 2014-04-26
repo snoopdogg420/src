@@ -63,7 +63,7 @@ roles:
         max: 1009999999
 
     - type: stateserver
-      control: 10000
+      control: 4002
 
     - type: database
       control: 4003

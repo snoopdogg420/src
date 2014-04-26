@@ -8,11 +8,14 @@ class ToontownUberRepository(ToontownInternalRepository):
     def __init__(self, baseChannel, serverId):
         ToontownInternalRepository.__init__(self, baseChannel, serverId, dcSuffix='UD')
 
+        self.notify.setInfo(True)
+
     def handleConnected(self):
         rootObj = DistributedDirectoryAI(self)
         rootObj.generateWithRequiredAndId(self.getGameDoId(), 0, 0)
 
         self.createGlobals()
+        self.notify.info('Done.')
 
     def createGlobals(self):
         """
