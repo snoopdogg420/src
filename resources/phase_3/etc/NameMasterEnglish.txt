@@ -222,6 +222,7 @@
 210*5*Skids
 211*5*Skimpy
 212*5*Soupy
+213*5*Slappy
 214*5*Slippy
 215*5*Slumpy
 216*5*Smirky

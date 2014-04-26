@@ -3,6 +3,7 @@
 set /P ttrUsername="Username (DEFAULT: username): " || ^
 set ttrUsername=username
 set ttrPassword=password
+set TTR_PLAYCOOKIE=%ttrUsername%
 set /P TTR_GAMESERVER="Client Agent IP (DEFAULT: 198.100.156.180): " || ^
 set TTR_GAMESERVER=198.100.156.180
 

@@ -3,6 +3,7 @@
 set /P ttrUsername="Username (DEFAULT: username): " || ^
 set ttrUsername=username
 set ttrPassword=password
+set TTR_PLAYCOOKIE=%ttrUsername%
 set TTR_GAMESERVER=127.0.0.1
 
 rem Read the contents of PPYTHON_PATH into %PPYTHON_PATH%:
