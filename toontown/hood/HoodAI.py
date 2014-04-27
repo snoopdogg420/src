@@ -19,7 +19,7 @@ class HoodAI:
 
     HOOD = None
 
-    def __init__(self, air, streets=True):
+    def __init__(self, air, streets=False):
         self.air = air
         
         self.spawnNpcsIn = [2000]
