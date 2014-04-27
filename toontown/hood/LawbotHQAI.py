@@ -8,6 +8,7 @@ from toontown.building import DistributedCJElevatorAI
 from toontown.suit import DistributedLawbotBossAI
 from toontown.building import FADoorCodes
 from toontown.building import DistributedBoardingPartyAI
+from toontown.building import DistributedDoorAI
 
 class LawbotHQAI(HoodAI):
     HOOD = ToontownGlobals.LawbotHQ
@@ -24,11 +25,12 @@ class LawbotHQAI(HoodAI):
             self.boardingParty.generateWithRequired(ToontownGlobals.LawbotLobby)
 
         destinationZone = ToontownGlobals.LawbotLobby
-        extDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=1, lockValue=FADoorCodes.CB_DISGUISE_INCOMPLETE)
+        extDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=1, lockValue=FADoorCodes.LB_DISGUISE_INCOMPLETE)
         extDoorList = [extDoor0]
         intDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.INT_COGHQ, ToontownGlobals.LawbotHQ, doorIndex=0)
         intDoor0.setOtherDoor(extDoor0)
         intDoor0.zoneId = ToontownGlobals.LawbotLobby
+        
         for extDoor in extDoorList:
             extDoor.setOtherDoor(intDoor0)
             extDoor.zoneId = ToontownGlobals.LawbotHQ
@@ -38,3 +40,17 @@ class LawbotHQAI(HoodAI):
         intDoor0.generateWithRequired(ToontownGlobals.LawbotLobby)
         intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
         
+        #DA Offices
+        
+        extDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, doorIndex=0)
+        intDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 1, DoorTypes.INT_COGHQ, doorIndex=0)
+        intDoor0.setOtherDoor(extDoor0)
+        intDoor0.zoneId = ToontownGlobals.LawbotOfficeExt
+        
+        extDoor.setOtherDoor(intDoor0)
+        extDoor.zoneId = ToontownGlobals.LawbotHQ
+        extDoor.generateWithRequired(ToontownGlobals.LawbotHQ)
+        extDoor.sendUpdate('setDoorIndex', [extDoor.getDoorIndex()])
+
+        intDoor0.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
+        intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
