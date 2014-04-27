@@ -4455,7 +4455,17 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.b_setCheesyEffect(random.choice(AprilToonsGlobals.RandomCheesyList), 0, 0)
         task.delayTime = random.randint(AprilToonsGlobals.RandomCheesyMinTime, AprilToonsGlobals.RandomCheesyMaxTime)
         return task.again
-
+        
+    @magicWord(category=CATEGORY_CHARACTERSTATS)
+    def clearInv():
+        """Clear Inventory"""
+        newInventory1 = InventoryBase.InventoryBase('inv')
+        inventory1 = newInventory1
+        inventory1.zeroInv()
+        spellbook.getTarget().d_setInventory(inventory1.makeNetString())
+        return "Cleared the inventory of %s" % (spellbook.getTarget().doId)
+        
+        
     def applyAlphaModifications(self):
         # Apply all of the temporary changes that we want the alpha testers to
         # have:
@@ -5149,3 +5159,4 @@ def locate(avIdShort=0, returnType=''):
     if interior:
         return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
     return "%s has been located %s %s." % (av.getName(), where[1], where[2])
+    
