@@ -4,10 +4,7 @@ from otp.speedchat import SCMenuHolder
 from otp.speedchat.SCStaticTextTerminal import SCStaticTextTerminal
 from otp.otpbase import OTPLocalizer
 from toontown.toonbase import ToontownGlobals
-holidayId2menuInfo = {ToontownGlobals.ELECTION_PROMOTION: (OTPLocalizer.SCMenuElection, [10000,
-                                       10001,
-                                       10006,
-                                       10007])}
+holidayId2menuInfo = {}
 
 class TTSCPromotionalMenu(SCMenu):
     notify = DirectNotifyGlobal.directNotify.newCategory('TTSCPromotionalMenu')
