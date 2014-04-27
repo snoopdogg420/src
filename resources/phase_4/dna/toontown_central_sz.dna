@@ -791,11 +791,6 @@ group "toontownCentral" [
      ]
     ]
    ]
-	 prop "tunnelBlocker" [
-	  code [ "prop_construction_sign" ]
-	  pos [ 105 0.5 4.7 ]
-	  hpr [ 270 0 0 ]
-	 ]    
    landmark_building "sz13:toon_landmark_TT_toonhall_DNARoot" [
     code [ "toon_landmark_TT_toonhall" ]
     title [ "Toon Hall" ]

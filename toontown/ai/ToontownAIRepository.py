@@ -15,7 +15,7 @@ from toontown.toonbase import ToontownGlobals
 from direct.distributed.PyDatagram import *
 from otp.ai.AIZoneData import *
 from toontown.dna.DNAParser import loadDNAFileAI
-from toontown.coghq import MintManagerAI, FactoryManagerAI, LawbotOfficeManagerAI, CountryClubManagerAI
+from toontown.coghq import MintManagerAI, FactoryManagerAI, LawOfficeManagerAI, CountryClubManagerAI
 from toontown.pets import PetManagerAI
 
 #friends!
@@ -58,14 +58,14 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.doLiveUpdates = False
 
         self.holidayManager = HolidayManagerAI()
-        
+
         self.fishManager = FishManagerAI()
-        
+
         self.petMgr = PetManagerAI.PetManagerAI(self)
-        
+
         self.mintMgr = MintManagerAI.MintManagerAI(self)
         self.factoryMgr = FactoryManagerAI.FactoryManagerAI(self)
-        self.officeMgr = LawbotOfficeManagerAI.LawbotOfficeManagerAI(self)
+        self.lawOfficeMgr = LawOfficeManagerAI.LawOfficeManagerAI(self)
         self.countryClubMgr = CountryClubManagerAI.CountryClubManagerAI(self)
 
     def getTrackClsends(self):

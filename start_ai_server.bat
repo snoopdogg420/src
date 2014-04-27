@@ -29,5 +29,4 @@ echo ===============================
                --astron-ip %ASTRON_IP% --eventlogger-ip %EVENT_LOGGER_IP% ^
                --district-name "%DISTRICT_NAME%"
 
-rem We don't want to be left without an AI server when we crash:
 goto main
