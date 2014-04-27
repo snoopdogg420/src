@@ -4,8 +4,8 @@ set MAX_CHANNELS=999999
 set STATE_SERVER=4002
 set ASTRON_IP=127.0.0.1:7199
 set EVENT_LOGGER_IP=127.0.0.1:7197
-set /P DISTRICT_NAME="District Name (DEFAULT: Nutty River): " || ^
-set DISTRICT_NAME=Nutty River
+set /P DISTRICT_NAME="District Name (DEFAULT: Retroville): " || ^
+set DISTRICT_NAME=Retroville
 set /P BASE_CHANNEL="Base Channel (DEFAULT: 401000000): " || ^
 set BASE_CHANNEL=401000000
 
