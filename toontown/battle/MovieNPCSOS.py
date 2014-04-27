@@ -137,8 +137,10 @@ def teleportOut(attack, npc):
     d = Func(npc.removeActive)
     e = Func(npc.detachNode)
     f = Func(npc.delete)
-    g = Wait(3)
-    return Sequence(a, b, g, c, d, e, f, g)
+    seq = Sequence(a, b, g, c, d, e, f)
+    if npc.getName() == 'Trap Cat':
+        seq.append(Wait(3))
+    return seq
 
 
 def __getPartTrack(particleEffect, startDelay, durationDelay, partExtraArgs):
