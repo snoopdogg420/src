@@ -1951,3 +1951,8 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
 
     def _stopZombieCheck(self):
         pass
+
+    # TODO: Add pets
+    
+    def hasPet(self):
+        return False
