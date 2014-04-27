@@ -6,6 +6,8 @@ from toontown.building import DoorTypes
 from toontown.coghq import LobbyManagerAI
 from toontown.building import DistributedCJElevatorAI
 from toontown.suit import DistributedLawbotBossAI
+from toontown.coghq import DistributedLawOfficeElevatorExtAI
+from toontown.coghq import DistributedLawOfficeAI
 from toontown.building import FADoorCodes
 from toontown.building import DistributedBoardingPartyAI
 from toontown.building import DistributedDoorAI
@@ -40,8 +42,19 @@ class LawbotHQAI(HoodAI):
         intDoor0.generateWithRequired(ToontownGlobals.LawbotLobby)
         intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
         
-        #DA Offices
+        #DA Office elevator
+        officeTypes = [
+            ToontownGlobals.LawbotStageIntA,
+            ToontownGlobals.LawbotStageIntB,
+            ToontownGlobals.LawbotStageIntC,
+            ToontownGlobals.LawbotStageIntD
+            ]
+        mins = ToontownGlobals.FactoryLaffMinimums[2]
+        #for index, officeType in enumerate(officeTypes):
+        #    elevator = DistributedLawOfficeElevatorExtAI.DistributedLawOfficeElevatorExtAI(self.air, """wtf goes here??""", officeType, antiShuffle=0, minLaff=mins[index])
+        #    elevator.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
         
+        #DA Office waiting area
         extDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, doorIndex=0)
         intDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 1, DoorTypes.INT_COGHQ, doorIndex=0)
         intDoor0.setOtherDoor(extDoor0)
