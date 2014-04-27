@@ -44,7 +44,6 @@ class ShtikerBook(DirectFrame, StateData.StateData):
          TTLocalizer.NPCFriendPageTitle,
          TTLocalizer.GardenPageTitle,
          TTLocalizer.GolfPageTitle,
-         TTLocalizer.PhotoPageTitle,
          TTLocalizer.EventsPageName,
          TTLocalizer.NewsPageName]
         return

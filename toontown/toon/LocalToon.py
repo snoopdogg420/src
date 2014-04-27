@@ -31,7 +31,6 @@ from toontown.shtiker import GardenPage
 from toontown.shtiker import GolfPage
 from toontown.shtiker import SuitPage
 from toontown.shtiker import DisguisePage
-from toontown.shtiker import PhotoAlbumPage
 from toontown.shtiker import FishPage
 from toontown.shtiker import NPCFriendPage
 from toontown.shtiker import EventsPage
@@ -373,9 +372,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         if self.gardenStarted:
             self.loadGardenPages()
         self.addGolfPage()
-        self.photoPage = PhotoAlbumPage.PhotoAlbumPage()
-        self.photoPage.load()
-        self.book.addPage(self.photoPage, pageName=TTLocalizer.PhotoPageTitle)
         self.addEventsPage()
         if WantNewsPage:
             self.addNewsPage()
