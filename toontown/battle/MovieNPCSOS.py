@@ -90,7 +90,7 @@ def __getSoundTrack(level, delay, duration = None, node = None):
 def teleportIn(attack, npc, pos = Point3(0, 0, 0), hpr = Vec3(180.0, 0.0, 0.0)):
     if npc.getName() == 'Magic Cat':
         LaughingManGlobals.addToonEffect(npc)
-        npc.setName('')
+        npc.nametag3d.hide()
     a = Func(npc.reparentTo, attack['battle'])
     b = Func(npc.setPos, pos)
     c = Func(npc.setHpr, hpr)
@@ -100,22 +100,21 @@ def teleportIn(attack, npc, pos = Point3(0, 0, 0), hpr = Vec3(180.0, 0.0, 0.0)):
     if npc.getName() == 'Trap Cat':
         f = Func(npc.setChatAbsolute, 'We are team trap! Fear me %s' % attack['toon'].getName() + ' for I am the Notorious T-Cat', CFSpeech | CFTimeout)
     else:
-		f = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGreeting % attack['toon'].getName(), CFSpeech | CFTimeout)
+        f = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGreeting % attack['toon'].getName(), CFSpeech | CFTimeout)
     if npc.getName() == 'Trap Cat':
         g = ActorInterval(npc, 'angry')
     else:
         g = ActorInterval(npc, 'wave')
     h = Func(npc.loop, 'neutral')
-    i = Func(npc.clearChat)
-    j = Wait(3)
-    seq = Sequence(a, b, c, d, e, ee, f, g, h, j, i)
+    seq = Sequence(a, b, c, d, e, ee, f, g, h)
+    if npc.getName() == 'Trap Cat':
+        seq.append(Wait(3))
+    seq.append(Func(npc.clearChat))
     if npc.getName() == 'Magic Cat':
-        seq2 = Sequence()
-        seq2.append(Wait(seq.getDuration()))
-        seq2.append(Func(npc.setChatAbsolute, "I've got this, so start dancing!", CFSpeech | CFTimeout))
-        seq2.append(ActorInterval(attack['toon'], 'victory'))
-        seq2.append(ActorInterval(attack['toon'], 'neutral'))
-        seq2.start()
+        magicCatTrack = Sequence()
+        magicCatTrack.append(Func(npc.setChatAbsolute, "I've got this, so start dancing!", CFSpeech | CFTimeout))
+        magicCatTrack.append(Func(attack['toon'].loop, 'victory'))
+        seq.append(magicCatTrack)
     return seq
 
 
