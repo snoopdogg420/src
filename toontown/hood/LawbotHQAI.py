@@ -47,10 +47,10 @@ class LawbotHQAI(HoodAI):
         intDoor0.setOtherDoor(extDoor0)
         intDoor0.zoneId = ToontownGlobals.LawbotOfficeExt
         
-        extDoor.setOtherDoor(intDoor0)
-        extDoor.zoneId = ToontownGlobals.LawbotHQ
-        extDoor.generateWithRequired(ToontownGlobals.LawbotHQ)
-        extDoor.sendUpdate('setDoorIndex', [extDoor.getDoorIndex()])
+        extDoor0.setOtherDoor(intDoor0)
+        extDoor0.zoneId = ToontownGlobals.LawbotHQ
+        extDoor0.generateWithRequired(ToontownGlobals.LawbotHQ)
+        extDoor0.sendUpdate('setDoorIndex', [extDoor0.getDoorIndex()])
 
         intDoor0.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
         intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
