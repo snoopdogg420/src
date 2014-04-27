@@ -3,6 +3,7 @@ from DNAParser import DNAVisGroup, DNALandmarkBuilding, DNAStorage, DNAFlatDoor
 
 # For buildings/interiors.
 from toontown.building.DistributedToonInteriorAI import DistributedToonInteriorAI
+from toontown.building.DistributedToonHallInteriorAI import DistributedToonHallInteriorAI
 from toontown.building.DistributedDoorAI import DistributedDoorAI
 from toontown.building.DistributedHQInteriorAI import DistributedHQInteriorAI
 from toontown.building.DistributedPetshopInteriorAI import DistributedPetshopInteriorAI
@@ -119,6 +120,8 @@ class DNASpawnerAI:
                     hqInterior = DistributedHQInteriorAI(simbase.air)
                     hqInterior.setZoneIdAndBlock(interiorZone, 0)
                     hqInterior.generateWithRequired(interiorZone)
+					
+                    NPCToons.createNpcsInZone(simbase.air, interiorZone)
                 elif type == 'kartshop':
                     ksInterior = DistributedKartShopInteriorAI(simbase.air)
                     ksInterior.setZoneIdAndBlock(interiorZone, 0)
@@ -183,7 +186,23 @@ class DNASpawnerAI:
                     NPCToons.createNpcsInZone(simbase.air, interiorZone)
                 else:
                     if group.getName() == 'sz13:toon_landmark_TT_toonhall_DNARoot':
-                        pass # We don't want Toon Hall just yet.
+                        interior = DistributedToonHallInteriorAI(simbase.air)
+                        interior.setZoneIdAndBlock(interiorZone, 0)
+                        interior.setState('toon')
+			interior.generateWithRequired(interiorZone)
+						
+			extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD)
+			extDoor.zoneId = buildingZone
+			extDoor.generateWithRequired(buildingZone)
+			
+			intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
+			intDoor.zoneId = interiorZone
+			intDoor.setOtherDoor(extDoor)
+			intDoor.generateWithRequired(interiorZone)
+			
+			extDoor.setOtherDoor(intDoor)
+			
+			NPCToons.createNpcsInZone(simbase.air, interiorZone)
                     else:
                         interior = DistributedToonInteriorAI(simbase.air)
                         interior.setZoneIdAndBlock(interiorZone, 0)
