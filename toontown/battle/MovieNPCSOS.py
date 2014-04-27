@@ -130,16 +130,16 @@ def teleportOut(attack, npc):
         b = Func(npc.setChatAbsolute, 'Drat, my hacks failed... Oh well, I will just disconnect you all!', CFSpeech | CFTimeout)
     else:
         b = Func(npc.setChatAbsolute, TTLocalizer.MovieNPCSOSGoodbye, CFSpeech | CFTimeout)
-    if not npc.getName() == 'Trap Cat':
-        c = npc.getTeleportOutTrack()
+    if npc.getName() == 'Trap Cat':
+        c = Func(npc.loop, 'neutral')
     else:
-        c = ActorInterval(npc, 'neutral')
-    d = Func(npc.removeActive)
-    e = Func(npc.detachNode)
-    f = Func(npc.delete)
-    seq = Sequence(a, b, g, c, d, e, f)
+        c = npc.getTeleportOutTrack()
+    seq = Sequence(a, b, c)
     if npc.getName() == 'Trap Cat':
         seq.append(Wait(3))
+    seq.append(Func(npc.removeActive))
+    seq.append(Func(npc.detachNode))
+    seq.append(Func(npc.delete))
     return seq
 
 
