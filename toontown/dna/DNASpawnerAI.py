@@ -275,7 +275,12 @@ class DNASpawnerAI:
                     golfKart.setPosHpr(x, y, z, h, p, r)
                     golfKart.setGolfCourse(course)
                     golfKart.setGolfZone(difficulty)
-                    golfKart.setColor(150, 50, 200)
+                    if difficulty == 2:
+                        golfKart.setColor(255, 0, 0)
+                    elif difficulty == 1:
+                        golfKart.setColor(255, 255, 0)
+                    elif difficulty == 0:
+                        golfKart.setColor(0, 255, 0)
                     golfKart.generateWithRequired(ToontownGlobals.GolfZone)
                 
 			
