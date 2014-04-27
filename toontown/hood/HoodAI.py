@@ -19,7 +19,7 @@ class HoodAI:
 
     HOOD = None
 
-    def __init__(self, air):
+    def __init__(self, air, streets=True):
         self.air = air
         
         self.spawnNpcsIn = [2000]
@@ -31,7 +31,9 @@ class HoodAI:
         self.pond = None
 
         self.createSafeZone()
-        self.createStreets()
+		
+	if streets:
+	    self.createStreets()
 
     def createSafeZone(self):
         self.createTrolley()

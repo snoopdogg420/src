@@ -138,8 +138,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.hoods.append(DDHoodAI.DDHoodAI(self))
         self.hoods.append(DGHoodAI.DGHoodAI(self))
         self.hoods.append(BRHoodAI.BRHoodAI(self))
-        self.hoods.append(MMHoodAI.MMHoodAI(self))
-        self.hoods.append(DLHoodAI.DLHoodAI(self))
+        self.hoods.append(MMHoodAI.MMHoodAI(self, False)) #False turns streets off.
+        self.hoods.append(DLHoodAI.DLHoodAI(self, False))
         self.hoods.append(GSHoodAI.GSHoodAI(self))
         self.hoods.append(OZHoodAI.OZHoodAI(self))
         self.hoods.append(GZHoodAI.GZHoodAI(self))
