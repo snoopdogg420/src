@@ -31,34 +31,31 @@ class DistributedHouseAI(DistributedObjectAI):
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
         self.interiorZone = self.air.allocateZone()
-            
-        self.door = DistributedHouseDoorAI(simbase.air)
-        self.door.setZoneIdAndBlock(self.zoneId, self.getDoId())
-        self.door.setDoorType(DoorTypes.EXT_STANDARD)
-        self.door.setSwing(3)
+        
+        self.door = DistributedHouseDoorAI(simbase.air, 0, DoorTypes.EXT_STANDARD, doorIndex=0)
+        self.interiorDoor = DistributedHouseDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD, doorIndex=1)
+        self.interiorDoor.setOtherDoor(self.door)
+        self.interiorDoor.zoneId = self.interiorZone
+        
+        self.door.setOtherDoor(self.interiorDoor)
+        self.door.zoneId = self.zoneId
         self.door.generateWithRequired(self.zoneId)
+        self.door.sendUpdate('setDoorIndex', [self.door.getDoorIndex()])
 
-        self.interiorDoor = DistributedHouseDoorAI(simbase.air)
-        self.interiorDoor.setZoneIdAndBlock(self.interiorZone, self.getDoId())
-        self.interiorDoor.setSwing(3)
-        self.interiorDoor.setDoorType(DoorTypes.INT_STANDARD)
-        self.interiorDoor.setOtherZoneIdAndDoId(self.zoneId, self.door.getDoId())
         self.interiorDoor.generateWithRequired(self.interiorZone)
-
-        self.door.setOtherZoneIdAndDoId(self.interiorZone, self.interiorDoor.getDoId())
-
+        self.interiorDoor.sendUpdate('setDoorIndex', [self.interiorDoor.getDoorIndex()])
+        
         self.interior = DistributedHouseInteriorAI(self.air, self)
         self.interior.setHouseIndex(self.housePos)
         self.interior.setHouseId(self.getDoId())
         self.interior.generateWithRequired(self.interiorZone)
-
+        
         if not self.isInteriorInitialized:
             self.notify.info('Initializing interior...')
             self.interior.initialize()
             self.b_setInteriorInitialized(1)
-
+            
         self.sendUpdate('setHouseReady', [])
-        
         
     def delete(self):
         self.door.requestDelete()
