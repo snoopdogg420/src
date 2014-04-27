@@ -421,6 +421,7 @@ class TTChatInputSpeedChat(DirectObject.DirectObject):
 
     def __init__(self, chatMgr):
         self.chatMgr = chatMgr
+        self.firstTime = 0
         self.whisperAvatarId = None
         self.toPlayer = 0
         buttons = loader.loadModel('phase_3/models/gui/dialog_box_buttons_gui')
@@ -505,15 +506,17 @@ class TTChatInputSpeedChat(DirectObject.DirectObject):
             structure += scPetMenuStructure
         structure += scStructure
         self.createSpeedChatObject(structure)
+        self.enterActive()
 
     def enterOff(self):
         pass
 
     def exitOff(self):
         pass
+        
 
     def enterActive(self):
-
+        print 'entering active SC menu'
         def handleCancel(self = self):
             self.chatMgr.fsm.request('mainMenu')
 
@@ -528,6 +531,9 @@ class TTChatInputSpeedChat(DirectObject.DirectObject):
         self.speedChat.reparentTo(base.a2dpTopLeft, DGG.FOREGROUND_SORT_INDEX)
         scZ = -0.04
         self.speedChat.setPos(0.283, 0, scZ)
+        if not self.firstTime:
+			self.speedChat.setPos(-99, -99, -99)
+			self.firstTime = 1
         self.speedChat.setWhisperMode(self.whisperAvatarId != None)
         self.speedChat.enter()
         return
