@@ -1,6 +1,6 @@
-group "golfZone" [
- visgroup "17000:safe_zone" [
-  vis [   "17000:safe_zone"   ]
+group "goofySpeedway" [
+ visgroup "8000:safe_zone" [
+  vis [   "8000:safe_zone"   ]
   node "level" [
    node "golf_kart_0_0" [
     prop "starting_block_0" [
@@ -44,7 +44,6 @@ group "golfZone" [
      nhpr [ -9.108 0 0 ]
     ]
    ]
-/*
    node "golf_kart_2_0" [
     prop "starting_block_0" [
      code [ "gs_parkingspot" ]
@@ -66,7 +65,6 @@ group "golfZone" [
      nhpr [ -66.64 0 0 ]
     ]
    ]
-*/
    prop "goofy_speedway_DNARoot" [
     code [ "goofy_speedway" ]
     pos [ 0 0 0 ]
@@ -76,48 +74,6 @@ group "golfZone" [
     code [ "prop_golf_cog_tunnel" ]
     pos [ 100 -95 0.05 ]
     nhpr [ 45 0 0 ]
-	sign [
-     scale [ 1.5 1 1.5 ]
-     baseline [
-      code [ "mickey" ]
-      color [ 1 1 0 1 ]
-      pos [ -0.3 0 0 ]
-      nhpr [ 0 0 3.88713 ]
-      scale [ 0.7 1 0.7 ]
-      width [ -8.33333 ]
-      height [ -8.33333 ]
-      text [
-       letters [ "B" ]
-      ]
-      text [
-       letters [ "o" ]
-      ]
-      text [
-       letters [ "s" ]
-      ]
-      text [
-       letters [ "s" ]
-      ]
-      text [
-       letters [ "b" ]
-      ]
-      text [
-       letters [ "o" ]
-      ]
-      text [
-       letters [ "t" ]
-      ]
-      text [
-       letters [ " " ]
-      ]
-      text [
-       letters [ "H" ]
-      ]
-      text [
-       letters [ "Q" ]
-      ]
-     ]
-    ]
    ]
    prop "tunnel_gz_DNARoot" [
     code [ "prop_golf_tunnel2" ]
@@ -430,11 +386,6 @@ group "golfZone" [
     code [ "prop_golf_tunnel2" ]
     pos [ -110 -5 0.129929 ]
     nhpr [ -75 0 0 ]
-	 prop "tunnelBlocker" [
-	  code [ "prop_construction_sign" ]
-	  pos [ 0 3 0 ]
-	  hpr [ 180 0 0 ]
-	 ]    
     sign [
      scale [ 1.5 1 1.5 ]
      baseline [

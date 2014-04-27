@@ -20,6 +20,8 @@ class DistributedGolfKartAI(DistributedObjectAI, FSM):
         self.startingPos = None
         self.startingHpr = None
         self.boardable = True
+        self.index = 0
+        
     
     def announceGenerate(self):
         self.b_setState('WaitEmpty', globalClockDelta.getRealNetworkTime())
@@ -117,6 +119,7 @@ class DistributedGolfKartAI(DistributedObjectAI, FSM):
    
     def setGolfZone(self, golfZone):
         self.golfZone = golfZone
+        self.index = golfZone
         
     def d_setGolfZone(self, golfZone):
         self.sendUpdate('setGolfZone', [golfZone])

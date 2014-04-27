@@ -12,6 +12,9 @@ from toontown.building.DistributedKartShopInteriorAI import DistributedKartShopI
 from toontown.building.DistributedKnockKnockDoorAI import DistributedKnockKnockDoorAI
 from toontown.building import DoorTypes
 
+#For Golf
+from toontown.safezone.DistributedGolfKartAI import DistributedGolfKartAI
+
 # For GSW playground
 from toontown.racing.DistributedRacePadAI import DistributedRacePadAI
 from toontown.racing.DistributedViewPadAI import DistributedViewPadAI
@@ -81,6 +84,7 @@ class DNASpawnerAI:
                     spot.generateWithRequired(pondZone)
                     
             NPCToons.createNpcsInZone(simbase.air, pondZone)
+
         
         elif isinstance(group, DNALandmarkBuilding):
             if group.getName()[:2] == 'tb' or group.getName()[:2] == 'sz':
@@ -255,6 +259,26 @@ class DNASpawnerAI:
                     startingBlock.setPadLocationId(index)
                     startingBlock.generateWithRequired(zone)
                     pad.addStartingBlock(startingBlock)
+                    
+        elif group.getName()[:10] == 'golf_kart_':
+            difficulty, course = group.getName()[10:].split('_', 2)
+            difficulty = int(difficulty)
+            course = int(course)
+            
+            for i in range(group.getNumChildren()):
+                posSpot = group.at(i)
+                if posSpot.getName()[:14] == 'starting_block':
+                    spotIndex = int(posSpot.getName()[15:])
+                    x, y, z = posSpot.getPos()
+                    h, p, r = posSpot.getHpr()
+                    golfKart = DistributedGolfKartAI(simbase.air)
+                    golfKart.setPosHpr(x, y, z, h, p, r)
+                    golfKart.setGolfCourse(course)
+                    golfKart.setGolfZone(difficulty)
+                    golfKart.setColor(150, 50, 200)
+                    golfKart.generateWithRequired(ToontownGlobals.GolfZone)
+                
+			
         elif group.getName()[:11] == 'viewing_pad':
             pad = DistributedViewPadAI(simbase.air)
             pad.setArea(zone)
