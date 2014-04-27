@@ -20,16 +20,29 @@ class BossbotHQAI(HoodAI):
         self.lobbyElevator = DistributedBBElevatorAI.DistributedBBElevatorAI(self.air, self.lobbyMgr, ToontownGlobals.BossbotLobby, antiShuffle=1)
         self.lobbyElevator.generateWithRequired(ToontownGlobals.BossbotLobby)
 
-        # self.cogKartA = DistributedCogKartAI(self.air)
-        # self.cogKartA.setPosHpr(0, -10, 0, 0, 0, 0)
-        # self.cogKartA.setCountryClubId(0)  # ToontownGlobals.BossbotCountryClubIntA
-        # self.cogKartA.generateWithRequired(ToontownGlobals.BossbotHQ)
+        #front three
+        self.cogKartA = DistributedCogKartAI(self.air)
+        self.cogKartA.setPosHpr(155, 36, 0.025, 118, 0, 0)
+        self.cogKartA.setCountryClubId(ToontownGlobals.BossbotCountryClubIntA)
+        self.cogKartA.generateWithRequired(ToontownGlobals.BossbotHQ)
+
+        #middle six
+        self.cogKartB = DistributedCogKartAI(self.air)
+        self.cogKartB.setPosHpr(140, -80, 0.025, 60, 0, 0)
+        self.cogKartB.setCountryClubId(ToontownGlobals.BossbotCountryClubIntB)
+        self.cogKartB.generateWithRequired(ToontownGlobals.BossbotHQ)
+
+        #back nine
+        self.cogKartC = DistributedCogKartAI(self.air)
+        self.cogKartC.setPosHpr(-48, 15, 0.025, -107, 0, 0)
+        self.cogKartC.setCountryClubId(ToontownGlobals.BossbotCountryClubIntC)
+        self.cogKartC.generateWithRequired(ToontownGlobals.BossbotHQ)
 
         if simbase.config.GetBool('want-boarding-groups', 1):
             self.boardingParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.lobbyElevator.doId], 8)
             self.boardingParty.generateWithRequired(ToontownGlobals.BossbotLobby)
-            # self.boardingPartyExt = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.cogKartA.doId], 4)
-            # self.boardingPartyExt.generateWithRequired(ToontownGlobals.BossbotHQ)
+            self.boardingPartyExt = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.cogKartA.doId], 4)
+            self.boardingPartyExt.generateWithRequired(ToontownGlobals.BossbotHQ)
 
         destinationZone = ToontownGlobals.BossbotLobby
         extDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=0, lockValue=FADoorCodes.CB_DISGUISE_INCOMPLETE)
