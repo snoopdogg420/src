@@ -50,9 +50,10 @@ class LawbotHQAI(HoodAI):
             ToontownGlobals.LawbotStageIntD
             ]
         mins = ToontownGlobals.FactoryLaffMinimums[2]
-        #for index, officeType in enumerate(officeTypes):
-        #    elevator = DistributedLawOfficeElevatorExtAI.DistributedLawOfficeElevatorExtAI(self.air, """wtf goes here??""", officeType, antiShuffle=0, minLaff=mins[index])
-        #    elevator.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
+        for index, officeType in enumerate(officeTypes):
+            elevator = DistributedLawOfficeElevatorExtAI.DistributedLawOfficeElevatorExtAI(self.air, self.air.officeMgr, officeType, index, antiShuffle=0, minLaff=mins[index])
+            elevator.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
+        
         
         #DA Office waiting area
         extDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, doorIndex=0)

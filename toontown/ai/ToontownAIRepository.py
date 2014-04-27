@@ -15,7 +15,7 @@ from toontown.toonbase import ToontownGlobals
 from direct.distributed.PyDatagram import *
 from otp.ai.AIZoneData import *
 from toontown.dna.DNAParser import loadDNAFileAI
-from toontown.coghq import MintManagerAI, FactoryManagerAI
+from toontown.coghq import MintManagerAI, FactoryManagerAI, LawbotOfficeManagerAI
 
 #friends!
 from otp.friends.FriendManagerAI import FriendManagerAI
@@ -62,6 +62,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         
         self.mintMgr = MintManagerAI.MintManagerAI(self)
         self.factoryMgr = FactoryManagerAI.FactoryManagerAI(self)
+        self.officeMgr = LawbotOfficeManagerAI.LawbotOfficeManagerAI(self)
 
     def getTrackClsends(self):
         return False
