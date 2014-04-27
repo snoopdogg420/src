@@ -4455,17 +4455,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.b_setCheesyEffect(random.choice(AprilToonsGlobals.RandomCheesyList), 0, 0)
         task.delayTime = random.randint(AprilToonsGlobals.RandomCheesyMinTime, AprilToonsGlobals.RandomCheesyMaxTime)
         return task.again
-        
-    @magicWord(category=CATEGORY_CHARACTERSTATS)
-    def clearInv():
-        """Clear Inventory"""
-        newInventory1 = InventoryBase.InventoryBase('inv')
-        inventory1 = newInventory1
-        inventory1.zeroInv()
-        spellbook.getTarget().d_setInventory(inventory1.makeNetString())
-        return "Cleared the inventory of %s" % (spellbook.getTarget().doId)
-        
-        
+
     def applyAlphaModifications(self):
         # Apply all of the temporary changes that we want the alpha testers to
         # have:
@@ -4881,6 +4871,55 @@ def setCogIndex(indexVal):
     if not -1 <= indexVal <= 3:
         return 'CogIndex value %s is invalid.' % str(indexVal)
     spellbook.getTarget().b_setCogIndex(indexVal)
+
+@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, int, int])
+def inventory(a, b=None, c=None):
+    invoker = spellbook.getInvoker()
+    inventory = invoker.inventory
+    if a == 'reset':
+        maxLevelIndex = b or 5
+        if not 0 <= maxLevelIndex < len(ToontownBattleGlobals.Levels[0]):
+            return 'Invalid max level index: {0}'.format(maxLevelIndex)
+        targetTrack = -1 or c
+        if not -1 <= targetTrack < len(ToontownBattleGlobals.Tracks):
+            return 'Invalid target track index: {0}'.format(targetTrack)
+        for track in range(0, len(ToontownBattleGlobals.Tracks)):
+            if (targetTrack == -1) or (track == targetTrack):
+                inventory.inventory[track][:maxLevelIndex + 1] = [0] * (maxLevelIndex+1)
+        invoker.b_setInventory(inventory.makeNetString())
+        if targetTrack == -1:
+            return 'Inventory reset.'
+        else:
+            return 'Inventory reset for target track index: {0}'.format(targetTrack)
+    elif a == 'restock':
+        maxLevelIndex = b or 5
+        if not 0 <= maxLevelIndex < len(ToontownBattleGlobals.Levels[0]):
+            return 'Invalid max level index: {0}'.format(maxLevelIndex)
+        targetTrack = -1 or c
+        if not -1 <= targetTrack < len(ToontownBattleGlobals.Tracks):
+            return 'Invalid target track index: {0}'.format(targetTrack)
+        if (targetTrack != -1) and (not invoker.hasTrackAccess(targetTrack)):
+            return "You don't have target track index: {0}".format(targetTrack)
+        inventory.NPCMaxOutInv(targetTrack=targetTrack, maxLevelIndex=maxLevelIndex)
+        invoker.b_setInventory(inventory.makeNetString())
+        if targetTrack == -1:
+            return 'Inventory restocked.'
+        else:
+            return 'Inventory restocked for target track index: {0}'.format(targetTrack)
+    else:
+        try:
+            targetTrack = int(a)
+        except:
+            return 'Invalid first argument.'
+        if not invoker.hasTrackAccess(targetTrack):
+            return "You don't have target track index: {0}".format(targetTrack)
+        maxLevelIndex = b or 6
+        if not 0 <= maxLevelIndex < len(ToontownBattleGlobals.Levels[0]):
+            return 'Invalid max level index: {0}'.format(maxLevelIndex)
+        for _ in xrange(c):
+            inventory.addItem(targetTrack, maxLevelIndex)
+        invoker.b_setInventory(inventory.makeNetString())
+        return 'Restored {0} Gags to: {1}, {2}'.format(c, targetTrack, maxLevelIndex)
 
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, str])
 def dna(part, value):

@@ -292,9 +292,9 @@ class InventoryBase(DirectObject.DirectObject):
         self.calcTotalProps()
         return None
 
-    def NPCMaxOutInv(self, targetTrack = -1):
+    def NPCMaxOutInv(self, targetTrack=-1, maxLevelIndex=5):
         result = 0
-        for level in range(5, -1, -1):
+        for level in range(maxLevelIndex, -1, -1):
             anySpotsAvailable = 1
             while anySpotsAvailable == 1:
                 anySpotsAvailable = 0
