@@ -140,6 +140,8 @@ def teleportOut(attack, npc):
     seq.append(Func(npc.removeActive))
     seq.append(Func(npc.detachNode))
     seq.append(Func(npc.delete))
+    if npc.getName() == 'Trap Cat':
+        seq.append(Wait(3))
     return seq
 
 
