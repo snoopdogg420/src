@@ -5199,3 +5199,19 @@ def locate(avIdShort=0, returnType=''):
         return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
     return "%s has been located %s %s." % (av.getName(), where[1], where[2])
     
+@magicWord(category=CATEGORY_CHARACTERSTATS)
+def writeDna():
+    target = spellbook.getTarget()
+    filename = target.getName()+"'s DNA.txt"
+    file = open(filename, 'w')
+    dna = '''Toon Name = %s
+Toon Dna = %s
+Toon Hat = %s
+Toon Glasses = %s
+Toon Backpack = %s 
+Toon Shoes = %s''' % (target.getName(), target.getDNAString().encode('string_escape'), target.getHat()[0], target.getGlasses()[0], target.getBackpack()[0], target.getShoes()[0])
+    file.write(dna)
+    file.close
+    return '%s dna written to the file %s' % (target.getName(), filename)
+
+    
