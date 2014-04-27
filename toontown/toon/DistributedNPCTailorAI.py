@@ -6,6 +6,10 @@ from direct.task.Task import Task
 from toontown.ai import DatabaseObject
 from toontown.estate import ClosetGlobals
 
+#Going to code this later. For now lets just have it return false.
+def isClosetAlmostFull(av):
+    return False
+
 class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
     freeClothes = simbase.config.GetBool('free-clothes', 0)
     housingEnabled = simbase.config.GetBool('want-housing', 1)
