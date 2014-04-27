@@ -50,10 +50,17 @@ class LawbotHQAI(HoodAI):
             ToontownGlobals.LawbotStageIntD
             ]
         mins = ToontownGlobals.FactoryLaffMinimums[2]
+        elevators = []
+        
         for index, officeType in enumerate(officeTypes):
             elevator = DistributedLawOfficeElevatorExtAI.DistributedLawOfficeElevatorExtAI(self.air, self.air.officeMgr, officeType, index, antiShuffle=0, minLaff=mins[index])
             elevator.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
-        
+            elevators.append(elevator)
+            
+        #Boarding groups for DA offices    
+        if simbase.config.GetBool('want-boarding-groups', 1):
+            self.boardingOfficeParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [elevators[0].doId, elevators[1].doId, elevators[2].doId, elevators[3].doId], 4)
+            self.boardingOfficeParty.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
         
         #DA Office waiting area
         extDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, doorIndex=0)
