@@ -17,6 +17,8 @@ from toontown.toon import InventoryBase
 from toontown.toonbase import ToontownGlobals
 import random
 from toontown.toon import NPCToons
+from otp.ai.MagicWordGlobal import *
+
 
 class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleBaseAI')
@@ -1818,4 +1820,14 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         self.serialNum += 1
         return num
 
-#VERIFICATION FAILED - in __init__ LOAD_GLOBAL 40(None) needs to be changed to a LOAD_CONST
+
+@magicWord(category=CATEGORY_OVERRIDE)
+def skipMovie():
+    """Skip the currently playing battle movie."""
+    invoker = spellbook.getInvoker()
+    battleId = invoker.getBattleId()
+    if not battleId:
+        return 'You are not currently in a battle!'
+    battle = simbase.air.doId2do.get(battleId)
+    battle._DistributedBattleBaseAI__movieDone()
+    return 'Battle movie skipped.'
