@@ -1,12 +1,13 @@
 from direct.directnotify.DirectNotifyGlobal import *
+from otp.level import LevelSpec
 from otp.level.DistributedLevelAI import DistributedLevelAI
 from toontown.coghq import CountryClubRoomBase
 from toontown.coghq import CountryClubRoomSpecs
-from otp.level import LevelSpec
-from toontown.coghq import LevelSuitPlannerAI
-from toontown.suit import DistributedFactorySuitAI
 from toontown.coghq import DistributedCountryClubBattleAI
 from toontown.coghq import FactoryEntityCreatorAI
+from toontown.coghq import LevelSuitPlannerAI
+from toontown.suit import DistributedFactorySuitAI
+from toontown.toonbase import ToontownBattleGlobals
 
 
 class DistributedCountryClubRoomAI(DistributedLevelAI, CountryClubRoomBase.CountryClubRoomBase):
