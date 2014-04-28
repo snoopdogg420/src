@@ -189,8 +189,8 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
 
     def generateSuits(self, battleNumber):
         if battleNumber == 1:
-			l = [0, 1]
-			skelOrNo = random.choice(l)
+	    l = [0, 1]
+	    skelOrNo = random.choice(l)
             return self.invokeSuitPlanner(12, skelOrNo)
         else:
             return self.invokeSuitPlanner(12, 1)
