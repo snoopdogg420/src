@@ -5155,6 +5155,13 @@ def givePies(pieType, numPies=0):
         return "numPies value out of range (0-99)"
     av.b_setPieType(pieType)
     av.b_setNumPies(numPies)
+    
+@magicWord(category=CATEGORY_OVERRIDE, types=[int])
+def setBonus(trackId):
+    av = spellbook.getTarget()
+    blankArray = [-1, -1, -1, -1, -1, -1, -1]
+    blankArray[trackId] = 6
+    av.b_setTrackBonusLevel(blankArray)
 
 @magicWord(category=CATEGORY_MODERATION, types=[int, str])
 def locate(avIdShort=0, returnType=''):
