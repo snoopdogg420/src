@@ -12,7 +12,6 @@ class DistributedCogKartAI(DistributedElevatorExtAI):
         self.countryClubInteriorZone = 0
         self.countryClubId = 0
         self.countryClubInteriorZoneForce = 0
-        
 
     def setCountryClubId(self, countryClubId):
         self.countryClubId = countryClubId
@@ -38,3 +37,18 @@ class DistributedCogKartAI(DistributedElevatorExtAI):
 
     def getCountryClubInteriorZoneForce(self):
         return self.countryClubInteriorZoneForce
+
+    def elevatorClosed(self):
+        numPlayers = self.countFullSeats()
+        if numPlayers > 0:
+            players = []
+            for i in self.seats:
+                if i not in [None, 0]:
+                    players.append(i)
+            countryClubZone = self.bldg.createCountryClub(self.countryClubId, players)
+            for seatIndex in range(len(self.seats)):
+                avId = self.seats[seatIndex]
+                if avId:
+                    self.sendUpdateToAvatarId(avId, 'setCountryClubInteriorZone', [countryClubZone])
+                    self.clearFullNow(seatIndex)
+        self.fsm.request('closed')

@@ -16,7 +16,7 @@ class BossbotHQAI(HoodAI):
     def createSafeZone(self):
         self.lobbyMgr = LobbyManagerAI.LobbyManagerAI(self.air, DistributedBossbotBossAI.DistributedBossbotBossAI)
         self.lobbyMgr.generateWithRequired(ToontownGlobals.BossbotLobby)
-        
+
         self.lobbyElevator = DistributedBBElevatorAI.DistributedBBElevatorAI(self.air, self.lobbyMgr, ToontownGlobals.BossbotLobby, antiShuffle=1)
         self.lobbyElevator.generateWithRequired(ToontownGlobals.BossbotLobby)
 
@@ -41,7 +41,7 @@ class BossbotHQAI(HoodAI):
         if simbase.config.GetBool('want-boarding-groups', 1):
             self.boardingParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.lobbyElevator.doId], 8)
             self.boardingParty.generateWithRequired(ToontownGlobals.BossbotLobby)
-            self.boardingPartyExt = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.cogKartA.doId], 4)
+            self.boardingPartyExt = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.cogKartA.doId, self.cogKartB.doId, self.cogKartC.doId], 4)
             self.boardingPartyExt.generateWithRequired(ToontownGlobals.BossbotHQ)
 
         destinationZone = ToontownGlobals.BossbotLobby
