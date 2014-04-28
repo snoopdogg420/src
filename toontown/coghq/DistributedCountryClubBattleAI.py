@@ -1,6 +1,7 @@
-from direct.directnotify import DirectNotifyGlobal
+from direct.directnotify.DirectNotifyGlobal import *
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
+from toontown.coghq.DistributedLevelBattleAI import DistributedLevelBattleAI
 
-class DistributedCountryClubBattleAI(DistributedObjectAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistributedCountryClubBattleAI")
 
+class DistributedCountryClubBattleAI(DistributedLevelBattleAI):
+    notify = directNotify.newCategory('DistributedCountryClubBattleAI')
