@@ -1,3 +1,4 @@
+# Yay it works
 from otp.ai.AIBaseGlobal import *
 from pandac.PandaModules import *
 from otp.otpbase import OTPGlobals

@@ -1,3 +1,4 @@
+# Yay it works
 from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
