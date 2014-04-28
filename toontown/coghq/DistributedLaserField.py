@@ -693,7 +693,7 @@ class DistributedLaserField(BattleBlocker.BattleBlocker):
         for suitId in suitIdarray:
             suit = base.cr.doId2do.get(suitId)
             if suit:
-                suit.unstash()
+                suit.stash()
                 suit.setVirtual()
 
     def initCollisionGeom(self):

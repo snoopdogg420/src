@@ -71,6 +71,9 @@ class ToontownAIRepository(ToontownInternalRepository):
     def getTrackClsends(self):
         return False
 
+    def trueUniqueName(self, idString):
+        return '{0}-{1}'.format(idString, self.ourChannel)
+
     def handleConnected(self):
         self.districtId = self.allocateChannel()
         self.distributedDistrict = ToontownDistrictAI(self)

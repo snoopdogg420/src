@@ -11,6 +11,7 @@ from toontown.suit import SuitDNA
 from direct.fsm import State
 from direct.fsm import ClassicFSM, State
 from toontown.toonbase import ToontownGlobals
+from otp.nametag import NametagGlobals
 
 class DistributedStageBattle(DistributedLevelBattle.DistributedLevelBattle):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedStageBattle')
