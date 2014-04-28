@@ -89,6 +89,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     DbCheckAccountDateBegin = config.GetString('account-blackout-start', '2013-08-20 12:30:00')
     DbCheckAccountDateDisconnect = config.GetBool('account-blackout-disconnect', 0)
     WantOldGMNameBan = simbase.config.GetBool('want-old-gm-name-ban', 1)
+    petId = None
 
     def __init__(self, air):
         DistributedPlayerAI.DistributedPlayerAI.__init__(self, air)
@@ -102,6 +103,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.fishCollection = None
         self.fishTank = None
         self.experience = None
+        self.petId = None
         self.quests = []
         self.cogs = []
         self.cogCounts = []

@@ -18,7 +18,6 @@ place_model "phase_6/models/golf/golf_tunnel1" [
 	store_node [ "prop" "prop_golf_tunnel1" "" ]
 	]
 
-
 place_model "phase_4/models/modules/safe_zone_tunnel_TT" [
 	store_node [ "prop" "prop_safe_zone_tunnel" ]
         ]

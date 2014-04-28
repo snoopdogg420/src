@@ -5,6 +5,7 @@ from direct.fsm.ClassicFSM import *
 from direct.fsm.State import *
 from direct.distributed.ClockDelta import globalClockDelta
 from otp.avatar import Avatar
+from otp.nametag import NametagGroup
 from direct.actor import Actor
 from direct.task import Task
 from toontown.pets import PetDNA
