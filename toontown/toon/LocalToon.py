@@ -1,3 +1,4 @@
+# Yay it works
 import random
 import math
 import time
@@ -1953,6 +1954,9 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         pass
 
     # TODO: Add pets
+
+    def getPetId(self):
+        return False
     
     def hasPet(self):
         return False

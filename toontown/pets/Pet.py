@@ -1,3 +1,4 @@
+# Yay it works
 from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
@@ -5,6 +6,7 @@ from direct.fsm.ClassicFSM import *
 from direct.fsm.State import *
 from direct.distributed.ClockDelta import globalClockDelta
 from otp.avatar import Avatar
+from otp.nametag import NametagGroup
 from direct.actor import Actor
 from direct.task import Task
 from toontown.pets import PetDNA

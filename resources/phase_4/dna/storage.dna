@@ -373,8 +373,8 @@ store_font [ "font" "mickey"
 // Warning!  This is overridden in PlayGame.py
 store_font [ "font" "suit"
              "phase_3/models/fonts/vtRemingtonPortable.ttf" ]
-
-
+			 
+					 
 model "phase_3.5/models/props/mickeySZ" [
 	store_node [ "graphic" "mickeySZ" ]
 	]

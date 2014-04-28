@@ -1,3 +1,4 @@
+# Yay it works
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
@@ -358,7 +359,7 @@ class PetshopGUI(DirectObject):
                     descList.append('\t%s' % trait)
 
                 descList.append(TTLocalizer.PetshopDescCost % cost)
-                self.petDesc.append(descList.join('\n'))
+                self.petDesc.append(string.join(descList, '\n'))
                 self.petCost.append(cost)
 
         def destroy(self):
