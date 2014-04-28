@@ -1,9 +1,12 @@
-from direct.directnotify import DirectNotifyGlobal
+from direct.directnotify.DirectNotifyGlobal import *
+from toontown.building.DistributedElevatorAI import DistributedElevatorAI
 from toontown.building.DistributedElevatorExtAI import DistributedElevatorExtAI
+from toontown.safezone.TrolleyConstants import *
 from toontown.coghq import CountryClubManagerAI
 
+
 class DistributedCogKartAI(DistributedElevatorExtAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistributedCogKartAI")
+    notify = directNotify.newCategory('DistributedCogKartAI')
 
     def __init__(self, air):
         DistributedElevatorExtAI.__init__(self, air, air.countryClubMgr)
@@ -37,6 +40,15 @@ class DistributedCogKartAI(DistributedElevatorExtAI):
 
     def getCountryClubInteriorZoneForce(self):
         return self.countryClubInteriorZoneForce
+
+    def enterClosing(self):
+        DistributedElevatorAI.enterClosing(self)
+        taskMgr.doMethodLater(TROLLEY_EXIT_TIME, self.elevatorClosedTask,
+                              self.uniqueName('closing-timer'))
+
+    def enterClosed(self):
+        self.d_setState('closed')
+        self.fsm.request('opening')
 
     def elevatorClosed(self):
         numPlayers = self.countFullSeats()
