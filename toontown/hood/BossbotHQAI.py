@@ -20,22 +20,18 @@ class BossbotHQAI(HoodAI):
         self.lobbyElevator = DistributedBBElevatorAI.DistributedBBElevatorAI(self.air, self.lobbyMgr, ToontownGlobals.BossbotLobby, antiShuffle=1)
         self.lobbyElevator.generateWithRequired(ToontownGlobals.BossbotLobby)
 
+        laffMins = ToontownGlobals.FactoryLaffMinimums[3]
+
         #front three
-        self.cogKartA = DistributedCogKartAI(self.air)
-        self.cogKartA.setPosHpr(155, 36, 0.025, 118, 0, 0)
-        self.cogKartA.setCountryClubId(ToontownGlobals.BossbotCountryClubIntA)
+        self.cogKartA = DistributedCogKartAI(self.air, 0, 155, 36, 0.025, 118, 0, 0, self.air.countryClubMgr, laffMins[0])
         self.cogKartA.generateWithRequired(ToontownGlobals.BossbotHQ)
 
         #middle six
-        self.cogKartB = DistributedCogKartAI(self.air)
-        self.cogKartB.setPosHpr(140, -80, 0.025, 60, 0, 0)
-        self.cogKartB.setCountryClubId(ToontownGlobals.BossbotCountryClubIntB)
+        self.cogKartB = DistributedCogKartAI(self.air, 1, 140, -80, 0.025, 60, 0, 0, self.air.countryClubMgr, laffMins[1])
         self.cogKartB.generateWithRequired(ToontownGlobals.BossbotHQ)
 
         #back nine
-        self.cogKartC = DistributedCogKartAI(self.air)
-        self.cogKartC.setPosHpr(-48, 15, 0.025, -107, 0, 0)
-        self.cogKartC.setCountryClubId(ToontownGlobals.BossbotCountryClubIntC)
+        self.cogKartC = DistributedCogKartAI(self.air, 2, -48, 15, 0.025, -107, 0, 0, self.air.countryClubMgr, laffMins[2])
         self.cogKartC.generateWithRequired(ToontownGlobals.BossbotHQ)
 
         if simbase.config.GetBool('want-boarding-groups', 1):
