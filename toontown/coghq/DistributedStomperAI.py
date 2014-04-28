@@ -30,21 +30,13 @@ class DistributedStomperAI(DistributedCrusherEntityAI.DistributedCrusherEntityAI
     def reactToSwitch(self, on):
         if on:
             crushedList = []
-            totalObjects = []
-            possibleGoons = simbase.air.doFindAll('DistributedGoon')
-            for i in possibleGoons:
-                totalObjects.append(i)
-            #    #i.sendUpdate('requestBattle', [1])
-            #    i.delete()
-            #print possibleGoons
-            #print totalObjects
-            #if self.crushCell:
-            #    self.crushCell.updateCrushables()
-            #    for id in self.crushCell.occupantIds:
-            #        if id in self.crushCell.crushables:
-            #            crushedList.append(id)
-            #
-            #    self.sendCrushMsg()
+            if self.crushCell:
+                self.crushCell.updateCrushables()
+                for id in self.crushCell.occupantIds:
+                    if id in self.crushCell.crushables:
+                        crushedList.append(id)
+            
+                self.sendCrushMsg()
             self.sendUpdate('setMovie', [StomperGlobals.STOMPER_STOMP, ClockDelta.globalClockDelta.getRealNetworkTime(), crushedList])
         else:
             self.sendUpdate('setMovie', [StomperGlobals.STOMPER_RISE, ClockDelta.globalClockDelta.getRealNetworkTime(), []])
