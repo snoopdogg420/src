@@ -143,11 +143,11 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.estateManager.generateWithRequired(2)
 
     def createZones(self):
-        self.hoods.append(TTHoodAI.TTHoodAI(self))
-        self.hoods.append(DDHoodAI.DDHoodAI(self))
-        self.hoods.append(DGHoodAI.DGHoodAI(self))
-        self.hoods.append(BRHoodAI.BRHoodAI(self))
-        self.hoods.append(MMHoodAI.MMHoodAI(self, False)) #False turns streets off.
+        self.hoods.append(TTHoodAI.TTHoodAI(self, True))
+        self.hoods.append(DDHoodAI.DDHoodAI(self, False))
+        self.hoods.append(DGHoodAI.DGHoodAI(self, False))
+        self.hoods.append(BRHoodAI.BRHoodAI(self, False))
+        self.hoods.append(MMHoodAI.MMHoodAI(self, False))
         self.hoods.append(DLHoodAI.DLHoodAI(self, False))
         self.hoods.append(GSHoodAI.GSHoodAI(self))
         self.hoods.append(OZHoodAI.OZHoodAI(self))
