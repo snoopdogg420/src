@@ -110,9 +110,6 @@ class DistributedLaserField(BattleBlocker.BattleBlocker):
         self.detectName = 'laserField %s' % self.doId
         taskMgr.doMethodLater(0.1, self.__detect, self.detectName)
 
-    def initCollisionGeom(self):
-        pass
-
     def setGridGame(self, gameName):
         self.gridGame = gameName
         self.gridGameText = gameName
@@ -693,7 +690,7 @@ class DistributedLaserField(BattleBlocker.BattleBlocker):
         for suitId in suitIdarray:
             suit = base.cr.doId2do.get(suitId)
             if suit:
-                suit.stash()
+                suit.unstash()
                 suit.setVirtual()
 
     def initCollisionGeom(self):
