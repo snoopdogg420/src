@@ -33,7 +33,6 @@ class DistributedLawOfficeElevatorExtAI(DistributedElevatorExtAI.DistributedElev
                 if avId:
                     self.sendUpdateToAvatarId(avId, 'setLawOfficeInteriorZone', [lawOfficeZone])
                     self.clearFullNow(seatIndex)
-                    continue
         else:
             self.notify.warning('The elevator left, but was empty.')
         self.fsm.request('closed')

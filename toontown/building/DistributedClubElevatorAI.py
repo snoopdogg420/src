@@ -100,7 +100,6 @@ class DistributedClubElevatorAI(DistributedElevatorFSMAI.DistributedElevatorFSMA
             if av:
                 if av.zoneId == self.bldg.zoneId:
                     matchingZones += 1
-            av.zoneId == self.bldg.zoneId
         return matchingZones
 
     def goAllAboard(self, throwAway = 1):
