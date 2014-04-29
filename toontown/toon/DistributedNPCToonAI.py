@@ -26,9 +26,11 @@ class DistributedNPCToonAI(DistributedNPCToonBaseAI):
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
         self.notify.debug('avatar enter ' + str(avId))
-        #self.air.questManager.requestInteract(avId, self)
-        #DistributedNPCToonBaseAI.avatarEnter(self)
-        self.rejectAvatar(avId)
+        self.pendingAvId = avId
+        self.air.questManager.requestInteract(avId, self)
+        self.acceptOnce(self.air.getAvatarExitEvent(avId), self.__handleUnexpectedExit, extraArgs=[avId])
+        taskMgr.doMethodLater(20, self.sendTimeoutMovie, self.uniqueName('clearMovie'))
+        DistributedNPCToonBaseAI.avatarEnter(self)
 
     def chooseQuest(self, questId):
         avId = self.air.getAvatarIdFromSender()
@@ -243,4 +245,11 @@ class DistributedNPCToonAI(DistributedNPCToonBaseAI):
         elif self.busy:
             self.air.writeServerEvent('suspicious', avId, 'DistributedNPCToonAI.setMovieDone busy with %s' % self.busy)
             self.notify.warning('somebody called setMovieDone that I was not busy with! avId: %s' % avId)
+        return
+
+    def __handleUnexpectedExit(self, avId):
+        self.notify.warning('avatar:' + str(avId) + ' has exited unexpectedly')
+        self.notify.warning('not busy with avId: %s, busy: %s ' % (avId, self.busy))
+        taskMgr.remove(self.uniqueName('clearMovie'))
+        self.sendClearMovie(None)
         return

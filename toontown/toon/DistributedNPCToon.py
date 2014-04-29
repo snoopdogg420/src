@@ -9,6 +9,8 @@ from toontown.toontowngui import TeaserPanel
 from otp.nametag.NametagConstants import *
 ChoiceTimeout = 20
 
+from direct.interval.IntervalGlobal import *
+
 class DistributedNPCToon(DistributedNPCToonBase):
 
     def __init__(self, cr):
@@ -97,9 +99,9 @@ class DistributedNPCToon(DistributedNPCToonBase):
     def setupCamera(self, mode):
         camera.wrtReparentTo(render)
         if mode == NPCToons.QUEST_MOVIE_QUEST_CHOICE or mode == NPCToons.QUEST_MOVIE_TRACK_CHOICE:
-            camera.lerpPosHpr(5, 9, self.getHeight() - 0.5, 155, -2, 0, 1, other=self, blendType='easeOut', task=self.uniqueName('lerpCamera'))
+            camera.posQuatInterval(1, (5, 9, self.getHeight() - 0.5), (155, -2, 0), other=self, blendType='easeOut').start()
         else:
-            camera.lerpPosHpr(-5, 9, self.getHeight() - 0.5, -150, -2, 0, 1, other=self, blendType='easeOut', task=self.uniqueName('lerpCamera'))
+            camera.posQuatInterval(1, (-5, 9, self.getHeight() - 0.5), (-150, -2, 0), other=self, blendType='easeOut').start()
 
     def setMovie(self, mode, npcId, avId, quests, timestamp):
         timeStamp = ClockDelta.globalClockDelta.localElapsedTime(timestamp)

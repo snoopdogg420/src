@@ -6,6 +6,7 @@ from otp.ai.MagicWordManagerAI import MagicWordManagerAI
 from toontown.ai.HolidayManagerAI import HolidayManagerAI
 from toontown.ai.NewsManagerAI import NewsManagerAI
 from toontown.ai.FishManagerAI import FishManagerAI
+from toontown.ai.QuestManagerAI import QuestManagerAI
 from toontown.safezone.SafeZoneManagerAI import SafeZoneManagerAI
 from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
 from toontown.toon import NPCToons
@@ -54,10 +55,11 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.hoods = []
         self.zoneDataStore = AIZoneDataStore()
 
-        self.wantCogdominiums = self.config.GetBool('want-cogdominiums', False)
         self.useAllMinigames = self.config.GetBool('want-all-minigames', False)
         self.doLiveUpdates = False
 
+        self.questManager = QuestManagerAI(self)
+        
         self.holidayManager = HolidayManagerAI()
 
         self.fishManager = FishManagerAI()
@@ -71,9 +73,6 @@ class ToontownAIRepository(ToontownInternalRepository):
 
     def getTrackClsends(self):
         return False
-
-    def trueUniqueName(self, idString):
-        return '{0}-{1}'.format(idString, self.ourChannel)
 
     def handleConnected(self):
         self.districtId = self.allocateChannel()
@@ -143,11 +142,11 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.estateManager.generateWithRequired(2)
 
     def createZones(self):
-        self.hoods.append(TTHoodAI.TTHoodAI(self, True))
-        self.hoods.append(DDHoodAI.DDHoodAI(self, False))
-        self.hoods.append(DGHoodAI.DGHoodAI(self, False))
-        self.hoods.append(BRHoodAI.BRHoodAI(self, False))
-        self.hoods.append(MMHoodAI.MMHoodAI(self, False))
+        self.hoods.append(TTHoodAI.TTHoodAI(self))
+        self.hoods.append(DDHoodAI.DDHoodAI(self))
+        self.hoods.append(DGHoodAI.DGHoodAI(self))
+        self.hoods.append(BRHoodAI.BRHoodAI(self))
+        self.hoods.append(MMHoodAI.MMHoodAI(self, False)) #False turns streets off.
         self.hoods.append(DLHoodAI.DLHoodAI(self, False))
         self.hoods.append(GSHoodAI.GSHoodAI(self))
         self.hoods.append(OZHoodAI.OZHoodAI(self))
