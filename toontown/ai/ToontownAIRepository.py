@@ -54,6 +54,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.hoods = []
         self.zoneDataStore = AIZoneDataStore()
 
+        self.wantCogdominiums = self.config.GetBool('want-cogdominiums', False)
         self.useAllMinigames = self.config.GetBool('want-all-minigames', False)
         self.doLiveUpdates = False
 
