@@ -16,62 +16,43 @@ class LawbotHQAI(HoodAI):
     HOOD = ToontownGlobals.LawbotHQ
 
     def createSafeZone(self):
+        
+        def makeOfficeElevator(index, antiShuffle = 0, minLaff = 0):
+            destZone = (ToontownGlobals.LawbotStageIntA, ToontownGlobals.LawbotStageIntB, ToontownGlobals.LawbotStageIntC, ToontownGlobals.LawbotStageIntD)[index]
+            elev = DistributedLawOfficeElevatorExtAI.DistributedLawOfficeElevatorExtAI(self.air, self.air.lawOfficeMgr, destZone, index, antiShuffle = 0, minLaff = minLaff)
+            elev.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
+            return elev.doId
+
+        mins = ToontownGlobals.FactoryLaffMinimums[2]
+        officeId0 = makeOfficeElevator(0, 0, mins[0])
+        officeId1 = makeOfficeElevator(1, 0, mins[1])
+        officeId2 = makeOfficeElevator(2, 0, mins[2])
+        officeId3 = makeOfficeElevator(3, 0, mins[3])
         self.lobbyMgr = LobbyManagerAI.LobbyManagerAI(self.air, DistributedLawbotBossAI.DistributedLawbotBossAI)
         self.lobbyMgr.generateWithRequired(ToontownGlobals.LawbotLobby)
-
-        self.lobbyElevator = DistributedCJElevatorAI.DistributedCJElevatorAI(self.air, self.lobbyMgr, ToontownGlobals.LawbotLobby, antiShuffle=1)
+        self.lobbyElevator = DistributedCJElevatorAI.DistributedCJElevatorAI(self.air, self.lobbyMgr, ToontownGlobals.LawbotLobby, antiShuffle = 1)
         self.lobbyElevator.generateWithRequired(ToontownGlobals.LawbotLobby)
-
+        
         if simbase.config.GetBool('want-boarding-groups', 1):
             self.boardingParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [self.lobbyElevator.doId], 8)
             self.boardingParty.generateWithRequired(ToontownGlobals.LawbotLobby)
-
-        destinationZone = ToontownGlobals.LawbotLobby
-        extDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=1, lockValue=FADoorCodes.LB_DISGUISE_INCOMPLETE)
-        extDoorList = [extDoor0]
-        intDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.INT_COGHQ, ToontownGlobals.LawbotHQ, doorIndex=0)
-        intDoor0.setOtherDoor(extDoor0)
-        intDoor0.zoneId = ToontownGlobals.LawbotLobby
-
-        for extDoor in extDoorList:
-            extDoor.setOtherDoor(intDoor0)
-            extDoor.zoneId = ToontownGlobals.LawbotHQ
-            extDoor.generateWithRequired(ToontownGlobals.LawbotHQ)
+        
+        def makeDoor(destinationZone, intDoorIndex, extDoorIndex, lock = 0):
+            intDoor = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.INT_COGHQ, self.HOOD, doorIndex = intDoorIndex, lockValue = lock)
+            intDoor.zoneId = destinationZone
+            extDoor = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex = extDoorIndex, lockValue = lock)
+            extDoor.setOtherDoor(intDoor)
+            intDoor.setOtherDoor(extDoor)
+            intDoor.generateWithRequired(destinationZone)
+            intDoor.sendUpdate('setDoorIndex', [intDoor.getDoorIndex()])
+            extDoor.generateWithRequired(self.HOOD)
             extDoor.sendUpdate('setDoorIndex', [extDoor.getDoorIndex()])
 
-        intDoor0.generateWithRequired(ToontownGlobals.LawbotLobby)
-        intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
-
-        #DA Office elevator
-        officeTypes = [
-            ToontownGlobals.LawbotStageIntA,
-            ToontownGlobals.LawbotStageIntB,
-            ToontownGlobals.LawbotStageIntC,
-            ToontownGlobals.LawbotStageIntD
-            ]
-        mins = ToontownGlobals.FactoryLaffMinimums[2]
-        elevators = []
-
-        for index, officeType in enumerate(officeTypes):
-            elevator = DistributedLawOfficeElevatorExtAI.DistributedLawOfficeElevatorExtAI(self.air, self.air.lawOfficeMgr, officeType, index, antiShuffle=0, minLaff=mins[index])
-            elevator.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
-            elevators.append(elevator)
-
-        #Boarding groups for DA offices
-        if simbase.config.GetBool('want-boarding-groups', 1):
-            self.boardingOfficeParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, [elevators[0].doId, elevators[1].doId, elevators[2].doId, elevators[3].doId], 4)
-            self.boardingOfficeParty.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
-
-        #DA Office waiting area
-        extDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, doorIndex=0)
-        intDoor0 = DistributedDoorAI.DistributedDoorAI(self.air, 1, DoorTypes.INT_COGHQ, doorIndex=0)
-        intDoor0.setOtherDoor(extDoor0)
-        intDoor0.zoneId = ToontownGlobals.LawbotOfficeExt
-
-        extDoor0.setOtherDoor(intDoor0)
-        extDoor0.zoneId = ToontownGlobals.LawbotHQ
-        extDoor0.generateWithRequired(ToontownGlobals.LawbotHQ)
-        extDoor0.sendUpdate('setDoorIndex', [extDoor0.getDoorIndex()])
-
-        intDoor0.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
-        intDoor0.sendUpdate('setDoorIndex', [intDoor0.getDoorIndex()])
+        makeDoor(ToontownGlobals.LawbotLobby, 0, 1, FADoorCodes.LB_DISGUISE_INCOMPLETE)
+        makeDoor(ToontownGlobals.LawbotOfficeExt, 0, 0)
+        officeIdList = [officeId0, officeId1, officeId2, officeId3]
+        
+        if simbase.config.GetBool('want-boarding-parties', 1):
+            self.officeBoardingParty = DistributedBoardingPartyAI.DistributedBoardingPartyAI(self.air, officeIdList, 4)
+            self.officeBoardingParty.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
+        
