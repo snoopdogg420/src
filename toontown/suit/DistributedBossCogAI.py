@@ -1,3 +1,4 @@
+import random
 from direct.directnotify import DirectNotifyGlobal
 from otp.avatar import DistributedAvatarAI
 from toontown.battle import BattleExperienceAI
@@ -465,17 +466,23 @@ class DistributedBossCogAI(DistributedAvatarAI.DistributedAvatarAI):
             self.b_setState(self.postBattleState)
         return
 
-    def invokeSuitPlanner(self, buildingCode, skelecog):
+    def invokeSuitPlanner(self, buildingCode, skelecog, skelecogRandom=0):
         planner = SuitPlannerInteriorAI.SuitPlannerInteriorAI(1, buildingCode, self.dna.dept, self.zoneId)
         planner.respectInvasions = 0
         suits = planner.genFloorSuits(0)
         if skelecog:
             for suit in suits['activeSuits']:
-                suit.b_setSkelecog(1)
+                wantSkelecog = 1
+                if skelecogRandom:
+                    wantSkelecog = random.randint(0, 1)
+                suit.b_setSkelecog(wantSkelecog)
 
             for reserve in suits['reserveSuits']:
+                wantSkelecog = 1
+                if skelecogRandom:
+                    wantSkelecog = random.randint(0, 1)
                 suit = reserve[0]
-                suit.b_setSkelecog(1)
+                suit.b_setSkelecog(wantSkelecog)
 
         return suits
 

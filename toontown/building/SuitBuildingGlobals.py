@@ -134,7 +134,17 @@ SuitBuildingInfo = (((1, 1),
    1,
    1,
    1,
-   1)))
+   1)),
+ ((1, 1),
+  (11, 12),
+  (12, 12),
+  (206, 206),
+  (1,
+   1,
+   1,
+   1,
+   1),
+  (1,)))
 SUIT_BLDG_INFO_FLOORS = 0
 SUIT_BLDG_INFO_SUIT_LVLS = 1
 SUIT_BLDG_INFO_BOSS_LVLS = 2
