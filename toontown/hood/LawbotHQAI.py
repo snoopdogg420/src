@@ -27,7 +27,7 @@ class LawbotHQAI(HoodAI):
         self.lobbyElevator = DistributedCJElevatorAI.DistributedCJElevatorAI(
             self.air, self.lobbyMgr, ToontownGlobals.LawbotLobby, antiShuffle=1)
         self.lobbyElevator.generateWithRequired(ToontownGlobals.LawbotLobby)
-
+        
         if simbase.config.GetBool('want-boarding-groups', 1):
             self.boardingParty = DistributedBoardingPartyAI(self.air, [self.lobbyElevator.doId], 8)
             self.boardingParty.generateWithRequired(ToontownGlobals.LawbotLobby)
