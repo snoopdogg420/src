@@ -1,9 +1,8 @@
 @echo off
 
-set /P ttrUsername="Username (DEFAULT: username): " || ^
-set ttrUsername=username
+set ttrUsername=Relltrem
 set ttrPassword=password
-set TTR_PLAYCOOKIE=%ttrUsername%
+set TTR_PLAYCOOKIE=Relltrem
 set /P TTR_GAMESERVER="Client Agent IP (DEFAULT: 198.100.156.180): " || ^
 set TTR_GAMESERVER=198.100.156.180
 
