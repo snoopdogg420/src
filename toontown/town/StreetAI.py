@@ -16,8 +16,7 @@ class StreetAI:
         self.air = air
         self.zoneId = zoneId
 
-        if (self.zoneId % 1000 != 0):
-            self.spawnObjects()
+        self.spawnObjects()
     
     def spawnObjects(self):
         filename = self.air.genDNAFileName(self.zoneId)
