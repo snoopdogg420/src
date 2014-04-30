@@ -64,12 +64,11 @@ class QuestManagerAI():
             questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc            
             questClass = Quests.getQuest(questId)
 			
-			if questId == questId:
-			    break
-		else:
-		    #Completing a quest they dont have? :/
-			print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
-			pass
+	    if questId == questId:
+		break
+	else:
+	    #Completing a quest they dont have? :/
+	    print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
         
     def toonMadeFriend(self, avId, otherAvId):
         toon = self.air.doId2do.get(avId)
@@ -88,6 +87,9 @@ class QuestManagerAI():
                 
                 if not questClass.getCompletionStatus(toon, questDesc):
                     toon.b_setQuests(toonQuests)
+		    
+    def toonDefeatedFactory(self, toon, factoryId, activeVictors):
+	pass
                     
     def recoverItems(self, toon, suitsKilled, taskZoneId):
         print suitsKilled
