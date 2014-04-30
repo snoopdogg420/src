@@ -4,6 +4,7 @@ from panda3d.core import PandaNode, NodePath, Filename, DecalEffect, TextNode, S
 from panda3d.core import LVector3f, LVector4f, BitMask32, TexturePool, ModelNode, TextProperties
 from direct.showbase import Loader
 from direct.stdpy.file import *
+from direct.directnotify.DirectNotify import DirectNotify
 import math, random
 from DNATypesetter import DNATypesetter
 
@@ -2184,7 +2185,8 @@ def p_error(p):
     raise DNAError('Syntax error at line ' + str(p.lexer.lineno) + ' token=' + str(p))
 
 def loadDNAFile(dnaStore, filename):
-    print 'Reading DNA file...', filename
+    notify = DirectNotify().newCategory('DNALoader')
+    notify.info('Reading DNA file: '+filename)
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
     if __debug__:
@@ -2198,7 +2200,8 @@ def loadDNAFile(dnaStore, filename):
     return None
 
 def loadDNAFileAI(dnaStore, filename):
-    print 'AI: Reading DNA file... ', filename
+    notify = DirectNotify().newCategory('AIDNALoader')
+    notify.info('Reading DNA file: '+filename)
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
     filename = 'resources/' + filename
