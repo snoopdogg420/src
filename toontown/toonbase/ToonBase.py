@@ -229,7 +229,7 @@ class ToonBase(OTPBase.OTPBase):
 
     def __walking(self, pressed):
         self.walking = pressed
-        
+
     def toggleGui(self):
         if aspect2d.isHidden():
             aspect2d.show()
@@ -240,7 +240,7 @@ class ToonBase(OTPBase.OTPBase):
         if not os.path.exists(TTLocalizer.ScreenshotPath):
             os.mkdir(TTLocalizer.ScreenshotPath)
             self.notify.info('Made new directory to save screenshots.')
-        
+
         namePrefix = TTLocalizer.ScreenshotPath + launcher.logPrefix + 'screenshot'
         timedif = globalClock.getRealTime() - self.lastScreenShotTime
         if self.glitchCount > 10 and self.walking:
@@ -315,13 +315,22 @@ class ToonBase(OTPBase.OTPBase):
         self.marginManager = MarginManager()
         self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
         mm = self.marginManager
-        self.leftCells = [mm.addGridCell(0, 1, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(0, 2, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(0, 3, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
-        self.bottomCells = [mm.addGridCell(0.5, 0, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
-         mm.addGridCell(1.5, 0, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
-         mm.addGridCell(2.5, 0, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
-         mm.addGridCell(3.5, 0, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop),
-         mm.addGridCell(4.5, 0, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
-        self.rightCells = [mm.addGridCell(5, 2, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop), mm.addGridCell(5, 1, base.a2dLeft, base.a2dRight, base.a2dBottom, base.a2dTop)]
+        self.leftCells = [
+            mm.addGridCell(0.2, -0.6, base.a2dTopLeft),
+            mm.addGridCell(0.2, -1.0, base.a2dTopLeft),
+            mm.addGridCell(0.2, -1.4, base.a2dTopLeft)
+        ]
+        self.bottomCells = [
+            mm.addGridCell(0.4, 0.2, base.a2dBottomCenter),
+            mm.addGridCell(-0.4, 0.2, base.a2dBottomCenter),
+            mm.addGridCell(-1.0, 0.2, base.a2dBottomCenter),
+            mm.addGridCell(1.0, 0.2, base.a2dBottomCenter)
+        ]
+        self.rightCells = [
+            mm.addGridCell(-0.2, -0.6, base.a2dTopRight),
+            mm.addGridCell(-0.2, -1.0, base.a2dTopRight),
+            mm.addGridCell(-0.2, -1.4, base.a2dTopRight)
+        ]
 
     def setCellsAvailable(self, cell_list, available):
         for cell in cell_list:
@@ -464,9 +473,9 @@ class ToonBase(OTPBase.OTPBase):
 
     def hideGame(self):
         # Hacky, I know, but it works
-        hideCommand = """osascript -e 'tell application "System Events" 
-                                            set frontProcess to first process whose frontmost is true 
-                                            set visible of frontProcess to false 
+        hideCommand = """osascript -e 'tell application "System Events"
+                                            set frontProcess to first process whose frontmost is true
+                                            set visible of frontProcess to false
                                        end tell'"""
         os.system(hideCommand)
 

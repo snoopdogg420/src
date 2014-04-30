@@ -1,4 +1,6 @@
 window-title Toontown Infinite - Retro
+win-origin -1 -1
+win-size 1280 720
 
 cursor-filename phase_3/etc/toonmono.cur
 icon-filename phase_3/etc/icon.ico
