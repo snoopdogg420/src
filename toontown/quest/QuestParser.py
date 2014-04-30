@@ -19,6 +19,7 @@ from otp.speedchat import SpeedChatGlobals
 from toontown.ai import DistributedBlackCatMgr
 from direct.showbase import PythonUtil
 from direct.interval.IntervalGlobal import *
+from otp.nametag.NametagConstants import *
 notify = DirectNotifyGlobal.directNotify.newCategory('QuestParser')
 lineDict = {}
 globalVarDict = {}
@@ -462,10 +463,10 @@ class NPCMoviePlayer(DirectObject.DirectObject):
     def parseLoad(self, line):
         if len(line) == 3:
             token, varName, modelPath = line
-            node = loader.loadModel(modelPath)
+            node = loader.loadModel(modelPath.replace('"', ''))
         elif len(line) == 4:
             token, varName, modelPath, subNodeName = line
-            node = loader.loadModel(modelPath).find('**/' + subNodeName)
+            node = loader.loadModel(modelPath.replace('"', '')).find('**/' + subNodeName)
         else:
             notify.error('invalid parseLoad command')
         self.setVar(varName, node)
