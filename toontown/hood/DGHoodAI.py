@@ -13,6 +13,7 @@ class DGHoodAI(HoodAI):
         self.flower = DistributedDGFlowerAI.DistributedDGFlowerAI(self.air)
         self.flower.generateWithRequired(self.HOOD)
         
-        if simbase.config.GetBool('want-classicchar', 1):
+        if simbase.config.GetBool('want-classicchar', 0):
             self.classicChar = DistributedDaisyAI.DistributedDaisyAI(self.air)
             self.classicChar.generateWithRequired(self.HOOD)
+            self.classicChar.start()

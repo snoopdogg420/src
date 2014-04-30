@@ -12,9 +12,11 @@ class OZHoodAI(HoodAI):
         self.timer = DistributedTimerAI(self.air)
         self.timer.generateWithRequired(self.HOOD)
 
-        if simbase.config.GetBool('want-classicchar', 1):
+        if simbase.config.GetBool('want-classicchar', 0):
             chip = DistributedChipAI.DistributedChipAI(self.air)
             chip.generateWithRequired(self.HOOD)
+            chip.start()
             dale = DistributedDaleAI.DistributedDaleAI(self.air, chip.doId)
             dale.generateWithRequired(self.HOOD)
             chip.setDaleId(dale.doId)
+            dale.start()
