@@ -39,12 +39,12 @@ from toontown.hood import ZoneUtil
 from toontown.toonbase import ToontownGlobals
 
 class DNASpawnerAI:
-        
-    def spawnObjects(self, filename, baseZone):       
+
+    def spawnObjects(self, filename, baseZone):
         dnaStore = DNAStorage()
         dnaData = simbase.air.loadDNAFileAI(dnaStore, filename)
         self._createObjects(dnaData, baseZone)
-        
+
     def _createObjects(self, group, zone):
         if group.getName()[:13] == 'fishing_pond_':
             visGroup = group.getVisGroup()
@@ -59,7 +59,7 @@ class DNASpawnerAI:
             pond.setArea(zone)
             pond.generateWithRequired(pondZone)
             #self.ponds[pondIndex] = pond
-            
+
             bingoManager = DistributedPondBingoManagerAI(simbase.air)
             bingoManager.setPondDoId(pond.getDoId())
             bingoManager.generateWithRequired(pondZone)
@@ -82,10 +82,10 @@ class DNASpawnerAI:
                     h, p, r = posSpot.getHpr()
                     spot.setPosHpr(x, y, z, h, p, r)
                     spot.generateWithRequired(pondZone)
-                    
+
             NPCToons.createNpcsInZone(simbase.air, pondZone)
 
-        
+
         elif isinstance(group, DNALandmarkBuilding):
             if group.getName()[:2] == 'tb' or group.getName()[:2] == 'sz':
                 visGroup = group.getVisGroup()
@@ -103,7 +103,7 @@ class DNASpawnerAI:
                     hqDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_HQ)
                     hqDoor.zoneId = buildingZone
                     hqDoor.generateWithRequired(buildingZone)
-                    
+
                     hqDoor2 = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_HQ, 1)
                     hqDoor2.zoneId = buildingZone
                     hqDoor2.generateWithRequired(buildingZone)
@@ -124,21 +124,21 @@ class DNASpawnerAI:
                     hqInterior = DistributedHQInteriorAI(simbase.air)
                     hqInterior.setZoneIdAndBlock(interiorZone, 0)
                     hqInterior.generateWithRequired(interiorZone)
-					
+
                     NPCToons.createNpcsInZone(simbase.air, interiorZone)
                 elif type == 'kartshop':
                     ksInterior = DistributedKartShopInteriorAI(simbase.air)
                     ksInterior.setZoneIdAndBlock(interiorZone, 0)
                     ksInterior.generateWithRequired(interiorZone)
-                
+
                     ksDoor = DistributedDoorAI(simbase.air, 1, DoorTypes.EXT_KS, 1)
                     ksDoor.zoneId = buildingZone
                     ksDoor.generateWithRequired(buildingZone)
-                    
+
                     ksDoor2 = DistributedDoorAI(simbase.air, 1, DoorTypes.EXT_KS, 2)
                     ksDoor2.zoneId = buildingZone
                     ksDoor2.generateWithRequired(buildingZone)
-                    
+
                     ksDoorInt = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_KS, 1)
                     ksDoorInt.zoneId = interiorZone
                     ksDoorInt.setOtherDoor(ksDoor)
@@ -148,45 +148,45 @@ class DNASpawnerAI:
                     ksDoorInt2.zoneId = interiorZone
                     ksDoorInt2.setOtherDoor(ksDoor2)
                     ksDoorInt2.generateWithRequired(interiorZone)
-                    
+
                     ksDoor.setOtherDoor(ksDoorInt)
                     ksDoor2.setOtherDoor(ksDoorInt2)
-                    
+
                     NPCToons.createNpcsInZone(simbase.air, interiorZone)
                 elif type == 'petshop':
                     interior = DistributedPetshopInteriorAI(simbase.air)
                     interior.setZoneIdAndBlock(interiorZone, 0)
                     interior.generateWithRequired(interiorZone)
-                    
+
                     extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD, 1)
                     extDoor.zoneId = buildingZone
                     extDoor.generateWithRequired(buildingZone)
-                    
+
                     intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
                     intDoor.zoneId = interiorZone
                     intDoor.setOtherDoor(extDoor)
                     intDoor.generateWithRequired(interiorZone)
-                    
+
                     extDoor.setOtherDoor(intDoor)
-                    
+
                     NPCToons.createNpcsInZone(simbase.air, interiorZone)
 
                 elif type == 'gagshop':
                     interior = DistributedGagshopInteriorAI(simbase.air)
                     interior.setZoneIdAndBlock(interiorZone, 0)
                     interior.generateWithRequired(interiorZone)
-                    
+
                     extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD, 1)
                     extDoor.zoneId = buildingZone
                     extDoor.generateWithRequired(buildingZone)
-                    
+
                     intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
                     intDoor.zoneId = interiorZone
                     intDoor.setOtherDoor(extDoor)
                     intDoor.generateWithRequired(interiorZone)
-                    
+
                     extDoor.setOtherDoor(intDoor)
-                    
+
                     NPCToons.createNpcsInZone(simbase.air, interiorZone)
                 else:
                     if group.getName() == 'sz13:toon_landmark_TT_toonhall_DNARoot':
@@ -194,36 +194,36 @@ class DNASpawnerAI:
                         interior.setZoneIdAndBlock(interiorZone, 0)
                         interior.setState('toon')
 			interior.generateWithRequired(interiorZone)
-						
+
 			extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD)
 			extDoor.zoneId = buildingZone
 			extDoor.generateWithRequired(buildingZone)
-			
+
 			intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
 			intDoor.zoneId = interiorZone
 			intDoor.setOtherDoor(extDoor)
 			intDoor.generateWithRequired(interiorZone)
-			
+
 			extDoor.setOtherDoor(intDoor)
-			
+
 			NPCToons.createNpcsInZone(simbase.air, interiorZone)
                     else:
                         interior = DistributedToonInteriorAI(simbase.air)
                         interior.setZoneIdAndBlock(interiorZone, 0)
                         interior.setState('toon')
                         interior.generateWithRequired(interiorZone)
-                        
+
                         extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD, 1)
                         extDoor.zoneId = buildingZone
                         extDoor.generateWithRequired(buildingZone)
-                        
+
                         intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
                         intDoor.zoneId = interiorZone
                         intDoor.setOtherDoor(extDoor)
                         intDoor.generateWithRequired(interiorZone)
-                        
+
                         extDoor.setOtherDoor(intDoor)
-                        
+
                         NPCToons.createNpcsInZone(simbase.air, interiorZone)
         elif isinstance(group, DNAFlatDoor):
             building = group.getParent().getParent()
@@ -239,7 +239,7 @@ class DNASpawnerAI:
         elif group.getName()[:10] == 'racing_pad':
             index, dest = group.getName()[11:].split('_', 2)
             index = int(index)
-            
+
             pad = DistributedRacePadAI(simbase.air)
             pad.setArea(zone)
             pad.nameType = dest
@@ -259,31 +259,17 @@ class DNASpawnerAI:
                     startingBlock.setPadLocationId(index)
                     startingBlock.generateWithRequired(zone)
                     pad.addStartingBlock(startingBlock)
-                    
+
         elif group.getName()[:10] == 'golf_kart_':
-            difficulty, course = group.getName()[10:].split('_', 2)
-            difficulty = int(difficulty)
-            course = int(course)
-            
+            golfCourse = int(group.getName()[10:].split('_', 2)[0])
             for i in range(group.getNumChildren()):
                 posSpot = group.at(i)
                 if posSpot.getName()[:14] == 'starting_block':
-                    spotIndex = int(posSpot.getName()[15:])
                     x, y, z = posSpot.getPos()
                     h, p, r = posSpot.getHpr()
-                    golfKart = DistributedGolfKartAI(simbase.air)
-                    golfKart.setPosHpr(x, y, z, h, p, r)
-                    golfKart.setGolfCourse(course)
-                    golfKart.setGolfZone(difficulty)
-                    if difficulty == 2:
-                        golfKart.setColor(255, 0, 0)
-                    elif difficulty == 1:
-                        golfKart.setColor(255, 255, 0)
-                    elif difficulty == 0:
-                        golfKart.setColor(0, 255, 0)
+                    golfKart = DistributedGolfKartAI(simbase.air, golfCourse, x, y, z, h, p, r)
                     golfKart.generateWithRequired(ToontownGlobals.GolfZone)
-                
-			
+                    golfKart.start()
         elif group.getName()[:11] == 'viewing_pad':
             pad = DistributedViewPadAI(simbase.air)
             pad.setArea(zone)
