@@ -144,11 +144,15 @@ class MakeAToon(StateData.StateData):
          guiAcceptDown,
          guiAcceptUp,
          guiAcceptDown), image_scale=halfButtonScale, image1_scale=halfButtonHoverScale, image2_scale=halfButtonHoverScale, pos=(1.165, 0, -0.018), command=self.__handleNext, text=('', TTLocalizer.MakeAToonDone, TTLocalizer.MakeAToonDone), text_font=ToontownGlobals.getInterfaceFont(), text_scale=0.08, text_align=TextNode.ARight, text_pos=(0.13, 0.13), text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1))
+        self.guiCheckButton.setPos(-0.61, 0, 0.13)
+        self.guiCheckButton.reparentTo(base.a2dBottomRight)
         self.guiCheckButton.hide()
         self.guiCancelButton = DirectButton(parent=self.guiBottomBar, relief=None, image=(guiCancelUp,
          guiCancelDown,
          guiCancelUp,
          guiCancelDown), image_scale=halfButtonScale, image1_scale=halfButtonHoverScale, image2_scale=halfButtonHoverScale, pos=(-1.179, 0, -0.011), command=self.__handleCancel, text=('', TTLocalizer.MakeAToonCancel, TTLocalizer.MakeAToonCancel), text_font=ToontownGlobals.getInterfaceFont(), text_scale=TTLocalizer.MATguiCancelButton, text_pos=(0, 0.115), text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1))
+        self.guiCancelButton.setPos(0.13,0,0.13)
+        self.guiCancelButton.reparentTo(base.a2dBottomLeft)
         self.guiCancelButton.hide()
         self.guiNextButton = DirectButton(parent=self.guiBottomBar, relief=None, image=(guiNextUp,
          guiNextDown,
@@ -157,6 +161,8 @@ class MakeAToon(StateData.StateData):
          TTLocalizer.MakeAToonNext,
          TTLocalizer.MakeAToonNext,
          ''), text_font=ToontownGlobals.getInterfaceFont(), text_scale=TTLocalizer.MATguiNextButton, text_pos=(0, 0.115), text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1))
+        self.guiNextButton.setPos(-0.13, 0, 0.13)
+        self.guiNextButton.reparentTo(base.a2dBottomRight)
         self.guiNextButton.hide()
         self.guiLastButton = DirectButton(parent=self.guiBottomBar, relief=None, image=(guiNextUp,
          guiNextDown,
@@ -165,18 +171,22 @@ class MakeAToon(StateData.StateData):
          TTLocalizer.MakeAToonLast,
          TTLocalizer.MakeAToonLast,
          ''), text_font=ToontownGlobals.getInterfaceFont(), text_scale=0.08, text_pos=(0, 0.115), text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1))
+        self.guiLastButton.setPos(-0.37, 0, 0.13)
+        self.guiLastButton.reparentTo(base.a2dBottomRight)
         self.guiLastButton.hide()
         self.rotateLeftButton = DirectButton(parent=self.guiBottomBar, relief=None, image=(rotateUp,
          rotateDown,
          rotateUp,
-         rotateDown), image_scale=(-0.4, 0.4, 0.4), image1_scale=(-0.5, 0.5, 0.5), image2_scale=(-0.5, 0.5, 0.5), pos=(-0.329249, 0, 0.202961))
+         rotateDown), image_scale=(-0.4, 0.4, 0.4), image1_scale=(-0.5, 0.5, 0.5), image2_scale=(-0.5, 0.5, 0.5), pos=(-0.355, 0, 0.36))
+        self.rotateLeftButton.reparentTo(base.a2dBottomCenter)
         self.rotateLeftButton.hide()
         self.rotateLeftButton.bind(DGG.B1PRESS, self.rotateToonLeft)
         self.rotateLeftButton.bind(DGG.B1RELEASE, self.stopToonRotateLeftTask)
         self.rotateRightButton = DirectButton(parent=self.guiBottomBar, relief=None, image=(rotateUp,
          rotateDown,
          rotateUp,
-         rotateDown), image_scale=(0.4, 0.4, 0.4), image1_scale=(0.5, 0.5, 0.5), image2_scale=(0.5, 0.5, 0.5), pos=(0.309534, 0, 0.206116))
+         rotateDown), image_scale=(0.4, 0.4, 0.4), image1_scale=(0.5, 0.5, 0.5), image2_scale=(0.5, 0.5, 0.5), pos=(0.355, 0, 0.36))
+        self.rotateRightButton.reparentTo(base.a2dBottomCenter)
         self.rotateRightButton.hide()
         self.rotateRightButton.bind(DGG.B1PRESS, self.rotateToonRight)
         self.rotateRightButton.bind(DGG.B1RELEASE, self.stopToonRotateRightTask)

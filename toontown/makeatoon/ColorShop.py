@@ -79,6 +79,8 @@ class ColorShop(StateData.StateData):
         shuffleArrowRollover = self.gui.find('**/tt_t_gui_mat_shuffleArrowUp')
         shuffleArrowDisabled = self.gui.find('**/tt_t_gui_mat_shuffleArrowDisabled')
         self.parentFrame = DirectFrame(relief=DGG.RAISED, pos=(0.98, 0, 0.416), frameColor=(1, 0, 0, 0))
+        self.parentFrame.setPos(-0.36, 0, -0.5)
+        self.parentFrame.reparentTo(base.a2dTopRight)
         self.toonFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.073), hpr=(0, 0, 0), scale=1.3, frameColor=(1, 1, 1, 1), text=TTLocalizer.ColorShopToon, text_scale=TTLocalizer.CStoonFrame, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
         self.allLButton = DirectButton(parent=self.toonFrame, relief=None, image=(shuffleArrowUp,
          shuffleArrowDown,

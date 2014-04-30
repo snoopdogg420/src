@@ -37,6 +37,8 @@ class ClothesGUI(StateData.StateData):
         shuffleArrowRollover = self.gui.find('**/tt_t_gui_mat_shuffleArrowUp')
         shuffleArrowDisabled = self.gui.find('**/tt_t_gui_mat_shuffleArrowDisabled')
         self.parentFrame = DirectFrame(relief=DGG.RAISED, pos=(0.98, 0, 0.416), frameColor=(1, 0, 0, 0))
+        self.parentFrame.setPos(-0.36, 0, -0.5)
+        self.parentFrame.reparentTo(base.a2dTopRight)
         self.shirtFrame = DirectFrame(parent=self.parentFrame, image=shuffleFrame, image_scale=halfButtonInvertScale, relief=None, pos=(0, 0, -0.4), hpr=(0, 0, 3), scale=1.2, frameColor=(1, 1, 1, 1), text=TTLocalizer.ClothesShopShirt, text_scale=0.0575, text_pos=(-0.001, -0.015), text_fg=(1, 1, 1, 1))
         self.topLButton = DirectButton(parent=self.shirtFrame, relief=None, image=(shuffleArrowUp,
          shuffleArrowDown,
