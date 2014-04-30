@@ -20,7 +20,6 @@ class DistributedElevator(DistributedObject.DistributedObject):
     JumpOutOffsets = JumpOutOffsets
 
     def __init__(self, cr):
-        print "distelevator.__init__"
         DistributedObject.DistributedObject.__init__(self, cr)
         self.bldgRequest = None
         self.toonRequests = {}
@@ -57,7 +56,6 @@ class DistributedElevator(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.generate(self)
 
     def setupElevator(self):
-        print "elev_setup"
         collisionRadius = ElevatorData[self.type]['collRadius']
         self.elevatorSphere = CollisionSphere(0, 5, 0, collisionRadius)
         self.elevatorSphere.setTangible(0)
@@ -74,7 +72,6 @@ class DistributedElevator(DistributedObject.DistributedObject):
         self.finishSetup()
 
     def finishSetup(self):
-        print "elev_finish_setup"
         self.isSetup = 1
         self.offsetNP = self.getElevatorModel().attachNewNode('dummyNP')
         if self.__preSetupState:
@@ -151,7 +148,6 @@ class DistributedElevator(DistributedObject.DistributedObject):
             self.notify.error('gotToon: already had got toon in slot %s.' % index)
 
     def setState(self, state, timestamp):
-        print "elevator state", state
         if self.isSetup:
             self.fsm.request(state, [globalClockDelta.localElapsedTime(timestamp)])
         else:
@@ -365,7 +361,6 @@ class DistributedElevator(DistributedObject.DistributedObject):
             place.fsm.request('walk')
 
     def rejectBoard(self, avId, reason = 0):
-        print 'rejectBoard %s' % reason
         if hasattr(base.localAvatar, 'elevatorNotifier'):
             if reason == REJECT_SHUFFLE:
                 base.localAvatar.elevatorNotifier.showMe(TTLocalizer.ElevatorHoppedOff)
