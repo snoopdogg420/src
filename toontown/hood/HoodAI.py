@@ -7,6 +7,7 @@ from toontown.town.StreetAI import StreetAI
 from toontown.safezone.SZTreasurePlannerAI import SZTreasurePlannerAI
 
 from toontown.dna.DNASpawnerAI import DNASpawnerAI
+from direct.directnotify.DirectNotifyGlobal import *
 
 class HoodAI:
     """
@@ -16,6 +17,9 @@ class HoodAI:
     HoodAIs are responsible for spawning all TreasurePlanners, SuitPlanners,
     ponds, and other safezone objects, etc.
     """
+
+    notify = directNotify.newCategory('HoodAI')
+    notify.setInfo(True)
 
     HOOD = None
 
@@ -54,5 +58,6 @@ class HoodAI:
 
     def spawnObjects(self):
         filename = self.air.genDNAFileName(self.safezone)
+        self.notify.info('Reading DNA file... ' + filename)
 
         DNASpawnerAI().spawnObjects(filename, self.safezone)
