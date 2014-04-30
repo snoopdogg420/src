@@ -46,10 +46,10 @@ class TTILauncher(LauncherBase):
         sys.stderr = logErr
 
     def getPlayToken(self):
-        return self.getValue('TTI-R_PLAYCOOKIE')
+        return self.getValue('TTI_PLAYCOOKIE')
 
     def getGameServer(self):
-        return self.getValue('TTI-R_GAMESERVER')
+        return self.getValue('TTI_GAMESERVER')
 
     def setPandaErrorCode(self, code):
         pass
