@@ -175,3 +175,6 @@ class ToontownAIRepository(ToontownInternalRepository):
 
     def loadDNAFileAI(self, dnastore, filename):
         return loadDNAFileAI(dnastore, filename)
+        
+    def trueUniqueName(self, name):
+       return self.uniqueName(name)
