@@ -20,8 +20,8 @@ import __builtin__
 try:
     launcher
 except:
-    from toontown.launcher.TTRLauncher import TTRLauncher
-    launcher = TTRLauncher()
+    from toontown.launcher.TTILauncher import TTILauncher
+    launcher = TTILauncher()
     __builtin__.launcher = launcher
 
 pollingDelay = 0.5
