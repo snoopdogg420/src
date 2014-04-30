@@ -9,6 +9,7 @@ class MMHoodAI(HoodAI):
         HoodAI.createSafeZone(self)
         self.spawnObjects()
         
-        if simbase.config.GetBool('want-classicchar', 1):
+        if simbase.config.GetBool('want-classicchar', 0):
             self.classicChar = DistributedMinnieAI.DistributedMinnieAI(self.air)
             self.classicChar.generateWithRequired(self.HOOD)
+            self.classicChar.start()
