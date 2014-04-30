@@ -27,6 +27,7 @@ class QuestManagerAI():
                         npc.presentTrackChoice(avId, questId, 0)
                     else:
                         npc.completeQuest(avId, questId, rewardId)
+			self.completeQuest(toon, questId)
                     break
                 #Needed NPC?
                 elif npc.npcId == toNpcId:
@@ -56,7 +57,7 @@ class QuestManagerAI():
     def avatarChoseTrack(self, avId, pendingTrackQuest, trackId):
         pass
     
-    def completeQuest(self, toon, questId):
+    def completeQuest(self, toon, completeQuestId):
         toonQuests = toon.getQuests()
 		
         for i in range(0, len(toonQuests), 5):
@@ -64,7 +65,8 @@ class QuestManagerAI():
             questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc            
             questClass = Quests.getQuest(questId)
 			
-	    if questId == questId:
+	    if questId == completeQuestId:
+		toon.removeQuest(questId)
 		break
 	else:
 	    #Completing a quest they dont have? :/
