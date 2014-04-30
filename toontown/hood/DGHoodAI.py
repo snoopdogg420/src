@@ -1,15 +1,18 @@
 from toontown.toonbase import ToontownGlobals
-from toontown.safezone.DistributedDGFlowerAI import DistributedDGFlowerAI
+from toontown.safezone import DistributedDGFlowerAI
+from toontown.classicchars import DistributedDaisyAI
 from HoodAI import HoodAI
-from toontown.dna.DNAParser import DNAStorage
-from toontown.toon import NPCToons
-from toontown.safezone import ButterflyGlobals
-from toontown.safezone.DistributedButterflyAI import DistributedButterflyAI
 
 class DGHoodAI(HoodAI):
     HOOD = ToontownGlobals.DaisyGardens
 
     def createSafeZone(self):
         HoodAI.createSafeZone(self)
-
         self.spawnObjects()
+        
+        self.flower = DistributedDGFlowerAI.DistributedDGFlowerAI(self.air)
+        self.flower.generateWithRequired(self.HOOD)
+        
+        if simbase.config.GetBool('want-classicchar', 1):
+            self.classicChar = DistributedDaisyAI.DistributedDaisyAI(self.air)
+            self.classicChar.generateWithRequired(self.HOOD)

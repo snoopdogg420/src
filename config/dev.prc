@@ -35,8 +35,8 @@ want-pets #f
 want-news-page #f
 want-news-tab #f
 want-housing #t
-want-doomsday #t
 want-april-toons #f
 want-dev #f
 want-old-fireworks #f
 want-instant-parties #t
+want-classicchar #f
