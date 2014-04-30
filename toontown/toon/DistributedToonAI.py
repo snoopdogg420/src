@@ -1,4 +1,3 @@
-# Yay it works
 from otp.ai.AIBaseGlobal import *
 from pandac.PandaModules import *
 from otp.otpbase import OTPGlobals
@@ -1421,13 +1420,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             nextPart = CogDisguiseGlobals.getNextPart(self.getCogParts(), partTypeId, dept)
             if nextPart:
                 break
-
         if nextPart:
             self.giveCogPart(nextPart, dept)
             return nextPart
-        else:
-            return None
-        return None
 
     def takeCogPart(self, part, dept):
         dept = CogDisguiseGlobals.dept2deptIndex(dept)
@@ -5155,7 +5150,7 @@ def givePies(pieType, numPies=0):
         return "numPies value out of range (0-99)"
     av.b_setPieType(pieType)
     av.b_setNumPies(numPies)
-    
+
 @magicWord(category=CATEGORY_OVERRIDE, types=[int])
 def setBonus(trackId):
     av = spellbook.getTarget()
@@ -5208,7 +5203,7 @@ def locate(avIdShort=0, returnType=''):
     if interior:
         return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
     return "%s has been located %s %s." % (av.getName(), where[1], where[2])
-    
+
 @magicWord(category=CATEGORY_CHARACTERSTATS)
 def writeDna():
     target = spellbook.getTarget()
@@ -5218,10 +5213,10 @@ def writeDna():
 Toon Dna = %s
 Toon Hat = %s
 Toon Glasses = %s
-Toon Backpack = %s 
+Toon Backpack = %s
 Toon Shoes = %s''' % (target.getName(), target.getDNAString().encode('string_escape'), target.getHat()[0], target.getGlasses()[0], target.getBackpack()[0], target.getShoes()[0])
     file.write(dna)
     file.close
     return '%s dna written to the file %s' % (target.getName(), filename)
 
-    
+

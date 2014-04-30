@@ -18,6 +18,8 @@ from otp.ai.AIZoneData import *
 from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.coghq import MintManagerAI, FactoryManagerAI, LawOfficeManagerAI, CountryClubManagerAI
 from toontown.pets import PetManagerAI
+from toontown.ai import CogSuitManagerAI
+from toontown.ai import PromotionManagerAI
 
 #friends!
 from otp.friends.FriendManagerAI import FriendManagerAI
@@ -59,12 +61,15 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.doLiveUpdates = False
 
         self.questManager = QuestManagerAI(self)
-        
+
         self.holidayManager = HolidayManagerAI()
 
         self.fishManager = FishManagerAI()
 
         self.petMgr = PetManagerAI.PetManagerAI(self)
+
+        self.cogSuitMgr = CogSuitManagerAI.CogSuitManagerAI(self)
+        self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
 
         self.mintMgr = MintManagerAI.MintManagerAI(self)
         self.factoryMgr = FactoryManagerAI.FactoryManagerAI(self)

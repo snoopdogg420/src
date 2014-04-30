@@ -96,19 +96,12 @@ class DistributedFactoryAI(DistributedLevelAI.DistributedLevelAI, FactoryBase.Fa
             if toon is not None:
                 activeVictors.append(toon)
                 activeVictorIds.append(victorId)
-
         scenario = 0
-        description = '%s|%s|%s|%s' % (self.factoryId,
-         self.entranceId,
-         scenario,
-         activeVictorIds)
+        description = '%s|%s|%s|%s' % (self.factoryId, self.entranceId, scenario, activeVictorIds)
         for avId in activeVictorIds:
             self.air.writeServerEvent('factoryDefeated', avId, description)
-
-        #for toon in activeVictors:
-        #    simbase.air.questManager.toonDefeatedFactory(toon, self.factoryId, activeVictors)
-
-        return
+        for toon in activeVictors:
+            simbase.air.questManager.toonDefeatedFactory(toon, self.factoryId, activeVictors)
 
     def b_setDefeated(self):
         self.d_setDefeated()
