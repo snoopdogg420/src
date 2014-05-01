@@ -1,3 +1,5 @@
+from direct.directnotify.DirectNotifyGlobal import *
+
 # For DNAParsing
 from DNAParser import DNAVisGroup, DNALandmarkBuilding, DNAStorage, DNAFlatDoor
 
@@ -14,6 +16,10 @@ from toontown.building import DoorTypes
 
 #For Golf
 from toontown.safezone.DistributedGolfKartAI import DistributedGolfKartAI
+
+# For Outdoor Playground
+# from toontown.safezone import DistributedGameTableAI  # For a future update
+from toontown.safezone import DistributedPicnicBasketAI
 
 # For GSW playground
 from toontown.racing.DistributedRacePadAI import DistributedRacePadAI
@@ -39,6 +45,7 @@ from toontown.hood import ZoneUtil
 from toontown.toonbase import ToontownGlobals
 
 class DNASpawnerAI:
+    notify = directNotify.newCategory('DNASpawnerAI')
 
     def spawnObjects(self, filename, baseZone):
         dnaStore = DNAStorage()
@@ -193,20 +200,20 @@ class DNASpawnerAI:
                         interior = DistributedToonHallInteriorAI(simbase.air)
                         interior.setZoneIdAndBlock(interiorZone, 0)
                         interior.setState('toon')
-			interior.generateWithRequired(interiorZone)
+                        interior.generateWithRequired(interiorZone)
 
-			extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD)
-			extDoor.zoneId = buildingZone
-			extDoor.generateWithRequired(buildingZone)
+                        extDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_STANDARD)
+                        extDoor.zoneId = buildingZone
+                        extDoor.generateWithRequired(buildingZone)
 
-			intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
-			intDoor.zoneId = interiorZone
-			intDoor.setOtherDoor(extDoor)
-			intDoor.generateWithRequired(interiorZone)
+                        intDoor = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_STANDARD)
+                        intDoor.zoneId = interiorZone
+                        intDoor.setOtherDoor(extDoor)
+                        intDoor.generateWithRequired(interiorZone)
 
-			extDoor.setOtherDoor(intDoor)
+                        extDoor.setOtherDoor(intDoor)
 
-			NPCToons.createNpcsInZone(simbase.air, interiorZone)
+                        NPCToons.createNpcsInZone(simbase.air, interiorZone)
                     else:
                         interior = DistributedToonInteriorAI(simbase.air)
                         interior.setZoneIdAndBlock(interiorZone, 0)
@@ -286,6 +293,22 @@ class DNASpawnerAI:
                     startingBlock.setPadLocationId(0)
                     startingBlock.generateWithRequired(zone)
                     pad.addStartingBlock(startingBlock)
+        elif group.getName()[:11] == 'game_table_':
+            if not simbase.config.GetBool('want-game-tables', 0):
+                return
+            self.notify.warning('Failed to create game tables.')
+        elif group.getName()[:13] == 'picnic_table_':
+            nameInfo = group.getName().split('_')
+            for i in range(group.getNumChildren()):
+                posSpot = group.at(i)
+                if 'picnic_table' in posSpot.getName():
+                    pos = posSpot.getPos()
+                    hpr = posSpot.getHpr()
+                    picnicTable = DistributedPicnicBasketAI.DistributedPicnicBasketAI(
+                        simbase.air, nameInfo[2],
+                        pos[0], pos[1], pos[2], hpr[0], hpr[1], hpr[2])
+                    picnicTable.generateWithRequired(zone)
+                    picnicTable.start()
         if group.getName()[:15] == 'prop_party_gate':
             gate = DistributedPartyGateAI(simbase.air)
             gate.setArea(zone)
