@@ -7,7 +7,7 @@ icon-filename phase_3/etc/icon.ico
 
 default-model-extension .bam
 
-model-path resources
+model-path ../RetroResources
 model-cache-models #t
 model-cache-textures #t
 
@@ -40,4 +40,4 @@ want-dev #f
 want-old-fireworks #f
 want-instant-parties #t
 want-classicchar #f
-want-game-tables #f
+want-game-tables #t

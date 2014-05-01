@@ -18,7 +18,7 @@ from toontown.building import DoorTypes
 from toontown.safezone.DistributedGolfKartAI import DistributedGolfKartAI
 
 # For Outdoor Playground
-# from toontown.safezone import DistributedGameTableAI  # For a future update
+from toontown.safezone import DistributedGameTableAI
 from toontown.safezone import DistributedPicnicBasketAI
 
 # For GSW playground
@@ -296,7 +296,14 @@ class DNASpawnerAI:
         elif group.getName()[:11] == 'game_table_':
             if not simbase.config.GetBool('want-game-tables', 0):
                 return
-            self.notify.warning('Failed to create game tables.')
+            for i in range(group.getNumChildren()):
+                posSpot = group.at(i)
+                if 'game_table' in posSpot.getName():
+                    pos = posSpot.getPos()
+                    hpr = posSpot.getHpr()
+                    gameTable = DistributedGameTableAI.DistributedGameTableAI(simbase.air)
+                    gameTable.setPosHpr(pos[0], pos[1], pos[2], hpr[0], hpr[1], hpr[2])
+                    gameTable.generateWithRequired(zone)
         elif group.getName()[:13] == 'picnic_table_':
             nameInfo = group.getName().split('_')
             for i in range(group.getNumChildren()):
