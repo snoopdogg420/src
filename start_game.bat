@@ -3,7 +3,7 @@
 set /P ttiUsername="Username (DEFAULT: username): " || ^
 set ttiUsername=username
 set ttiPassword=password
-set TTI_PLAYCOOKIE=%tti-rUsername%
+set TTI_PLAYCOOKIE=%ttiUsername%
 set /P TTI_GAMESERVER="Client Agent IP (DEFAULT: 198.100.156.180): " || ^
 set TTI_GAMESERVER=198.100.156.180
 
