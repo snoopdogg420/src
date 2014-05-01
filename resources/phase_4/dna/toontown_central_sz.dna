@@ -801,13 +801,13 @@ group "toontownCentral" [
      color [ 0.88 0.45 0.38 1 ]
     ]    
     sign [
-     pos [ 0 0 -1.13 ]
-     scale [ 1.2 1 1.2 ]
+     pos [ 0 0 -1.15 ]
+     scale [ 1.1 1 1.1 ]
      baseline [
       code [ "mickey" ]
       color [ 1 1 0 1 ]
-      pos [ 0.3 0 -1.4 ]
-      scale [ 2.2 1 2.3 ]
+      pos [ 0.3 0 -0.8 ]
+      scale [ 2.0 1 2.2 ]
       kern [ -0.099751 ]
       width [ 134.553 ]
       height [ 134.553 ]
@@ -840,33 +840,6 @@ group "toontownCentral" [
       ]
       text [
        letters [ "L" ]
-      ]
-     ]
-     baseline [
-      code [ "mickey" ]
-      color [ 1 1 0 1 ]
-      pos [ 0 0 1.08 ]
-      scale [ 1.7 1 1.7 ]
-      kern [ -0.108469 ]
-      width [ 19.1721 ]
-      height [ 19.1721 ]
-      text [
-       letters [ "m" ]
-      ]
-      text [
-       letters [ "i" ]
-      ]
-      text [
-       letters [ "c" ]
-      ]
-      text [
-       letters [ "k" ]
-      ]
-      text [
-       letters [ "e" ]
-      ]
-      text [
-       letters [ "y" ]
       ]
      ]
     ]
