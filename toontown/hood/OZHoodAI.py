@@ -9,6 +9,9 @@ class OZHoodAI(HoodAI):
     
     def createSafeZone(self):
         HoodAI.createTreasurePlanner(self)
+
+        self.spawnObjects()
+
         self.timer = DistributedTimerAI(self.air)
         self.timer.generateWithRequired(self.HOOD)
 
@@ -16,7 +19,9 @@ class OZHoodAI(HoodAI):
             chip = DistributedChipAI.DistributedChipAI(self.air)
             chip.generateWithRequired(self.HOOD)
             chip.start()
+
             dale = DistributedDaleAI.DistributedDaleAI(self.air, chip.doId)
             dale.generateWithRequired(self.HOOD)
-            chip.setDaleId(dale.doId)
             dale.start()
+
+            chip.setDaleId(dale.doId)
