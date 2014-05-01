@@ -1039,12 +1039,12 @@ group "theBurrrgh" [
     sign [
      code [ "tunnel_sign_blue" ]
      pos [ 0 0 -0.830334 ]
-     scale [ 1.18118 1 1.20103 ]
+     scale [ 1.6 1 1.6 ]
      baseline [
       code [ "mickey" ]
       color [ 0 0.501961 0.752941 1 ]
       pos [ 0.0633007 0 -0.559566 ]
-      scale [ 1.68608 1 1.31726 ]
+      scale [ 1.5 1 1.5 ]
       kern [ -0.00178057 ]
       stomp [ 0.0262698 ]
       width [ 37.081 ]

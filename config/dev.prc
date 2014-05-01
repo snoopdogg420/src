@@ -39,4 +39,4 @@ want-april-toons #f
 want-dev #f
 want-old-fireworks #f
 want-instant-parties #t
-want-classicchar #f
+want-classicchar #t
