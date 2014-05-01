@@ -9,12 +9,12 @@ from toontown.toonbase import TTLocalizer
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toontowngui import TeaserPanel
 #from toontown.toonbase import UserFunnel
-NAME_ROTATIONS = (7, -11, 1, -5, 3.5, -5)
-NAME_POSITIONS = ((0, 0, 0.26),
- (-0.03, 0, 0.25),
+NAME_ROTATIONS = (0, 0, 0, 0, 0, 0)
+NAME_POSITIONS = ((0, 0, 0.16),
+ (0, 0, 0.3),
  (0, 0, 0.27),
- (-0.03, 0, 0.25),
- (0.03, 0, 0.26),
+ (0, 0, 0.25),
+ (0, 0, 0.26),
  (0, 0, 0.26))
 DELETE_POSITIONS = ((0.187, 0, -0.26),
  (0.31, 0, -0.167),
@@ -66,6 +66,8 @@ class AvatarChoice(DirectButton):
         self.buttonBgs.append(self.pickAToonGui.find('**/tt_t_gui_pat_squareBlue'))
         self.buttonBgs.append(self.pickAToonGui.find('**/tt_t_gui_pat_squarePink'))
         self.buttonBgs.append(self.pickAToonGui.find('**/tt_t_gui_pat_squareYellow'))
+        for button in self.buttonBgs:
+            button.hide()
         self['image'] = self.buttonBgs[position]
         self.setScale(1.01)
         if self.mode is AvatarChoice.MODE_LOCKED:
@@ -102,7 +104,7 @@ class AvatarChoice(DirectButton):
             self['text'] = ('', TTLocalizer.AvatarChoicePlayThisToon, TTLocalizer.AvatarChoicePlayThisToon)
             self['text_scale'] = TTLocalizer.ACplayThisToon
             self['text_fg'] = (1, 0.9, 0.1, 1)
-            self.nameText = DirectLabel(parent=self, relief=None, scale=0.08, pos=NAME_POSITIONS[position], text=self.name, hpr=(0, 0, NAME_ROTATIONS[position]), text_fg=(1, 1, 1, 1), text_shadow=(0, 0, 0, 1), text_wordwrap=8, text_font=ToontownGlobals.getToonFont(), state=DGG.DISABLED)
+            self.nameText = DirectLabel(parent=self, relief=None, scale=0.08, pos=NAME_POSITIONS[position], text=self.name, hpr=(0, 0, NAME_ROTATIONS[position]), text_fg=(1, 1, 1, 1), text_wordwrap=8, text_font=ToontownGlobals.getToonFont(), state=DGG.DISABLED)
             if self.approvedName != '':
                 self.nameText['text'] = self.approvedName
             guiButton = loader.loadModel('phase_3/models/gui/quit_button')
