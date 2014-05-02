@@ -13,11 +13,11 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
 import random
 MAX_AVATARS = 6
-POSITIONS = (Vec3(-0.860167, 0, 0.349333),
- Vec3(0, 0, 0.326533),
+POSITIONS = (Vec3(-0.860167, 0, 0.359333),
+ Vec3(0, 0, 0.346533),
  Vec3(0.848, 0, 0.3293),
  Vec3(-0.863554, 0, -0.445659),
- Vec3(0.00799999, 0, -0.5381),
+ Vec3(0.00799999, 0, -0.5481),
  Vec3(0.894907, 0, -0.445659))
 COLORS = (Vec4(0.917, 0.164, 0.164, 1),
  Vec4(0.152, 0.75, 0.258, 1),
@@ -89,12 +89,10 @@ class AvatarChooser(StateData.StateData):
         self.pickAToonBG = newGui.find('**/tt_t_gui_pat_background')
         self.pickAToonBG.reparentTo(hidden)
         self.pickAToonBG.setPos(0.0, 2.73, 0.0)
-        self.pickAToonBG.setScale(1, 1, 1)
+        self.pickAToonBG.setScale(1.5, 1, 1)
         self.title = OnscreenText(TTLocalizer.AvatarChooserPickAToon, scale=TTLocalizer.ACtitle, parent=hidden, font=ToontownGlobals.getSignFont(), fg=(1, 0.9, 0.1, 1), pos=(0.0, 0.82))
         quitHover = gui.find('**/QuitBtn_RLVR')
         self.quitButton = DirectButton(image=(quitHover, quitHover, quitHover), relief=None, text=TTLocalizer.AvatarChooserQuit, text_font=ToontownGlobals.getSignFont(), text_fg=(0.977, 0.816, 0.133, 1), text_pos=TTLocalizer.ACquitButtonPos, text_scale=TTLocalizer.ACquitButton, image_scale=1, image1_scale=1.05, image2_scale=1.05, scale=1.05, pos=(1.08, 0, -0.907), command=self.__handleQuit)
-        self.quitButton.setPos(-0.25,0,0.07)
-        self.quitButton.reparentTo(base.a2dBottomRight)
         self.logoutButton = DirectButton(relief=None, image=(quitHover, quitHover, quitHover), text=TTLocalizer.OptionsPageLogout, text_font=ToontownGlobals.getSignFont(), text_fg=(0.977, 0.816, 0.133, 1), text_scale=TTLocalizer.AClogoutButton, text_pos=(0, -0.035), pos=(-1.17, 0, -0.914), image_scale=1.15, image1_scale=1.15, image2_scale=1.18, scale=0.5, command=self.__handleLogoutWithoutConfirm)
         self.logoutButton.hide()
         gui.removeNode()
