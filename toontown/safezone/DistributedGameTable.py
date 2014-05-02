@@ -109,6 +109,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         # TODO: Disable choice buttons.
         # TODO: Stop sleep tracking.
         self.destroyGameMenu()
+        self.disableCollisions()
         del self.gameMenu
         if self.cameraBoardTrack:
             self.cameraBoardTrack.finish()
@@ -122,7 +123,6 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         self.buttonModels.removeNode()
         del self.buttonModels
         del self.endPos
-        self.disableCollisions()
         del self.loader
         self.picnicTable.removeNode()
         self.picnicTableNode.removeNode()

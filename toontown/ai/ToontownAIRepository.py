@@ -20,6 +20,7 @@ from toontown.coghq import MintManagerAI, FactoryManagerAI, LawOfficeManagerAI, 
 from toontown.pets import PetManagerAI
 from toontown.ai import CogSuitManagerAI
 from toontown.ai import PromotionManagerAI
+from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 
 #friends!
 from otp.friends.FriendManagerAI import FriendManagerAI
@@ -140,6 +141,9 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.partyManager = DistributedPartyManagerAI(self)
         self.partyManager.generateWithRequired(2)
 
+        self.trophyMgr = DistributedTrophyMgrAI(self)
+        self.trophyMgr.generateWithRequired(2)
+
         # setup our view of the global party manager ud
         self.globalPartyMgr = self.generateGlobalObject(OTP_DO_ID_GLOBAL_PARTY_MANAGER, 'GlobalPartyManager')
 
@@ -175,6 +179,6 @@ class ToontownAIRepository(ToontownInternalRepository):
 
     def loadDNAFileAI(self, dnastore, filename):
         return loadDNAFileAI(dnastore, filename)
-        
+
     def trueUniqueName(self, name):
        return self.uniqueName(name)

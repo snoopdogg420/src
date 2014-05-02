@@ -12,6 +12,7 @@ from toontown.building.DistributedPetshopInteriorAI import DistributedPetshopInt
 from toontown.building.DistributedGagshopInteriorAI import DistributedGagshopInteriorAI
 from toontown.building.DistributedKartShopInteriorAI import DistributedKartShopInteriorAI
 from toontown.building.DistributedKnockKnockDoorAI import DistributedKnockKnockDoorAI
+from toontown.building.HQBuildingAI import HQBuildingAI
 from toontown.building import DoorTypes
 
 #For Golf
@@ -105,34 +106,9 @@ class DNASpawnerAI:
                 interiorZone = zone + 500 + index
                 type = group.getBuildingType()
                 if type == 'hq':
-                    if buildingZone % 1000 != 0:
-                        return # Some bug with HQ DDoors on streets which I'm too lazy to fix right now.
-                    hqDoor = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_HQ)
-                    hqDoor.zoneId = buildingZone
-                    hqDoor.generateWithRequired(buildingZone)
-
-                    hqDoor2 = DistributedDoorAI(simbase.air, index, DoorTypes.EXT_HQ, 1)
-                    hqDoor2.zoneId = buildingZone
-                    hqDoor2.generateWithRequired(buildingZone)
-
-                    hqDoorInt = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_HQ)
-                    hqDoorInt.zoneId = interiorZone
-                    hqDoorInt.setOtherDoor(hqDoor)
-                    hqDoorInt.generateWithRequired(interiorZone)
-
-                    hqDoorInt2 = DistributedDoorAI(simbase.air, 0, DoorTypes.INT_HQ, 1)
-                    hqDoorInt2.zoneId = interiorZone
-                    hqDoorInt2.setOtherDoor(hqDoor2)
-                    hqDoorInt2.generateWithRequired(interiorZone)
-
-                    hqDoor.setOtherDoor(hqDoorInt)
-                    hqDoor2.setOtherDoor(hqDoorInt2)
-
-                    hqInterior = DistributedHQInteriorAI(simbase.air)
-                    hqInterior.setZoneIdAndBlock(interiorZone, 0)
-                    hqInterior.generateWithRequired(interiorZone)
-
-                    NPCToons.createNpcsInZone(simbase.air, interiorZone)
+                    if buildingZone % 1000 != 0:  # TODO: Fix this crash.
+                        return
+                    HQBuildingAI(simbase.air, buildingZone, interiorZone, index)
                 elif type == 'kartshop':
                     ksInterior = DistributedKartShopInteriorAI(simbase.air)
                     ksInterior.setZoneIdAndBlock(interiorZone, 0)

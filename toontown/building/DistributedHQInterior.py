@@ -1,17 +1,17 @@
-from toontown.toonbase.ToonBaseGlobal import *
-from pandac.PandaModules import *
-from toontown.toonbase.ToontownGlobals import *
-import random
-from direct.task.Task import Task
-from direct.distributed import DistributedObject
-from direct.directnotify import DirectNotifyGlobal
-import ToonInteriorColors
 import cPickle
+import random
+import ToonInteriorColors
+from direct.directnotify import DirectNotifyGlobal
+from direct.distributed import DistributedObject
+from direct.task.Task import Task
+from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
+from toontown.toonbase.ToonBaseGlobal import *
+from toontown.toonbase.ToontownGlobals import *
 from toontown.dna.DNAParser import DNADoor
 
-class DistributedHQInterior(DistributedObject.DistributedObject):
 
+class DistributedHQInterior(DistributedObject.DistributedObject):
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.dnaStore = cr.playGame.dnaStore
@@ -35,8 +35,6 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
         self.interior.flattenMedium()
         emptyBoard = self.interior.find('**/empty_board')
         self.leaderBoard.reparentTo(emptyBoard.getChild(0))
-        base.cr.hqLoaded = True #hack while a real fix is in the work
-        messenger.send('hqInternalDone')
 
     def setTutorial(self, flag):
         if self.tutorial == flag:
@@ -66,7 +64,7 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
         self.scoreTextNodes = []
         self.trophyStars = []
         for i in range(self.numLeaders):
-            row, nameText, scoreText, trophyStar = self.buildLeaderRow()
+            (row, nameText, scoreText, trophyStar) = self.buildLeaderRow()
             self.nameTextNodes.append(nameText)
             self.scoreTextNodes.append(scoreText)
             self.trophyStars.append(trophyStar)
@@ -82,7 +80,6 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
             self.nameTextNodes[i].setText(name)
             self.scoreTextNodes[i].setText(str(score))
             self.updateTrophyStar(self.trophyStars[i], score)
-
         for i in range(len(self.leaderNames), self.numLeaders):
             self.nameTextNodes[i].setText('-')
             self.scoreTextNodes[i].setText('-')
@@ -118,13 +115,10 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
         scorePath.setPos(*TTLocalizer.DHQIscorePathPos)
         trophyStar = self.buildTrophyStar()
         trophyStar.reparentTo(row)
-        return (row,
-         nameText,
-         scoreText,
-         trophyStar)
+        return (row, nameText, scoreText, trophyStar)
 
     def setLeaderBoard(self, leaderData):
-        avIds, names, scores = cPickle.loads(leaderData)
+        (avIds, names, scores) = cPickle.loads(leaderData)
         self.notify.debug('setLeaderBoard: avIds: %s, names: %s, scores: %s' % (avIds, names, scores))
         self.leaderAvIds = avIds
         self.leaderNames = names
@@ -132,8 +126,8 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
         self.updateLeaderBoard()
 
     def chooseDoor(self):
-        doorModelName = 'door_double_round_ur'
-        if doorModelName[-1:] == 'l':
+        doorModelName = 'door_double_round_ul'
+        if doorModelName[-1:] == 'r':
             doorModelName = doorModelName[:-1] + 'l'
         else:
             doorModelName = doorModelName[:-1] + 'r'
@@ -162,7 +156,6 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
             DNADoor.setupDoor(doorNP, newNodePath, doorOrigin, self.dnaStore, triggerId, doorColor)
             doorFrame = doorNP.find('door_*_flat')
             doorFrame.setColor(doorColor)
-
         del self.dnaStore
         del self.randomGenerator
 
@@ -174,7 +167,6 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
         del self.nameTextNodes
         del self.scoreTextNodes
         del self.trophyStars
-        del base.cr.hqLoaded
         taskMgr.remove(self.uniqueName('starSpinHQ'))
         DistributedObject.DistributedObject.disable(self)
 

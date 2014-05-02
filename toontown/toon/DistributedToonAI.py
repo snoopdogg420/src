@@ -5130,10 +5130,15 @@ def dna(part, value):
 
 @magicWord(category=CATEGORY_OVERRIDE, types=[int])
 def setTrophyScore(value):
-    """Set the trophy score of target"""
+    """Set the target's trophy score."""
     if value < 0:
-        return "Cannot have a trophy score below 0."
-    spellbook.getTarget().d_setTrophyScore(value)
+        return 'Invalid trophy score: {0}'.format(value)
+    target = spellbook.getTarget()
+    target.d_setTrophyScore(value)
+    simbase.air.trophyMgr.updateTrophyScore(target.doId, value)
+    messenger.send('leaderboardChanged')
+    messenger.send('leaderboardFlush')
+    return "{0}'s trophy score has been set to: {1}".format(target.getName(), value)
 
 @magicWord(category=CATEGORY_OVERRIDE, types=[int, int])
 def givePies(pieType, numPies=0):

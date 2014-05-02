@@ -96,6 +96,8 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
     def setupNametag(self):
         if not self.wantsNametag():
             return
+        if self.doorIndex != 0:
+            return
         if self.nametag == None:
             self.nametag = NametagGroup()
             self.nametag.setFont(ToontownGlobals.getBuildingNametagFont())
