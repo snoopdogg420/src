@@ -32,12 +32,16 @@ class QuestManagerAI():
 	    if completeStatus == Quests.COMPLETE:
 		print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
 		
-		if Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
+		if isinstance(questClass, Quests.TrackChoiceQuest):
+		    npc.presentTrackChoice(avId, questId, questClass.getChoices())
+		    break
+		elif Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
 		    self.nextQuest(toon, npc, questId)
 		else:
 		    npc.completeQuest(avId, questId, rewardId)
 		    self.completeQuest(toon, questId)
-		
+		    self.avatarProgressTier(toon)
+		    
 		break
 	else:
 	    if (len(toonQuests) == toonQuestPocketSize*5):
@@ -47,7 +51,7 @@ class QuestManagerAI():
 
             
     def avatarQuestChoice(self, toon, npc):
-        tasks = Quests.chooseBestQuests(Quests.DG_TIER, npc, toon)
+        tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
         return tasks
     
     def avatarCancelled(self, avId):
@@ -63,9 +67,30 @@ class QuestManagerAI():
         
         toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], Quests.getFinalRewardId(questId))
         npc.assignQuest(avId, questId, rewardId, toNpc)
+	
+    def avatarProgressTier(self, toon):
+	currentTier = toon.getRewardHistory()[0]
+	currentHistory = toon.getRewardHistory()[1]
+	
+	for qid in Quests.RequiredRewardTrackDict[currentTier]:
+	    if qid in currentHistory:
+		continue
+	    else:
+		break
+	else:
+	    currentTier += 1
+	    
+	toon.b_setRewardHistory(currentTier, currentHistory)
             
-    def avatarChoseTrack(self, avId, pendingTrackQuest, trackId):
-        pass
+    def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
+	toon = self.air.doId2do.get(avId)
+	if not toon:
+	    return
+	
+	npc.completeQuest(avId, pendingTrackQuest, Quests.getFinalRewardId(pendingTrackQuest))
+
+	toon.removeQuest(pendingTrackQuest)
+	toon.b_setTrackProgress(trackId, 0)
     
     def completeQuest(self, toon, completeQuestId):
         toonQuests = toon.getQuests()
@@ -107,13 +132,81 @@ class QuestManagerAI():
     def giveReward(self, toon, rewardId):
 	rewardClass = Quests.getReward(rewardId)
 	rewardClass.sendRewardAI(toon)
+	
+	if isinstance(rewardClass, Quests.TrackProgressReward):
+	    tier = toon.getRewardHistory()[0]
+	    rewardList = toon.getRewardHistory()[1]
+	    print rewardId
+	    
+	    rewardList.append(rewardId)
+	    toon.b_setRewardHistory(tier, rewardList)
         
     def toonMadeFriend(self, avId, otherAvId):
-	pass
+	print 'QuestManager: %s (AvId: %s) made a friend.'%(toon.getName(), toon.doId)
+	flattenedQuests = toon.getQuests()
+	questList = [] #unflattened
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    questClass = Quests.getQuest(questDesc[0])
+
+	    if isinstance(questClass, Quests.FriendQuest):
+		questDesc[4] = 1
+	    
+	    questList.append(questDesc)
+	
+	toon.b_setQuests(questList)
 		    
     def toonDefeatedFactory(self, toon, factoryId, activeVictors):
 	pass
+    
+    def toonPlayedMinigame(self, toon, toons):
+	print 'QuestManager: %s (AvId: %s) played on the trolley.'%(toon.getName(), toon.doId)
+	flattenedQuests = toon.getQuests()
+	questList = [] #unflattened
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    questClass = Quests.getQuest(questDesc[0])
 
+	    if isinstance(questClass, Quests.TrolleyQuest):
+		questDesc[4] = 1
+	    
+	    questList.append(questDesc)
+	
+	toon.b_setQuests(questList)
+    
+    def toonCaughtFishingItem(self, toon):
+	print 'QuestManager: %s (AvId: %s) Caught quest Item while fishing.'%(toon.getName(), toon.doId)
+	
+	flattenedQuests = toon.getQuests()
+	questList = [] #unflattened
+	hasPickedQuest = 0
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    questClass = Quests.getQuest(questDesc[0])
+	    minChance = questClass.getPercentChance()
+
+	    if not hasPickedQuest:
+		if isinstance(questClass, Quests.RecoverItemQuest):
+		    if questClass.getHolder() == Quests.AnyFish:
+			if not questClass.getCompletionStatus(toon, questDesc) == Quests.COMPLETE:
+			    import random
+			    chance = random.randint(minChance - 40, 100)
+			    
+			    if chance >= minChance:
+				questDesc[4] += 1
+				hasPickedQuest = questClass
+			    
+	    questList.append(questDesc)
+	
+	toon.b_setQuests(questList)
+	if (hasPickedQuest):
+	    return questClass.getItem()
+	else:
+	    return -1
+	
     def recoverItems(self, toon, suitsKilled, taskZoneId):
 	print 'QuestManager: %s (AvId: %s) is recovering Items'%(toon.getName(), toon.doId)
 	
@@ -129,11 +222,14 @@ class QuestManagerAI():
 
 	    if isinstance(questClass, Quests.CogQuest):
 		for suit in suitsKilled:
-		    if questClass.doesCogCount(toon.doId, suit, Quests.Anywhere, [toon.doId]):
+		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
 			questDesc[4] += 1
 	    elif isinstance(questClass, Quests.RecoverItemQuest):
 		chance = questClass.getPercentChance()
-		recoveredItems.append(questClass.getItem())
+		
+		for suit in suitsKilled:
+		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
+			recoveredItems.append(questClass.getItem())
 	    
 	    questList.append(questDesc)
 	
@@ -166,13 +262,9 @@ class QuestManagerAI():
 	    
 	    if isinstance(questClass, Quests.DeliverItemQuest):
 		if questClass.getItem() == 1000:
-		    nextQuest = Quests.getNextQuest(questDesc[0], npc, toon)
-		    questDesc[4] = 1
-		    
-	    questList.append(questDesc)
-	    
-	toon.b_setQuests(questList)
-	
+		    toon.removeQuest(questDesc[0])
+		    break
+		
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, int, int])
 def quests(command, arg0=0, arg1=0):
     target = spellbook.getTarget()
@@ -274,5 +366,11 @@ def quests(command, arg0=0, arg1=0):
 		return 'Invalid quest or slot id'
 	else:
 	    return 'progress needs 2 arguments.'
+    elif command == 'tier':
+	if arg0:
+	    target.b_setRewardHistory(arg0, target.getRewardHistory()[1])
+	    return 'Set tier to %s'%(arg0)
+	else:
+	    return 'tier needs 1 argument.'
     else:
         return 'Invalid first argument.'

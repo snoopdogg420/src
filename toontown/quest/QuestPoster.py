@@ -867,7 +867,7 @@ class QuestPoster(DirectFrame):
                 lIconGeomScale = IMAGE_SCALE_SMALL
                 cogIcons.removeNode()
             if not fComplete:
-                infoText = quest.getLocationName().upper()
+                infoText = quest.getLocationName()
                 if infoText == '':
                     infoText = TTLocalizer.QuestPosterAnywhere
         if fComplete:

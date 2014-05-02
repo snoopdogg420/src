@@ -19,8 +19,9 @@ OverTankLimit = 8
 FishItemNewEntry = 9
 FishItemNewRecord = 10
 BingoBoot = (BootItem, 99)
-ProbabilityDict = {93: FishItem,
- 94: JellybeanItem,
+ProbabilityDict = {94: FishItem,
+                   92: QuestItem,
+ 95: JellybeanItem,
  100: BootItem}
 SortedProbabilityCutoffs = ProbabilityDict.keys()
 SortedProbabilityCutoffs.sort()

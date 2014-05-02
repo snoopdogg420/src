@@ -29,7 +29,7 @@ cog-thief-ortho 0
 show-total-population #t
 
 want-mat-all-tailors #t
-want-tailor-jellybeans #t
+want-tailor-jellybeans #f
 want-karts #t
 want-pets #f
 want-news-page #f

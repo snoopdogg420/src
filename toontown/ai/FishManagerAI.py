@@ -67,6 +67,27 @@ class FishManagerAI:
             return [itemType, genus, species, weight]
         elif itemType == FishGlobals.BootItem:
             return [itemType, 0, 0, 0]
+        elif itemType == FishGlobals.QuestItem:
+            itemId = simbase.air.questManager.toonCaughtFishingItem(av)
+
+            if itemId != -1:
+                return [itemType, itemId, 0, 0]
+            else:
+                success, genus, species, weight = FishGlobals.getRandomFishVitals(zoneId, av.getFishingRod())
+                fish = FishBase(genus, species, weight)
+                fishType = av.fishCollection.collectFish(fish)
+                if fishType == FishGlobals.COLLECT_NEW_ENTRY:
+                    itemType = FishGlobals.FishItemNewEntry
+                elif fishType == FishGlobals.COLLECT_NEW_RECORD:
+                    itemType = FishGlobals.FishItemNewRecord
+                else:
+                    itemType = FishGlobals.FishItem
+                netlist = av.fishCollection.getNetLists()
+                av.d_setFishCollection(netlist[0], netlist[1], netlist[2])
+                av.fishTank.addFish(fish)
+                netlist = av.fishTank.getNetLists()
+                av.d_setFishTank(netlist[0], netlist[1], netlist[2])
+                return [itemType, genus, species, weight]
         else:
             money = FishGlobals.Rod2JellybeanDict[av.getFishingRod()]
             av.addMoney(money)
