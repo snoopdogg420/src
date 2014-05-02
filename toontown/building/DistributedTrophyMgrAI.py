@@ -28,6 +28,17 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
         av = self.air.doId2do.get(avId)
         if not av:
             return
+        if trophyScore <= 0:
+            if avId in self.trophyScores:
+                del self.trophyScores[avId]
+            if avId in self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]:
+                scoreIndex = self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].index(avId)
+                del self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID][scoreIndex]
+                del self.leaderInfo[DistributedTrophyMgrAI.NAME][scoreIndex]
+                del self.leaderInfo[DistributedTrophyMgrAI.SCORE][scoreIndex]
+            for avId in self.trophyScores:
+                if avId not in self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]:
+                    self.updateTrophyScore(avId, self.trophyScores[avId])
         self.trophyScores[avId] = trophyScore
         if len(self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]) < 10:
             if avId not in self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]:
@@ -37,12 +48,13 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
             else:
                 scoreIndex = self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].index(avId)
                 self.leaderInfo[DistributedTrophyMgrAI.SCORE][scoreIndex] = trophyScore
+            self.organizeLeaderInfo()
         else:
             if trophyScore > min(self.leaderInfo[DistributedTrophyMgrAI.SCORE]):
                 self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID][-1] = avId
                 self.leaderInfo[DistributedTrophyMgrAI.NAME][-1] = av.getName()
                 self.leaderInfo[DistributedTrophyMgrAI.SCORE][-1] = trophyScore
-        self.organizeLeaderInfo()
+            self.organizeLeaderInfo()
 
     def organizeLeaderInfo(self):
         leaderInfo = zip(*reversed(self.leaderInfo))
