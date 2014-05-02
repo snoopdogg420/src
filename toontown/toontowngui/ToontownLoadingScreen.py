@@ -34,10 +34,12 @@ class ToontownLoadingScreen:
         self.__expectedCount = range
         if gui:
             self.waitBar.reparentTo(self.gui)
+            self.waitBar.setPos(0, 0, 0.15)
             self.title.reparentTo(self.gui)
             self.gui.reparentTo(aspect2dp, NO_FADE_SORT_INDEX)
         else:
             self.waitBar.reparentTo(base.a2dpBottomCenter, NO_FADE_SORT_INDEX)
+            self.waitBar.setPos(0, 0, 0.15)
             self.title.reparentTo(base.a2dpBottomLeft, NO_FADE_SORT_INDEX)
             self.gui.reparentTo(hidden)
         self.waitBar.update(self.__count)
