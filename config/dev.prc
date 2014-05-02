@@ -8,8 +8,8 @@ icon-filename phase_3/etc/icon.ico
 default-model-extension .bam
 
 model-path ../RetroResources
-model-cache-models #t
-model-cache-textures #t
+model-cache-models #f
+model-cache-textures #f
 
 audio-library-name p3openal_audio
 
