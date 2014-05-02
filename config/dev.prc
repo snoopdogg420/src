@@ -41,3 +41,6 @@ want-old-fireworks #f
 want-instant-parties #t
 want-classicchar #f
 want-game-tables #t
+want-checkers #t
+want-chinese-checkers #t
+want-find-four #f

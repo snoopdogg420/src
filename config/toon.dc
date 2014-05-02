@@ -271,7 +271,6 @@ from toontown.coghq import DistributedGolfSpot/AI
 from toontown.minigame import DistributedIceGame/AI
 from toontown.minigame import DistributedCogThiefGame/AI
 from toontown.minigame import DistributedTwoDGame/AI
-from toontown.safezone import DistributedPicnicTable/AI
 from toontown.safezone import DistributedChineseCheckers/AI
 from toontown.safezone import DistributedCheckers/AI
 from toontown.safezone import DistributedFindFour/AI
@@ -3082,27 +3081,6 @@ dclass DistributedTwoDGame : DistributedMinigame {
   setEnemyShot(uint32, uint8, uint8, uint32) broadcast;
   addVictoryScore(uint32, uint8) broadcast;
   setEveryoneDone() broadcast;
-};
-
-dclass DistributedPicnicTable : DistributedNode {
-  fillSlot(uint32, uint8, int16/10, int16/10, int16/10, int16/10, int16/10, int16/10, int16, uint32) broadcast;
-  emptySlot(uint32, uint8, int16) broadcast;
-  requestTableState() airecv clsend;
-  setTableState(uint32 [], uint8) broadcast ram;
-  setGameZone(uint32, uint8) broadcast;
-  setIsPlaying(uint8) broadcast ram;
-  requestJoin(uint8, int16/10, int16/10, int16/10, int16/10, int16/10, int16/10) airecv clsend;
-  rejectJoin() broadcast;
-  requestObserve() airecv clsend;
-  leaveObserve() airecv clsend;
-  requestGameZone() airecv clsend;
-  requestPickedGame(uint8) clsend airecv;
-  requestExit() airecv clsend;
-  requestZone() clsend airecv;
-  announceWinner(string, uint32) broadcast;
-  allowObserve() broadcast;
-  allowPick() broadcast;
-  setZone(uint32) broadcast;
 };
 
 dclass DistributedChineseCheckers : DistributedNode {

@@ -1,8 +1,14 @@
 import math
 
-from direct.fsm import ClassicFSM, State
-from pandac.PandaModules import *
 from direct.distributed import DistributedObject
+from direct.fsm import ClassicFSM, State
+from direct.gui.DirectGui import *
+from pandac.PandaModules import *
+from toontown.distributed.DelayDelete import *
+from toontown.safezone import PicnicGameGlobals
+from toontown.safezone.PicnicGameSelectMenu import PicnicGameSelectMenu
+from toontown.safezone.PicnicGameTutorial import *
+from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.ToontownTimer import ToontownTimer
 
@@ -13,6 +19,14 @@ class DistributedGameTable(DistributedObject.DistributedObject):
 
         self.tableModelPath = 'phase_6/models/golf/game_table.bam'
         self.numSeats = 6
+        self.__toonTracks = {}
+        self.gameMenu = None
+        self.game = None
+        self.gameDoId = 0
+        self.timerFunc = None
+        self.gameWantTimer = False
+        self.cameraBoardTrack = None
+        self.tutorial = None
         self.fsm = ClassicFSM.ClassicFSM(
             'DistributedGameTable',
             [
@@ -69,10 +83,15 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         self.clockNode.setScale(0.3)
         self.clockNode.hide()
 
-        self.buttonModels = loader.loadModel('phase_3.5/models/gui/inventory_gui')
+        self.buttonModels = loader.loadModel('phase_3.5/models/gui/inventory_gui.bam')
         self.upButton = self.buttonModels.find('**//InventoryButtonUp')
         self.downButton = self.buttonModels.find('**/InventoryButtonDown')
         self.rolloverButton = self.buttonModels.find('**/InventoryButtonRollover')
+
+        self.joinButton = None
+        self.observeButton = None
+        self.exitButton = None
+        self.tutorialButton = None
 
         angle = self.picnicTable.getH()
         angle -= 90
@@ -114,17 +133,16 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         del self.fsm
 
     def enableCollisions(self):
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             event = 'enterpicnicTable_sphere_{0}_{1}'.format(self.doId, i)
             self.accept(event, self.handleEnterPicnicTableSphere, [i])
             self.picnicTableSphereNodes[i].setCollideMask(ToontownGlobals.WallBitmask)
         self.tableClothSphereNode.setCollideMask(ToontownGlobals.WallBitmask)
 
     def disableCollisions(self):
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.ignore('enterpicnicTable_sphere_{0}_{1}'.format(self.doId, i))
-            self.ignore('enterPicnicTableOK_{0}_{1}'.format(self.doId, i))
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.picnicTableSphereNodes[i].setCollideMask(BitMask32(0))
         self.tableClothSphereNode.setCollideMask(BitMask32(0))
 
@@ -138,10 +156,10 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         base.setCellsAvailable(base.bottomCells, 0)
 
     def enterChooseMode(self):
-        pass
+        self.enableChoiceButtons()
 
     def exitChooseMode(self):
-        pass
+        self.disableChoiceButtons()
 
     def enterObserving(self):
         pass
@@ -163,3 +181,111 @@ class DistributedGameTable(DistributedObject.DistributedObject):
 
     def setPosHpr(self, x, y, z, h, p, r):
         self.picnicTable.setPosHpr(x, y, z, h, p, r)
+
+    def storeToonTrack(self, avId, track):
+        self.clearToonTrack(avId)
+        self.__toonTracks[avId] = track
+
+    def clearToonTrack(self, avId):
+        oldTrack = self.__toonTracks.get(avId)
+        if oldTrack:
+            oldTrack.pause()
+            cleanupDelayDeletes(oldTrack)
+
+    def clearToonTracks(self):
+        for avId in self.__toonTracks:
+            self.clearToonTrack(avId)
+
+    def showTimer(self):
+        self.clockNode.stop()
+        self.clockNode.countdown(self.timeLeft, self.timerFunc)
+        self.clockNode.show()
+
+    def setTimer(self, timerEnd):
+        self.clockNode.stop()
+        time = globalClockDelta.networkToLocalTime(timerEnd)
+        self.timeLeft = int(time - globalClock.getRealTime())
+        if self.gameWantTimer and (self.game is not None):
+            self.showTimer()
+
+    def setTimerFunc(self, function):
+        self.timerFunc = function
+
+    def allowWalk(self):
+        base.cr.playGame.getPlace().setState('walk')
+
+    def disallowWalk(self):
+        base.cr.playGame.getPlace().setState('stopped')
+
+    def enableChoiceButtons(self):
+        if (not self.game) or (not self.game.playing):
+            self.joinButton = DirectButton(
+                relief=None, text=TTLocalizer.PicnicTableJoinButton,
+                text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23), text_scale=0.8,
+                image=(self.upButton, self.downButton, self.rolloverButton),
+                image_color=(1, 0, 0, 1), image_scale=(20, 1, 11),
+                pos=(0, 0, 0.8), scale=0.15,
+                command=lambda self=self: self.joinButtonPushed())
+        else:
+            self.observeButton = DirectButton(
+                relief=None, text=TTLocalizer.PicnicTableObserveButton,
+                text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23), text_scale=0.8,
+                image=(self.upButton, self.downButton, self.rolloverButton),
+                image_color=(1, 0, 0, 1), image_scale=(20, 1, 11),
+                pos=(0, 0, 0.6), scale=0.15,
+                command=lambda self=self: self.observeButtonPushed())
+        self.exitButton = DirectButton(
+            relief=None, text=TTLocalizer.PicnicTableCancelButton,
+            text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23), text_scale=0.8,
+            image=(self.upButton, self.downButton, self.rolloverButton),
+            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11), pos=(1, 0, 0.6),
+            scale=0.15, command=lambda self=self: self.cancelButtonPushed())
+        self.tutorialButton = DirectButton(
+            relief=None, text=TTLocalizer.PicnicTableTutorial,
+            text_fg=(1, 1, 0.65, 1), text_pos=(-0.05, -0.13), text_scale=0.55,
+            image=(self.upButton, self.downButton, self.rolloverButton),
+            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11), pos=(-1, 0, 0.6),
+            scale=0.15, command=lambda self=self: self.tutorialButtonPushed())
+        self.disallowWalk()
+
+    def disableChoiceButtons(self):
+        if self.joinButton:
+            self.joinButton.destroy()
+            self.joinButton = None
+        if self.observeButton:
+            self.observeButton.destroy()
+            self.observeButton = None
+        if self.exitButton:
+            self.exitButton.destroy()
+            self.exitButton = None
+        if self.tutorialButton:
+            self.tutorialButton.destroy()
+            self.tutorialButton = None
+
+    def joinButtonPushed(self):
+        pass
+
+    def observeButtonPushed(self):
+        pass
+
+    def cancelButtonPushed(self):
+        self.allowWalk()
+        self.fsm.request('off')
+
+    def tutorialButtonPushed(self):
+        self.disableChoiceButtons()
+        self.gameMenu = PicnicGameSelectMenu(
+            self.tutorialFunction, PicnicGameGlobals.TutorialMenu)
+
+    def tutorialFunction(self, gameIndex):
+        if gameIndex == PicnicGameGlobals.CheckersGameIndex:
+            self.tutorial = CheckersTutorial(self.tutorialDone)
+        elif gameIndex == PicnicGameGlobals.ChineseCheckersGameIndex:
+            self.tutorial = ChineseCheckersTutorial(self.tutorialDone)
+        else:
+            self.cancelButtonPushed()
+        self.destroyGameMenu()
+
+    def tutorialDone(self):
+        self.fsm.request('off')
+        self.tutorial = None
