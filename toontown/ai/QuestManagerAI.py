@@ -68,6 +68,17 @@ class QuestManagerAI():
         toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], Quests.getFinalRewardId(questId))
         npc.assignQuest(avId, questId, rewardId, toNpc)
 	
+    def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
+	toon = self.air.doId2do.get(avId)
+	if not toon:
+	    return
+	
+	npc.completeQuest(avId, pendingTrackQuest, Quests.getRewardIdFromTrackId(trackId))
+
+	toon.removeQuest(pendingTrackQuest)
+	self.avatarProgressTier(toon)
+	toon.b_setTrackProgress(trackId, 0)
+	
     def avatarProgressTier(self, toon):
 	currentTier = toon.getRewardHistory()[0]
 	currentHistory = toon.getRewardHistory()[1]
@@ -81,16 +92,6 @@ class QuestManagerAI():
 	    currentTier += 1
 	    
 	toon.b_setRewardHistory(currentTier, currentHistory)
-            
-    def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
-	toon = self.air.doId2do.get(avId)
-	if not toon:
-	    return
-	
-	npc.completeQuest(avId, pendingTrackQuest, Quests.getFinalRewardId(pendingTrackQuest))
-
-	toon.removeQuest(pendingTrackQuest)
-	toon.b_setTrackProgress(trackId, 0)
     
     def completeQuest(self, toon, completeQuestId):
         toonQuests = toon.getQuests()

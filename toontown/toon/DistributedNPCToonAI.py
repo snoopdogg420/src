@@ -161,7 +161,7 @@ class DistributedNPCToonAI(DistributedNPCToonBaseAI):
          self.npcId,
          avId,
          [questId, rewardId, 0],
-         ClockDelta.globalClockDelta.getRealNetworkTime()])
+         ClockDelta.globalClockDelta.getRealNetworkTime(bits=16)])
         if not self.tutorial:
             taskMgr.doMethodLater(60.0, self.sendTimeoutMovie, self.uniqueName('clearMovie'))
 
