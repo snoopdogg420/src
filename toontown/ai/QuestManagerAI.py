@@ -77,6 +77,7 @@ class QuestManagerAI():
 			
 	    if questId == completeQuestId:
 		toon.removeQuest(questId)
+		self.giveReward(toon, rewardId)
 		break
 	else:
 	    #Completing a quest they dont have? :/
@@ -102,6 +103,10 @@ class QuestManagerAI():
 	
 	npc.incompleteQuest(toon.doId, nextQuestId[0], Quests.QUEST, nextQuestId[1])
 	toon.b_setQuests(questList)
+	
+    def giveReward(self, toon, rewardId):
+	rewardClass = Quests.getReward(rewardId)
+	rewardClass.sendRewardAI(toon)
         
     def toonMadeFriend(self, avId, otherAvId):
 	pass
@@ -111,8 +116,6 @@ class QuestManagerAI():
 
     def recoverItems(self, toon, suitsKilled, taskZoneId):
 	print 'QuestManager: %s (AvId: %s) is recovering Items'%(toon.getName(), toon.doId)
-	print 'QuestManager: %s (AvId: %s) killed these suits:'%(toon.getName(), toon.doId)
-	print suitsKilled
 	
 	flattenedQuests = toon.getQuests()
 	questList = [] #unflattened
@@ -126,18 +129,15 @@ class QuestManagerAI():
 
 	    if isinstance(questClass, Quests.CogQuest):
 		for suit in suitsKilled:
-		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, []):
-			completeStatus = questClass.getCompletionStatus(toon, questDesc)
-			
-			if completeStatus != Quests.COMPLETE:
-			    questDesc[4] += 1
-			else:
-			    break
+		    if questClass.doesCogCount(toon.doId, suit, Quests.Anywhere, [toon.doId]):
+			questDesc[4] += 1
 	    elif isinstance(questClass, Quests.RecoverItemQuest):
 		chance = questClass.getPercentChance()
+		recoveredItems.append(questClass.getItem())
 	    
 	    questList.append(questDesc)
 	
+	toon.b_setQuests(questList)
 	return [recoveredItems, unrecoveredItems]
     
     def hasTailorClothingTicket(self, avId, npc):
@@ -232,8 +232,12 @@ def quests(command, arg0=0, arg1=0):
                 return 'Invalid quest slot %s.'%(arg0)
         else:
             return 'CurrentQuests: %s'%(currentQuestIds)
-    elif command == 'complete':
-        pass
+    elif command == 'bagSize':
+	if arg0 > 0 and arg0 < 5:
+	    target.b_setQuestCarryLimit(arg0)
+	    return 'Set carry limit to %s'%(arg0)
+	else:
+	    return 'Argument 0 must be between 1 and 4.'
     elif command == 'progress':
         if arg0 and arg1:
 	    if arg0 > 0 and arg0 <= pocketSize:
