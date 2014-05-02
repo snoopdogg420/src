@@ -5218,5 +5218,3 @@ Toon Shoes = %s''' % (target.getName(), target.getDNAString().encode('string_esc
     file.write(dna)
     file.close
     return '%s dna written to the file %s' % (target.getName(), filename)
-
-

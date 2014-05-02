@@ -19,6 +19,7 @@ parsetab.py
 # Toontown Infinite Retro
 PPYTHON_PATH
 *.txt
+resources
 resources/phase_3/maps/tt_t_gui_pat_background.psd
 tt_t_gui_pat_background.jpg
 tt_t_gui_pat_background.psd

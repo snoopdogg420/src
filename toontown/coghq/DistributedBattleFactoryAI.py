@@ -23,9 +23,9 @@ class DistributedBattleFactoryAI(DistributedLevelBattleAI.DistributedLevelBattle
 
     def handleToonsWon(self, toons):
         for toon in toons:
-            # recovered, notRecovered = self.air.questManager.recoverItems(toon, self.suitsKilled, self.getTaskZoneId())
-            # self.toonItems[toon.doId][0].extend(recovered)
-            # self.toonItems[toon.doId][1].extend(notRecovered)
+            recovered, notRecovered = self.air.questManager.recoverItems(toon, self.suitsKilled, self.getTaskZoneId())
+            self.toonItems[toon.doId][0].extend(recovered)
+            self.toonItems[toon.doId][1].extend(notRecovered)
             meritArray = self.air.promotionMgr.recoverMerits(
                 toon, self.suitsKilled, self.getTaskZoneId(),
                 getFactoryMeritMultiplier(self.getTaskZoneId()))

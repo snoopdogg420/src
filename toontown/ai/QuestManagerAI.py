@@ -1,5 +1,11 @@
 from toontown.quest import Quests
 
+# Magic Word imports
+from otp.ai.MagicWordGlobal import *
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.MsgTypes import *
+import shlex
+
 class QuestManagerAI():
     
     def __init__(self, air):
@@ -26,7 +32,7 @@ class QuestManagerAI():
 	    if completeStatus == Quests.COMPLETE:
 		print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
 		
-		if Quests.getNextQuest(questId, npc, toon) != Quests.NA:
+		if Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
 		    self.nextQuest(toon, npc, questId)
 		else:
 		    npc.completeQuest(avId, questId, rewardId)
@@ -104,8 +110,165 @@ class QuestManagerAI():
 	pass
 
     def recoverItems(self, toon, suitsKilled, taskZoneId):
-        print suitsKilled
-        print toon
+	print 'QuestManager: %s (AvId: %s) is recovering Items'%(toon.getName(), toon.doId)
+	print 'QuestManager: %s (AvId: %s) killed these suits:'%(toon.getName(), toon.doId)
+	print suitsKilled
 	
-	return []
-        
+	flattenedQuests = toon.getQuests()
+	questList = [] #unflattened
+	
+	recoveredItems = []
+	unrecoveredItems = []
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    questClass = Quests.getQuest(questDesc[0])
+
+	    if isinstance(questClass, Quests.CogQuest):
+		for suit in suitsKilled:
+		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, []):
+			completeStatus = questClass.getCompletionStatus(toon, questDesc)
+			
+			if completeStatus != Quests.COMPLETE:
+			    questDesc[4] += 1
+			else:
+			    break
+	    elif isinstance(questClass, Quests.RecoverItemQuest):
+		chance = questClass.getPercentChance()
+	    
+	    questList.append(questDesc)
+	
+	return [recoveredItems, unrecoveredItems]
+    
+    def hasTailorClothingTicket(self, avId, npc):
+	toon = self.air.doId2do.get(avId)
+        if not toon:
+            return
+	
+	flattenedQuests = toon.getQuests()
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    questClass = Quests.getQuest(questDesc[0])
+	    
+	    if isinstance(questClass, Quests.DeliverItemQuest):
+		if questClass.getItem() == 1000:
+		    return 1
+		
+	return 0
+    
+    def removeClothingTicket(self, toon, npc):
+	flattenedQuests = toon.getQuests()
+	questList = []
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    
+	    if isinstance(questClass, Quests.DeliverItemQuest):
+		if questClass.getItem() == 1000:
+		    nextQuest = Quests.getNextQuest(questDesc[0], npc, toon)
+		    questDesc[4] = 1
+		    
+	    questList.append(questDesc)
+	    
+	toon.b_setQuests(questList)
+	
+@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, int, int])
+def quests(command, arg0=0, arg1=0):
+    target = spellbook.getTarget()
+    currQuests = target.getQuests()
+    currentQuestIds = []
+    
+    for i in range(0, len(currQuests), 5):
+        currentQuestIds.append(currQuests[i])
+    
+    pocketSize = target.getQuestCarryLimit()
+    carrying = len(currQuests) / 5
+    canCarry = False
+    
+    if (carrying < pocketSize):
+        canCarry = True
+    
+    if command == 'clear':
+        target.b_setQuests([])
+        return 'Cleared quests'
+    elif command == 'clearHistory':
+        target.d_setQuestHistory([])
+        return 'Cleared quests history'
+    elif command == 'add':
+        if arg0:
+            if canCarry:
+                if arg0 in Quests.QuestDict.keys():
+                    return 'Added QuestID %s'%(arg0)
+                else:
+                    return 'Invalid QuestID %s'%(arg0)
+            else:
+                return 'Cannot take anymore quests'
+        else:
+            return 'add needs 1 argument.'
+    elif command == 'remove':
+        if arg0:
+            if arg0 in currentQuestIds:
+                target.removeQuest(arg0)
+                return 'Removed QuestID %s'%(arg0)
+            elif arg0 < pocketSize and arg0 > 0:
+		if len(currentQuestIds) <= arg0:
+		    questIdToRemove = currentQuestIds[arg0 - 1]
+		    target.removeQuest(questIdToRemove)
+		    return 'Removed quest from slot %s'%(arg0)
+		else:
+		    return 'Invalid quest slot'
+            else:
+                return 'Cannot remove quest %s'%(arg0)
+        else:
+            return 'remove needs 1 argument.'
+    elif command == 'list':
+        if arg0:
+            if arg0 > 0 and arg0 <= pocketSize:
+                start = (arg0 -1) * 5
+                questDesc = currQuests[start : start + 5]
+                return 'QuestDesc in slot %s: %s.'%(arg0, questDesc)
+            else:
+                return 'Invalid quest slot %s.'%(arg0)
+        else:
+            return 'CurrentQuests: %s'%(currentQuestIds)
+    elif command == 'complete':
+        pass
+    elif command == 'progress':
+        if arg0 and arg1:
+	    if arg0 > 0 and arg0 <= pocketSize:
+		questList = []
+		wantedQuestId = currentQuestIds[arg0 - 1]
+		
+		for i in range(0, len(currQuests), 5):
+		    questDesc = currQuests[i : i + 5]
+		    
+		    if questDesc[0] == wantedQuestId:
+			questDesc[4] = arg1
+			
+		    questList.append(questDesc)
+		
+		target.b_setQuests(questList)
+		return 'Set quest slot %s progress to %s'%(arg0, arg1)
+	    elif arg0 in Quests.QuestDict.keys():
+		if arg0 in currentQuestIds:
+		    questList = []
+		    
+		    for i in range(0, len(currQuests), 5):
+			questDesc = currQuests[i : i + 5]
+		    
+			if questDesc[0] == arg0:
+			    questDesc[4] = arg1
+			
+			questList.append(questDesc)
+		    
+		    target.b_setQuests(questList)
+		    return 'Set QuestID %s progress to %s'%(arg0, arg1)
+		else:
+		    return 'Cannot progress QuestID: %s.'%(arg0)
+	    else:
+		return 'Invalid quest or slot id'
+	else:
+	    return 'progress needs 2 arguments.'
+    else:
+        return 'Invalid first argument.'
