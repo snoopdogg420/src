@@ -1,51 +1,6 @@
 from toontown.toonbase import ToontownGlobals
 import SuitTimings
 
-class SuitLegList:
-    def __init__(self, path):
-        self.suitLegType = 0
-        self.startTime = 0.0
-        self.legTime = 0.0
-        self.zoneId = 0
-        self.blockNumber = 0
-        self.legs = []
-        i = 0
-        self.legs.append(SuitLeg(path.getPoint(0).getPos(), path.getPoint(0).getPos(), SuitLeg.FromSky))
-        while i+1 < path.getNumPoints():
-            point = path.getPoint(i)
-            point2 = path.getPoint(i+1)
-            self.legs.append(SuitLeg(point.getPos(), point2.getPos(), SuitLeg.Walk))
-            i += 1
-        endPoint = path.getPoint(path.getNumPoints()-1)
-        self.legs.append(SuitLeg(endPoint.getPos(), endPoint.getPos(), SuitLeg.ToSky))
-
-    def getStartTime(self, index):
-        time = 0
-        i = 0
-        while i < self.getNumLegs() and i < index:
-            time += self.legs[i].getLegTime()
-            i += 1
-        return time
-    
-    def getLegIndexAtTime(self, time, startLeg):
-        endTime = 0
-        i = 0
-        while i < startLeg:
-            endTime += self.legs[i].getLegTime()
-            i += 1
-        while i < self.getNumLegs():
-            endTime += self.legs[i].getLegTime()
-            if endTime > time:
-                return i
-            i += 1
-        return len(self.legs)-1
-
-    def getNumLegs(self):
-        return len(self.legs)
-
-    def __getitem__(self, key):
-        return self.legs[key]
-
 class SuitLeg:
     TWalkFromStreet = 0
     TWalkToStreet = 1
@@ -59,39 +14,158 @@ class SuitLeg:
     TToCogHQ = 9
     TOff = 10
     TypeToName = {
-      0 : 'WalkFromStreet',
-      1 : 'WalkToStreet',
-      2 : 'Walk',
-      3 : 'FromSky',
-      4 : 'ToSky',
-      5 : 'FromSuitBuilding',
-      6 : 'ToSuitBuilding',
-      7 : 'ToToonBuilding',
-      8 : 'FromCogHQ',
-      9 : 'ToCogHQ',
-      10 : 'Off'
+        TWalkFromStreet: 'WalkFromStreet',
+        TWalkToStreet: 'WalkToStreet',
+        TWalk: 'Walk',
+        TFromSky: 'FromSky',
+        TToSky: 'ToSky',
+        TFromSuitBuilding: 'FromSuitBuilding',
+        TToSuitBuilding: 'ToSuitBuilding',
+        TToToonBuilding: 'ToToonBuilding',
+        TToToonBuilding: 'FromCogHQ',
+        TToCogHQ: 'ToCogHQ',
+        TOff: 'Off'
     }
-    def __init__(self, posA, posB, type):
-        self.posA = posA
-        self.posB = posB
+
+    def __init__(self, startTime, zoneId, blockNumber, pointA, pointB, type):
+        self.startTime = startTime
+        self.zoneId = zoneId
+        self.blockNumber = blockNumber
+        self.pointA = pointA
+        self.pointB = pointB
         self.type = type
+
+    def getZoneId(self):
+        return self.zoneId
+
+    def getStartTime(self):
+        return self.startTime
+
     def getLegTime(self):
-        if self.type == SuitLeg.Walk:
-            return (self.posA-self.posB).length()/ToontownGlobals.SuitWalkSpeed
-        elif self.type == SuitLeg.FromSky:
+        if self.getType() == SuitLeg.TWalk:
+            return (self.getPosA()-self.getPosB()).length() / ToontownGlobals.SuitWalkSpeed
+        elif self.type == SuitLeg.TFromSky:
             return SuitTimings.fromSky
-        elif self.type == SuitLeg.ToSky:
+        elif self.type == SuitLeg.TToSky:
             return SuitTimings.toSky
+
+    def getBlockNumber(self):
+        return self.blockNumber
+
+    def getPointA(self):
+        return self.pointA
+
+    def getPointB(self):
+        return self.pointB
+
     def getPosA(self):
-        return self.posA
+        return self.pointA.getPos()
+
     def getPosB(self):
-        return self.posB
+        return self.pointB.getPos()
+
     def getPosAtTime(self, time):
-        pos = self.getPosB()-self.getPosA()
-        pos = self.getPosA() + pos*(time/self.getLegTime())
-        return pos
-    @staticmethod
-    def getTypeName(type):
-        return SuitLeg.TypeToName[type]
+        pos = self.getPosB() - self.getPosA()
+        return self.getPosA() + (pos*(time/self.getLegTime()))
+
     def getType(self):
         return self.type
+
+    @staticmethod
+    def getTypeName(type):
+        if type in SuitLeg.TypeToName:
+            return SuitLeg.TypeToName[type]
+        else:
+            return '**invalid**'
+
+
+class SuitLegList:
+    def __init__(self, path, dnaStore, suitWalkSpeed, fromSky, toSky, fromSuitBuilding, toSuitBuilding, toToonBuilding):
+        self.path = path
+        self.dnaStore = dnaStore
+        self.suitWalkSpeed = suitWalkSpeed
+        self.fromSky = fromSky
+        self.toSky = toSky
+        self.fromSuitBuilding = fromSuitBuilding
+        self.toSuitBuilding = toSuitBuilding
+        self.toToonBuilding = toToonBuilding
+        self.legs = []
+        # startTime, zoneId, blockNumber, pointA, pointB, type
+        # TODO: Use suit edges to get zoneId
+        startPoint = path.getPoint(0)
+        self.legs.append(SuitLeg(0, 0, 0, startPoint, startPoint, SuitLeg.TFromSky))
+        for i in range(path.getNumPoints()):
+            if not 0 < i < (path.getNumPoints()-1):
+                continue
+            pointA = path.getPoint(i)
+            pointB = path.getPoint(i + 1)
+            self.legs.append(SuitLeg(0, 0, 0, pointA, pointB, SuitLeg.TWalk))
+        endPoint = path.getPoint(path.getNumPoints() - 1)
+        self.legs.append(SuitLeg(0, 0, 0, endPoint, endPoint, SuitLeg.TToSky))
+
+    def getNumLegs(self):
+        return len(self.legs)
+
+    def getLeg(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i]
+
+    def getType(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i].getType()
+
+    def getLegTime(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i].getLegTime()
+
+    def getZoneId(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i].getZoneId()
+
+    def getBlockNumber(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i].getBlockNumber()
+
+    def getPointA(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i].getPointA()
+
+    def getPointB(self, i):
+        if i < self.getNumLegs():
+            return self.legs[i].getPointB()
+
+    def getStartTime(self, i):
+        time = 0
+        legIndex = 0
+        while (legIndex < self.getNumLegs()) and (legIndex < i):
+            time += self.getLegTime(legIndex)
+            legIndex += 1
+        return time
+
+    def getLegIndexAtTime(self, time, startLeg):
+        endTime = 0
+        i = 0
+        while i < startLeg:
+            endTime += self.getLegTime(i)
+            i += 1
+        while i < self.getNumLegs():
+            endTime += self.getLegTime(i)
+            if endTime > time:
+                return i
+            i += 1
+        return self.getNumLegs() - 1
+
+    def isPointInRange(self, point, lo, hi):
+        return False  # TODO
+
+    def getFirstLegType(self):
+        return self.getType(0)
+
+    def getNextLegType(self):
+        return self.getType(1)  # TODO
+
+    def getLastLegType(self):
+        return self.getType(self.getNumLegs() - 1)
+
+    def __getitem__(self, key):
+        return self.legs[key]
