@@ -16,7 +16,7 @@ class QuestManagerAI():
         if not toon:
             return
         toonQuestPocketSize = toon.getQuestCarryLimit()
-        
+        self.avatarProgressTier(toon)
         toonQuests = toon.getQuests()
         
 	for i in range(0, len(toonQuests), 5):
@@ -76,22 +76,17 @@ class QuestManagerAI():
 	npc.completeQuest(avId, pendingTrackQuest, Quests.getRewardIdFromTrackId(trackId))
 
 	toon.removeQuest(pendingTrackQuest)
-	self.avatarProgressTier(toon)
 	toon.b_setTrackProgress(trackId, 0)
 	
     def avatarProgressTier(self, toon):
 	currentTier = toon.getRewardHistory()[0]
 	currentHistory = toon.getRewardHistory()[1]
 	
-	for qid in Quests.RequiredRewardTrackDict[currentTier]:
-	    if qid in currentHistory:
-		continue
-	    else:
-		break
-	else:
+	if Quests.avatarHasAllRequiredRewards(toon, currentTier):
 	    currentTier += 1
 	    
-	toon.b_setRewardHistory(currentTier, currentHistory)
+	    
+	toon.b_setRewardHistory(currentTier, [])
     
     def completeQuest(self, toon, completeQuestId):
         toonQuests = toon.getQuests()
@@ -108,9 +103,6 @@ class QuestManagerAI():
 	else:
 	    #Completing a quest they dont have? :/
 	    print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
-	
-    def incompleteQuest(self, toon, npc, incompleteQuestId, toNpcId):
-	npc.incompleteQuest(toon.doId, incompleteQuestId, 0, toNpcId)
 	    
     def nextQuest(self, toon, npc, questId):
 	nextQuestId = Quests.getNextQuest(questId, npc, toon)
@@ -132,15 +124,14 @@ class QuestManagerAI():
 	
     def giveReward(self, toon, rewardId):
 	rewardClass = Quests.getReward(rewardId)
-	rewardClass.sendRewardAI(toon)
 	
-	if isinstance(rewardClass, Quests.TrackProgressReward):
-	    tier = toon.getRewardHistory()[0]
-	    rewardList = toon.getRewardHistory()[1]
-	    print rewardId
-	    
-	    rewardList.append(rewardId)
-	    toon.b_setRewardHistory(tier, rewardList)
+	tier = toon.getRewardHistory()[0]
+	rewardList = toon.getRewardHistory()[1]
+	
+	rewardList.append(rewardId)
+	toon.b_setRewardHistory(tier, rewardList)
+	
+	rewardClass.sendRewardAI(toon)
         
     def toonMadeFriend(self, avId, otherAvId):
 	print 'QuestManager: %s (AvId: %s) made a friend.'%(toon.getName(), toon.doId)
@@ -194,9 +185,10 @@ class QuestManagerAI():
 		    if questClass.getHolder() == Quests.AnyFish:
 			if not questClass.getCompletionStatus(toon, questDesc) == Quests.COMPLETE:
 			    import random
+			    minChance = questClass.getPercentChance()
 			    chance = random.randint(minChance - 40, 100)
 			    
-			    if chance >= minChance:
+			    if chance <= minChance:
 				questDesc[4] += 1
 				hasPickedQuest = questClass
 			    
@@ -226,11 +218,17 @@ class QuestManagerAI():
 		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
 			questDesc[4] += 1
 	    elif isinstance(questClass, Quests.RecoverItemQuest):
-		chance = questClass.getPercentChance()
-		
 		for suit in suitsKilled:
 		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
-			recoveredItems.append(questClass.getItem())
+			minchance = questClass.getPercentChance()
+			import random
+			chance = random.randint(minchance - 40, 100)
+			
+			if chance <= minchance:
+			    questDesc[4] += 1
+			    recoveredItems.append(questClass.getItem())
+			else:
+			    unrecoveredItems.append(questClass.getItem())
 	    
 	    questList.append(questDesc)
 	

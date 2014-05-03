@@ -233,16 +233,7 @@ QuestsDefaultReject = ('Heya, _avName_!',
  'Welcome, _avName_!',
  "Hey, _avName_! How's it hanging?",
  "Need any help?",
- "Hi _avName_, what brings you here?",
- "Flippy is really nice and all, but Slappy is the wackiest toon around. I think I'll be voting for him.",
- "Have you decided on who you are voting for, _avName_?",
- "I don't know about Flippy after that leaked recording of him in Loony Labs. Something seems fishy.",
- "I wonder if Slappy will throw another snowball fight next year if he is elected.",
- "I can't even do a flip. Flippy should have chosen something better for his slogan.",
- "Flippy stopped by earlier and gave me a pie. He's really working hard on his campaign!",
- "I think I'll be voting for Flippy. I like supporting the underdog. Get it? Dog?",
- "Alec did a really great job setting up Toontown Central. It's nice to see a change there.",
- "I wish I could attend the election, but I don't think I can get off from work. I'll watch the live feed instead.")
+ "Hi _avName_, what brings you here?")
 QuestsDefaultTierNotDone = ('Hello, _avName_! You must finish your current ToonTasks before getting a new one.', 'Hi there! You need to finish the ToonTasks you are working on in order to get a new one.', 'Hi, _avName_! Before I can give you a new ToonTask, you need to finish the ones you have.')
 QuestsDefaultQuest = None
 QuestsDefaultVisitQuestDialog = ('I heard _toNpcName_ is looking for you._where_',
