@@ -141,10 +141,14 @@ class DNAStorage:
         self.textures = {}
         self.catalogCodes = {}
 
-    def getSuitPath(self, startPoint, endPoint, minPathLen=10, maxPathLen=20):  # TODO
+    def getSuitPath(self, startPoint, endPoint, minPathLen=10, maxPathLen=20):
         startPointIndex = self.suitPoints.index(startPoint)
         endPointIndex = self.suitPoints.index(endPoint)
         points = self.suitPoints[startPointIndex:endPointIndex]
+        points = points[:maxPathLen]
+        if len(points) < minPathLen:
+            neededPoints = minPathLen - len(points)
+            points.extend(self.suitPoints[endPointIndex:(endPointIndex+neededPoints)])
         path = DNASuitPath()
         for point in points:
             path.addPoint(point)

@@ -316,9 +316,9 @@ class ToonBase(OTPBase.OTPBase):
         self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
         mm = self.marginManager
         self.leftCells = [
-            mm.addGridCell(0.2, -0.6, base.a2dTopLeft),
-            mm.addGridCell(0.2, -1.0, base.a2dTopLeft),
-            mm.addGridCell(0.2, -1.4, base.a2dTopLeft)
+            mm.addGridCell(0.25, -0.6, base.a2dTopLeft),
+            mm.addGridCell(0.25, -1.0, base.a2dTopLeft),
+            mm.addGridCell(0.25, -1.4, base.a2dTopLeft)
         ]
         self.bottomCells = [
             mm.addGridCell(0.4, 0.2, base.a2dBottomCenter),
@@ -327,9 +327,9 @@ class ToonBase(OTPBase.OTPBase):
             mm.addGridCell(1.0, 0.2, base.a2dBottomCenter)
         ]
         self.rightCells = [
-            mm.addGridCell(-0.2, -0.6, base.a2dTopRight),
-            mm.addGridCell(-0.2, -1.0, base.a2dTopRight),
-            mm.addGridCell(-0.2, -1.4, base.a2dTopRight)
+            mm.addGridCell(-0.25, -0.6, base.a2dTopRight),
+            mm.addGridCell(-0.25, -1.0, base.a2dTopRight),
+            mm.addGridCell(-0.25, -1.4, base.a2dTopRight)
         ]
 
     def setCellsAvailable(self, cell_list, available):
