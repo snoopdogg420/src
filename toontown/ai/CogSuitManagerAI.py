@@ -9,4 +9,5 @@ class CogSuitManagerAI:
         parts = toon.getCogParts()
         if CogDisguiseGlobals.isSuitComplete(parts, suitTrack):
             return
-        return toon.giveGenericCogPart(factoryType, suitTrack)
+        toon.giveGenericCogPart(factoryType, suitTrack)
+        return toon.getCogParts()
