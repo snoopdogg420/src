@@ -353,6 +353,9 @@ class DNAStorage:
     def discoverContinuity(self):
         return 1  # TODO
 
+    def resetBlockNumbers(self):
+        pass  # TODO
+
     def ls(self):
         print 'DNASuitPoints:'
         for suitPoint in self.suitPoints:

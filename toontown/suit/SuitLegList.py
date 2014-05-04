@@ -42,12 +42,12 @@ class SuitLeg:
         return self.startTime
 
     def getLegTime(self):
-        if self.getType() == SuitLeg.TWalk:
-            return (self.getPosA()-self.getPosB()).length() / ToontownGlobals.SuitWalkSpeed
-        elif self.type == SuitLeg.TFromSky:
+        if self.getType() == SuitLeg.TFromSky:
             return SuitTimings.fromSky
-        elif self.type == SuitLeg.TToSky:
+        elif self.getType() == SuitLeg.TToSky:
             return SuitTimings.toSky
+        else:
+            return (self.getPosA()-self.getPosB()).length() / ToontownGlobals.SuitWalkSpeed
 
     def getBlockNumber(self):
         return self.blockNumber
@@ -146,10 +146,16 @@ class SuitLegList:
         endTime = 0
         i = 0
         while i < startLeg:
-            endTime += self.getLegTime(i)
+            try:
+                endTime += self.getLegTime(i)
+            except:
+                pass
             i += 1
         while i < self.getNumLegs():
-            endTime += self.getLegTime(i)
+            try:
+                endTime += self.getLegTime(i)
+            except:
+                pass
             if endTime > time:
                 return i
             i += 1

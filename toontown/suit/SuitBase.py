@@ -1,13 +1,14 @@
-from pandac.PandaModules import *
-from direct.distributed.ClockDelta import *
-import math
-import random
-from pandac.PandaModules import Point3
-from direct.directnotify import DirectNotifyGlobal
-from toontown.battle import SuitBattleGlobals
-import SuitTimings
 import SuitDNA
+from SuitLegList import *
+import SuitTimings
+from direct.directnotify import DirectNotifyGlobal
+from direct.distributed.ClockDelta import *
+from pandac.PandaModules import *
+from pandac.PandaModules import Point3
+from toontown.battle import SuitBattleGlobals
 from toontown.toonbase import TTLocalizer
+
+
 TIME_BUFFER_PER_WPT = 0.25
 TIME_DIVISOR = 100
 DISTRIBUTE_TASK_CREATION = 0

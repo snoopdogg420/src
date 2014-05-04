@@ -58,6 +58,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.hoods = []
         self.zoneDataStore = AIZoneDataStore()
 
+        self.wantCogdominiums = self.config.GetBool('want-cogdominiums', False)
         self.useAllMinigames = self.config.GetBool('want-all-minigames', False)
         self.doLiveUpdates = False
 
@@ -181,4 +182,4 @@ class ToontownAIRepository(ToontownInternalRepository):
         return loadDNAFileAI(dnastore, filename)
 
     def trueUniqueName(self, name):
-       return self.uniqueName(name)
+        return self.uniqueName(name)

@@ -37,10 +37,12 @@ want-news-tab #f
 want-housing #t
 want-april-toons #f
 want-dev #f
-want-old-fireworks #f
+want-old-fireworks #t
 want-instant-parties #t
 want-classicchar #f
 want-game-tables #t
 want-checkers #t
 want-chinese-checkers #t
 want-find-four #f
+want-cogdominiums #f
+want-suit-planners #f

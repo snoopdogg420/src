@@ -11,14 +11,15 @@ from toontown.coghq import LobbyManagerAI
 from toontown.coghq.DistributedLawOfficeElevatorExtAI import DistributedLawOfficeElevatorExtAI
 from toontown.suit import DistributedLawbotBossAI
 from toontown.toonbase import ToontownGlobals
-# from toontown.suit import DistributedSuitPlannerAI
+from toontown.suit import DistributedSuitPlannerAI
 
 
 class LawbotHQAI(HoodAI):
     HOOD = ToontownGlobals.LawbotHQ
 
     def createSafeZone(self):
-        # self.createSuitPlanners()
+        if simbase.config.GetBool('want-suit-planners', False):
+            self.createSuitPlanners()
 
         self.lobbyMgr = LobbyManagerAI.LobbyManagerAI(
             self.air, DistributedLawbotBossAI.DistributedLawbotBossAI)
@@ -27,7 +28,7 @@ class LawbotHQAI(HoodAI):
         self.lobbyElevator = DistributedCJElevatorAI.DistributedCJElevatorAI(
             self.air, self.lobbyMgr, ToontownGlobals.LawbotLobby, antiShuffle=1)
         self.lobbyElevator.generateWithRequired(ToontownGlobals.LawbotLobby)
-        
+
         if simbase.config.GetBool('want-boarding-groups', 1):
             self.boardingParty = DistributedBoardingPartyAI(self.air, [self.lobbyElevator.doId], 8)
             self.boardingParty.generateWithRequired(ToontownGlobals.LawbotLobby)
@@ -79,10 +80,10 @@ class LawbotHQAI(HoodAI):
         return elevator.doId
 
     def createSuitPlanners(self):
+        print 'Creating suit planner for: Lawbot HQ...'
         self.suitPlanners = []
         sp = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, ToontownGlobals.LawbotHQ)
         sp.generateWithRequired(ToontownGlobals.LawbotHQ)
         sp.d_setZoneId(ToontownGlobals.LawbotHQ)
         sp.initTasks()
         self.suitPlanners.append(sp)
-        # self.air.suitPlanners[zoneId] = sp

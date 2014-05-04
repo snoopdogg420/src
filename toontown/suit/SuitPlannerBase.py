@@ -7,6 +7,7 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.hood import HoodUtil
 from toontown.building import SuitBuildingGlobals
+from toontown.dna.DNAParser import DNASuitPoint, DNAStorage, loadDNAFileAI
 
 class SuitPlannerBase:
     notify = DirectNotifyGlobal.directNotify.newCategory('SuitPlannerBase')
@@ -494,10 +495,8 @@ class SuitPlannerBase:
         try:
             simbase.air.loadDNAFileAI(self.dnaStore, dnaFileName)
         except:
-            loader.loadDNAFileAI(self.dnaStore, dnaFileName)
-
+            loadDNAFileAI(self.dnaStore, dnaFileName)
         self.initDNAInfo()
-        return None
 
     def genDNAFileName(self):
         try:
@@ -565,17 +564,15 @@ class SuitPlannerBase:
         numPoints = self.dnaStore.getNumSuitPoints()
         for i in range(numPoints):
             point = self.dnaStore.getSuitPointAtIndex(i)
-            if point.getPointType() == DNASuitPoint.FRONTDOORPOINT:
+            if point.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
                 self.frontdoorPointList.append(point)
-            elif point.getPointType() == DNASuitPoint.SIDEDOORPOINT:
+            elif point.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
                 self.sidedoorPointList.append(point)
-            elif point.getPointType() == DNASuitPoint.COGHQINPOINT or point.getPointType() == DNASuitPoint.COGHQOUTPOINT:
+            elif point.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT'] or point.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
                 self.cogHQDoorPointList.append(point)
             else:
                 self.streetPointList.append(point)
             self.pointIndexes[point.getIndex()] = point
-
-        return None
 
     def performPathTest(self):
         if not self.notify.getDebug():
