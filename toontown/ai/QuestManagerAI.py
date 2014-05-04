@@ -67,8 +67,8 @@ class QuestManagerAI():
         if not toon:
             return
         
-        fromNpc = Quests.QuestDict[questId][Quests.QuestDictFromNpcIndex]
-        toNpc = Quests.QuestDict[questId][Quests.QuestDictToNpcIndex]
+	fromNpc = Quests.getQuestFromNpcId(questId)
+        toNpc = Quests.getQuestToNpcId(questId)
         
         toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], Quests.getFinalRewardId(questId))
         npc.assignQuest(avId, questId, rewardId, toNpc)
@@ -221,22 +221,23 @@ class QuestManagerAI():
 		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
 			questDesc[4] += 1
 	    elif isinstance(questClass, Quests.RecoverItemQuest):
-		for suit in suitsKilled:
-		    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
-			minchance = questClass.getPercentChance()
-			import random
-			chance = random.randint(minchance - 40, 100)
-			
-			if chance <= minchance:
-			    questDesc[4] += 1
-			    recoveredItems.append(questClass.getItem())
-			else:
-			    unrecoveredItems.append(questClass.getItem())
+		if questClass.getHolder() == Quests.Any:
+		    for suit in suitsKilled:
+			if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
+			    minchance = questClass.getPercentChance()
+			    import random
+			    chance = random.randint(minchance - 40, 100)
+			    
+			    if chance <= minchance:
+				questDesc[4] += 1
+				recoveredItems.append(questClass.getItem())
+			    else:
+				unrecoveredItems.append(questClass.getItem())
 	    
 	    questList.append(questDesc)
 	
 	toon.b_setQuests(questList)
-	return [recoveredItems, unrecoveredItems]
+	return (recoveredItems, unrecoveredItems)
     
     def hasTailorClothingTicket(self, avId, npc):
 	toon = self.air.doId2do.get(avId)
