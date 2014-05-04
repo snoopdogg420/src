@@ -8,6 +8,6 @@ class CogSuitManagerAI:
     def recoverPart(self, toon, factoryType, suitTrack, zoneId, toons):
         parts = toon.getCogParts()
         if CogDisguiseGlobals.isSuitComplete(parts, suitTrack):
-            return
+            return parts
         toon.giveGenericCogPart(factoryType, suitTrack)
         return toon.getCogParts()
