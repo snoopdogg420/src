@@ -2,15 +2,11 @@ from otp.ai.AIBaseGlobal import *
 from direct.distributed.ClockDelta import *
 import DistributedBossCogAI
 from direct.directnotify import DirectNotifyGlobal
-from otp.avatar import DistributedAvatarAI
 import DistributedSuitAI
 from toontown.battle import BattleExperienceAI
 from direct.fsm import FSM
 from toontown.toonbase import ToontownGlobals
-from toontown.toon import InventoryBase
 from toontown.toonbase import TTLocalizer
-from toontown.battle import BattleBase
-from toontown.toon import NPCToons
 import SuitDNA
 import random
 
@@ -24,7 +20,7 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
         DistributedBossCogAI.DistributedBossCogAI.__init__(self, air, 's')
         FSM.FSM.__init__(self, 'DistributedSellbotBossAI')
         self.doobers = []
-        self.cagedToonNpcId = random.choice(NPCToons.npcFriends.keys())
+        self.cagedToonNpcId = random.choice(HQnpcFriends.keys())
         self.bossMaxDamage = ToontownGlobals.SellbotBossMaxDamage
         self.recoverRate = 0
         self.recoverStartTime = 0
