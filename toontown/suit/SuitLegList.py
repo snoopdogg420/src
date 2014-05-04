@@ -156,13 +156,13 @@ class SuitLegList:
         return self.getNumLegs() - 1
 
     def isPointInRange(self, point, lo, hi):
-        return False  # TODO
+        pointIndex = point.getIndex()
+        if self.getLegIndexAtTime(lo, 0) > self.getLegIndexAtTime(hi, pointIndex):
+            return 0
+        return 1
 
     def getFirstLegType(self):
         return self.getType(0)
-
-    def getNextLegType(self):
-        return self.getType(1)  # TODO
 
     def getLastLegType(self):
         return self.getType(self.getNumLegs() - 1)

@@ -158,8 +158,8 @@ class DNAStorage:
         startPoint = self.suitPointMap.get(startIndex)
         endPoint = self.suitPointMap.get(endIndex)
         if (not startPoint) or (not endPoint):
-            return
-        distance = Vec3(endPoint - startPoint).length()
+            return 0.0
+        distance = (endPoint-startPoint).length()
         return distance / suitWalkSpeed
 
     def getSuitEdgeZone(self, startIndex, endIndex):
