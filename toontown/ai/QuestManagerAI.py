@@ -153,7 +153,21 @@ class QuestManagerAI():
 	toon.b_setQuests(questList)
 		    
     def toonDefeatedFactory(self, toon, factoryId, activeVictors):
-	pass
+	print 'QuestManager: %s (AvId: %s) defeated a factory.'%(toon.getName(), toon.doId)
+	flattenedQuests = toon.getQuests()
+	questList = [] #unflattened
+	
+	for i in range(0, len(flattenedQuests), 5):
+	    questDesc = flattenedQuests[i : i + 5]
+	    questClass = Quests.getQuest(questDesc[0])
+
+	    if isinstance(questClass, Quests.FactoryQuest):
+		if questClass.doesFactoryCount(toon, factoryId, activeVictors):
+		    questDesc[4] += 1
+	    
+	    questList.append(questDesc)
+	
+	toon.b_setQuests(questList)	
     
     def toonPlayedMinigame(self, toon, toons):
 	print 'QuestManager: %s (AvId: %s) played on the trolley.'%(toon.getName(), toon.doId)
