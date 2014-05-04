@@ -160,3 +160,9 @@ def accId():
     """Get the accountId from the target player."""
     accountId = spellbook.getTarget().DISLid
     return "%s has the accountId of %d" % (spellbook.getTarget().getName(), accountId)
+
+@magicWord(category=CATEGORY_OVERRIDE, types=[int, int])
+def setAdminAccess(id, access):
+    victim = simbase.air.doId2do.get(id)
+    victim.setAdminAccess(access)
+    return 'Set access level %s on %s.' % (victim.getName(), access)
