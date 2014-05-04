@@ -1,14 +1,17 @@
-from otp.ai.AIBaseGlobal import *
-from direct.distributed.ClockDelta import *
-import DistributedBossCogAI
-from direct.directnotify import DirectNotifyGlobal
-import DistributedSuitAI
-from toontown.battle import BattleExperienceAI
-from direct.fsm import FSM
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
-import SuitDNA
 import random
+
+import DistributedBossCogAI
+import DistributedSuitAI
+import SuitDNA
+from direct.directnotify import DirectNotifyGlobal
+from direct.distributed.ClockDelta import *
+from direct.fsm import FSM
+from otp.ai.AIBaseGlobal import *
+from toontown.battle import BattleExperienceAI
+from toontown.toon import NPCToons
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedSellbotBossAI')
@@ -20,7 +23,7 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
         DistributedBossCogAI.DistributedBossCogAI.__init__(self, air, 's')
         FSM.FSM.__init__(self, 'DistributedSellbotBossAI')
         self.doobers = []
-        self.cagedToonNpcId = random.choice(HQnpcFriends.keys())
+        self.cagedToonNpcId = random.choice(NPCToons.HQnpcFriends.keys())
         self.bossMaxDamage = ToontownGlobals.SellbotBossMaxDamage
         self.recoverRate = 0
         self.recoverStartTime = 0
