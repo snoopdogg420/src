@@ -24,10 +24,10 @@ class SellbotHQAI(HoodAI):
             self.boardingParty.generateWithRequired(ToontownGlobals.SellbotLobby)
 
         destinationZone = ToontownGlobals.SellbotLobby
-        extDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=0, lockValue=FADoorCodes.CB_DISGUISE_INCOMPLETE)
-        extDoor1 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=1, lockValue=FADoorCodes.CB_DISGUISE_INCOMPLETE)
-        extDoor2 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=2, lockValue=FADoorCodes.CB_DISGUISE_INCOMPLETE)
-        extDoor3 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=3, lockValue=FADoorCodes.CB_DISGUISE_INCOMPLETE)
+        extDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=0, lockValue=FADoorCodes.SB_DISGUISE_INCOMPLETE)
+        extDoor1 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=1, lockValue=FADoorCodes.SB_DISGUISE_INCOMPLETE)
+        extDoor2 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=2, lockValue=FADoorCodes.SB_DISGUISE_INCOMPLETE)
+        extDoor3 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.EXT_COGHQ, destinationZone, doorIndex=3, lockValue=FADoorCodes.SB_DISGUISE_INCOMPLETE)
         extDoorList = [extDoor0, extDoor1, extDoor2, extDoor3]
         intDoor0 = DistributedCogHQDoorAI.DistributedCogHQDoorAI(self.air, 0, DoorTypes.INT_COGHQ, ToontownGlobals.SellbotHQ, doorIndex=0)
         intDoor0.setOtherDoor(extDoor0)
