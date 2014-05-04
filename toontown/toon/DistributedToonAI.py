@@ -5209,17 +5209,30 @@ def locate(avIdShort=0, returnType=''):
         return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
     return "%s has been located %s %s." % (av.getName(), where[1], where[2])
 
-@magicWord(category=CATEGORY_CHARACTERSTATS)
-def writeDna():
-    target = spellbook.getTarget()
-    filename = target.getName()+"'s DNA.txt"
-    file = open(filename, 'w')
-    dna = '''Toon Name = %s
-Toon Dna = %s
-Toon Hat = %s
-Toon Glasses = %s
-Toon Backpack = %s
-Toon Shoes = %s''' % (target.getName(), target.getDNAString().encode('string_escape'), target.getHat()[0], target.getGlasses()[0], target.getBackpack()[0], target.getShoes()[0])
-    file.write(dna)
-    file.close
-    return '%s dna written to the file %s' % (target.getName(), filename)
+@magicWord(category=CATEGORY_OVERRIDE, types=[str, str, str])
+def track(command, value):
+    #remove track
+    if command == 'remove':
+        allowed = {'toonup' : 1, 'trap' : 2, 'lure' : 3, 'sound' : 4, 'drop' : 7}
+        target = spellbook.getTarget()
+        if allowed.get(value):
+            tracks = target.getTrackAccess()
+            tracks[allowed[value] -1] = 0
+            target.b_setTrackAccess(tracks)
+            return 'Removed %s' % value
+        else:
+            return 'Invalid track'
+    #add track
+    elif command == 'add':
+        allowed = {'toonup' : 1, 'trap' : 2, 'lure' : 3, 'sound' : 4, 'drop' : 7}
+        target = spellbook.getTarget()
+        if allowed.get(value):
+            tracks = target.getTrackAccess()
+            tracks[allowed[value] -1] = 1
+            target.b_setTrackAccess(tracks)
+            return 'Added %s' % value
+        else:
+            return 'Invalid track'
+    else:
+        return 'Invalid command'
+
