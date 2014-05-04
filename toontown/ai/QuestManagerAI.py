@@ -47,7 +47,12 @@ class QuestManagerAI():
 	    if (len(toonQuests) == toonQuestPocketSize*5):
 		npc.rejectAvatar(avId)
 	    else:
-		npc.presentQuestChoice(avId, self.avatarQuestChoice(toon, npc))
+		choices = self.avatarQuestChoice(toon, npc)
+		
+		if choices != []:
+		    npc.presentQuestChoice(avId, choices)
+		else:
+		    npc.rejectAvatar(avId)
 
             
     def avatarQuestChoice(self, toon, npc):
@@ -84,9 +89,7 @@ class QuestManagerAI():
 	
 	if Quests.avatarHasAllRequiredRewards(toon, currentTier):
 	    currentTier += 1
-	    
-	    
-	toon.b_setRewardHistory(currentTier, [])
+	    toon.b_setRewardHistory(currentTier, [])
     
     def completeQuest(self, toon, completeQuestId):
         toonQuests = toon.getQuests()
