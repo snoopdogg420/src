@@ -236,7 +236,7 @@ class DistributedHouse(DistributedObject.DistributedObject):
         if TTLocalizer.BuildingNametagShadow:
             self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
         self.nametag.setContents(Nametag.CName)
-        self.nametag.setColorCode(NametagGroup.CCHouseBuilding)
+        self.nametag.setColorCode(NametagGroup.CCToonBuilding)
         self.nametag.setActive(0)
         self.nametag.setAvatar(self.house)
         self.nametag.setObjectCode(self.doId)
