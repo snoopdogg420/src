@@ -5230,12 +5230,11 @@ def track(command, track, value=None):
     elif command.lower() == 'experience':
         if value is None:
             return 'You must provide an experience value.'
-        maxSkill = Experience.MaxSkill + Experience.UberSkill
-        if not 0 <= value <= maxSkill:
-            return 'Experience value not in range (0-{0}).'.format(maxSkill)
+        if not 0 <= value <= Experience.MaxSkill:
+            return 'Experience value not in range (0-{0}).'.format(Experience.MaxSkill)
         experience = Experience.Experience(invoker.getExperience(), invoker)
         experience.experience[index] = value
         invoker.b_setExperience(experience.makeNetString())
-        return '{0} experience was added to the {1} track!'.format(experience, track)
+        return '{0} experience was added to the {1} track!'.format(value, track)
     else:
         return 'Invalid command!'
