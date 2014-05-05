@@ -260,8 +260,8 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
     def __enterZone(self, zoneId):
         if zoneId != self.zoneId:
             self.sp.zoneChange(self, self.zoneId, zoneId)
-            self.air.sendSetZone(self, zoneId)
-            self.zoneId = zoneId
+            # self.air.sendSetZoneId(self, zoneId)
+            self.zoneId = int(zoneId)  # FIXME: Why is this an str type?
             if self.pathState == 1:
                 self.sp.checkForBattle(zoneId, self)
 

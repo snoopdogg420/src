@@ -168,18 +168,18 @@ class DNAStorage:
             return suitEdge.getZoneId()
 
     def getAdjacentPoints(self, point):
-        pointIndex = self.suitPoints.index(point)
         path = DNASuitPath()
-        if (pointIndex-1) >= 0:
-            path.addPoint(self.suitPoints[pointIndex - 1])
-        if (pointIndex+1) < len(self.suitPoints):
-            path.addPoint(self.suitPoints[pointIndex + 1])
+        pointIndex = point.getIndex()
+        if ((pointIndex-1) > 0) and (pointIndex in self.suitPointMap):
+            path.addPoint(self.suitPointMap[pointIndex - 1])
+        if (pointIndex+1) in self.suitPointMap:
+            path.addPoint(self.suitPointMap[pointIndex + 1])
         return path
 
     def storeSuitPoint(self, suitPoint):
         if not isinstance(suitPoint, DNASuitPoint):
-            raise TypeError("suit_point must be an instance of DNASuitPoint")
-        self.suitPoints += [suitPoint]
+            raise TypeError('suitPoint must be an instance of DNASuitPoint')
+        self.suitPoints.append(suitPoint)
         self.suitPointMap[suitPoint.getIndex()] = suitPoint
 
     def getSuitPointAtIndex(self, index):
@@ -195,7 +195,7 @@ class DNAStorage:
         self.suitEdges = {}
 
     def findDNAGroup(self, node):
-        return DNAGroups[node]
+        return self.DNAGroups[node]
 
     def removeDNAGroup(self, dnagroup):
         for node, group in self.DNAGroups.items():
@@ -221,15 +221,14 @@ class DNAStorage:
     def storeSuitEdge(self, startIndex, endIndex, zoneId):
         startPoint = self.getSuitPointWithIndex(startIndex)
         endPoint = self.getSuitPointWithIndex(endIndex)
-        if startPoint is None or endPoint is None:
+        if (startPoint is None) or (endPoint is None):
             return
-        if not startIndex in self.suitEdges:
-            self.suitEdges[startIndex] = []
-        self.suitEdges[startIndex] += [DNASuitEdge(startPoint, endPoint, zoneId)]
+        edge = DNASuitEdge(startPoint, endPoint, zoneId)
+        self.suitEdges.setdefault(startIndex, []).append(edge)
 
     def getSuitEdge(self, startIndex, endIndex):
         if not startIndex in self.suitEdges:
-            return None
+            return
         for edge in self.suitEdges[startIndex]:
             if edge.getEndPoint().getIndex() == endIndex:
                 return edge
@@ -238,7 +237,7 @@ class DNAStorage:
         self.battleCells.remove(cell)
 
     def storeBattleCell(self, cell):
-        self.battleCells += [cell]
+        self.battleCells.append(cell)
 
     def resetBattleCells(self):
         self.battleCells = []
@@ -250,7 +249,6 @@ class DNAStorage:
             return self.hoodNodes[code]
         if code in self.placeNodes:
             return self.placeNodes[code]
-        return None
 
     def resetNodes(self):
         self.nodes = {}
@@ -273,7 +271,6 @@ class DNAStorage:
     def findFont(self, code):
         if code in self.fonts:
             return self.fonts[code]
-        return None
 
     def resetFonts(self):
         self.fonts = {}
@@ -288,12 +285,14 @@ class DNAStorage:
         return block
 
     def getTitleFromBlockNumber(self, index):
-        if self.blockTitles.has_key(index):
+        if index in self.blockTitles:
             return self.blockTitles[index]
         return ''
 
     def getDoorPosHprFromBlockNumber(self, index):
-        return self.blockDoors[str(index)]
+        key = str(index)
+        if key in self.blockDoors:
+            return self.blockDoors[key]
 
     def storeBlockDoor(self, index, door):
         self.blockDoors[index] = door
@@ -1773,7 +1772,7 @@ p_signtextdef.__doc__ = '''signtextdef : TEXT'''
 
 def p_suitedge(p):
     zoneId = p.parser.parentGroup.getName()
-    p.parser.dnaStore.storeSuitEdge(p[2], p[3], zoneId)
+    p.parser.dnaStore.storeSuitEdge(p[3], p[4], zoneId)
 p_suitedge.__doc__ = '''suitedge : SUIT_EDGE "[" number number "]"'''
 
 def p_battlecell(p):

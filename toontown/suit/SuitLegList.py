@@ -91,17 +91,29 @@ class SuitLegList:
         self.toToonBuilding = toToonBuilding
         self.legs = []
         # startTime, zoneId, blockNumber, pointA, pointB, type
-        # TODO: Use suit edges to get zoneId
+        # TODO: What is startTime used for?
+        # TODO: What is blockNumber used for?
         startPoint = path.getPoint(0)
-        self.legs.append(SuitLeg(0, 0, 0, startPoint, startPoint, SuitLeg.TFromSky))
+        for edge in self.dnaStore.suitEdges[startPoint.getIndex()]:
+            if edge.getStartPoint() is startPoint:
+                print 'found start edge'
+                break
+        zoneId = edge.getZoneId()
+        self.legs.append(SuitLeg(0, zoneId, 0, startPoint, startPoint, SuitLeg.TFromSky))
         for i in range(path.getNumPoints()):
             if not 0 < i < (path.getNumPoints()-1):
                 continue
             pointA = path.getPoint(i)
             pointB = path.getPoint(i + 1)
-            self.legs.append(SuitLeg(0, 0, 0, pointA, pointB, SuitLeg.TWalk))
-        endPoint = path.getPoint(path.getNumPoints() - 1)
-        self.legs.append(SuitLeg(0, 0, 0, endPoint, endPoint, SuitLeg.TToSky))
+            zoneId = self.dnaStore.getSuitEdgeZone(pointA.getIndex(), pointB.getIndex())
+            if not zoneId:
+                print 'SuitLegList WARNING: Skipping suit edge for: {0}, {1}'.format(pointA.getIndex(), pointB.getIndex())
+                continue
+            self.legs.append(SuitLeg(0, zoneId, 0, pointA, pointB, SuitLeg.TWalk))
+        endPointA = path.getPoint(path.getNumPoints() - 2)
+        endPointB = path.getPoint(path.getNumPoints() - 1)
+        zoneId = self.dnaStore.getSuitEdgeZone(endPointA.getIndex(), endPointB.getIndex())
+        self.legs.append(SuitLeg(0, zoneId, 0, endPointB, endPointB, SuitLeg.TToSky))
 
     def getNumLegs(self):
         return len(self.legs)
