@@ -5209,30 +5209,33 @@ def locate(avIdShort=0, returnType=''):
         return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
     return "%s has been located %s %s." % (av.getName(), where[1], where[2])
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[str, str, str])
-def track(command, value):
-    #remove track
-    if command == 'remove':
-        allowed = {'toonup' : 1, 'trap' : 2, 'lure' : 3, 'sound' : 4, 'drop' : 7}
-        target = spellbook.getTarget()
-        if allowed.get(value):
-            tracks = target.getTrackAccess()
-            tracks[allowed[value] -1] = 0
-            target.b_setTrackAccess(tracks)
-            return 'Removed %s' % value
-        else:
-            return 'Invalid track'
-    #add track
-    elif command == 'add':
-        allowed = {'toonup' : 1, 'trap' : 2, 'lure' : 3, 'sound' : 4, 'drop' : 7}
-        target = spellbook.getTarget()
-        if allowed.get(value):
-            tracks = target.getTrackAccess()
-            tracks[allowed[value] -1] = 1
-            target.b_setTrackAccess(tracks)
-            return 'Added %s' % value
-        else:
-            return 'Invalid track'
+@magicWord(category=CATEGORY_OVERRIDE, types=[str, str, int])
+def track(command, track, value=None):
+    try:
+        index = ('toonup', 'trap', 'lure', 'sound', 'throw',
+                 'squirt', 'drop').index(track)
+    except:
+        return 'Invalid Gag track!'
+    invoker = spellbook.getInvoker()
+    if command.lower() == 'remove':
+        trackAccess = invoker.getTrackAccess()
+        trackAccess[index] = 0
+        invoker.b_setTrackAccess(trackAccess)
+        return 'Removed the {0} track!'.format(track)
+    elif command.lower() == 'add':
+        trackAccess = invoker.getTrackAccess()
+        trackAccess[index] = 1
+        invoker.b_setTrackAccess(trackAccess)
+        return 'Added the {0} track!'.format(track)
+    elif command.lower() == 'experience':
+        if value is None:
+            return 'You must provide an experience value.'
+        maxSkill = Experience.MaxSkill + Experience.UberSkill
+        if not 0 <= value <= maxSkill:
+            return 'Experience value not in range (0-{0}).'.format(maxSkill)
+        experience = Experience.Experience(invoker.getExperience(), invoker)
+        experience.experience[index] = value
+        invoker.b_setExperience(experience.makeNetString())
+        return '{0} experience was added to the {1} track!'.format(experience, track)
     else:
-        return 'Invalid command'
-
+        return 'Invalid command!'
