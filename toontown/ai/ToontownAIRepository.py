@@ -152,19 +152,32 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.estateManager.generateWithRequired(2)
 
     def createZones(self):
-        self.hoods.append(TTHoodAI.TTHoodAI(self))
-        self.hoods.append(DDHoodAI.DDHoodAI(self))
-        self.hoods.append(DGHoodAI.DGHoodAI(self))
-        self.hoods.append(BRHoodAI.BRHoodAI(self))
-        self.hoods.append(MMHoodAI.MMHoodAI(self))
-        self.hoods.append(DLHoodAI.DLHoodAI(self))
-        self.hoods.append(GSHoodAI.GSHoodAI(self))
-        self.hoods.append(OZHoodAI.OZHoodAI(self))
-        self.hoods.append(GZHoodAI.GZHoodAI(self))
-        self.hoods.append(SellbotHQAI.SellbotHQAI(self))
-        self.hoods.append(CashbotHQAI.CashbotHQAI(self))
-        self.hoods.append(LawbotHQAI.LawbotHQAI(self))
-        self.hoods.append(BossbotHQAI.BossbotHQAI(self))
+        if self.config.GetBool('want-toontown-central', True):
+            self.hoods.append(TTHoodAI.TTHoodAI(self))
+        if self.config.GetBool('want-donalds-dock', True):
+            self.hoods.append(DDHoodAI.DDHoodAI(self))
+        if self.config.GetBool('want-daisys-garden', True):
+            self.hoods.append(DGHoodAI.DGHoodAI(self))
+        if self.config.GetBool('want-minnies-melodyland', True):
+            self.hoods.append(MMHoodAI.MMHoodAI(self))
+        if self.config.GetBool('want-the-burrrgh', True):
+            self.hoods.append(BRHoodAI.BRHoodAI(self))
+        if self.config.GetBool('want-donalds-dreamland', True):
+            self.hoods.append(DLHoodAI.DLHoodAI(self))
+        if self.config.GetBool('want-goofy-speedway', True):
+            self.hoods.append(GSHoodAI.GSHoodAI(self))
+        if self.config.GetBool('want-outdoor-zone', True):
+            self.hoods.append(OZHoodAI.OZHoodAI(self))
+        if self.config.GetBool('want-golf-zone', True):
+            self.hoods.append(GZHoodAI.GZHoodAI(self))
+        if self.config.GetBool('want-sellbot-headquarters', True):
+            self.hoods.append(SellbotHQAI.SellbotHQAI(self))
+        if self.config.GetBool('want-cashbot-headquarters', True):
+            self.hoods.append(CashbotHQAI.CashbotHQAI(self))
+        if self.config.GetBool('want-lawbot-headquarters', True):
+            self.hoods.append(LawbotHQAI.LawbotHQAI(self))
+        if self.config.GetBool('want-bossbot-headquarters', True):
+            self.hoods.append(BossbotHQAI.BossbotHQAI(self))
 
     def genDNAFileName(self, zoneId):
         zoneId = ZoneUtil.getCanonicalZoneId(zoneId)
