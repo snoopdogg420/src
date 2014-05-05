@@ -6,8 +6,9 @@ class CogSuitManagerAI:
         self.air = air
 
     def recoverPart(self, toon, factoryType, suitTrack, zoneId, toons):
+        recoveredParts = [0, 0, 0, 0]
         parts = toon.getCogParts()
         if CogDisguiseGlobals.isSuitComplete(parts, suitTrack):
-            return parts
-        toon.giveGenericCogPart(factoryType, suitTrack)
-        return toon.getCogParts()
+            return recoveredParts
+        recoveredParts[suitTrack] = toon.giveGenericCogPart(factoryType, suitTrack)
+        return recoveredParts
