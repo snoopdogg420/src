@@ -196,18 +196,19 @@ class QuestManagerAI():
 	    questDesc = flattenedQuests[i : i + 5]
 	    questClass = Quests.getQuest(questDesc[0])
 	    minChance = questClass.getPercentChance()
-
-	    if not hasPickedQuest:
-		if isinstance(questClass, Quests.RecoverItemQuest):
-		    if questClass.getHolder() == Quests.AnyFish:
-			if not questClass.getCompletionStatus(toon, questDesc) == Quests.COMPLETE:
-			    import random
-			    minChance = questClass.getPercentChance()
-			    chance = random.randint(minChance - 40, 100)
-			    
-			    if chance <= minChance:
-				questDesc[4] += 1
-				hasPickedQuest = questClass
+	    
+	    if isinstance(questClass, Quests.RecoverItemQuest):
+		if not hasPickedQuest:
+		    if isinstance(questClass, Quests.RecoverItemQuest):
+			if questClass.getHolder() == Quests.AnyFish:
+			    if not questClass.getCompletionStatus(toon, questDesc) == Quests.COMPLETE:
+				import random
+				minChance = questClass.getPercentChance()
+				chance = random.randint(minChance - 40, 100)
+				
+				if chance <= minChance:
+				    questDesc[4] += 1
+				    hasPickedQuest = questClass
 			    
 	    questList.append(questDesc)
 	
