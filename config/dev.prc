@@ -33,19 +33,25 @@ eventlog-host 127.0.0.1
 want-toontown-central #t
 want-donalds-dock #t
 want-daisys-garden #t
-want-minnies-melodyland #t
-want-the-burrrgh #t
-want-donalds-dreamland #t
-want-goofy-speedway #t
-want-outdoor-zone #t
-want-golf-zone #t
-want-sellbot-headquarters #t
-want-cashbot-headquarters #t
-want-lawbot-headquarters #t
-want-bossbot-headquarters #t
+want-minnies-melodyland #f
+want-the-burrrgh #f
+want-donalds-dreamland #f
+want-goofy-speedway #f
+want-outdoor-zone #f
+want-golf-zone #f
+want-sellbot-headquarters #f
+want-cashbot-headquarters #f
+want-lawbot-headquarters #f
+want-bossbot-headquarters #f
 
 # Classic characters...
-want-classicchar #f
+want-mickey #f
+want-donald-dock #f
+want-daisy #f
+want-minnie #f
+want-pluto #f
+want-donald-dreamland #f
+want-chip-and-dale #f
 
 # Picnic table board games...
 want-game-tables #t
@@ -67,6 +73,7 @@ want-old-fireworks #t
 want-instant-parties #t
 want-cogdominiums #f
 want-suit-planners #f
+want-butterflies #f
 
 # Temporary...
 cog-thief-ortho 0

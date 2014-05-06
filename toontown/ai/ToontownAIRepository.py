@@ -56,6 +56,10 @@ class ToontownAIRepository(ToontownInternalRepository):
         NPCToons.generateZone2NpcDict()
 
         self.hoods = []
+        self.buildingManagers = {}
+        self.dnaStoreMap = {}
+        self.dnaDataMap = {}
+        self.suitPlanners = {}
         self.zoneDataStore = AIZoneDataStore()
 
         self.wantCogdominiums = self.config.GetBool('want-cogdominiums', False)
@@ -179,7 +183,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         if self.config.GetBool('want-bossbot-headquarters', True):
             self.hoods.append(BossbotHQAI.BossbotHQAI(self))
 
-    def genDNAFileName(self, zoneId):
+    def lookupDNAFileName(self, zoneId):
         zoneId = ZoneUtil.getCanonicalZoneId(zoneId)
         hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
         hood = ToontownGlobals.dnaMap[hoodId]
@@ -188,7 +192,6 @@ class ToontownAIRepository(ToontownInternalRepository):
             phase = ToontownGlobals.phaseMap[hoodId]
         else:
             phase = ToontownGlobals.streetPhaseMap[hoodId]
-
         return 'phase_%s/dna/%s_%s.dna' % (phase, hood, zoneId)
 
     def loadDNAFileAI(self, dnastore, filename):

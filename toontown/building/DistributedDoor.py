@@ -1,59 +1,73 @@
-from toontown.toonbase.ToonBaseGlobal import *
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from direct.distributed.ClockDelta import *
-from toontown.toonbase import ToontownGlobals
+import DoorTypes
+import FADoorCodes
 from direct.directnotify import DirectNotifyGlobal
-from direct.fsm import ClassicFSM, State
 from direct.distributed import DistributedObject
+from direct.distributed.ClockDelta import *
+from direct.fsm import ClassicFSM, State
+from direct.interval.IntervalGlobal import *
+from direct.task.Task import Task
+from otp.nametag.Nametag import Nametag
+from otp.nametag.NametagGroup import NametagGroup
+from pandac.PandaModules import *
+from toontown.distributed import DelayDelete
+from toontown.distributed.DelayDeletable import DelayDeletable
 from toontown.hood import ZoneUtil
 from toontown.suit import Suit
-from toontown.distributed import DelayDelete
-import FADoorCodes
-from direct.task.Task import Task
-import DoorTypes
-from toontown.toontowngui import TTDialog
 from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.ToonBaseGlobal import *
+from toontown.toontowngui import TTDialog
 from toontown.toontowngui import TeaserPanel
-from otp.nametag.NametagGroup import NametagGroup
-from otp.nametag.Nametag import Nametag
-from toontown.distributed.DelayDeletable import DelayDeletable
-if (__debug__):
+
+
+if __debug__:
     import pdb
 
-class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
-    deferFor = 1
 
+class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.openSfx = base.loadSfx('phase_3.5/audio/sfx/Door_Open_1.ogg')
         self.closeSfx = base.loadSfx('phase_3.5/audio/sfx/Door_Close_1.ogg')
         self.nametag = None
-        self.fsm = ClassicFSM.ClassicFSM('DistributedDoor_right', [State.State('off', self.enterOff, self.exitOff, ['closing',
-          'closed',
-          'opening',
-          'open']),
-         State.State('closing', self.enterClosing, self.exitClosing, ['closed', 'opening']),
-         State.State('closed', self.enterClosed, self.exitClosed, ['opening']),
-         State.State('opening', self.enterOpening, self.exitOpening, ['open']),
-         State.State('open', self.enterOpen, self.exitOpen, ['closing', 'open'])], 'off', 'off')
+        self.fsm = ClassicFSM.ClassicFSM(
+            'DistributedDoor_right',
+            [
+                State.State('off', self.enterOff, self.exitOff,
+                            ['closing', 'closed', 'opening', 'open']),
+                State.State('closing', self.enterClosing, self.exitClosing,
+                            ['closed', 'opening']),
+                State.State('closed', self.enterClosed, self.exitClosed,
+                            ['opening']),
+                State.State('opening', self.enterOpening, self.exitOpening,
+                            ['open']),
+                State.State('open', self.enterOpen, self.exitOpen,
+                            ['closing', 'open'])
+            ], 'off', 'off')
         self.fsm.enterInitialState()
-        self.exitDoorFSM = ClassicFSM.ClassicFSM('DistributedDoor_left', [State.State('off', self.exitDoorEnterOff, self.exitDoorExitOff, ['closing',
-          'closed',
-          'opening',
-          'open']),
-         State.State('closing', self.exitDoorEnterClosing, self.exitDoorExitClosing, ['closed', 'opening']),
-         State.State('closed', self.exitDoorEnterClosed, self.exitDoorExitClosed, ['opening']),
-         State.State('opening', self.exitDoorEnterOpening, self.exitDoorExitOpening, ['open']),
-         State.State('open', self.exitDoorEnterOpen, self.exitDoorExitOpen, ['closing', 'open'])], 'off', 'off')
+        self.exitDoorFSM = ClassicFSM.ClassicFSM(
+            'DistributedDoor_left',
+            [
+                State.State('off', self.exitDoorEnterOff, self.exitDoorExitOff,
+                            ['closing', 'closed', 'opening', 'open']),
+                State.State('closing', self.exitDoorEnterClosing, self.exitDoorExitClosing,
+                            ['closed', 'opening']),
+                State.State('closed', self.exitDoorEnterClosed, self.exitDoorExitClosed,
+                            ['opening']),
+                State.State('opening', self.exitDoorEnterOpening, self.exitDoorExitOpening,
+                            ['open']),
+                State.State('open', self.exitDoorEnterOpen, self.exitDoorExitOpen,
+                            ['closing', 'open'])
+            ], 'off', 'off')
         self.exitDoorFSM.enterInitialState()
-        self.specialDoorTypes = {DoorTypes.EXT_HQ: 0,
-         DoorTypes.EXT_COGHQ: 0,
-         DoorTypes.INT_COGHQ: 0,
-         DoorTypes.EXT_KS: 0,
-         DoorTypes.INT_KS: 0}
+        self.specialDoorTypes = {
+            DoorTypes.EXT_HQ: 0,
+            DoorTypes.EXT_COGHQ: 0,
+            DoorTypes.INT_COGHQ: 0,
+            DoorTypes.EXT_KS: 0,
+            DoorTypes.INT_KS: 0
+        }
         self.doorX = 1.5
-        return
 
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
@@ -63,7 +77,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         self.avatarExitIDList = []
         self.doorTrack = None
         self.doorExitTrack = None
-        return
 
     def disable(self):
         self.clearNametag()
@@ -111,14 +124,12 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             name = self.cr.playGame.dnaStore.getTitleFromBlockNumber(self.block)
             self.nametag.setName(name)
             self.nametag.manage(base.marginManager)
-        return
 
     def clearNametag(self):
-        if self.nametag != None:
+        if self.nametag is not None:
             self.nametag.unmanage(base.marginManager)
             self.nametag.setAvatar(NodePath())
             self.nametag = None
-        return
 
     def getTriggerName(self):
         if self.doorType == DoorTypes.INT_HQ or self.specialDoorTypes.has_key(self.doorType):
@@ -137,22 +148,18 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         return 'exit' + self.getTriggerName()
 
     def hideDoorParts(self):
-        if self.specialDoorTypes.has_key(self.doorType):
+        if self.doorType in self.specialDoorTypes:
             self.hideIfHasFlat(self.findDoorNode('rightDoor'))
             self.hideIfHasFlat(self.findDoorNode('leftDoor'))
             self.findDoorNode('doorFrameHoleRight').hide()
             self.findDoorNode('doorFrameHoleLeft').hide()
-        else:
-            return
 
     def setTriggerName(self):
-        if self.specialDoorTypes.has_key(self.doorType):
+        if self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
             doorTrigger = building.find('**/door_' + str(self.doorIndex) + '/**/door_trigger*')
             doorTrigger.setY(doorTrigger.getY()-3)
             doorTrigger.node().setName(self.getTriggerName())
-        else:
-            return
 
     def setTriggerName_wip(self):
         building = self.getBuilding()
