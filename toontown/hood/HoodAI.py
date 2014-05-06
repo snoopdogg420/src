@@ -73,6 +73,7 @@ class HoodAI:
             fishingPond = DistributedFishingPondAI(simbase.air)
             fishingPond.setArea(area)
             fishingPond.generateWithRequired(zoneId)
+            fishingPond.start()
 
             fishingPonds.append(fishingPond)
         elif isinstance(dnaGroup, DNAVisGroup):
