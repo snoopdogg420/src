@@ -6,18 +6,15 @@ from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM, State
 from direct.interval.IntervalGlobal import *
 from direct.task.Task import Task
-from otp.nametag.Nametag import Nametag
-from otp.nametag.NametagGroup import NametagGroup
 from pandac.PandaModules import *
 from toontown.distributed import DelayDelete
 from toontown.distributed.DelayDeletable import DelayDeletable
 from toontown.hood import ZoneUtil
 from toontown.suit import Suit
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.ToonBaseGlobal import *
 from toontown.toontowngui import TTDialog
 from toontown.toontowngui import TeaserPanel
+from otp.nametag.NametagGroup import NametagGroup, Nametag
 
 
 if __debug__:
@@ -65,8 +62,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             DoorTypes.EXT_COGHQ: 0,
             DoorTypes.INT_COGHQ: 0,
             DoorTypes.EXT_KS: 0,
-            DoorTypes.INT_KS: 0
-        }
+            DoorTypes.INT_KS: 0 }
         self.doorX = 1.5
 
     def generate(self):
@@ -86,7 +82,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         self.ignore('clearOutToonInterior')
         self.fsm.request('off')
         self.exitDoorFSM.request('off')
-        if self.__dict__.has_key('building'):
+        if hasattr(self, 'building'):
             del self.building
         self.finishAllTracks()
         self.avatarIDList = []
@@ -132,7 +128,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             self.nametag = None
 
     def getTriggerName(self):
-        if self.doorType == DoorTypes.INT_HQ or self.specialDoorTypes.has_key(self.doorType):
+        if (self.doorType == DoorTypes.INT_HQ) or (self.doorType in self.specialDoorTypes):
             return 'door_trigger_' + str(self.block) + '_' + str(self.doorIndex)
         else:
             return 'door_trigger_' + str(self.block)
@@ -158,7 +154,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         if self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
             doorTrigger = building.find('**/door_' + str(self.doorIndex) + '/**/door_trigger*')
-            doorTrigger.setY(doorTrigger.getY()-3)
             doorTrigger.node().setName(self.getTriggerName())
 
     def setTriggerName_wip(self):
@@ -213,7 +208,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         self.setupNametag()
 
     def getBuilding(self):
-        if not self.__dict__.has_key('building'):
+        if not hasattr(self, 'building'):
             if self.doorType == DoorTypes.INT_STANDARD:
                 door = render.find('**/leftDoor;+s')
                 self.building = door.getParent()
@@ -233,11 +228,12 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         return self.building
 
     def getBuilding_wip(self):
-        if not self.__dict__.has_key('building'):
-            if self.__dict__.has_key('block'):
+        if not hasattr(self, 'building'):
+            if hasattr(self, 'block'):
                 self.building = self.cr.playGame.hood.loader.geom.find('**/??' + str(self.block) + ':*_landmark_*_DNARoot;+s')
             else:
                 self.building = self.cr.playGame.hood.loader.geom
+                print '---------------- door is interior -------'
         return self.building
 
     def readyToExit(self):
@@ -246,14 +242,14 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
 
     def avatarEnterDoorTrack(self, avatar, duration):
         trackName = 'avatarEnterDoor-%d-%d' % (self.doId, avatar.doId)
-        track = Parallel(name=trackName)
+        track = Parallel(name = trackName)
         otherNP = self.getDoorNodePath()
         if hasattr(avatar, 'stopSmooth'):
             avatar.stopSmooth()
         if avatar.doId == base.localAvatar.doId:
-            track.append(LerpPosHprInterval(nodePath=camera, other=avatar, duration=duration, pos=Point3(0, -8, avatar.getHeight()), hpr=VBase3(0, 0, 0), blendType='easeInOut'))
+            track.append(LerpPosHprInterval(nodePath = camera, other = avatar, duration = duration, pos = Point3(0, -8, avatar.getHeight()), hpr = VBase3(0, 0, 0), blendType = 'easeInOut'))
         finalPos = avatar.getParent().getRelativePoint(otherNP, Point3(self.doorX, 2, ToontownGlobals.FloorOffset))
-        moveHere = Sequence(self.getAnimStateInterval(avatar, 'walk'), LerpPosInterval(nodePath=avatar, duration=duration, pos=finalPos, blendType='easeIn'))
+        moveHere = Sequence(self.getAnimStateInterval(avatar, 'walk'), LerpPosInterval(nodePath = avatar, duration = duration, pos = finalPos, blendType = 'easeIn'))
         track.append(moveHere)
         if avatar.doId == base.localAvatar.doId:
             track.append(Sequence(Wait(duration * 0.5), Func(base.transitions.irisOut, duration * 0.5), Wait(duration * 0.5), Func(avatar.b_setParent, ToontownGlobals.SPHidden)))
@@ -268,10 +264,10 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             back = -9.0
         offset = Point3(self.doorX, back, ToontownGlobals.FloorOffset)
         otherNP = self.getDoorNodePath()
-        walkLike = ActorInterval(avatar, 'walk', startTime=1, duration=duration, endTime=0.0001)
-        standHere = Sequence(LerpPosHprInterval(nodePath=avatar, other=otherNP, duration=duration, pos=offset, hpr=VBase3(0, 0, 0), blendType='easeInOut'), self.getAnimStateInterval(avatar, 'neutral'))
+        walkLike = ActorInterval(avatar, 'walk', startTime = 1, duration = duration, endTime = 0.0001)
+        standHere = Sequence(LerpPosHprInterval(nodePath = avatar, other = otherNP, duration = duration, pos = offset, hpr = VBase3(0, 0, 0), blendType = 'easeInOut'), self.getAnimStateInterval(avatar, 'neutral'))
         trackName = 'avatarEnqueueDoor-%d-%d' % (self.doId, avatar.doId)
-        track = Parallel(walkLike, standHere, name=trackName)
+        track = Parallel(walkLike, standHere, name = trackName)
         track.delayDelete = DelayDelete.DelayDelete(avatar, 'avatarEnqueueTrack')
         return track
 
@@ -296,7 +292,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             place = base.cr.playGame.getPlace()
             if place:
                 place.fsm.request('stopped')
-            self.dialog = TeaserPanel.TeaserPanel(pageName='otherHoods', doneFunc=self.handleOkTeaser)
+            self.dialog = TeaserPanel.TeaserPanel(pageName = 'otherHoods', doneFunc = self.handleOkTeaser)
 
     def handleOkTeaser(self):
         self.accept(self.getEnterTriggerEvent(), self.doorTrigger)
@@ -306,14 +302,16 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         if place:
             place.fsm.request('walk')
 
-    def allowedToEnter(self, zoneId = None):
-        allowed = False
-        if hasattr(base, 'ttAccess') and base.ttAccess:
-            if zoneId:
-                allowed = base.ttAccess.canAccess(zoneId)
-            else:
-                allowed = base.ttAccess.canAccess()
-        return allowed
+    def allowedToEnter(self):
+        if base.cr.isPaid():
+            return True
+        place = base.cr.playGame.getPlace()
+        myHoodId = ZoneUtil.getCanonicalHoodId(place.zoneId)
+        if hasattr(place, 'id'):
+            myHoodId = place.id
+        if myHoodId in (ToontownGlobals.ToontownCentral, ToontownGlobals.MyEstate, ToontownGlobals.GoofySpeedway, ToontownGlobals.Tutorial):
+            return True
+        return False
 
     def checkIsDoorHitTaskName(self):
         return 'checkIsDoorHit' + self.getTriggerName()
@@ -333,7 +331,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         self.ignore(self.getExitTriggerEvent())
         self.accept(self.getEnterTriggerEvent(), self.doorTrigger)
 
-    def doorTrigger(self, args = None):
+    def doorTrigger(self, args=None):
         self.ignore(self.getEnterTriggerEvent())
         if args == None:
             self.enterDoor()
@@ -345,7 +343,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             else:
                 self.accept(self.getExitTriggerEvent(), self.cancelCheckIsDoorHitTask)
                 taskMgr.add(self.checkIsDoorHitTask, self.checkIsDoorHitTaskName())
-        return
 
     def avatarEnter(self, avatarID):
         avatar = self.cr.doId2do.get(avatarID, None)
@@ -355,7 +352,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             track.start()
             self.avatarTracks.append(track)
             self.avatarIDList.append(avatarID)
-        return
 
     def rejectEnter(self, reason):
         message = FADoorCodes.reasonDict[reason]
@@ -370,7 +366,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             self.cr.playGame.getPlace().setState('walk')
 
     def __faRejectEnter(self, message):
-        self.rejectDialog = TTDialog.TTGlobalDialog(message=message, doneEvent='doorRejectAck', style=TTDialog.Acknowledge)
+        self.rejectDialog = TTDialog.TTGlobalDialog(message = message, doneEvent = 'doorRejectAck', style = TTDialog.Acknowledge)
         self.rejectDialog.show()
         self.rejectDialog.delayDelete = DelayDelete.DelayDelete(self, '__faRejectEnter')
         event = 'clientCleanup'
@@ -412,7 +408,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 otherNP.setPos(posHpr.getPos())
                 otherNP.setHpr(posHpr.getHpr())
                 self.tempDoorNodePath = otherNP
-        elif self.specialDoorTypes.has_key(self.doorType):
+        elif self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
             otherNP = building.find('**/door_origin_' + str(self.doorIndex))
         elif self.doorType == DoorTypes.INT_HQ:
@@ -428,15 +424,34 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         trackName = 'avatarExitDoor-%d-%d' % (self.doId, avatar.doId)
         track = Sequence(name=trackName)
         track.append(self.getAnimStateInterval(avatar, 'walk'))
-        track.append(PosHprInterval(avatar, Point3(-self.doorX, 0, ToontownGlobals.FloorOffset), VBase3(179, 0, 0), other=otherNP))
+        track.append(
+            PosHprInterval(
+                avatar, Point3(-self.doorX, 0, ToontownGlobals.FloorOffset),
+                VBase3(179, 0, 0), other=otherNP
+            )
+        )
         track.append(Func(avatar.setParent, ToontownGlobals.SPRender))
         if avatar.doId == base.localAvatar.doId:
-            track.append(PosHprInterval(camera, VBase3(-self.doorX, 5, avatar.getHeight()), VBase3(180, 0, 0), other=otherNP))
+            track.append(
+                PosHprInterval(
+                    camera, VBase3(-self.doorX, 5, avatar.getHeight()),
+                    VBase3(180, 0, 0), other=otherNP
+                )
+            )
         if avatar.doId == base.localAvatar.doId:
-            finalPos = render.getRelativePoint(otherNP, Point3(-self.doorX, -6, ToontownGlobals.FloorOffset))
+            finalPos = render.getRelativePoint(
+                otherNP, Point3(-self.doorX, -6, ToontownGlobals.FloorOffset)
+            )
         else:
-            finalPos = render.getRelativePoint(otherNP, Point3(-self.doorX, -3, ToontownGlobals.FloorOffset))
-        track.append(LerpPosInterval(nodePath=avatar, duration=duration, pos=finalPos, blendType='easeInOut'))
+            finalPos = render.getRelativePoint(
+                otherNP, Point3(-self.doorX, -3, ToontownGlobals.FloorOffset)
+            )
+        track.append(
+            LerpPosInterval(
+                nodePath=avatar, duration=duration, pos=finalPos,
+                blendType='easeInOut'
+            )
+        )
         if avatar.doId == base.localAvatar.doId:
             track.append(Func(self.exitCompleted))
             track.append(Func(base.transitions.irisIn))
@@ -464,13 +479,11 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         if self.doorTrack:
             self.doorTrack.finish()
         self.doorTrack = None
-        return
 
     def finishDoorExitTrack(self):
         if self.doorExitTrack:
             self.doorExitTrack.finish()
         self.doorExitTrack = None
-        return
 
     def finishAllTracks(self):
         self.finishDoorTrack()
@@ -478,12 +491,10 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         for t in self.avatarTracks:
             t.finish()
             DelayDelete.cleanupDelayDeletes(t)
-
         self.avatarTracks = []
         for t in self.avatarExitTracks:
             t.finish()
             DelayDelete.cleanupDelayDeletes(t)
-
         self.avatarExitTracks = []
 
     def enterOff(self):
@@ -494,15 +505,17 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
 
     def getRequestStatus(self):
         zoneId = self.otherZoneId
-        request = {'loader': ZoneUtil.getBranchLoaderName(zoneId),
-         'where': ZoneUtil.getToonWhereName(zoneId),
-         'how': 'doorIn',
-         'hoodId': ZoneUtil.getHoodId(zoneId),
-         'zoneId': zoneId,
-         'shardId': None,
-         'avId': -1,
-         'allowRedirect': 0,
-         'doorDoId': self.otherDoId}
+        request = {
+            'loader': ZoneUtil.getBranchLoaderName(zoneId),
+            'where': ZoneUtil.getToonWhereName(zoneId),
+            'how': 'doorIn',
+            'hoodId': ZoneUtil.getHoodId(zoneId),
+            'zoneId': zoneId,
+            'shardId': None,
+            'avId': -1,
+            'allowRedirect': 0,
+            'doorDoId': self.otherDoId
+        }
         return request
 
     def enterClosing(self, ts):
@@ -521,7 +534,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         else:
             h = -100
         self.finishDoorTrack()
-        self.doorTrack = Sequence(LerpHprInterval(nodePath=rightDoor, duration=1.0, hpr=VBase3(0, 0, 0), startHpr=VBase3(h, 0, 0), other=otherNP, blendType='easeInOut'), Func(doorFrameHoleRight.hide), Func(self.hideIfHasFlat, rightDoor), SoundInterval(self.closeSfx, node=rightDoor), name=trackName)
+        self.doorTrack = Sequence(LerpHprInterval(nodePath = rightDoor, duration = 1.0, hpr = VBase3(0, 0, 0), startHpr = VBase3(h, 0, 0), other = otherNP, blendType = 'easeInOut'), Func(doorFrameHoleRight.hide), Func(self.hideIfHasFlat, rightDoor), SoundInterval(self.closeSfx, node = rightDoor), name = trackName)
         self.doorTrack.start(ts)
         if hasattr(self, 'done'):
             request = self.getRequestStatus()
@@ -567,14 +580,12 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 self.avatarTracks.append(track)
             if avatarID == base.localAvatar.doId:
                 self.done = 1
-
         self.avatarIDList = []
 
     def exitOpen(self):
         for track in self.avatarTracks:
             track.finish()
             DelayDelete.cleanupDelayDeletes(track)
-
         self.avatarTracks = []
 
     def exitDoorEnterOff(self):
@@ -597,7 +608,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             otherNP = self.getDoorNodePath()
             trackName = 'doorExitTrack-%d' % self.doId
             self.finishDoorExitTrack()
-            self.doorExitTrack = Sequence(LerpHprInterval(nodePath=leftDoor, duration=1.0, hpr=VBase3(0, 0, 0), startHpr=VBase3(h, 0, 0), other=otherNP, blendType='easeInOut'), Func(doorFrameHoleLeft.hide), Func(self.hideIfHasFlat, leftDoor), SoundInterval(self.closeSfx, node=leftDoor), name=trackName)
+            self.doorExitTrack = Sequence(LerpHprInterval(nodePath = leftDoor, duration = 1.0, hpr = VBase3(0, 0, 0), startHpr = VBase3(h, 0, 0), other = otherNP, blendType = 'easeInOut'), Func(doorFrameHoleLeft.hide), Func(self.hideIfHasFlat, leftDoor), SoundInterval(self.closeSfx, node = leftDoor), name = trackName)
             self.doorExitTrack.start(ts)
 
     def exitDoorExitClosing(self):
@@ -623,7 +634,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             otherNP = self.getDoorNodePath()
             trackName = 'doorDoorExitTrack-%d' % self.doId
             self.finishDoorExitTrack()
-            self.doorExitTrack = Parallel(SoundInterval(self.openSfx, node=leftDoor), Sequence(Func(leftDoor.show), Func(doorFrameHoleLeft.show), LerpHprInterval(nodePath=leftDoor, duration=0.6, hpr=VBase3(h, 0, 0), startHpr=VBase3(0, 0, 0), other=otherNP, blendType='easeInOut')), name=trackName)
+            self.doorExitTrack = Parallel(SoundInterval(self.openSfx, node = leftDoor), Sequence(Func(leftDoor.show), Func(doorFrameHoleLeft.show), LerpHprInterval(nodePath = leftDoor, duration = 0.59999999999999998, hpr = VBase3(h, 0, 0), startHpr = VBase3(0, 0, 0), other = otherNP, blendType = 'easeInOut')), name = trackName)
             self.doorExitTrack.start(ts)
         else:
             self.notify.warning('exitDoorEnterOpening(): did not find leftDoor')
@@ -638,14 +649,12 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 track = self.avatarExitTrack(avatar, 0.2)
                 track.start()
                 self.avatarExitTracks.append(track)
-
         self.avatarExitIDList = []
 
     def exitDoorExitOpen(self):
         for track in self.avatarExitTracks:
             track.finish()
             DelayDelete.cleanupDelayDeletes(track)
-
         self.avatarExitTracks = []
 
     def findDoorNode(self, string, allowEmpty = False):
