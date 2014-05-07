@@ -23,11 +23,12 @@ vfs-mount phase_11.mf /
 vfs-mount phase_12.mf /
 vfs-mount phase_13.mf /
 
-audio-library-name p3openal_audio
+audio-library-name p3fmod_audio
 
 server-force-ssl 0
 server-port 7198
 server-version SERVER_VERSION
+server-timezone US/Eastern
 
 cog-thief-ortho 0
 show-total-population #t

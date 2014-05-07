@@ -1,19 +1,41 @@
-from toontown.toonbase import ToontownGlobals
-from toontown.safezone.DistributedBoatAI import DistributedBoatAI
 from toontown.classicchars import DistributedDonaldDockAI
-from HoodAI import HoodAI
+from toontown.hood import HoodAI
+from toontown.safezone import DistributedBoatAI
+from toontown.safezone import DistributedTrolleyAI
+from toontown.toonbase import ToontownGlobals
 
-class DDHoodAI(HoodAI):
-    HOOD = ToontownGlobals.DonaldsDock
 
-    def createSafeZone(self):
-        HoodAI.createSafeZone(self)
-        self.spawnObjects()
+class DDHoodAI(HoodAI.HoodAI):
+    def __init__(self, air):
+        HoodAI.HoodAI.__init__(self, air,
+                               ToontownGlobals.DonaldsDock,
+                               ToontownGlobals.DonaldsDock)
 
-        self.boat = DistributedBoatAI(self.air)
-        self.boat.generateWithRequired(self.HOOD)
-        
-        if simbase.config.GetBool('want-classicchar', 0):
-            self.classicChar = DistributedDonaldDockAI.DistributedDonaldDockAI(self.air)
-            self.classicChar.generateWithRequired(self.HOOD)
-            self.classicChar.start()
+        self.trolley = None
+        self.boat = None
+        self.classicChar = None
+
+        self.startup()
+
+    def startup(self):
+        HoodAI.HoodAI.startup(self)
+
+        self.createTrolley()
+        self.createBoat()
+        if simbase.config.GetBool('want-donald-dock', True):
+            self.createClassicChar()
+
+    def createTrolley(self):
+        self.trolley = DistributedTrolleyAI.DistributedTrolleyAI(self.air)
+        self.trolley.generateWithRequired(self.zoneId)
+        self.trolley.start()
+
+    def createBoat(self):
+        self.boat = DistributedBoatAI.DistributedBoatAI(self.air)
+        self.boat.generateWithRequired(self.zoneId)
+        self.boat.start()
+
+    def createClassicChar(self):
+        self.classicChar = DistributedDonaldDockAI.DistributedDonaldDockAI(self.air)
+        self.classicChar.generateWithRequired(self.zoneId)
+        self.classicChar.start()

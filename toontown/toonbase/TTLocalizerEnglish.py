@@ -7647,10 +7647,7 @@ NPCToonNames = {20000: 'Tutorial Tom',
  7007: 'Dewin Tymme',
  7008: 'Ima Cagedtoon',
  7009: 'Jimmy Thelock',
-91913: 'Shockley', # 9/19/13 = Closing of Toontown, just a random number to start with so we don't take up other IDs
-91914: 'Sir Max',  # Feel free to add other TTR members in as needed.
-91915: 'McQuack',
-91916: 'Hawkheart',
+# Start with 91913.
 91917: 'Magic Cat',
 91918: 'Trap Cat'}
 zone2TitleDict = {2513: ('Toon Hall', ''),
@@ -9758,7 +9755,7 @@ HolidayNamesInCalendar = {1: ('Summer Fireworks', 'Celebrate Summer with a firew
  105: ('Toons go GREEN!', 'Toons make a green scene at Green Bean Jeans on Oak Street in Daisy Gardens!')}
 UnknownHoliday = 'Unknown Holiday %d'
 HolidayFormat = '%b %d '
-TimeZone = 'US/Pacific'
+TimeZone = 'US/Eastern'
 HourFormat = '12'
 CogdoMemoGuiTitle = 'Memos:'
 CogdoMemoNames = 'Barrel-Destruction Memos'

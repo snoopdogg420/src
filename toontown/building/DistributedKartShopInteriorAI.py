@@ -1,17 +1,17 @@
-from direct.directnotify import DirectNotifyGlobal
+from direct.directnotify.DirectNotifyGlobal import *
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 
+
 class DistributedKartShopInteriorAI(DistributedObjectAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistributedKartShopInteriorAI")
-    
-    def __init__(self, air):
+    notify = directNotify.newCategory('DistributedKartShopInteriorAI')
+
+    def __init__(self, block, air, zoneId):
         DistributedObjectAI.__init__(self, air)
-        self.zone = None
-        self.block = None
-    
-    def setZoneIdAndBlock(self, zone, block):
-        self.zone = zone
         self.block = block
-        
+        self.zoneId = zoneId
+
+    def generate(self):
+        DistributedObjectAI.generate(self)
+
     def getZoneIdAndBlock(self):
-       return [self.zone, self.block]
+        return [self.zoneId, self.block]
