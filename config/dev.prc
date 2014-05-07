@@ -22,6 +22,7 @@ accountdb-local-file databases/csm-cookies.db
 server-force-ssl 0
 server-port 7198
 server-version tti-retro-dev
+server-timezone US/Eastern
 
 # Dclass files...
 dc-file config/toon.dc
