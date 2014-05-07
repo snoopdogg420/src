@@ -5237,4 +5237,17 @@ def track(command, track, value=None):
         invoker.b_setExperience(experience.makeNetString())
         return '{0} experience was added to the {1} track!'.format(value, track)
     else:
-        return 'Invalid command!'
+        return 'Invalid command.'
+
+@magicWord(category=CATEGORY_OVERRIDE, types=[str, str])
+def suit(self, command, suitName):
+    if command.lower() == 'spawn':
+        return 'Coming soon.'
+    elif command.lower() == 'building':
+        return 'Coming soon.'
+    elif command.lower() == 'do':
+        return 'Coming soon.'
+    elif command.lower() == 'invasion':
+        return 'Coming soon.'
+    else:
+        return 'Invalid command.'

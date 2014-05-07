@@ -64,3 +64,13 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
             self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].append(avId)
             self.leaderInfo[DistributedTrophyMgrAI.NAME].append(name)
             self.leaderInfo[DistributedTrophyMgrAI.SCORE].append(score)
+
+    def addTrophy(self, avId, name, numFloors):
+        if avId in self.trophyScores:
+            trophyScore = self.trophyScores[avId] + numFloors
+            self.updateTrophyScore(avId, trophyScore)
+
+    def removeTrophy(self, avId, numFloors):
+        if avId in self.trophyScores:
+            trophyScore = self.trophyScores[avId] - numFloors
+            self.updateTrophyScore(avId, trophyScore)

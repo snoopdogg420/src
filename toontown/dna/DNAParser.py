@@ -138,6 +138,8 @@ class DNAStorage:
         self.blockArticles = {}
         self.blockBuildingTypes = {}
         self.blockDoors = {}
+        self.blockNumbers = []
+        self.blockZones = {}
         self.textures = {}
         self.catalogCodes = {}
 
@@ -284,27 +286,31 @@ class DNAStorage:
             block = block[1:]
         return block
 
-    def getTitleFromBlockNumber(self, index):
-        if index in self.blockTitles:
-            return self.blockTitles[index]
+    def getBlockBuildingType(self, blockNumber):
+        if blockNumber in self.blockBuildingTypes:
+            return self.blockBuildingTypes[blockNumber]
+
+    def getTitleFromBlockNumber(self, blockNumber):
+        if blockNumber in self.blockTitles:
+            return self.blockTitles[blockNumber]
         return ''
 
-    def getDoorPosHprFromBlockNumber(self, index):
-        key = str(index)
+    def getDoorPosHprFromBlockNumber(self, blockNumber):
+        key = str(blockNumber)
         if key in self.blockDoors:
             return self.blockDoors[key]
 
-    def storeBlockDoor(self, index, door):
-        self.blockDoors[index] = door
+    def storeBlockDoor(self, blockNumber, door):
+        self.blockDoors[blockNumber] = door
 
-    def storeBlockTitle(self, index, title):
-        self.blockTitles[index] = title
+    def storeBlockTitle(self, blockNumber, title):
+        self.blockTitles[blockNumber] = title
 
-    def storeBlockArticle(self, index, article):
-        self.blockArticles[index] = article
+    def storeBlockArticle(self, blockNumber, article):
+        self.blockArticles[blockNumber] = article
 
-    def storeBlockBuildingType(self, index, type):
-        self.blockBuildingTypes[index] = type
+    def storeBlockBuildingType(self, blockNumber, buildingType):
+        self.blockBuildingTypes[blockNumber] = buildingType
 
     def storeTexture(self, name, texture):
         self.textures[name] = texture
@@ -353,7 +359,30 @@ class DNAStorage:
         return 1  # TODO
 
     def resetBlockNumbers(self):
-        pass  # TODO
+        self.blockNumbers = []
+
+    def getNumBlockNumbers(self):
+        return len(self.blockNumbers)
+
+    def storeBlockNumber(self, blockNumber):
+        self.blockNumbers.append(blockNumber)
+
+    def getBlockNumberAt(self, index):
+        if index < self.getNumBlockNumbers():
+            return self.blockNumbers[index]
+
+    def getZoneFromBlockNumber(self, blockNumber):
+        if blockNumber in self.blockZones:
+            return self.blockZones[blockNumber]
+        else:
+            print 'WARNING: No block number: {0}'.format(blockNumber)
+            return 0
+
+    def storeBlockZone(self, blockNumber, zoneId):
+        self.blockZones[blockNumber] = zoneId
+
+    def resetBlockZones(self):
+        self.blockZones = {}
 
     def ls(self):
         print 'DNASuitPoints:'
@@ -549,7 +578,7 @@ class DNAVisGroup(DNAGroup):
         self.suitEdges += [edge]
 
     def addVisible(self, visible):
-        self.visibles += [visible]
+        self.visibles.append(visible)
 
     def getBattleCell(self, index):
         return self.battleCells[index]
@@ -638,7 +667,6 @@ class DNANode(DNAGroup):
 
     def setHpr(self, hpr):
         self.hpr = hpr
-        #self.hpr[0] *= -1
 
     def setScale(self, scale):
         self.scale = scale
@@ -1135,9 +1163,6 @@ class DNALandmarkBuilding(DNANode):
         nodePath = node.copyTo(nodePath, 0)
         nodePath.setName(self.getName())
         nodePath.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
-        dnaStorage.storeBlockTitle(int(dnaStorage.getBlock(self.getName())), self.title)
-        dnaStorage.storeBlockArticle(int(dnaStorage.getBlock(self.getName())), self.article)
-        dnaStorage.storeBlockBuildingType(int(dnaStorage.getBlock(self.getName())), self.buildingType)
         self.setupSuitBuildingOrigin(npA, nodePath)
         for child in self.children:
             child.traverse(nodePath, dnaStorage)
@@ -1203,8 +1228,8 @@ class DNADoor(DNAGroup):
         if node is None:
             raise DNAError('DNADoor code ' + self.code + ' not found in DNAStorage')
         doorNode = node.copyTo(frontNode, 0)
-        DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage,
-          dnaStorage.getBlock(nodePath.getName()), self.color)
+        block = dnaStorage.getBlock(nodePath.getName())
+        DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage, block, self.color)
 
 class DNAStreet(DNANode):
     def __init__(self, name):
@@ -1711,6 +1736,10 @@ def p_landmarkbuildingdef(p):
     p[0] = DNALandmarkBuilding(p[2])
     p.parser.parentGroup.add(p[0])
     p[0].setParent(p.parser.parentGroup)
+    blockNumber = int(p.parser.dnaStore.getBlock(p[0].getName()))
+    p.parser.dnaStore.storeBlockNumber(blockNumber)
+    zoneId = int(p[0].getVisGroup().getName().split(':')[0])
+    p.parser.dnaStore.storeBlockZone(blockNumber, zoneId)
     p.parser.parentGroup = p[0]
 p_landmarkbuildingdef.__doc__ = '''landmarkbuildingdef : LANDMARK_BUILDING string'''
 
@@ -1936,14 +1965,20 @@ p_texture.__doc__ = '''texture : TEXTURE "[" string "]"'''
 
 def p_title(p):
     p.parser.parentGroup.setTitle(p[3])
+    blockNumber = int(p.parser.dnaStore.getBlock(p.parser.parentGroup.getName()))
+    p.parser.dnaStore.storeBlockTitle(blockNumber, p[3])
 p_title.__doc__ = '''title : TITLE "[" string "]"'''
 
 def p_article(p):
     p.parser.parentGroup.setArticle(p[3])
+    blockNumber = int(p.parser.dnaStore.getBlock(p.parser.parentGroup.getName()))
+    p.parser.dnaStore.storeBlockArticle(blockNumber, p[3])
 p_article.__doc__ = '''article : ARTICLE "[" string "]"'''
 
 def p_building_type(p):
     p.parser.parentGroup.setBuildingType(p[3])
+    blockNumber = int(p.parser.dnaStore.getBlock(p.parser.parentGroup.getName()))
+    p.parser.dnaStore.storeBlockBuildingType(blockNumber, p[3])
 p_building_type.__doc__ = '''building_type : BUILDING_TYPE "[" string "]"'''
 
 def p_wall_color(p):

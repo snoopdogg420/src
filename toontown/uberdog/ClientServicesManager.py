@@ -15,8 +15,8 @@ class ClientServicesManager(DistributedObjectGlobal):
         self.notify.debug('Sending login cookie: ' + cookie)
         self.sendUpdate('login', [cookie])
 
-    def acceptLogin(self):
-        messenger.send(self.doneEvent, [{'mode': 'success'}])
+    def acceptLogin(self, timestamp):
+        messenger.send(self.doneEvent, [{'mode': 'success', 'timestamp': timestamp}])
 
 
     # --- AVATARS LIST ---

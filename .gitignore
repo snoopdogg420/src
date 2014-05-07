@@ -15,6 +15,7 @@ nosetests.xml
 
 # PLY
 parsetab.py
+tools/make_client.py
 
 # Toontown Infinite Retro
 PPYTHON_PATH

@@ -8,7 +8,7 @@ import math
 
 class DistributedFishingTargetAI(DistributedNodeAI):
     notify = DirectNotifyGlobal.directNotify.newCategory("DistributedFishingTargetAI")
-	
+
     def __init__(self, air):
         DistributedNodeAI.__init__(self, air)
         self.pondId = 0
@@ -23,10 +23,10 @@ class DistributedFishingTargetAI(DistributedNodeAI):
         pond = self.air.doId2do[self.pondId]
         pond.addTarget(self)
         self.centerPoint = FishingTargetGlobals.getTargetCenter(pond.getArea())
-        
+
     def delete(self):
         taskMgr.remove('updateFishingTarget%d' % self.doId)
-        
+
         DistributedNodeAI.delete(self)
 
     def setPondDoId(self, pondId):
@@ -48,8 +48,5 @@ class DistributedFishingTargetAI(DistributedNodeAI):
         self.angle = random.randrange(359)
         self.targetRadius = random.uniform(FishingTargetGlobals.getTargetRadius(self.air.doId2do[self.pondId].getArea()), 0)
         self.time = random.uniform(10.0, 5.0)
-        z = self.centerPoint[2]
-
         self.sendUpdate('setState', [0, self.angle, self.targetRadius, self.time, globalClockDelta.getRealNetworkTime()])
         taskMgr.doMethodLater(self.time + random.uniform(5, 2.5), DistributedFishingTargetAI.updateState, 'updateFishingTarget%d' % self.doId, [self])
-

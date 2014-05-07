@@ -21,6 +21,7 @@ from toontown.pets import PetManagerAI
 from toontown.ai import CogSuitManagerAI
 from toontown.ai import PromotionManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
+from toontown.suit import SuitInvasionManager
 
 #friends!
 from otp.friends.FriendManagerAI import FriendManagerAI
@@ -56,12 +57,18 @@ class ToontownAIRepository(ToontownInternalRepository):
         NPCToons.generateZone2NpcDict()
 
         self.hoods = []
+        self.buildingManagers = {}
+        self.dnaStoreMap = {}
+        self.dnaDataMap = {}
+        self.suitPlanners = {}
         self.zoneDataStore = AIZoneDataStore()
 
         self.wantCogdominiums = self.config.GetBool('want-cogdominiums', False)
         self.useAllMinigames = self.config.GetBool('want-all-minigames', False)
         self.doLiveUpdates = False
 
+        self.suitInvasionManager = SuitInvasionManager.SuitInvasionManager()
+        
         self.questManager = QuestManagerAI(self)
 
         self.holidayManager = HolidayManagerAI()
@@ -179,7 +186,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         if self.config.GetBool('want-bossbot-headquarters', True):
             self.hoods.append(BossbotHQAI.BossbotHQAI(self))
 
-    def genDNAFileName(self, zoneId):
+    def lookupDNAFileName(self, zoneId):
         zoneId = ZoneUtil.getCanonicalZoneId(zoneId)
         hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
         hood = ToontownGlobals.dnaMap[hoodId]
@@ -188,7 +195,6 @@ class ToontownAIRepository(ToontownInternalRepository):
             phase = ToontownGlobals.phaseMap[hoodId]
         else:
             phase = ToontownGlobals.streetPhaseMap[hoodId]
-
         return 'phase_%s/dna/%s_%s.dna' % (phase, hood, zoneId)
 
     def loadDNAFileAI(self, dnastore, filename):
