@@ -11,6 +11,7 @@ from toontown.battle import BattleExperienceAI
 from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
+from otp.ai.MagicWordGlobal import *
 
 
 class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM):
@@ -388,3 +389,13 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
         if self.hitCount < self.limitHitCount or self.bossDamage < self.hitCountDamage:
             return
         self.b_setAttackCode(ToontownGlobals.BossCogRecoverDizzyAttack)
+
+
+@magicWord(category=CATEGORY_OVERRIDE)
+def skipVP():
+    boss = simbase.air.doFind('DistributedSellbotBossAI')
+    if not boss:
+        return "You aren't in a VP!"
+    boss.exitIntroduction()
+    boss.b_setState('PrepareBattleThree')
+    return 'Skipping the first round...'

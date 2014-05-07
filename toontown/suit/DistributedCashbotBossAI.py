@@ -11,6 +11,7 @@ from direct.fsm import FSM
 import DistributedBossCogAI
 import SuitDNA
 import random
+from otp.ai.MagicWordGlobal import *
 import math
 
 class DistributedCashbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM):
@@ -484,3 +485,13 @@ class DistributedCashbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
     def enterEpilogue(self):
         DistributedBossCogAI.DistributedBossCogAI.enterEpilogue(self)
         self.d_setRewardId(self.rewardId)
+
+
+@magicWord(category=CATEGORY_OVERRIDE)
+def skipCFO():
+    boss = simbase.air.doFind('DistributedCashbotBossAI')
+    if not boss:
+        return "You aren't in a CFO!"
+    boss.exitIntroduction()
+    boss.b_setState('PrepareBattleThree')
+    return 'Skipping the first round...'
