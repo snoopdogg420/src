@@ -23,7 +23,7 @@ vfs-mount phase_11.mf /
 vfs-mount phase_12.mf /
 vfs-mount phase_13.mf /
 
-audio-library-name p3openal_audio
+audio-library-name p3fmod_audio
 
 server-force-ssl 0
 server-port 7198
