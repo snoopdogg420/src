@@ -67,14 +67,14 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
             pass
         elif self.pathState != 1:
             if self.notify.getDebug():
-                self.notify.debug('requestBattle() - suit %d not on path' % self.getDoId())
+                self.notify.debug('requestBattle() - suit %s not on path' % self.getDoId())
             if self.pathState == 2 or self.pathState == 4:
                 self.b_setBrushOff(SuitDialog.getBrushOffIndex(self.getStyleName()))
             self.d_denyBattle(toonId)
             return
         elif self.legType != SuitLeg.TWalk:
             if self.notify.getDebug():
-                self.notify.debug('requestBattle() - suit %d not in Bellicose' % self.getDoId())
+                self.notify.debug('requestBattle() - suit %s not in Bellicose' % self.getDoId())
             self.b_setBrushOff(SuitDialog.getBrushOffIndex(self.getStyleName()))
             self.d_denyBattle(toonId)
             return
@@ -82,10 +82,10 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
         self.confrontHpr = Vec3(h, p, r)
         if self.sp.requestBattle(self.zoneId, self, toonId):
             if self.notify.getDebug():
-                self.notify.debug('Suit %d requesting battle in zone %d' % (self.getDoId(), self.zoneId))
+                self.notify.debug('Suit %s requesting battle in zone %s' % (self.getDoId(), self.zoneId))
         else:
             if self.notify.getDebug():
-                self.notify.debug('requestBattle from suit %d - denied by battle manager' % self.getDoId())
+                self.notify.debug('requestBattle from suit %s - denied by battle manager' % self.getDoId())
             self.b_setBrushOff(SuitDialog.getBrushOffIndex(self.getStyleName()))
             self.d_denyBattle(toonId)
         return
@@ -151,7 +151,7 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
         self.d_setPathPosition(index, timestamp)
 
     def d_setPathPosition(self, index, timestamp):
-        self.notify.debug('Suit %d reaches point %d at time %0.2f' % (self.getDoId(), index, timestamp))
+        self.notify.debug('Suit %s reaches point %s at time %0.2f' % (self.getDoId(), index, timestamp))
         self.sendUpdate('setPathPosition', [index, globalClockDelta.localToNetworkTime(timestamp)])
 
     def setPathPosition(self, index, timestamp):
@@ -211,7 +211,7 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
         self.zoneId = ZoneUtil.getTrueZoneId(self.legList.getZoneId(0), self.branchId)
         self.legType = self.legList.getType(0)
         if self.notify.getDebug():
-            self.notify.debug('creating suit in zone %d' % self.zoneId)
+            self.notify.debug('creating suit in zone %s' % self.zoneId)
 
     def resync(self):
         self.b_setPathPosition(self.currentLeg, self.pathStartTime + self.legList.getStartTime(self.currentLeg))
@@ -227,7 +227,7 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
             zoneId = self.legList.getZoneId(nextLeg)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.branchId)
             self.__enterZone(zoneId)
-            self.notify.debug('Suit %d reached leg %d of %d in zone %d.' % (self.getDoId(),
+            self.notify.debug('Suit %s reached leg %s of %s in zone %s.' % (self.getDoId(),
              nextLeg,
              numLegs - 1,
              self.zoneId))
@@ -345,7 +345,7 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
             return
         blockNumber = self.buildingDestination
         if not self.sp.buildingMgr.isSuitBlock(blockNumber):
-            self.notify.debug('Suit %d taking over building %d in %d' % (self.getDoId(), blockNumber, self.zoneId))
+            self.notify.debug('Suit %s taking over building %s in %s' % (self.getDoId(), blockNumber, self.zoneId))
             difficulty = self.getActualLevel() - 1
             if self.buildingDestinationIsCogdo:
                 self.sp.cogdoTakeOver(blockNumber, difficulty, self.buildingHeight)
