@@ -13,7 +13,7 @@ model-cache-textures #f
 default-model-extension .bam
 
 # Audio...
-audio-library-name p3openal_audio
+audio-library-name p3fmod_audio
 
 # Database...
 accountdb-type local
