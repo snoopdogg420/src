@@ -21,6 +21,7 @@ from toontown.pets import PetManagerAI
 from toontown.ai import CogSuitManagerAI
 from toontown.ai import PromotionManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
+from toontown.suit import SuitInvasionManager
 
 #friends!
 from otp.friends.FriendManagerAI import FriendManagerAI
@@ -66,6 +67,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.useAllMinigames = self.config.GetBool('want-all-minigames', False)
         self.doLiveUpdates = False
 
+        self.suitInvasionManager = SuitInvasionManager.SuitInvasionManager()
+        
         self.questManager = QuestManagerAI(self)
 
         self.holidayManager = HolidayManagerAI()
