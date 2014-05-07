@@ -11,6 +11,7 @@ from toontown.battle import BattleExperienceAI
 from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
+from otp.ai.MagicWordGlobal import *
 
 
 class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM):
