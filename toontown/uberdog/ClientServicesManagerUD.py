@@ -243,7 +243,7 @@ class LoginAccountFSM(OperationFSM):
 
         # We're done.
         self.csm.air.writeServerEvent('accountLogin', self.target, self.accountId, self.databaseId)
-        self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [])
+        self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [int(time.time())])
         self.demand('Off')
 
 class CreateAvatarFSM(OperationFSM):
