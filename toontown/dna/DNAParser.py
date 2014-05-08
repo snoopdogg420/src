@@ -2278,7 +2278,8 @@ p_store_texture.__doc__ = \
 
 def p_font(p):
     filename = Filename(p[5])
-    filename.setExtension('bam')
+    if not filename.getExtension():
+        filename.setExtension('bam')
     p.parser.dnaStore.storeFont(FontPool.loadFont(filename.cStr()), p[4])
 p_font.__doc__ = \
     '''font : STORE_FONT "[" string string string "]"'''
