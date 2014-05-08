@@ -65,4 +65,3 @@ class KartShopBuildingAI:
         self.outsideDoor1.sendUpdate('setDoorIndex', [self.outsideDoor1.getDoorIndex()])
         self.insideDoor0.sendUpdate('setDoorIndex', [self.insideDoor0.getDoorIndex()])
         self.insideDoor1.sendUpdate('setDoorIndex', [self.insideDoor1.getDoorIndex()])
-        print 'generated kart shop'

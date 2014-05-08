@@ -140,7 +140,9 @@ class HoodAI:
                 self.partyGates.extend(foundPartyGates)
 
     def createTreasurePlanner(self):
-        spawnInfo = TreasureGlobals.SafeZoneTreasureSpawns[self.canonicalHoodId]
+        spawnInfo = TreasureGlobals.SafeZoneTreasureSpawns.get(self.canonicalHoodId)
+        if not spawnInfo:
+            return
         treasureType, healAmount, spawnPoints, spawnRate, maxTreasures = spawnInfo
         self.treasurePlanner = SZTreasurePlannerAI(
             self.canonicalHoodId, treasureType, healAmount, spawnPoints,

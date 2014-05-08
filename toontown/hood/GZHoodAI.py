@@ -17,6 +17,8 @@ class GZHoodAI(HoodAI.HoodAI):
         self.startup()
 
     def startup(self):
+        HoodAI.HoodAI.startup(self)
+
         self.createGolfKarts()
 
     def findGolfKarts(self, dnaGroup, zoneId, area, overrideDNAZone=False):
