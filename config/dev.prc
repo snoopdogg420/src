@@ -39,8 +39,8 @@ want-minnies-melodyland #t
 want-the-burrrgh #t
 want-donalds-dreamland #t
 want-goofy-speedway #f
-want-outdoor-zone #f
-want-golf-zone #f
+want-outdoor-zone #t
+want-golf-zone #t
 want-sellbot-headquarters #f
 want-cashbot-headquarters #f
 want-lawbot-headquarters #f

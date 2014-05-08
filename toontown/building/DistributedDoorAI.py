@@ -83,20 +83,14 @@ class DistributedDoorAI(DistributedObjectAI.DistributedObjectAI):
         return self.zoneId
 
     def getState(self):
-        return [
-            self.fsm.getCurrentState().getName(),
-            globalClockDelta.getRealNetworkTime()
-        ]
+        return [self.fsm.getCurrentState().getName(), globalClockDelta.getRealNetworkTime()]
 
     def getExitDoorState(self):
-        return [
-            self.exitDoorFSM.getCurrentState().getName(),
-            globalClockDelta.getRealNetworkTime()
-        ]
+        return [self.exitDoorFSM.getCurrentState().getName(), globalClockDelta.getRealNetworkTime()]
 
     def isOpen(self):
         state = self.fsm.getCurrentState().getName()
-        return (state == 'open') or (state == 'opening')
+        return state == 'open' or state == 'opening'
 
     def isClosed(self):
         return not self.isOpen()
@@ -143,9 +137,9 @@ class DistributedDoorAI(DistributedObjectAI.DistributedObjectAI):
         self.enqueueAvatarIdExit(avatarID)
 
     def enqueueAvatarIdExit(self, avatarID):
-        if self.avatarsWhoAreEntering.has_key(avatarID):
+        if avatarID in self.avatarsWhoAreEntering:
             del self.avatarsWhoAreEntering[avatarID]
-        elif not self.avatarsWhoAreExiting.has_key(avatarID):
+        elif avatarID not in self.avatarsWhoAreExiting:
             self.avatarsWhoAreExiting[avatarID] = 1
             self.openDoor(self.exitDoorFSM)
 
@@ -174,8 +168,7 @@ class DistributedDoorAI(DistributedObjectAI.DistributedObjectAI):
 
     def enterClosing(self):
         self.d_setState('closing')
-        self.doLaterTask = taskMgr.doMethodLater(
-            1, self.closingTask, self.uniqueName('door_closing-timer'))
+        self.doLaterTask = taskMgr.doMethodLater(1, self.closingTask, self.uniqueName('door_closing-timer'))
 
     def exitClosing(self):
         if self.doLaterTask:

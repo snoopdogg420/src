@@ -115,28 +115,5 @@ class DNASpawnerAI:
                     startingBlock.setPadLocationId(0)
                     startingBlock.generateWithRequired(zone)
                     pad.addStartingBlock(startingBlock)
-        elif group.getName()[:11] == 'game_table_':
-            if not simbase.config.GetBool('want-game-tables', 0):
-                return
-            for i in range(group.getNumChildren()):
-                posSpot = group.at(i)
-                if 'game_table' in posSpot.getName():
-                    pos = posSpot.getPos()
-                    hpr = posSpot.getHpr()
-                    gameTable = DistributedGameTableAI.DistributedGameTableAI(simbase.air)
-                    gameTable.setPosHpr(pos[0], pos[1], pos[2], hpr[0], hpr[1], hpr[2])
-                    gameTable.generateWithRequired(zone)
-        elif group.getName()[:13] == 'picnic_table_':
-            nameInfo = group.getName().split('_')
-            for i in range(group.getNumChildren()):
-                posSpot = group.at(i)
-                if 'picnic_table' in posSpot.getName():
-                    pos = posSpot.getPos()
-                    hpr = posSpot.getHpr()
-                    picnicTable = DistributedPicnicBasketAI.DistributedPicnicBasketAI(
-                        simbase.air, nameInfo[2],
-                        pos[0], pos[1], pos[2], hpr[0], hpr[1], hpr[2])
-                    picnicTable.generateWithRequired(zone)
-                    picnicTable.start()
         for i in range(group.getNumChildren()):
             self._createObjects(group.at(i), zone)

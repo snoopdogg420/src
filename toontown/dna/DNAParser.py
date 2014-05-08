@@ -296,9 +296,7 @@ class DNAStorage:
         return ''
 
     def getDoorPosHprFromBlockNumber(self, blockNumber):
-        key = str(blockNumber)
-        if key in self.blockDoors:
-            return self.blockDoors[key]
+        return self.blockDoors[blockNumber]
 
     def storeBlockDoor(self, blockNumber, door):
         self.blockDoors[blockNumber] = door
@@ -1188,7 +1186,7 @@ class DNADoor(DNAGroup):
 
     @staticmethod
     def setupDoor(doorNodePath, parentNode, doorOrigin, dnaStore, block, color):
-        doorNodePath.setPosHprScale(doorOrigin, (0,0,0), (0,0,0), (1,1,1))
+        doorNodePath.setPosHprScale(doorOrigin, (0, 0, 0), (0, 0, 0), (1, 1, 1))
         doorNodePath.setColor(color, 0)
         leftHole = doorNodePath.find('door_*_hole_left')
         leftHole.setName('doorFrameHoleLeft')
@@ -1207,17 +1205,17 @@ class DNADoor(DNAGroup):
 
         rightDoor.setColor(color, 0)
         leftDoor.setColor(color, 0)
-        leftHole.setColor((0,0,0,1), 0)
-        rightHole.setColor((0,0,0,1), 0)
+        leftHole.setColor((0, 0, 0, 1), 0)
+        rightHole.setColor((0, 0, 0, 1), 0)
 
         doorTrigger = doorNodePath.find('door_*_trigger')
-        doorTrigger.setScale(2,2,2)
+        doorTrigger.setScale(2, 2, 2)
         doorTrigger.wrtReparentTo(parentNode, 0)
         doorTrigger.setName('door_trigger_' + block)
 
         store = NodePath('door-%s' % block)
-        store.setPosHprScale(doorNodePath, (0,0,0), (0,0,0), (1,1,1))
-        dnaStore.storeBlockDoor(block, store)
+        store.setPosHprScale(doorNodePath, (0, 0, 0), (0, 0, 0), (1, 1, 1))
+        dnaStore.storeBlockDoor(int(block), store)
 
     def traverse(self, nodePath, dnaStorage):
         frontNode = nodePath.find('**/*_front')
