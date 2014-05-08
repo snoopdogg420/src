@@ -5,6 +5,7 @@ win-size 1280 720
 
 cursor-filename phase_3/etc/toonmono.cur
 icon-filename phase_3/etc/icon.ico
+preferences-filename preferences.gz
 
 model-path ../RetroResources
 model-cache-models #f
@@ -34,9 +35,9 @@ eventlog-host 127.0.0.1
 want-toontown-central #t
 want-donalds-dock #t
 want-daisys-garden #t
-want-minnies-melodyland #f
-want-the-burrrgh #f
-want-donalds-dreamland #f
+want-minnies-melodyland #t
+want-the-burrrgh #t
+want-donalds-dreamland #t
 want-goofy-speedway #f
 want-outdoor-zone #f
 want-golf-zone #f

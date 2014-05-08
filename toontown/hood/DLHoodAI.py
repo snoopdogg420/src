@@ -1,15 +1,33 @@
-from toontown.toonbase import ToontownGlobals
 from toontown.classicchars import DistributedDonaldAI
-from HoodAI import HoodAI
+from toontown.hood import HoodAI
+from toontown.safezone import DistributedTrolleyAI
+from toontown.toonbase import ToontownGlobals
 
-class DLHoodAI(HoodAI):
-    HOOD = ToontownGlobals.DonaldsDreamland
-    
-    def createSafeZone(self):
-        HoodAI.createSafeZone(self)
-        self.spawnObjects()
-        
-        if simbase.config.GetBool('want-classicchar', 0):
-            self.classicChar = DistributedDonaldAI.DistributedDonaldAI(self.air)
-            self.classicChar.generateWithRequired(self.HOOD)
-            self.classicChar.start()
+
+class DLHoodAI(HoodAI.HoodAI):
+    def __init__(self, air):
+        HoodAI.HoodAI.__init__(self, air,
+                               ToontownGlobals.DonaldsDreamland,
+                               ToontownGlobals.DonaldsDreamland)
+
+        self.trolley = None
+        self.classicChar = None
+
+        self.startup()
+
+    def startup(self):
+        HoodAI.HoodAI.startup(self)
+
+        self.createTrolley()
+        if simbase.config.GetBool('want-donald-dreamland', True):
+            self.createClassicChar()
+
+    def createTrolley(self):
+        self.trolley = DistributedTrolleyAI.DistributedTrolleyAI(self.air)
+        self.trolley.generateWithRequired(self.zoneId)
+        self.trolley.start()
+
+    def createClassicChar(self):
+        self.classicChar = DistributedDonaldAI.DistributedDonaldAI(self.air)
+        self.classicChar.generateWithRequired(self.zoneId)
+        self.classicChar.start()
