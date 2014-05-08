@@ -15,7 +15,6 @@ from direct.interval.IntervalGlobal import *
 import random
 
 class DistributedNPCToonBase(DistributedToon.DistributedToon):
-
     def __init__(self, cr):
         try:
             self.DistributedNPCToon_initialized
@@ -69,7 +68,7 @@ class DistributedNPCToonBase(DistributedToon.DistributedToon):
 
     def initToonState(self):
         self.setAnimState('neutral', 0.9, None, None)
-        npcOrigin = render.find('**/npc_origin_' + `(self.posIndex)`)
+        npcOrigin = render.find('**/npc_origin_' + str(self.posIndex))
         if not npcOrigin.isEmpty():
             self.reparentTo(npcOrigin)
             self.initPos()

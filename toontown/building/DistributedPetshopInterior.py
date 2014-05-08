@@ -8,6 +8,7 @@ from direct.actor import Actor
 import ToonInteriorColors
 from toontown.dna.DNAParser import DNADoor
 from toontown.hood import ZoneUtil
+from toontown.toon.DistributedNPCToonBase import DistributedNPCToonBase
 
 class DistributedPetshopInterior(DistributedObject.DistributedObject):
 
@@ -97,6 +98,8 @@ class DistributedPetshopInterior(DistributedObject.DistributedObject):
         del self.dnaStore
         del self.randomGenerator
         self.interior.flattenMedium()
+        for npcToon in self.cr.doFindAllInstances(DistributedNPCToonBase):
+            npcToon.initToonState()
 
     def disable(self):
         self.fish.stop()

@@ -9,6 +9,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase.ToonBaseGlobal import *
 from toontown.toonbase.ToontownGlobals import *
 from toontown.dna.DNAParser import DNADoor
+from toontown.toon.DistributedNPCToonBase import DistributedNPCToonBase
 
 
 class DistributedHQInterior(DistributedObject.DistributedObject):
@@ -35,6 +36,8 @@ class DistributedHQInterior(DistributedObject.DistributedObject):
         self.interior.flattenMedium()
         emptyBoard = self.interior.find('**/empty_board')
         self.leaderBoard.reparentTo(emptyBoard.getChild(0))
+        for npcToon in self.cr.doFindAllInstances(DistributedNPCToonBase):
+            npcToon.initToonState()
 
     def setTutorial(self, flag):
         if self.tutorial == flag:

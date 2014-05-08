@@ -17,6 +17,7 @@ import ToonInteriorColors
 from toontown.hood import ZoneUtil
 from toontown.toon import ToonDNA
 from toontown.toon import ToonHead
+from toontown.toon.DistributedNPCToonBase import DistributedNPCToonBase
 
 class DistributedToonHallInterior(DistributedToonInterior):
 
@@ -88,6 +89,8 @@ class DistributedToonHallInterior(DistributedToonInterior):
         del self.randomGenerator
         self.interior.flattenMedium()
         self.sillyFSM.enterInitialState()
+        for npcToon in self.cr.doFindAllInstances(DistributedNPCToonBase):
+            npcToon.initToonState()
 
     def sillyMeterIsRunning(self, isRunning):
         if isRunning:
