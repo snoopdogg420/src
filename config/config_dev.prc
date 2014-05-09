@@ -49,11 +49,11 @@ want-outdoor-zone #t
 want-golf-zone #t
 
 # Cog headquarters...
-want-cog-headquarters #f
+want-cog-headquarters #t
 want-sellbot-headquarters #f
 want-cashbot-headquarters #f
 want-lawbot-headquarters #f
-want-bossbot-headquarters #f
+want-bossbot-headquarters #t
 
 want-treasure-planners #t
 want-suit-planners #f
@@ -84,6 +84,7 @@ want-karts #t
 want-parties #t
 want-cogbuildings #f
 want-cogdominiums #f
+want-boarding-groups #t
 
 # Optional...
 show-total-population #t
