@@ -272,14 +272,13 @@ class DistributedTrolleyAI(DistributedObjectAI.DistributedObjectAI):
                     playerArray.append(i)
             startingVotes = None
             metagameRound = -1
-            trolleyGoesToMetagame = simbase.config.GetBool('trolley-goes-to-metagame', 0)
+            trolleyGoesToMetagame = simbase.config.GetBool('want-travel-game', 0)
             trolleyHoliday = bboard.get(TrolleyHolidayMgrAI.TrolleyHolidayMgrAI.PostName)
             trolleyWeekend = bboard.get(TrolleyWeekendMgrAI.TrolleyWeekendMgrAI.PostName)
-            if trolleyGoesToMetagame and trolleyHoliday or trolleyWeekend:
+            if trolleyGoesToMetagame and (trolleyHoliday or trolleyWeekend):
                 metagameRound = 0
-                if simbase.config.GetBool('metagame-min-2-players', 1):
-                    if len(playerArray) == 1:
-                        metagameRound = -1
+                if len(playerArray) == 1:
+                    metagameRound = -1
             mgDict = MinigameCreatorAI.createMinigame(
                 self.air, playerArray, self.zoneId, newbieIds=newbieIds,
                 startingVotes=startingVotes, metagameRound=metagameRound)

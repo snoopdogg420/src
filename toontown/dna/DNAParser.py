@@ -296,10 +296,10 @@ class DNAStorage:
         return ''
 
     def getDoorPosHprFromBlockNumber(self, blockNumber):
-        return self.blockDoors[blockNumber]
+        return self.blockDoors[str(blockNumber)]
 
     def storeBlockDoor(self, blockNumber, door):
-        self.blockDoors[blockNumber] = door
+        self.blockDoors[str(blockNumber)] = door
 
     def storeBlockTitle(self, blockNumber, title):
         self.blockTitles[blockNumber] = title
@@ -1215,7 +1215,7 @@ class DNADoor(DNAGroup):
 
         store = NodePath('door-%s' % block)
         store.setPosHprScale(doorNodePath, (0, 0, 0), (0, 0, 0), (1, 1, 1))
-        dnaStore.storeBlockDoor(int(block), store)
+        dnaStore.storeBlockDoor(block, store)
 
     def traverse(self, nodePath, dnaStorage):
         frontNode = nodePath.find('**/*_front')

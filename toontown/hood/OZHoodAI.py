@@ -27,8 +27,9 @@ class OZHoodAI(HoodAI.HoodAI):
         HoodAI.HoodAI.startup(self)
 
         self.createTimer()
-        if simbase.config.GetBool('want-chip-and-dale', True):
-            self.createClassicChars()
+        if simbase.config.GetBool('want-classic-chars', True):
+            if simbase.config.GetBool('want-chip-and-dale', True):
+                self.createClassicChars()
         self.createPicnicTables()
         if simbase.config.GetBool('want-game-tables', False):
             self.createGameTables()

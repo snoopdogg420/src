@@ -3,6 +3,7 @@ window-title Toontown Infinite - Retro
 win-origin -1 -1
 win-size 1280 720
 
+# Filenames/filepaths...
 cursor-filename phase_3/etc/toonmono.cur
 icon-filename phase_3/etc/icon.ico
 preferences-filename preferences.gz
@@ -16,41 +17,50 @@ default-model-extension .bam
 # Audio...
 audio-library-name p3fmod_audio
 
+# Display...
+load-display pandadx9
+
 # Database...
 accountdb-type local
 accountdb-local-file astron/databases/csm-cookies.db
 
+# Server...
 server-force-ssl 0
 server-port 7198
 server-version tti-retro-dev
 server-timezone US/Eastern
 
-# Dclass files...
+eventlog-host 127.0.0.1
+
+# DClass files...
 dc-file astron/toon.dc
 dc-file astron/otp.dc
 
-eventlog-host 127.0.0.1
-
-# Safezones...
+# Safe zones...
 want-safezones #t
-want-toontown-central #f
-want-donalds-dock #f
-want-daisys-garden #f
-want-minnies-melodyland #f
-want-the-burrrgh #f
-want-donalds-dreamland #f
-want-goofy-speedway #f
-want-outdoor-zone #f
-want-golf-zone #f
+want-toontown-central #t
+want-donalds-dock #t
+want-daisys-garden #t
+want-minnies-melodyland #t
+want-the-burrrgh #t
+want-donalds-dreamland #t
+want-goofy-speedway #t
+want-outdoor-zone #t
+want-golf-zone #t
 
-# Cog Headquarters...
+# Cog headquarters...
 want-cog-headquarters #f
 want-sellbot-headquarters #f
 want-cashbot-headquarters #f
 want-lawbot-headquarters #f
 want-bossbot-headquarters #f
 
+want-treasure-planners #t
+want-suit-planners #f
+want-butterflies #f
+
 # Classic characters...
+want-classic-chars #f
 want-mickey #f
 want-donald-dock #f
 want-daisy #f
@@ -66,22 +76,26 @@ want-checkers #t
 want-chinese-checkers #t
 want-find-four #f
 
-# Developer options...
-want-mat-all-tailors #t
-want-tailor-jellybeans #f
-want-karts #t
+# Core features...
+want-fishing #t
+want-housing #t
 want-pets #f
+want-karts #t
+want-parties #t
+want-cogbuildings #f
+want-cogdominiums #f
+
+# Optional...
+show-total-population #t
+want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
-want-housing #t
-want-april-toons #f
+
+# Developer options...
 want-dev #f
-want-old-fireworks #t
+want-tailor-jellybeans #f
 want-instant-parties #t
-want-cogdominiums #f
-want-suit-planners #f
-want-butterflies #f
 
 # Temporary...
 cog-thief-ortho 0
-show-total-population #t
+want-old-fireworks #t

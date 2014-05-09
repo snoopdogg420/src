@@ -5213,21 +5213,24 @@ def locate(avIdShort=0, returnType=''):
 def track(command, track, value=None):
     try:
         index = ('toonup', 'trap', 'lure', 'sound', 'throw',
-                 'squirt', 'drop').index(track)
+                 'squirt', 'drop').index(track.lower())
     except:
         return 'Invalid Gag track!'
     invoker = spellbook.getInvoker()
+    trackAccess = invoker.getTrackAccess()
+    if not trackAccess[index]:
+        return "You don't have that track!"
     if command.lower() == 'remove':
-        trackAccess = invoker.getTrackAccess()
+        if index in (4, 5):
+            return "You can't remove throw and squirt!"
         trackAccess[index] = 0
         invoker.b_setTrackAccess(trackAccess)
         return 'Removed the {0} track!'.format(track)
-    elif command.lower() == 'add':
-        trackAccess = invoker.getTrackAccess()
+    if command.lower() == 'add':
         trackAccess[index] = 1
         invoker.b_setTrackAccess(trackAccess)
         return 'Added the {0} track!'.format(track)
-    elif command.lower() == 'experience':
+    if command.lower() == 'experience':
         if value is None:
             return 'You must provide an experience value.'
         if not 0 <= value <= Experience.MaxSkill:
@@ -5235,9 +5238,8 @@ def track(command, track, value=None):
         experience = Experience.Experience(invoker.getExperience(), invoker)
         experience.experience[index] = value
         invoker.b_setExperience(experience.makeNetString())
-        return '{0} experience was added to the {1} track!'.format(value, track)
-    else:
-        return 'Invalid command.'
+        return 'Set the experience of the {0} track to: {1}!'.format(track, value)
+    return 'Invalid command.'
 
 @magicWord(category=CATEGORY_OVERRIDE, types=[str, str])
 def suit(self, command, suitName):

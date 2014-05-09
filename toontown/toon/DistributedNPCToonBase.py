@@ -72,9 +72,6 @@ class DistributedNPCToonBase(DistributedToon.DistributedToon):
         if not npcOrigin.isEmpty():
             self.reparentTo(npcOrigin)
             self.initPos()
-        else:
-            self.notify.warning('announceGenerate: Could not find npc_origin_' + str(self.posIndex))
-        return
 
     def initPos(self):
         self.clearMat()

@@ -18,9 +18,11 @@ class BRHoodAI(HoodAI.HoodAI):
     def startup(self):
         HoodAI.HoodAI.startup(self)
 
-        self.createTrolley()
-        if simbase.config.GetBool('want-pluto', True):
-            self.createClassicChar()
+        if simbase.config.GetBool('want-minigames', True):
+            self.createTrolley()
+        if simbase.config.GetBool('want-classic-chars', True):
+            if simbase.config.GetBool('want-pluto', True):
+                self.createClassicChar()
 
     def createTrolley(self):
         self.trolley = DistributedTrolleyAI.DistributedTrolleyAI(self.air)

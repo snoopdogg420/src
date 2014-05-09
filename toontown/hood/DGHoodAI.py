@@ -22,10 +22,12 @@ class DGHoodAI(HoodAI.HoodAI):
     def startup(self):
         HoodAI.HoodAI.startup(self)
 
-        self.createTrolley()
+        if simbase.config.GetBool('want-minigames', True):
+            self.createTrolley()
         self.createFlower()
-        if simbase.config.GetBool('want-daisy', True):
-            self.createClassicChar()
+        if simbase.config.GetBool('want-classic-chars', True):
+            if simbase.config.GetBool('want-daisy', True):
+                self.createClassicChar()
         if simbase.config.GetBool('want-butterflies', True):
             self.createButterflies()
 

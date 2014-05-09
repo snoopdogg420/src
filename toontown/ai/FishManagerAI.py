@@ -5,11 +5,11 @@ from otp.ai.MagicWordGlobal import *
 from toontown.toonbase import TTLocalizer
 
 class FishManagerAI:
-
-    def __init__(self):
+    def __init__(self, air):
+        self.air = air
         self.ponds = {}
         self.requestedFish = {}
-        
+
     def creditFishTank(self, av):
         totalFish = len(av.fishCollection)
         trophies = int(totalFish / 10)
@@ -104,7 +104,7 @@ def gibfish(fishName):
                 simbase.air.fishManager.requestedFish[spellbook.getTarget().doId] = fishGenus, fishGenusSpeciesList.index(speciesName)
                 return "Request for the fish %s was saved for the avatar %s" % (speciesName, spellbook.getTarget().getName())
     return "Couldn't find the fish with the name %s!" % fishName
-    
+
 @magicWord(category=CATEGORY_OVERRIDE)
 def nogibfish():
     '''Deletes a request for a fish if it exists.'''

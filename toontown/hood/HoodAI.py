@@ -41,11 +41,15 @@ class HoodAI:
         return zoneTable
 
     def startup(self):
-        self.createFishingPonds()
-        self.createPartyPeople()
-        self.createTreasurePlanner()
+        if self.air.wantFishing:
+            self.createFishingPonds()
+        if self.air.wantParties:
+            self.createPartyPeople()
+        if simbase.config.GetBool('want-treasure-planners', True):
+            self.createTreasurePlanner()
         self.createBuildingManagers()
-        self.createSuitPlanners()
+        if simbase.config.GetBool('want-suit-planners', True):
+            self.createSuitPlanners()
 
     def shutdown(self):
         if self.treasurePlanner:
@@ -159,8 +163,6 @@ class HoodAI:
             self.air.buildingManagers[zoneId] = buildingManager
 
     def createSuitPlanners(self):
-        if not simbase.config.GetBool('want-suit-planners', True):
-            return
         for zoneId in self.getZoneTable():
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
             suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, zoneId)
