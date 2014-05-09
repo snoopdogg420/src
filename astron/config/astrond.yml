@@ -1,8 +1,8 @@
 general:
     eventlogger: 127.0.0.1:7197
     dc_files:
-        - otp.dc
-        - toon.dc
+        - ../otp.dc
+        - ../toon.dc
 
 messagedirector:
     bind: 127.0.0.1:7199
@@ -31,7 +31,7 @@ uberdogs:
     - class: PlayerFriendsManager
       id: 4687
       anonymous: false
-    
+
     - class: TTRFriendsManager
       id: 4666
       anonymous: false
@@ -55,15 +55,16 @@ uberdogs:
 roles:
     - type: clientagent
       bind: 0.0.0.0:7198
+      version: "tti-retro-dev"
       client:
        relocate: true
-       #add_interest: enabled
+       add_interest: enabled
       channels:
         min: 1000000000
         max: 1009999999
 
     - type: stateserver
-      control: 10000
+      control: 4002
 
     - type: database
       control: 4003

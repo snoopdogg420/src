@@ -18,5 +18,4 @@ parsetab.py
 
 # Toontown Infinite Retro
 PPYTHON_PATH
-*.txt
-resources
+.DS_Store
