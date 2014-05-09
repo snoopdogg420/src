@@ -48,7 +48,7 @@ class DistributedNPCToonAI(DistributedNPCToonBaseAI):
         if questId == 0:
             self.pendingAvId = None
             self.pendingQuests = None
-            self.air.questManager.avatarCancelled(avId)
+            self.air.questManager.avatarCancelled(self)
             self.cancelChoseQuest(avId)
             return
         if questId == 401:

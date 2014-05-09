@@ -59,8 +59,8 @@ class QuestManagerAI():
         tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
         return tasks
     
-    def avatarCancelled(self, avId):
-        pass
+    def avatarCancelled(self, npc):
+        taskMgr.remove(npc.uniqueName('clearMovie'))
     
     def avatarChoseQuest(self, avId, npc, questId, rewardId, building):
         toon = self.air.doId2do.get(avId)
