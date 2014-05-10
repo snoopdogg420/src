@@ -5,6 +5,20 @@ from toontown.toonbase import TTLocalizer
 import random
 
 class ToontownLoadingScreen:
+
+    zone2picture = {
+    ToontownGlobals.ToontownCentral : 'phase_3.5/maps/loading/ttc.jpg',
+    ToontownGlobals.DonaldsDock : 'phase_3.5/maps/loading/dd.jpg',
+    ToontownGlobals.DaisyGardens : 'phase_3.5/maps/loading/dg.jpg',
+    ToontownGlobals.MinniesMelodyland : 'phase_3.5/maps/loading/mml.jpg',
+    ToontownGlobals.TheBrrrgh : 'phase_3.5/maps/loading/tb.jpg',
+    ToontownGlobals.DonaldsDreamland : 'phase_3.5/maps/loading/ddl.jpg',
+    ToontownGlobals.SellbotHQ : 'phase_3.5/maps/loading/sbhq.jpg',
+    ToontownGlobals.CashbotHQ : 'phase_3.5/maps/loading/cbhq.jpg',
+    ToontownGlobals.LawbotHQ : 'phase_3.5/maps/loading/lbhq.jpg',
+    ToontownGlobals.BossbotHQ : 'phase_3.5/maps/loading/bbhq.jpg'
+    }
+
     def __init__(self):
         self.__expectedCount = 0
         self.__count = 0
@@ -22,9 +36,10 @@ class ToontownLoadingScreen:
     def getTip(self, tipCategory):
         return TTLocalizer.TipTitle + '\n' + random.choice(TTLocalizer.TipDict.get(tipCategory))
 
-    def begin(self, range, label, gui, tipCategory):
+    def begin(self, range, label, gui, tipCategory, zoneId):
         self.waitBar['range'] = range
         self.title['text'] = label
+        self.background = loader.loadTexture(self.zone2picture.get(zoneId, 'phase_3.5/maps/loading/default.jpg'))
         self.__count = 0
         self.__expectedCount = range
         if gui:
@@ -44,6 +59,7 @@ class ToontownLoadingScreen:
             self.title.setPos(0.24, 0, 0.23)
             self.gui.setPos(0, -0.1, 0)
             self.gui.reparentTo(aspect2d, NO_FADE_SORT_INDEX)
+            self.gui.setTexture(self.background, 1)
         else:
             self.title.reparentTo(base.a2dpBottomLeft, NO_FADE_SORT_INDEX)
             self.gui.reparentTo(hidden)
