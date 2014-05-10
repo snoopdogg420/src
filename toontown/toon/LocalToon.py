@@ -1966,3 +1966,11 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
     
     def hasPet(self):
         return False
+    
+    def setAchievements(self, achievements):
+        if self.canEarnAchievements:
+            for achievementId in achievements:
+                if not achievementId in self.achievements:
+                    self.achievementGui.earnAchievement(achievementId)
+        else:
+            self.canEarnAchievements = True        
