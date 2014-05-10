@@ -685,7 +685,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
         self.friendsList.append((friendId, friendCode))
         self.air.questManager.toonMadeFriend(self)
-        self.air.achievementsManager.toonMadeFriend(self.doId)     
+        
+        if self.air.wantAchievements:
+            self.air.achievementsManager.toonMadeFriend(self.doId)     
 
     def d_setMaxNPCFriends(self, max):
         self.sendUpdate('setMaxNPCFriends', [max])
@@ -5210,7 +5212,7 @@ def track(command, track, value=None):
     return 'Invalid command.'
 
 @magicWord(category=CATEGORY_OVERRIDE, types=[str, str])
-def suit(self, command, suitName):
+def suit(command, suitName):
     if command.lower() == 'spawn':
         return 'Coming soon.'
     elif command.lower() == 'building':

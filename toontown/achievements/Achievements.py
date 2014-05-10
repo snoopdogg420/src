@@ -29,6 +29,8 @@ def getAchievementsOfType(type):
     return type2AchievementIds.get(type)
 
 AchievementsDict = (FriendAchievement(),
+                    FriendAchievement(neededFriends=10),
+                    FriendAchievement(neededFriends=50),
                     TrolleyAchievement())
-type2AchievementIds = {FriendAchievement: [0],
-                       TrolleyAchievement: [1]}
+type2AchievementIds = {FriendAchievement: [0, 1, 2],
+                       TrolleyAchievement: [3]}

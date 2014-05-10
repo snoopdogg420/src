@@ -17,7 +17,6 @@ class AchievementGui():
             applause.play()
             
             self.queue.append(achievementId)
-            messenger.send(base.localAvatar.uniqueName('achievementsChange'))
             self.showAchievement()
         else:
             self.queue.append(achievementId)

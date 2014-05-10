@@ -2643,7 +2643,15 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.animalSound = index
         
     def setAchievements(self, achievements):
+        if self.canEarnAchievements:
+            for achievementId in achievements:
+                if not achievementId in self.achievements:
+                    self.achievementGui.earnAchievement(achievementId)
+        else:
+            self.canEarnAchievements = True
+        
         self.achievements = achievements
+        messenger.send(localAvatar.uniqueName('achievementsChange'))
    
 @magicWord(category=CATEGORY_MODERATION)
 def globaltp():
