@@ -78,10 +78,10 @@ want-find-four #f
 
 # Core features...
 want-fishing #t
-want-housing #t
+want-housing #f
 want-pets #f
 want-karts #t
-want-parties #t
+want-parties #f
 want-cogbuildings #f
 want-cogdominiums #f
 want-boarding-groups #t
@@ -99,5 +99,5 @@ want-tailor-jellybeans #f
 want-instant-parties #t
 
 # Temporary...
-cog-thief-ortho 0
+cog-thief-ortho 1
 want-old-fireworks #t

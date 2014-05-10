@@ -37,7 +37,6 @@ class GroupInvitee(ToonHeadDialog.ToonHeadDialog):
          ('pad', (0.075, 0.075), None),
          ('topPad', 0, None),
          ('midPad', 0, None),
-         ('pos', (0.45, 0, 0.75), None),
          ('scale', 0.75, None))
         self.defineoptions(kw, optiondefs)
         ToonHeadDialog.ToonHeadDialog.__init__(self, self.avDNA)

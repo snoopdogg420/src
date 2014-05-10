@@ -1968,9 +1968,10 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         return False
     
     def setAchievements(self, achievements):
-        if self.canEarnAchievements:
-            for achievementId in achievements:
-                if not achievementId in self.achievements:
-                    self.achievementGui.earnAchievement(achievementId)
-        else:
-            self.canEarnAchievements = True        
+        if base.wantAchievements:
+            if self.canEarnAchievements:
+                for achievementId in achievements:
+                    if not achievementId in self.achievements:
+                        self.achievementGui.earnAchievement(achievementId)
+            else:
+                self.canEarnAchievements = True
