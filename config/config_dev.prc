@@ -37,7 +37,7 @@ dc-file astron/toon.dc
 dc-file astron/otp.dc
 
 # Safe zones...
-want-safezones #t
+want-safe-zones #t
 want-toontown-central #t
 want-donalds-dock #t
 want-daisys-garden #t
@@ -50,9 +50,9 @@ want-golf-zone #t
 
 # Cog headquarters...
 want-cog-headquarters #t
-want-sellbot-headquarters #f
-want-cashbot-headquarters #f
-want-lawbot-headquarters #f
+want-sellbot-headquarters #t
+want-cashbot-headquarters #t
+want-lawbot-headquarters #t
 want-bossbot-headquarters #t
 
 want-treasure-planners #t
