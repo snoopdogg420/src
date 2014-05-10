@@ -136,7 +136,11 @@ class QuestManagerAI():
 	
 	rewardClass.sendRewardAI(toon)
         
-    def toonMadeFriend(self, avId, otherAvId):
+    def toonMadeFriend(self, avId):
+        toon = self.air.doId2do.get(avId)
+        if not toon:
+            return
+	
 	print 'QuestManager: %s (AvId: %s) made a friend.'%(toon.getName(), toon.doId)
 	flattenedQuests = toon.getQuests()
 	questList = [] #unflattened

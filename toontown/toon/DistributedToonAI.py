@@ -13,6 +13,7 @@ from direct.distributed import DistributedSmoothNodeAI
 from toontown.toonbase import ToontownGlobals
 from toontown.quest import QuestRewardCounter
 from toontown.quest import Quests
+from toontown.achievements import Achievements
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.battle import SuitBattleGlobals
 from direct.task import Task
@@ -105,6 +106,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.experience = None
         self.petId = None
         self.quests = []
+        self.achievements = []
         self.cogs = []
         self.cogCounts = []
         self.NPCFriendsDict = {}
@@ -263,7 +265,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         from toontown.toon.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
         if not isinstance(self, DistributedNPCToonBaseAI):
             self.sendUpdate('setDefaultShard', [self.air.districtId])
-            self.applyAlphaModifications()
 
             if hasattr(self.air, 'aprilToonsMgr'):
                 if self.air.aprilToonsMgr.isEventActive(AprilToonsGlobals.EventRandomDialogue):
@@ -671,7 +672,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if friendsList:
             friendId = friendsList[-1]
             otherAv = self.air.doId2do.get(friendId)
-            #self.air.questManager.toonMadeFriend(self, otherAv)
 
     def getFriendsList(self):
         return self.friendsList
@@ -684,6 +684,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                 return
 
         self.friendsList.append((friendId, friendCode))
+        self.air.questManager.toonMadeFriend(self)
+        self.air.achievementsManager.toonMadeFriend(self.doId)     
 
     def d_setMaxNPCFriends(self, max):
         self.sendUpdate('setMaxNPCFriends', [max])
@@ -4453,80 +4455,46 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.b_setCheesyEffect(random.choice(AprilToonsGlobals.RandomCheesyList), 0, 0)
         task.delayTime = random.randint(AprilToonsGlobals.RandomCheesyMinTime, AprilToonsGlobals.RandomCheesyMaxTime)
         return task.again
-
-    def applyAlphaModifications(self):
-        # Apply all of the temporary changes that we want the alpha testers to
-        # have:
-
-        # Their fishing rod should be level 4.
-        self.b_setFishingRod(4)
-
-        # They need bigger jellybean jars to hold all of their money:
-        if self.getMaxMoney()<250: #This is mostly for admins, but we should only setMaxMoney if their maxMoney isn't already 120+
-            self.b_setMaxMoney(250)
-
-        # Unlock all of the emotes they should have during alpha:
-        emotes = list(self.getEmoteAccess())
-
-        # Get this list out of OTPLocalizerEnglish.py
-        ALPHA_EMOTES = ['Wave', 'Happy', 'Sad', 'Angry', 'Sleepy',
-                        'Dance', 'Think', 'Bored', 'Applause', 'Cringe',
-                        'Confused', 'Bow', 'Delighted', 'Belly Flop', 'Banana Peel',
-                        'Shrug', 'Surprise', 'Furious',
-                        'Laugh', 'Cry']
-        for emote in ALPHA_EMOTES:
-            emoteId = OTPLocalizer.EmoteFuncDict.get(emote)
-            if emoteId is None:
-                self.notify.warning('Invalid emote %s' % emote)
-                continue
-
-            if emoteId >= len(emotes):
-                self.notify.warning('Emote %d out of range on Toon %d' % (emoteId, self.doId))
-                continue
-
-            emotes[emoteId] = 1
-
-        self.b_setEmoteAccess(emotes)
-        self.b_setHoodsVisited([1000, 2000, 3000, 4000, 5000, 6000, 8000, 9000, 10000, 11000, 12000, 13000])
-        self.b_setTeleportAccess([1000, 2000, 3000, 4000, 5000, 6000, 8000, 9000, 10000, 11000, 12000, 13000])
-
-
-        #Toons with cheesy effects 16, 17 and 18 shouldn't stay persistant.
-        if self.savedCheesyEffect in [16, 17, 18]:
-            self.b_setCheesyEffect(0, 0, 0)
-
-        # Remove effects and accessories from non-admins.
-        # This decision was made after so many toons complained about how it is unfair
-        # that some toons are allowed accessories/effects and they aren't.
-        if self.getAdminAccess() < 400:
-            self.b_setCheesyEffect(0, 0, 0)
-            self.b_setHat(0, 0, 0)
-            self.b_setGlasses(0, 0, 0)
-            self.b_setShoes(0, 0, 0)
-            self.b_setBackpack(0, 0, 0)
-
-        # I hate this, but here we go.......... Q_Q
-        from toontown.chat import ResistanceChat
-        if not hasattr(self.air, 'issuedSlappyUnites'):
-            self.air.issuedSlappyUnites = []
-        Jellybean100UniteId = ResistanceChat.encodeId(ResistanceChat.RESISTANCE_MONEY, 0)
-        RestockThrowUniteId = ResistanceChat.encodeId(ResistanceChat.RESISTANCE_RESTOCK, 4)
-        msgs = self.getResistanceMessages()
-        # Check if they already have any of the unites...
-        for unite in msgs:
-            if unite[0] == Jellybean100UniteId:
-                self.air.issuedSlappyUnites.append(self.doId)
-                break
-            if unite[0] == RestockThrowUniteId:
-                self.air.issuedSlappyUnites.append(self.doId)
-                break
-        # If they haven't already been issued the unites, give it to them.
-        if self.doId not in self.air.issuedSlappyUnites:
-            for i in range(0, 4):
-                self.addResistanceMessage(Jellybean100UniteId)
-            for i in range(0, 2):
-                self.addResistanceMessage(RestockThrowUniteId)
-            self.air.issuedSlappyUnites.append(self.doId)
+    
+    def setAchievements(self, achievements):
+        for i in xrange(len(achievements)):
+            if not achievements[i] in xrange(len(Achievements.AchievementsDict)):
+                print 'Unknown AchievementId %s'%(achievements[i])
+                del achievements[i]
+                
+        self.achievements = achievements
+        
+    def d_setAchievements(self, achievements):
+        for i in xrange(len(achievements)):
+            if not achievements[i] in xrange(len(Achievements.AchievementsDict)):
+                print 'Unknown AchievementId %s'%(achievements[i])
+                del achievements[i]
+                
+        self.sendUpdate('setAchievements', args=[achievements])
+        
+    def b_setAchievements(self, achievements):
+        self.setAchievements(achievements)
+        self.d_setAchievements(achievements)
+        
+    def getAchievements(self):
+        return self.achievements
+    
+    def addAchievement(self, achievementId):
+        if achievementId in xrange(len(Achievements.AchievementsDict)):
+            if not achievementId in self.achievements:
+                achievements = self.achievements
+                achievements.append(achievementId)
+                
+                self.b_setAchievements(achievements)
+                
+    def hasAchievement(self, achievementId):
+        if achievementId in self.achievements:
+            return 1
+        
+        return 0
+    
+    def getAchievements(self):
+        return self.achievements
 
 @magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int, int])
 def setCE(CEValue, CEHood=0, CEExpire=0):
@@ -5253,3 +5221,21 @@ def suit(self, command, suitName):
         return 'Coming soon.'
     else:
         return 'Invalid command.'
+
+@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, int])
+def achievements(command, achId):
+    invoker = spellbook.getInvoker()
+    if command.lower() == 'earn':
+        achievements = invoker.getAchievements()
+        achievements.append(achId)
+        
+        invoker.b_setAchievements(achievements)
+        return 'Earnt Achievement %s'%(achId)
+    elif command.lower() == 'remove':
+        achievements = invoker.getAchievements()
+        achievements.remove(achId)
+        
+        invoker.b_setAchievements(achievements)
+        return 'Removed Achievement %s'%(achId)        
+    else:
+        return "Unknown Command '%s'"%(command)
