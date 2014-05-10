@@ -75,16 +75,13 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
             door1 = doors.find('**/door_1')
             door2 = doors.find('**/door_2')
             door3 = doors.find('**/door_3')
-            index = 0
-            for door in [door0,
-             door1,
-             door2,
-             door3]:
+            for door in [door0, door1, door2, door3]:
                 doorFrame = door.find('**/doorDoubleFlat/+GeomNode')
                 door.find('**/doorFrameHoleLeft').wrtReparentTo(doorFrame)
                 door.find('**/doorFrameHoleRight').wrtReparentTo(doorFrame)
+                doorTrigger = door.find('**/door_trigger*')
+                doorTrigger.setY(doorTrigger.getY() - 1.5)  # Fixes the misplaced door trigger.
                 doorFrame.node().setEffect(DecalEffect.make())
-                index += 1
 
         elif zoneId == ToontownGlobals.SellbotFactoryExt:
             self.geom = loader.loadModel(self.factoryExteriorModelPath)

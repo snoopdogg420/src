@@ -9,6 +9,7 @@ from toontown.safezone.DistributedPartyGateAI import DistributedPartyGateAI
 from toontown.safezone.SZTreasurePlannerAI import SZTreasurePlannerAI
 from toontown.suit import DistributedSuitPlannerAI
 from toontown.toon import NPCToons
+from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 
 
@@ -28,8 +29,8 @@ class HoodAI:
         self.suitPlanners = []
 
         for zoneId in self.getZoneTable():
+            self.notify.info('Creating objects... ' + self.getLocationName(zoneId))
             dnaFileName = self.air.lookupDNAFileName(zoneId)
-            self.notify.info('Creating objects... ' + dnaFileName)
             dnaStore = DNAStorage()
             dnaData = simbase.air.loadDNAFileAI(dnaStore, dnaFileName)
             self.air.dnaStoreMap[zoneId] = dnaStore
@@ -39,6 +40,16 @@ class HoodAI:
         zoneTable = [self.zoneId]
         zoneTable.extend(ToontownGlobals.HoodHierarchy.get(self.canonicalHoodId, []))
         return zoneTable
+
+    def getLocationName(self, zoneId):
+        lookupTable = ToontownGlobals.hoodNameMap
+        isStreet = (zoneId%1000) != 0
+        if isStreet:
+            lookupTable = TTLocalizer.GlobalStreetNames
+        name = lookupTable.get(zoneId, '')
+        if isStreet:
+            return '{0}, {1}'.format(self.getLocationName(self.zoneId), name[2])
+        return name[2]
 
     def startup(self):
         if self.air.wantFishing:
