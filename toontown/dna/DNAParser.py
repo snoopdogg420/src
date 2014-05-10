@@ -296,7 +296,9 @@ class DNAStorage:
         return ''
 
     def getDoorPosHprFromBlockNumber(self, blockNumber):
-        return self.blockDoors[str(blockNumber)]
+        key = str(blockNumber)
+        if key in self.blockDoors:
+            return self.blockDoors[str(blockNumber)]
 
     def storeBlockDoor(self, blockNumber, door):
         self.blockDoors[str(blockNumber)] = door
@@ -1213,9 +1215,10 @@ class DNADoor(DNAGroup):
         doorTrigger.wrtReparentTo(parentNode, 0)
         doorTrigger.setName('door_trigger_' + block)
 
-        store = NodePath('door-%s' % block)
-        store.setPosHprScale(doorNodePath, (0, 0, 0), (0, 0, 0), (1, 1, 1))
-        dnaStore.storeBlockDoor(block, store)
+        if not dnaStore.getDoorPosHprFromBlockNumber(block):
+            store = NodePath('door-%s' % block)
+            store.setPosHprScale(doorNodePath, (0, 0, 0), (0, 0, 0), (1, 1, 1))
+            dnaStore.storeBlockDoor(block, store)
 
     def traverse(self, nodePath, dnaStorage):
         frontNode = nodePath.find('**/*_front')
