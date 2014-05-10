@@ -173,6 +173,11 @@ class DistributedMinigameAI(DistributedObjectAI.DistributedObjectAI):
 
     def gameOver(self):
         self.notify.debug('BASE: gameOver')
+        
+        for avId in self.avIdList:
+            av = self.air.doId2do.get(avId)
+            self.air.achievementsManager.toonPlayedMinigame(av)
+            
         self.frameworkFSM.request('frameworkWaitClientsExit')
 
     def enterFrameworkOff(self):

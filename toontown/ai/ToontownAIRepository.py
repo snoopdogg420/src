@@ -75,6 +75,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.wantCogdominiums = self.config.GetBool('want-cogdominiums', True)
         self.doLiveUpdates = self.config.GetBool('want-live-updates', False)
         self.wantTrackClsends = self.config.GetBool('want-track-clsends', False)
+        self.wantAchievements = self.config.GetBool('want-achievements', True)
 
     def createManagers(self):
         self.timeManager = TimeManagerAI(self)
