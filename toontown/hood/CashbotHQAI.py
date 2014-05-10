@@ -4,6 +4,7 @@ from toontown.building.DistributedBoardingPartyAI import DistributedBoardingPart
 from toontown.coghq.DistributedMintElevatorExtAI import DistributedMintElevatorExtAI
 from toontown.hood import CogHQAI
 from toontown.suit import DistributedCashbotBossAI
+from toontown.suit import DistributedSuitPlannerAI
 from toontown.toonbase import ToontownGlobals
 
 
@@ -26,6 +27,8 @@ class CashbotHQAI(CogHQAI.CogHQAI):
         self.createMintElevators()
         if simbase.config.GetBool('want-boarding-groups', True):
             self.createMintBoardingParty()
+        if simbase.config.GetBool('want-suit-planners', True):
+            self.createSuitPlanners()
 
     def createMintElevators(self):
         destZones = (
@@ -47,3 +50,11 @@ class CashbotHQAI(CogHQAI.CogHQAI):
             mintIdList.append(mintElevator.doId)
         self.mintBoardingParty = DistributedBoardingPartyAI(self.air, mintIdList, 4)
         self.mintBoardingParty.generateWithRequired(self.zoneId)
+
+    def createSuitPlanners(self):
+        suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, self.zoneId)
+        suitPlanner.generateWithRequired(self.zoneId)
+        suitPlanner.d_setZoneId(self.zoneId)
+        suitPlanner.initTasks()
+        self.suitPlanners.append(suitPlanner)
+        self.air.suitPlanners[self.zoneId] = suitPlanner

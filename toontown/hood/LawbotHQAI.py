@@ -4,6 +4,7 @@ from toontown.building.DistributedBoardingPartyAI import DistributedBoardingPart
 from toontown.coghq.DistributedLawOfficeElevatorExtAI import DistributedLawOfficeElevatorExtAI
 from toontown.hood import CogHQAI
 from toontown.suit import DistributedLawbotBossAI
+from toontown.suit import DistributedSuitPlannerAI
 from toontown.toonbase import ToontownGlobals
 
 
@@ -27,6 +28,8 @@ class LawbotHQAI(CogHQAI.CogHQAI):
         self.makeCogHQDoor(ToontownGlobals.LawbotOfficeExt, 0, 0)
         if simbase.config.GetBool('want-boarding-groups', True):
             self.createOfficeBoardingParty()
+        if simbase.config.GetBool('want-suit-planners', True):
+            self.createSuitPlanners()
 
     def makeCogHQDoor(self, destinationZone, intDoorIndex, extDoorIndex, lock=0):
         # For Lawbot HQ, the lobby door index is 1, even though that index
@@ -62,3 +65,11 @@ class LawbotHQAI(CogHQAI.CogHQAI):
         self.officeBoardingParty = DistributedBoardingPartyAI(
             self.air, lawOfficeIdList, 4)
         self.officeBoardingParty.generateWithRequired(ToontownGlobals.LawbotOfficeExt)
+
+    def createSuitPlanners(self):
+        suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, self.zoneId)
+        suitPlanner.generateWithRequired(self.zoneId)
+        suitPlanner.d_setZoneId(self.zoneId)
+        suitPlanner.initTasks()
+        self.suitPlanners.append(suitPlanner)
+        self.air.suitPlanners[self.zoneId] = suitPlanner

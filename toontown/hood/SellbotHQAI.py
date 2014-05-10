@@ -4,6 +4,7 @@ from toontown.building.DistributedBoardingPartyAI import DistributedBoardingPart
 from toontown.coghq.DistributedFactoryElevatorExtAI import DistributedFactoryElevatorExtAI
 from toontown.hood import CogHQAI
 from toontown.suit import DistributedSellbotBossAI
+from toontown.suit import DistributedSuitPlannerAI
 from toontown.toonbase import ToontownGlobals
 
 
@@ -29,6 +30,8 @@ class SellbotHQAI(CogHQAI.CogHQAI):
         self.createFactoryElevators()
         if simbase.config.GetBool('want-boarding-groups', True):
             self.createFactoryBoardingParty()
+        if simbase.config.GetBool('want-suit-planners', True):
+            self.createSuitPlanners()
 
     def createFactoryElevators(self):
         # We only have two factory elevators: the front, and side elevators.
@@ -44,3 +47,11 @@ class SellbotHQAI(CogHQAI.CogHQAI):
             factoryIdList.append(factoryElevator.doId)
         self.factoryBoardingParty = DistributedBoardingPartyAI(self.air, factoryIdList, 4)
         self.factoryBoardingParty.generateWithRequired(ToontownGlobals.SellbotFactoryExt)
+
+    def createSuitPlanners(self):
+        suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, self.zoneId)
+        suitPlanner.generateWithRequired(self.zoneId)
+        suitPlanner.d_setZoneId(self.zoneId)
+        suitPlanner.initTasks()
+        self.suitPlanners.append(suitPlanner)
+        self.air.suitPlanners[self.zoneId] = suitPlanner
