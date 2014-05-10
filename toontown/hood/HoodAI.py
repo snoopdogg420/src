@@ -175,6 +175,8 @@ class HoodAI:
 
     def createSuitPlanners(self):
         for zoneId in self.getZoneTable():
+            if zoneId == self.zoneId:
+                continue
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
             suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, zoneId)
             suitPlanner.generateWithRequired(zoneId)
