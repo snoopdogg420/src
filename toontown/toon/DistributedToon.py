@@ -188,6 +188,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.gmNameTagColor = 'whiteGM'
         self.gmNameTagString = ''
         self._lastZombieContext = None
+        self.achievements = []
+        self.canEarnAchievements = False
         return
 
     def disable(self):
@@ -2639,6 +2641,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def setAnimalSound(self, index):
         self.animalSound = index
+        
+    def setAchievements(self, achievements):
+        self.achievements = achievements
    
 @magicWord(category=CATEGORY_MODERATION)
 def globaltp():
