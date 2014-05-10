@@ -84,6 +84,7 @@ class ToonBase(OTPBase.OTPBase):
         self.wantBingo = self.config.GetBool('want-fish-bingo', 1)
         self.wantKarts = self.config.GetBool('want-karts', 1)
         self.wantNewSpecies = self.config.GetBool('want-new-species', 0)
+        self.wantAchievements = self.config.GetBool('want-achievements', 1)
         self.inactivityTimeout = self.config.GetFloat('inactivity-timeout', ToontownGlobals.KeyboardTimeout)
         if self.inactivityTimeout:
             self.notify.debug('Enabling Panda timeout: %s' % self.inactivityTimeout)
@@ -267,11 +268,6 @@ class ToonBase(OTPBase.OTPBase):
         self.graphicsEngine.renderFrame()
         self.screenshot(namePrefix=namePrefix, imageComment=ctext + ' ' + self.screenshotStr)
         self.lastScreenShotTime = globalClock.getRealTime()
-        self.transitions.fadeScreenColor(1)
-        self.transitions.setFadeColor(1, 1, 1)
-        self.transitions.fadeIn(0.8)
-        self.snapshotSfx = base.loadSfx('phase_4/audio/sfx/Photo_shutter.ogg')
-        base.playSfx(self.snapshotSfx)
         if coordOnScreen:
             if strTextLabel is not None:
                 strTextLabel.destroy()

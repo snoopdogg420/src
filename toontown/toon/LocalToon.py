@@ -362,10 +362,11 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         self.fishPage.setAvatar(self)
         self.fishPage.load()
         self.book.addPage(self.fishPage, pageName=TTLocalizer.FishPageTitle)
-        self.achievementsPage = AchievementsPage.AchievementsPage()
-        self.achievementsPage.setAvatar(self)
-        self.achievementsPage.load()
-        self.book.addPage(self.achievementsPage, pageName=TTLocalizer.AchievementsPageTitle)
+        if base.wantAchievements:
+            self.achievementsPage = AchievementsPage.AchievementsPage()
+            self.achievementsPage.setAvatar(self)
+            self.achievementsPage.load()
+            self.book.addPage(self.achievementsPage, pageName=TTLocalizer.AchievementsPageTitle)
         if base.wantKarts:
             self.addKartPage()
         if self.disguisePageFlag:

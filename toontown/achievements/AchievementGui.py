@@ -12,28 +12,24 @@ class AchievementGui():
         self.currentShowingAward = 0
     
     def earnAchievement(self, achievementId):
-        print 'Earning achievement id %s'%(achievementId)
-
         if self.queue == []:
             applause = loader.loadSfx('phase_6/audio/sfx/KART_Applause_2.ogg')
             applause.play()
-            taskMgr.add(self.achievementTask, 'achievementGuiTask')
-        
-        self.queue.append(achievementId)
-        
-    def achievementTask(self, task):
+            
+            self.queue.append(achievementId)
+            messenger.send(base.localAvatar.uniqueName('achievementsChange'))
+            self.showAchievement()
+        else:
+            self.queue.append(achievementId)
+
+    def showAchievement(self):
         if self.queue != []:
             if self.currentShowingAward == 0:
                 self.currentShowingAward = self.queue[0]
-                self.makeFrame()
+                self.displayAchievement()
                 self.frameSequence()
-                del self.queue[0]
-        else:
-            return task.done
-        
-        return task.cont
     
-    def makeFrame(self):
+    def displayAchievement(self):
         self.frame = OnscreenGeom(geom='phase_3/models/gui/dialog_box_gui', scale=(0.8, 1, 0.55), parent=base.a2dTopRight,
                                   pos=(0.45, 0, -0.275))
         
@@ -68,4 +64,6 @@ class AchievementGui():
         self.details.destroy()
         del self.details
         
+        del self.queue[0]
         self.currentShowingAward = 0
+        self.showAchievement()
