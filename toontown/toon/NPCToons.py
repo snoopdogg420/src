@@ -8,6 +8,10 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownBattleGlobals
 import sys, os
 import string
+try:
+    config = simbase.config
+except:
+    config = base.config
 QUEST_MOVIE_CLEAR = 0
 QUEST_MOVIE_REJECT = 1
 QUEST_MOVIE_COMPLETE = 2
@@ -166,6 +170,12 @@ def createNpcsInZone(air, zoneId):
     for i in range(len(npcIdList)):
         npcId = npcIdList[i]
         npcDesc = NPCToonDict.get(npcId)
+        if npcDesc[5] == NPC_FISHERMAN:
+            if not air.wantFishing:
+                continue
+        if npcDesc[5] == NPC_PARTYPERSON:
+            if not air.wantParties:
+                continue
         npcs.append(createNPC(air, npcId, npcDesc, zoneId, posIndex=i))
 
     return npcs
@@ -652,7 +662,7 @@ NPCToonDict = {20000: (-1,
          14),
         'm',
         0,
-        NPC_REGULAR),        
+        NPC_REGULAR),
  2101: (2601,
         lnames[2101],
         ('rll',
@@ -11568,10 +11578,6 @@ NPCToonDict = {20000: (-1,
         'm',
         0,
         NPC_REGULAR)}
-try:
-    config = simbase.config
-except:
-    config = base.config
 
 if config.GetBool('want-new-toonhall', 1):
     NPCToonDict[2001] = (2513,
