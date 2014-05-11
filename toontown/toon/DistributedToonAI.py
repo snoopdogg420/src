@@ -5241,8 +5241,3 @@ def achievements(command, achId):
         return 'Removed Achievement %s'%(achId)        
     else:
         return "Unknown Command '%s'"%(command)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS)
-def lifeless():
-    invoker = spellbook.getInvoker()
-    invoker.b_setDNAString('t\x05\x02\x02\x01o\x1bb\x1b)\x1b\x1a\x00\x1a\x1a')
