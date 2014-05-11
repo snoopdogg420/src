@@ -685,9 +685,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
         self.friendsList.append((friendId, friendCode))
         self.air.questManager.toonMadeFriend(self)
-        
+
         if self.air.wantAchievements:
-            self.air.achievementsManager.toonMadeFriend(self.doId)     
+            self.air.achievementsManager.toonMadeFriend(self.doId)
 
     def d_setMaxNPCFriends(self, max):
         self.sendUpdate('setMaxNPCFriends', [max])
@@ -4457,44 +4457,44 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.b_setCheesyEffect(random.choice(AprilToonsGlobals.RandomCheesyList), 0, 0)
         task.delayTime = random.randint(AprilToonsGlobals.RandomCheesyMinTime, AprilToonsGlobals.RandomCheesyMaxTime)
         return task.again
-    
+
     def setAchievements(self, achievements):
         for i in xrange(len(achievements)):
             if not achievements[i] in xrange(len(Achievements.AchievementsDict)):
                 print 'Unknown AchievementId %s'%(achievements[i])
                 del achievements[i]
-                
+
         self.achievements = achievements
-        
+
     def d_setAchievements(self, achievements):
         for i in xrange(len(achievements)):
             if not achievements[i] in xrange(len(Achievements.AchievementsDict)):
                 print 'Unknown AchievementId %s'%(achievements[i])
                 del achievements[i]
-                
+
         self.sendUpdate('setAchievements', args=[achievements])
-        
+
     def b_setAchievements(self, achievements):
         self.setAchievements(achievements)
         self.d_setAchievements(achievements)
-        
+
     def getAchievements(self):
         return self.achievements
-    
+
     def addAchievement(self, achievementId):
         if achievementId in xrange(len(Achievements.AchievementsDict)):
             if not achievementId in self.achievements:
                 achievements = self.achievements
                 achievements.append(achievementId)
-                
+
                 self.b_setAchievements(achievements)
-                
+
     def hasAchievement(self, achievementId):
         if achievementId in self.achievements:
             return 1
-        
+
         return 0
-    
+
     def getAchievements(self):
         return self.achievements
 
@@ -5083,16 +5083,19 @@ def dna(part, value):
         return 'Bottom texture color index set to: {0}'.format(dna.botTexColor)
 
     if part == 'save':
-        target.magicWordDNABackups[value] = target.getDNAString()
+        data = simbase.backups.load('toondna', (target.doId,), default={})
+        data[value] = target.getDNAString()
+        simbase.backups.save('toondna', (target.doId,), data)
         return "Saved a DNA backup for {0} under file: {1}".format(
             target.getName(), value)
 
     if part == 'restore':
-        if value not in target.magicWordDNABackups:
+        data = simbase.backups.load('toondna', (target.doId,), {})
+        if value not in data:
             return 'Could not find DNA backup for {0} under file: {1}'.format(
                 target.getName(), value)
-        dna.makeFromNetString(target.magicWordDNABackups[value])
-        target.b_setDNAString(dna.makeNetString())
+        dna.makeFromNetString(data[value])
+        target.b_setDNAString(data[value])
         return 'Restored DNA backup for {0} under file: {1}'.format(
             target.getName(), value)
 
@@ -5230,14 +5233,14 @@ def achievements(command, achId):
     if command.lower() == 'earn':
         achievements = invoker.getAchievements()
         achievements.append(achId)
-        
+
         invoker.b_setAchievements(achievements)
         return 'Earnt Achievement %s'%(achId)
     elif command.lower() == 'remove':
         achievements = invoker.getAchievements()
         achievements.remove(achId)
-        
+
         invoker.b_setAchievements(achievements)
-        return 'Removed Achievement %s'%(achId)        
+        return 'Removed Achievement %s'%(achId)
     else:
         return "Unknown Command '%s'"%(command)
