@@ -18,6 +18,7 @@ class CashbotHQAI(CogHQAI.CogHQAI):
 
         self.mintElevators = []
         self.mintBoardingParty = None
+        self.suitPlanners = []
 
         self.startup()
 

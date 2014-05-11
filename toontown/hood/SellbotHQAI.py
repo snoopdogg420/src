@@ -18,6 +18,7 @@ class SellbotHQAI(CogHQAI.CogHQAI):
 
         self.factoryElevators = []
         self.factoryBoardingParty = None
+        self.suitPlanners = []
 
         self.startup()
 

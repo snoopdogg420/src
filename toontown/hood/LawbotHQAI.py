@@ -18,6 +18,7 @@ class LawbotHQAI(CogHQAI.CogHQAI):
 
         self.lawOfficeElevators = []
         self.officeBoardingParty = None
+        self.suitPlanners = []
 
         self.startup()
 
