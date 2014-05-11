@@ -85,7 +85,7 @@ want-parties #f
 want-cogbuildings #f
 want-cogdominiums #f
 want-boarding-groups #t
-want-achievements #f
+want-achievements #t
 
 # Optional...
 show-total-population #t
