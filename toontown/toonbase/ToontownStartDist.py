@@ -1,20 +1,17 @@
-# This is the main file used when starting a published client.
-# It sets up the environment and then kicks off ToontownStart.
-# (だからHi Hi Hi! しあわせが
-#  きっとHi Hi Hi! 歌うたい出だす)
+﻿# This is the "main" module for starting a production copy of Toontown Infinite.
 
-# Mirai hates code execution, so we have to replace some modules that do exec:
+# Replace some modules that do exec:
 import collections
 collections.namedtuple = lambda *x: tuple
 
 # This is included in the package by the builder script. It contains the
 # (stripped) DC file and configuration.
-import _miraidata
+import game_data
 
 # Load all packaged config pages:
 from panda3d.core import loadPrcFileData
-for i,config in enumerate(_miraidata.CONFIG):
-    loadPrcFileData('Mirai Packaged Config Page #%d' % i, config)
+for i, config in enumerate(game_data.CONFIG):
+    loadPrcFileData('GameData Config Page #%d' % i, config)
 
 # The VirtualFileSystem, which has already initialized, doesn't see the mount
 # directives in the config(s) yet. We have to force it to load those manually:
@@ -25,12 +22,9 @@ for mount in mounts:
     mountfile, mountpoint = (mount.split(' ', 2) + [None, None, None])[:2]
     vfs.mount(Filename(mountfile), Filename(mountpoint), 0)
 
-# DC data is a little bit trickier... The stock ConnectionRepository likes to
-# read DC from filenames only. DCFile does let us read in istreams, but there's
-# really no way to pass the istream off through ConnectionRepository. We can stick
-# the file on the vfs, but that's messy...
+# Finally, override the ConnectionRepository, and read the DC files:
 from panda3d.core import StringStream
-dcStream = StringStream(_miraidata.DC)
+dcStream = StringStream(game_data.DC)
 
 from direct.distributed import ConnectionRepository
 import types
@@ -56,15 +50,6 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
         readResult = dcFile.read(dcStream)
         if not readResult:
             self.notify.error("Could not read dc file.")
-
-        #if not dcFile.allObjectsValid():
-        #    names = []
-        #    for i in range(dcFile.getNumTypedefs()):
-        #        td = dcFile.getTypedef(i)
-        #        if td.isBogusTypedef():
-        #            names.append(td.getName())
-        #    nameList = ', '.join(names)
-        #    self.notify.error("Undefined types in DC file: " + nameList)
 
         self.hashVal = dcFile.getHash()
 
@@ -188,18 +173,6 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
                         self.dclassesByName[className] = dclass
 
 ConnectionRepository.ConnectionRepository = ConnectionRepository_override
-
-# We also need timezone stuff. We can import pytz and change its __loader__ in
-# order to trick pkg_resources into using our functions.
-class dictloader(object):
-    def __init__(self, dict):
-        self.dict = dict
-
-    def get_data(self, key):
-        return self.dict.get(key.replace('\\','/'))
-
-import pytz
-pytz.__loader__ = dictloader(_miraidata.ZONEINFO)
 
 # Okay, everything should be set now... Toontown, start!
 import toontown.toonbase.ToontownStart

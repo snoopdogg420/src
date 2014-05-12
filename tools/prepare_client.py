@@ -58,11 +58,6 @@ for filename in os.listdir(dcFilePath):
         dcFiles.append(os.path.join(dcFilePath, filename))
 print 'dcFiles = {0}'.format(dcFiles)
 
-# Copy the DC files:
-for dcFile in dcFiles:
-    outputFile = os.path.join(args.build_dir, dcFile.split('\\')[-1])
-    shutil.copyfile(dcFile, outputFile)
-
 # Copy the required module files:
 excludes = ('NonRepeatableRandomSourceUD.py', 'NonRepeatableRandomSourceAI.py')
 for module in args.modules:
@@ -78,17 +73,32 @@ for module in args.modules:
                 continue
             if filename.endswith('AI.py') and (filename not in excludes):
                 continue
+            if filename == 'ServiceStart.py':
+                continue
             shutil.copyfile(os.path.join(root, filename), os.path.join(outputDir, filename))
 
-# Copy the config file with the replaced SERVER_VERSION token:
+# Start writing game_data:
+print 'Writing game_data.py...'
+
 configFileName = 'config_{0}.prc'.format(args.distribution)
-print 'Copying config...', configFileName
-f = open(os.path.join(args.src_dir, 'config', configFileName), 'r')
-data = f.read()
-f.close()
-out = open(os.path.join(args.build_dir, configFileName), 'w')
-out.write(data.replace('SERVER_VERSION', serverVersion))
-out.close()
+print 'Using config file: {0}'.format(configFileName)
+configData = []
+with open(os.path.join(args.src_dir, 'config', configFileName)) as f:
+    data = f.read()
+    data = data.replace('SERVER_VERSION', serverVersion)
+    configData.append(data)
+
+from pandac.PandaModules import *
+dcf = DCFile()
+for dcFile in dcFiles:
+    dcf.read(Filename.fromOsSpecific(dcFile))
+dcStream = StringStream()
+dcf.write(dcStream, True)
+dcData = dcStream.getData()
+
+gameData = 'CONFIG = %r\nDC = %r\n' % (configData, dcData)
+with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
+    f.write(gameData)
 
 # Build the multifiles if wanted:
 if args.build_mfs:
