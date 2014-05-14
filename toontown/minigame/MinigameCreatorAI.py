@@ -156,7 +156,7 @@ def minigame(command, arg0):
             if arg0.lower() == name:
                 RequestMinigame[invoker.doId] = (
                     ToontownGlobals.MinigameNames[name], False, None, None)
-                return 'Your request for %s was added.'.format(arg0)
+                return 'Your request for {0} was added.'.format(arg0)
         return 'Your request for {0} could not be added.'.format(arg0)
     if command.lower() == 'force':
         for name in ToontownGlobals.MinigameNames:

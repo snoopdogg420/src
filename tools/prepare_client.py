@@ -1,21 +1,26 @@
 import argparse
 import os
-import subprocess
+from pandac.PandaModules import *
 import shutil
+import subprocess
+
 import pytz
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--distribution', default='en', help='The distribution token.')
-parser.add_argument('--build-dir', default='build', help='The directory to store the build files in.')
-parser.add_argument('--src-dir', default='..', help='The directory of the Toontown Infinite source code.')
+parser.add_argument('--distribution', default='en',
+                    help='The distribution token.')
+parser.add_argument('--build-dir', default='build',
+                    help='The directory in which to store the build files.')
+parser.add_argument('--src-dir', default='..',
+                    help='The directory of the Toontown Infinite source code.')
 parser.add_argument('--server-ver', default='tti-REVISION',
-                    help='An override for the server version of this build.\n'
-                         'Any REVISION tokens will be replaced with the current git revision.')
-parser.add_argument('--build-mfs', action='store_true', help='When present, multifiles will be built.')
-parser.add_argument('--resources-dir', default='../resources', help='The directory to the Toontown Infinite resources.')
-parser.add_argument('--main-module', default='infinite.base.ClientStartDist',
-                    help='The module that will be used to start the game.')
+                    help='The server version of this build.\n'
+                         'REVISION tokens will be replaced with the current Git revision string.')
+parser.add_argument('--build-mfs', action='store_true',
+                    help='When present, multifiles will be built.')
+parser.add_argument('--resources-dir', default='../resources',
+                    help='The directory of the Toontown Infinite resources.')
 parser.add_argument('modules', nargs='*', default=['shared', 'infinite'],
                     help='The Toontown Infinite modules to be included in the build.')
 args = parser.parse_args()
@@ -28,8 +33,8 @@ if os.path.exists(args.build_dir):
 os.mkdir(args.build_dir)
 print 'Build directory = {0}'.format(args.build_dir)
 
-# This next part is only required if the user wants the Git revision in
-# their server version:
+# This next part is only required if the invoker wants to include the Git
+# revision string in their server version:
 revision = ''
 if 'REVISION' in args.server_ver:
     # If we don't have Git on our path, let's attempt to add it:
@@ -47,20 +52,56 @@ if 'REVISION' in args.server_ver:
         stdout=subprocess.PIPE,
         cwd=args.src_dir).stdout.read().strip()[:7]
 
-# Parse the server version:
+# Replace any REVISION tokens in the server version:
 serverVersion = args.server_ver.replace('REVISION', revision)
 print 'serverVersion = {0}'.format(serverVersion)
 
-# Collect the DC filepaths:
-dcFiles = []
-dcFilePath = args.src_dir + '\\astron'
-for filename in os.listdir(dcFilePath):
-    if filename.endswith('.dc'):
-        dcFiles.append(os.path.join(dcFilePath, filename))
-print 'dcFiles = {0}'.format(dcFiles)
+# Copy the provided Toontown Infinite modules:
 
-# Copy the required module files:
-excludes = ('NonRepeatableRandomSourceUD.py', 'NonRepeatableRandomSourceAI.py')
+# NonRepeatableRandomSourceUD.py, and NonRepeatableRandomSourceAI.py are
+# required to be included. This is because they are explicitly imported by the
+# DC file:
+includes = ('NonRepeatableRandomSourceUD.py', 'NonRepeatableRandomSourceAI.py')
+
+# This is a list of explicitly excluded files:
+excludes = ('ServiceStart.py')
+
+def minify(f):
+    """
+    Returns the "minified" file data with removed __debug__ code blocks.
+    """
+
+    data = ''
+
+    debugBlock = False  # Marks when we're in a __debug__ code block.
+    elseBlock = False  # Marks when we're in an else code block.
+
+    # The number of spaces in which the __debug__ condition is indented:
+    indentLevel = 0
+
+    for line in f:
+        thisIndentLevel = len(line) - len(line.lstrip())
+        if ('if __debug__:' not in line) and (not debugBlock):
+            data += line
+            continue
+        elif 'if __debug__:' in line:
+            debugBlock = True
+            indentLevel = thisIndentLevel
+            continue
+        if thisIndentLevel <= indentLevel:
+            if 'else' in line:
+                elseBlock = True
+                continue
+            if 'elif' in line:
+                line = line[:thisIndentLevel] + line[thisIndentLevel+2:]
+            data += line
+            debugBlock = False
+            continue
+        if elseBlock:
+            data += line[4:]
+
+    return data
+
 for module in args.modules:
     print 'Writing module...', module
     for root, folders, files in os.walk(os.path.join(args.src_dir, module)):
@@ -68,44 +109,57 @@ for module in args.modules:
         if not os.path.exists(outputDir):
             os.mkdir(outputDir)
         for filename in files:
-            if not filename.endswith('.py'):
-                continue
-            if filename.endswith('UD.py') and (filename not in excludes):
-                continue
-            if filename.endswith('AI.py') and (filename not in excludes):
-                continue
-            if filename == 'ServiceStart.py':
-                continue
-            shutil.copyfile(os.path.join(root, filename), os.path.join(outputDir, filename))
+            if filename not in includes:
+                if not filename.endswith('.py'):
+                    continue
+                if filename.endswith('UD.py'):
+                    continue
+                if filename.endswith('AI.py'):
+                    continue
+                if filename in excludes:
+                    continue
+            with open(os.path.join(root, filename), 'r') as f:
+                data = minify(f)
+            with open(os.path.join(outputDir, filename), 'w') as f:
+                f.write(data)
 
-# Start writing game_data:
-print 'Writing game_data.py...'
+# Let's write game_data.py now. game_data.py is a compile-time generated
+# collection of data that will be used by the game at runtime. It contains the
+# PRC file data, (stripped) DC file, and time zone info.
 
+# First, we need the PRC file data:
 configFileName = 'config_{0}.prc'.format(args.distribution)
-print 'Using config file: {0}'.format(configFileName)
 configData = []
 with open(os.path.join(args.src_dir, 'config', configFileName)) as f:
     data = f.read()
-    data = data.replace('SERVER_VERSION', serverVersion)
-    configData.append(data)
+    configData.append(data.replace('SERVER_VERSION', serverVersion))
+print 'Using config file: {0}'.format(configFileName)
 
-from pandac.PandaModules import *
-dcf = DCFile()
-for dcFile in dcFiles:
-    dcf.read(Filename.fromOsSpecific(dcFile))
+# Next, we need the (stripped) DC file:
+dcFile = DCFile()
+for filename in os.listdir(os.path.join(args.src_dir, 'astron')):
+    if filename.endswith('.dc'):
+        dcFile.read(Filename.fromOsSpecific(filename))
+        print 'Using DC file: {0}'.format(filename)
 dcStream = StringStream()
-dcf.write(dcStream, True)
+dcFile.write(dcStream, True)
 dcData = dcStream.getData()
 
+# Now, collect our timezone info:
 zoneInfo = {}
 for timezone in pytz.all_timezones:
     zoneInfo['zoneinfo/' + timezone] = pytz.open_resource(timezone).read()
 
-gameData = 'CONFIG = %r\nDC = %r\nZONEINFO = %r\n' % (configData, dcData, zoneInfo)
+# Finally, write our data to game_data.py:
+print 'Writing game_data.py...'
+gameData = '''\
+CONFIG = %r
+DC = %r
+ZONEINFO = %r'''
 with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
-    f.write(gameData)
+    f.write(gameData % (configData, dcData, zoneInfo))
 
-# Build the multifiles if wanted:
+# We have all of the code gathered together. Let's create the multifiles now:
 if args.build_mfs:
     print 'Building multifiles...'
     dest = os.path.join(args.build_dir, 'resources')
@@ -117,8 +171,7 @@ if args.build_mfs:
             continue
         if not os.path.isdir(phase):
             continue
-        out = os.path.join(dest, phase + '.mf')
-        print 'Writing...', out
-        os.system('multify -c -f {0} {1}'.format(out, phase))
-else:
-    print 'Skipping multifiles...'
+        filename = phase + '.mf'
+        print 'Writing...', filename
+        filepath = os.path.join(dest, filename)
+        os.system('multify -c -f {0} {1}'.format(filepath, phase))

@@ -1,7 +1,5 @@
 import argparse
 import os
-import pandac.PandaModules
-import panda3d.core
 
 
 parser = argparse.ArgumentParser()
@@ -18,16 +16,15 @@ args = parser.parse_args()
 os.chdir('build')
 
 cmd = os.path.join(args.panda3d_dir, 'python/ppython.exe')  # ppython
-cmd += ' -m direct.showutil.pfreeze'
-modules = args.modules
-modules.extend(['direct', 'pandac'])
+cmd += ' -m direct.showutil.pfreeze'  # pfreeze
+args.modules.extend(['direct', 'pandac'])
 for module in args.modules:
     cmd += ' -i {0}.*.*'.format(module)
 cmd += ' -i {0}.*'.format('encodings')
 cmd += ' -i {0}'.format('base64')
 cmd += ' -i {0}'.format('site')
 cmd += ' -o GameData.pyd'  # The filename of the built *.PYD.
-cmd += ' {0}'.format(args.main_module)
+cmd += ' {0}'.format(args.main_module)  # "main" module
 
 os.system(cmd)
 
