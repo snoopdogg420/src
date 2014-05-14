@@ -39,7 +39,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
         self.dclassesByNumber = {}
         self.hashVal = 0
         dcImports = {}
-        readResult = dcFile.read(dcStream, 'from dcStream')
+        readResult = dcFile.read(dcStream, 'DC stream')
         if not readResult:
             self.notify.error("Could not read dc file.")
         self.hashVal = dcFile.getHash()
