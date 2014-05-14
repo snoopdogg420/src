@@ -13,6 +13,8 @@ parser.add_argument('modules', nargs='*', default=['shared', 'infinite'],
                     help='The Toontown Infinite modules to be included in the build.')
 args = parser.parse_args()
 
+print 'Building the client...'
+
 os.chdir('build')
 
 cmd = os.path.join(args.panda3d_dir, 'python/ppython.exe')  # ppython
@@ -29,3 +31,5 @@ cmd += ' {0}'.format(args.main_module)  # "main" module
 os.system(cmd)
 
 # TODO: Encrypt GameData.pyd.
+
+print 'Done building the client.'

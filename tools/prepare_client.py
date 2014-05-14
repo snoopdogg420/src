@@ -137,10 +137,10 @@ print 'Using config file: {0}'.format(configFileName)
 
 # Next, we need the (stripped) DC file:
 dcFile = DCFile()
-for filename in os.listdir(os.path.join(args.src_dir, 'astron')):
+filepath = os.path.join(args.src_dir, 'astron')
+for filename in os.listdir(filepath):
     if filename.endswith('.dc'):
-        dcFile.read(Filename.fromOsSpecific(filename))
-        print 'Using DC file: {0}'.format(filename)
+        dcFile.read(Filename.fromOsSpecific(os.path.join(filepath, filename)))
 dcStream = StringStream()
 dcFile.write(dcStream, True)
 dcData = dcStream.getData()
@@ -175,3 +175,5 @@ if args.build_mfs:
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
         os.system('multify -c -f {0} {1}'.format(filepath, phase))
+
+print 'Done preparing the client.'
