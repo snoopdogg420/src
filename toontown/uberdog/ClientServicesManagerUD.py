@@ -89,12 +89,12 @@ class RemoteAccountDB:
 
     def __executeHttpRequest(self, url, message):
         channel = self.http.makeChannel(True)
-        spec = DocumentSpec(simbase.config.GetString("account-server-endpoint", "https://www.toontownrewritten.com/api/gameserver/") + url)
+        spec = DocumentSpec(simbase.config.GetString("account-server-endpoint", "https://www.toontowninfinite.com/gameserver/") + url)
         rf = Ramfile()
         digest = hmac.new(simbase.config.GetString('account-server-secret', 'dev'), message, hashlib.sha256)
         expiration = str((int(time.time()) * 1000) + 60000)
         digest.update(expiration)
-        channel.sendExtraHeader('User-Agent', 'TTR CSM bot')
+        channel.sendExtraHeader('User-Agent', 'TTI CSM bot')
         channel.sendExtraHeader('X-Gameserver-Signature', digest.hexdigest())
         channel.sendExtraHeader('X-Gameserver-Request-Expiration', expiration)
         # FIXME i don't believe I have to clean up my channel or whatever, but could be wrong

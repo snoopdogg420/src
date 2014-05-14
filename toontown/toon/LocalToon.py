@@ -1975,3 +1975,5 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
                         self.achievementGui.earnAchievement(achievementId)
             else:
                 self.canEarnAchievements = True
+        
+        DistributedToon.DistributedToon.setAchievements(self, achievements)

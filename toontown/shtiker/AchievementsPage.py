@@ -73,6 +73,13 @@ class AchievementsPage(ShtikerPage.ShtikerPage):
             
             if achievement in  self.avAchievements:
                 achievementFrame['text'] = AchievementsGlobals.AchievementTitles[achievement]
-                achievementFrame['text_pos'] = (0, 0, 0.1)
+                achievementFrame['text_pos'] = (0, 0.2, -0.2)
+                
+                currentAchievement = AchievementsGlobals.AchievementImages[achievement]
+                image = loader.loadModel(currentAchievement[0])
+                imageNode = image.find(currentAchievement[1])
+                imageNode.setColor(currentAchievement[2])               
+                
+                img = OnscreenGeom(geom=imageNode, parent=achievementFrame, pos=(-0.3, 0, 0))
             else:
-                achievementFrame['text'] = '???'        
+                achievementFrame['text'] = '???'

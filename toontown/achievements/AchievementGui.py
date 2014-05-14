@@ -29,9 +29,17 @@ class AchievementGui():
                 self.frameSequence()
     
     def displayAchievement(self):
+        currentAchievement = AchievementsGlobals.AchievementImages[self.currentShowingAward]
+        image = loader.loadModel(currentAchievement[0])
+        imageNode = image.find(currentAchievement[1])
+        imageNode.setColor(currentAchievement[2])
+        imageNode.setScale(currentAchievement[3])
+        
         self.frame = OnscreenGeom(geom='phase_3/models/gui/dialog_box_gui', scale=(0.8, 1, 0.55), parent=base.a2dTopRight,
                                   pos=(0.45, 0, -0.275))
         
+        self.image = OnscreenGeom(geom=imageNode, parent=self.frame)
+
         self.title = OnscreenText(text='You earned an Achievement!', scale=(0.06, 0.11), font=ToontownGlobals.getMinnieFont(),
                                   parent=self.frame, pos=(0, 0.33), align=TextNode.ACenter)
         
