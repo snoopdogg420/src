@@ -16,6 +16,9 @@ nosetests.xml
 # PLY
 parsetab.py
 
+# Buildbot
+buildbot_last-rev.dat
+
 # Toontown Infinite Retro
 PPYTHON_PATH
 .DS_Store

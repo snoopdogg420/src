@@ -4,8 +4,8 @@ win-origin -1 -1
 win-size 1280 720
 
 # Filenames/filepaths...
-cursor-filename phase_3/etc/toonmono.cur
-icon-filename phase_3/etc/icon.ico
+cursor-filename /phase_3/etc/toonmono.cur
+icon-filename /phase_3/etc/icon.ico
 preferences-filename preferences.gz
 
 model-path /
