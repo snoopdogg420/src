@@ -677,6 +677,7 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.endVault.stash()
         self.midVault.unstash()
         self.__showResistanceToon(True)
+        base.camLens.setMinFov(ToontownGlobals.CFOElevatorFov/(4./3.))
 
     def exitElevator(self):
         DistributedBossCog.DistributedBossCog.exitElevator(self)

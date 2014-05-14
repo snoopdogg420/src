@@ -244,6 +244,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.setPosHpr(*ToontownGlobals.BossbotBossBattleOnePosHpr)
         self.loop('Ff_neutral')
         self.show()
+        base.camLens.setMinFov(ToontownGlobals.CEOElevatorFov/(4./3.))
 
     def enterIntroduction(self):
         if not self.resistanceToonOnstage:

@@ -697,6 +697,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             self.reflectedMainDoor.stash()
         base.camera.reparentTo(self.elevatorModel)
         base.camera.setPosHpr(0, 30, 8, 180, 0, 0)
+        base.camLens.setMinFov(ToontownGlobals.CJElevatorFov/(4./3.))
 
     def exitElevator(self):
         self.notify.debug('----- exitElevator')

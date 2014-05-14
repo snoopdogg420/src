@@ -9,14 +9,11 @@ class DistributedVPElevator(DistributedBossElevator.DistributedBossElevator):
     deferFor = 1
     
     def __init__(self, cr):
-        print "vpelevator"
         DistributedBossElevator.DistributedBossElevator.__init__(self, cr)
-        print "vpelevator2"
         self.type = ELEVATOR_VP
         self.countdownTime = ElevatorData[self.type]['countdown']
 
     def setupElevator(self):
-        print "vp_setup elevator"
         self.elevatorModel = loader.loadModel('phase_9/models/cogHQ/cogHQ_elevator')
         icon = self.elevatorModel.find('**/big_frame/')
         icon.hide()
