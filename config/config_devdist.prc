@@ -8,11 +8,26 @@ cursor-filename phase_3/etc/toonmono.cur
 icon-filename phase_3/etc/icon.ico
 preferences-filename preferences.gz
 
-model-path ../RetroResources
+model-path /
 model-cache-models #f
 model-cache-textures #f
 
 default-model-extension .bam
+
+# Virtual file system...
+vfs-mount resources/phase_3.mf /
+vfs-mount resources/phase_3.5.mf /
+vfs-mount resources/phase_4.mf /
+vfs-mount resources/phase_5.mf /
+vfs-mount resources/phase_5.5.mf /
+vfs-mount resources/phase_6.mf /
+vfs-mount resources/phase_7.mf /
+vfs-mount resources/phase_8.mf /
+vfs-mount resources/phase_9.mf /
+vfs-mount resources/phase_10.mf /
+vfs-mount resources/phase_11.mf /
+vfs-mount resources/phase_12.mf /
+vfs-mount resources/phase_13.mf /
 
 # Audio...
 audio-library-name p3fmod_audio
@@ -23,20 +38,13 @@ load-display pandagl
 load-display pandadx8
 
 # Database...
-accountdb-type local
-accountdb-local-file astron/databases/csm-cookies.db
+accountdb-type remote
 
 # Server...
 server-force-ssl 0
 server-port 7198
-server-version tti-retro-dev
+server-version SERVER_VERSION
 server-timezone US/Eastern
-
-eventlog-host 127.0.0.1
-
-# DClass files...
-dc-file astron/toon.dc
-dc-file astron/otp.dc
 
 # Safe zones...
 want-safe-zones #t
@@ -98,7 +106,7 @@ want-news-tab #f
 # Developer options...
 want-dev #f
 want-tailor-jellybeans #f
-want-instant-parties #t
+want-instant-parties #f
 
 # Temporary...
 cog-thief-ortho 1

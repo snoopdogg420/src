@@ -20,7 +20,9 @@ vfs = VirtualFileSystem.getGlobalPtr()
 mounts = ConfigVariableList('vfs-mount')
 for mount in mounts:
     mountfile, mountpoint = (mount.split(' ', 2) + [None, None, None])[:2]
-    vfs.mount(Filename(mountfile), Filename(mountpoint), 0)
+    mountFilename = Filename(mountfile)
+    mountFilename.makeAbsolute()
+    vfs.mount(mountFilename, Filename(mountpoint), 0)
 
 # Finally, override the ConnectionRepository, and read the DC files:
 from panda3d.core import StringStream
@@ -173,6 +175,17 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
                         self.dclassesByName[className] = dclass
 
 ConnectionRepository.ConnectionRepository = ConnectionRepository_override
+
+# We also need timezone stuff:
+class dictloader(object):
+    def __init__(self, dict):
+        self.dict = dict
+
+    def get_data(self, key):
+        return self.dict.get(key.replace('\\','/'))
+
+import pytz
+pytz.__loader__ = dictloader(game_data.ZONEINFO)
 
 # Okay, everything should be set now... Toontown, start!
 import toontown.toonbase.ToontownStart

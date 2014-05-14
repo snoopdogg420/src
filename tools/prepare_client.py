@@ -2,6 +2,7 @@ import argparse
 import os
 import subprocess
 import shutil
+import pytz
 
 
 parser = argparse.ArgumentParser()
@@ -96,7 +97,11 @@ dcStream = StringStream()
 dcf.write(dcStream, True)
 dcData = dcStream.getData()
 
-gameData = 'CONFIG = %r\nDC = %r\n' % (configData, dcData)
+zoneInfo = {}
+for timezone in pytz.all_timezones:
+    zoneInfo['zoneinfo/' + timezone] = pytz.open_resource(timezone).read()
+
+gameData = 'CONFIG = %r\nDC = %r\nZONEINFO = %r\n' % (configData, dcData, zoneInfo)
 with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
     f.write(gameData)
 
