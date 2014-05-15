@@ -32,17 +32,17 @@ class QuestManagerAI:
             if completeStatus == Quests.COMPLETE:
                 print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
 
-            if isinstance(questClass, Quests.TrackChoiceQuest):
-                npc.presentTrackChoice(avId, questId, questClass.getChoices())
-                break
-            elif Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
-                self.nextQuest(toon, npc, questId)
-            else:
-                npc.completeQuest(avId, questId, rewardId)
-                self.completeQuest(toon, questId)
-                self.avatarProgressTier(toon)
+                if isinstance(questClass, Quests.TrackChoiceQuest):
+                    npc.presentTrackChoice(avId, questId, questClass.getChoices())
+                    break
+                elif Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
+                    self.nextQuest(toon, npc, questId)
+                else:
+                    npc.completeQuest(avId, questId, rewardId)
+                    self.completeQuest(toon, questId)
+                    self.avatarProgressTier(toon)
 
-            break
+                    break
         else:
             if (len(toonQuests) == toonQuestPocketSize*5):
                 npc.rejectAvatar(avId)
