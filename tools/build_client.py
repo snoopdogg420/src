@@ -30,17 +30,6 @@ cmd += ' {0}'.format(args.main_module)  # "main" module
 
 os.system(cmd)
 
-# TODO: Replace this simple, temporary cipher with something better:
-print 'Encrypting GameData.pyd...'
-with open('GameData.pyd', 'rb') as f:
-    data = f.read()
-cipherData = ''
-for i, letter in enumerate(data):
-    cipherData += chr(ord(letter) ^ ord(args.build_secret[i%len(args.build_secret)]))
-with open('GameData.bin', 'wb') as f:
-    f.write(cipherData)
-for filename in os.listdir('.'):
-    if filename.startswith('GameData') and (not filename.endswith('.bin')):
-        os.unlink(filename)
+# TODO: Encrypt GameData.pyd.
 
 print 'Done building the client.'
