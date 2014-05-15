@@ -54,6 +54,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.notify.setInfo(True)  # Our AI repository should always log info.
 
         self.hoods = []
+        self.cogHeadquarters = []
         self.dnaStoreMap = {}
         self.dnaDataMap = {}
         self.suitPlanners = {}
@@ -134,16 +135,16 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
         if self.config.GetBool('want-sellbot-headquarters', True):
             self.factoryMgr = FactoryManagerAI.FactoryManagerAI(self)
-            self.hoods.append(SellbotHQAI.SellbotHQAI(self))
+            self.cogHeadquarters.append(SellbotHQAI.SellbotHQAI(self))
         if self.config.GetBool('want-cashbot-headquarters', True):
             self.mintMgr = MintManagerAI.MintManagerAI(self)
-            self.hoods.append(CashbotHQAI.CashbotHQAI(self))
+            self.cogHeadquarters.append(CashbotHQAI.CashbotHQAI(self))
         if self.config.GetBool('want-lawbot-headquarters', True):
             self.lawOfficeMgr = LawOfficeManagerAI.LawOfficeManagerAI(self)
-            self.hoods.append(LawbotHQAI.LawbotHQAI(self))
+            self.cogHeadquarters.append(LawbotHQAI.LawbotHQAI(self))
         if self.config.GetBool('want-bossbot-headquarters', True):
             self.countryClubMgr = CountryClubManagerAI.CountryClubManagerAI(self)
-            self.hoods.append(BossbotHQAI.BossbotHQAI(self))
+            self.cogHeadquarters.append(BossbotHQAI.BossbotHQAI(self))
 
     def handleConnected(self):
         self.districtId = self.allocateChannel()

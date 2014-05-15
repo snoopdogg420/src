@@ -592,24 +592,11 @@ class Avatar(Actor, ShadowCaster):
     def loop(self, animName, restart = 1, partName = None, fromFrame = None, toFrame = None):
         return Actor.loop(self, animName, restart, partName, fromFrame, toFrame)
 
-@magicWord(category=CATEGORY_GUI, types=[int])
-def clickNametag(avId):
-    """Simulate a click on an avatar's nametag, given their ID."""
-    try:
-        base
-    except NameError:
-        return
 
-    av = base.cr.doId2do.get(avId)
-    if not av:
-        return 'avId not found!'
-    if not isinstance(av, Avatar):
-        return 'ID not Avatar!'
-    if str(avId)[:2] == "40": #This implies AI object, since toons start with '1'
-        return '%s is an NPC!' % av.getName()
-    av.clickedNametag()
-
-@magicWord(category=CATEGORY_MODERATION)
-def showTarget():
-    """Show the moderators current Magic Word target."""
-    return 'Your current target is: %s [avId: %s]' % (spellbook.getTarget().getName(), spellbook.getTarget().doId)
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def target():
+    """
+    Returns the current Spellbook target.
+    """
+    target = spellbook.getTarget()
+    return 'Target: {0}-{1} [{2}]'.format(target.getName(), target.doId, target.getAdminAccess())

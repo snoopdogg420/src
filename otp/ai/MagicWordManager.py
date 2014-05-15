@@ -22,7 +22,6 @@ class MagicWordManager(DistributedObject.DistributedObject):
             return
 
         if magicWord.startswith('~~'):
-            # TODO: Target selected avatar.
             if lastClickedNametag == None:
                 target = base.localAvatar
             else:

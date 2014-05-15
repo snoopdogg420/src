@@ -138,7 +138,7 @@ class DistributedPartyManagerAI(DistributedObjectAI):
                 zoneId = self.partyId2Zone[partyId]
             else:
                 self.notify.warning("getPartyZone did not match a case!")
-                
+
         self.sendUpdateToAvatarId(avId, 'receivePartyZone', [hostId, partyId, zoneId])
 
     def partyInfoOfHostResponseUdToAi(self, partyStruct, inviteeIds):
@@ -152,7 +152,7 @@ class DistributedPartyManagerAI(DistributedObjectAI):
         zoneId = self.air.allocateZone()
         self.partyId2Zone[partyId] = zoneId
         self.host2PartyId[party['hostId']] = partyId
-        
+
         # We need to setup the party itself on our end, so make an ai party
         partyAI = DistributedPartyAI(self.air, party['hostId'], zoneId, party)
         partyAI.generateWithRequiredAndId(self.air.allocateChannel(), self.air.districtId, zoneId)
@@ -160,10 +160,10 @@ class DistributedPartyManagerAI(DistributedObjectAI):
 
         # Alert the UD
         self.air.globalPartyMgr.d_partyStarted(partyId, self.air.ourChannel, zoneId, av.getName())
-        
+
         # Don't forget this was initially started by a getPartyZone, so we better tell the host the partyzone
         self.sendUpdateToAvatarId(party['hostId'], 'receivePartyZone', [party['hostId'], partyId, zoneId])
-        
+
         # And last, set up our cleanup stuff
         taskMgr.doMethodLater(PARTY_DURATION, self.closeParty, 'DistributedPartyManagerAI_cleanup%s' % partyId, [partyId])
 
@@ -174,7 +174,7 @@ class DistributedPartyManagerAI(DistributedObjectAI):
             self.sendUpdateToAvatarId(av, 'sendAvToPlayground', [av, 0])
         partyAI.b_setPartyState(PartyStatus.Finished)
         taskMgr.doMethodLater(10, self.__deleteParty, 'closeParty%d' % partyId, extraArgs=[partyId])
-    
+
     def __deleteParty(self, partyId):
         partyAI = self.id2Party[partyId]
         for av in partyAI.avIdsAtParty:
@@ -212,8 +212,8 @@ class DistributedPartyManagerAI(DistributedObjectAI):
                 party = self.id2Party.get(partyInfo['partyId'])
                 if party:
                     party._removeAvatar(avId)
-                
-        
+
+
 
     def removeGuest(self, ownerId, avId):
         pass
@@ -287,14 +287,3 @@ class DistributedPartyManagerAI(DistributedObjectAI):
 
     def mwResponseUdToAllAi(self, todo0, todo1, todo2, todo3):
         pass
-
-#@magicWord()
-#def endParty():
-#    print 'magicworded'
-#    p = simbase.air.partyManager
-#    for i in p.id2Party:
-#        partyId = i
-#    p.closeParty(i)
-#    return 'bye, such code'
-#
-#    too jank to even use

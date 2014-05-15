@@ -442,13 +442,3 @@ class DistributedMinigame(DistributedObject.DistributedObject):
 
     def setMetagameRound(self, metagameRound):
         self.metagameRound = metagameRound
-        
-@magicWord(category=CATEGORY_OVERRIDE)
-def abortMinigame():
-    """Abort any minigame you are currently in"""
-    messenger.send('minigameAbort')
-
-@magicWord(category=CATEGORY_OVERRIDE)
-def winMinigame():
-    """Win the current minigame you are in."""
-    messenger.send('minigameVictory')

@@ -93,22 +93,26 @@ class FishManagerAI:
             av.addMoney(money)
             return [itemType, money, 0, 0]
 
-# I have the best naming scheme for magic words, amirite?
-@magicWord(category=CATEGORY_OVERRIDE, types=[str])
-def gibfish(fishName):
-    '''Sets a flag on the avatar, that upon casting a fishing rod (that is valid), gives the avatar the requested fish.'''
-    for fishGenus in TTLocalizer.FishSpeciesNames:
-        fishGenusSpeciesList = TTLocalizer.FishSpeciesNames[fishGenus]
-        for speciesName in fishGenusSpeciesList:
-            if fishName.lower() == speciesName.lower():
-                simbase.air.fishManager.requestedFish[spellbook.getTarget().doId] = fishGenus, fishGenusSpeciesList.index(speciesName)
-                return "Request for the fish %s was saved for the avatar %s" % (speciesName, spellbook.getTarget().getName())
-    return "Couldn't find the fish with the name %s!" % fishName
 
-@magicWord(category=CATEGORY_OVERRIDE)
-def nogibfish():
-    '''Deletes a request for a fish if it exists.'''
-    if spellbook.getTarget().doId in simbase.air.fishManager.requestedFish:
-        del simbase.air.fishManager.requestedFish[spellbook.getTarget().doId]
-        return "Deleted %s's request for any fishes." % spellbook.getTarget().getName()
-    return "%s has not requested any fish!" % spellbook.getTarget().getName()
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
+def fish(fishName):
+    """
+    Register/unregister the fish to be caught on the target.
+    """
+    target = spellbook.getTarget()
+    if fishName.lower() == 'remove':
+        if target.doId not in simbase.air.fishManager.fishRequests:
+            return '{0} has not requested a fish.'.format(target.getName())
+        del simbase.air.fishManager.fishRequests[target.doId]
+        return "Removed {0}'s fish request.".format(target.getName())
+
+    for genus, species in TTILocalizer.FishSpeciesNames:
+        for name in species:
+            if fishName.lower() != name.lower():
+                continue
+            fishRequest = (genus, species.index(name))
+            simbase.air.fishManager.fishRequests[target.doId] = fishRequest
+            return 'A request for the fish {0} was saved for {1}.'.format(
+                name, target.getName())
+
+    return "Couldn't find a fish with the name {0}!".format(fishName)

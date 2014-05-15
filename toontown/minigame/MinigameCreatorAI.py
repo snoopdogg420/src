@@ -2,6 +2,7 @@ import copy
 import random
 import time
 
+import DistributedMinigameAI
 import DistributedCannonGameAI
 import DistributedCatchGameAI
 import DistributedCogThiefGameAI
@@ -147,30 +148,35 @@ def releaseMinigameZone(zoneId):
         simbase.air.deallocateZone(zoneId)
 
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[str, str])
-def minigame(command, arg0):
-    """A command set for Trolley minigames."""
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, str])
+def minigame(command, arg0=None):
+    """
+    A command set for Trolley minigames.
+    """
+    command = command.lower()
     invoker = spellbook.getInvoker()
-    if command.lower() == 'request':
+    if (arg0 is None) and (command not in ('abort',)):
+        return 'Missing second argument!'
+    if command == 'request':
         for name in ToontownGlobals.MinigameNames:
             if arg0.lower() == name:
                 RequestMinigame[invoker.doId] = (
                     ToontownGlobals.MinigameNames[name], False, None, None)
                 return 'Your request for {0} was added.'.format(arg0)
         return 'Your request for {0} could not be added.'.format(arg0)
-    if command.lower() == 'force':
+    if command == 'force':
         for name in ToontownGlobals.MinigameNames:
             if arg0.lower() == name:
                 RequestMinigame[invoker.doId] = (
                     ToontownGlobals.MinigameNames[name], True, None, None)
                 return 'The minigame {0} is not being forced.'.format(arg0)
         return "Couldn't force minigame: {0}".format(arg0)
-    if command.lower() == 'remove':
+    if command == 'remove':
         if invoker.doId in RequestMinigame:
             del RequestMinigame[invoker.doId]
             return 'Your trolley game request has been removed.'
         return 'You have no trolley game requests!'
-    if command.lower() == 'difficulty':
+    if command == 'difficulty':
         if invoker.doId not in RequestMinigame:
             return 'You have no trolley game requests!'
         try:
@@ -181,15 +187,23 @@ def minigame(command, arg0):
         newRequest = request[:2] + arg0 + request[3:]
         RequestMinigame[invoker.doId] = newRequest
         return 'You request for minigame difficulty {0} was added.'.format(arg0)
-    if command.lower() == 'safezone':
+    if command == 'safezone':
         if invoker.doId not in RequestMinigame:
             return 'You have no trolley game requests!'
         try:
             arg0 = int(arg0)
         except:
-            return 'Argument 0 must be an integer, got type: {0}'.format(type(arg0))
+            return 'Second argument must be an integer.'
         request = RequestMinigame[invoker.doId]
         newRequest = request[:3] + arg0 + request[4:]
         RequestMinigame[invoker.doId] = newRequest
         return 'You request for minigame safezone {0} was added.'.format(arg0)
+    elif command == 'abort':
+        for do in simbase.air.doId2do.values():
+            if not isinstance(do, DistributedMinigameAI.DistributedMinigameAI):
+                continue
+            if invoker.doId not in do.avIdList:
+                continue
+            do.setGameAbort()
+            return 'Skipped minigame!'
     return 'Invalid command.'

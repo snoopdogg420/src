@@ -69,8 +69,11 @@ class TTHood(ToonHood.ToonHood):
         ce = CompassEffect.make(NodePath(), CompassEffect.PRot | CompassEffect.PZ)
         self.sky.node().setEffect(ce)
 
-@magicWord(category=CATEGORY_DEBUG)
+@magicWord(category=CATEGORY_CREATIVE)
 def spooky():
+    """
+    Activates the 'spooky' effect on the current area.
+    """
     hood = base.cr.playGame.hood
     if not hasattr(hood, 'startSpookySky'):
         return "Couldn't find spooky sky."

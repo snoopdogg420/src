@@ -1238,8 +1238,16 @@ class DistributedRace(DistributedObject.DistributedObject):
          'reason': RaceGlobals.Exit_UserReq}
         base.cr.playGame.hood.loader.fsm.request('quietZone', [out])
         return
-        
-@magicWord(category=CATEGORY_OVERRIDE)
-def leaveRace():
-    """Leave the current race you are in."""
-    messenger.send('leaveRace')
+
+
+# TODO: Move this command to the AI server, and add more features to it.
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str])
+def race(command):
+    """
+    A command set for races.
+    """
+    command = command.lower()
+    if command == 'leave':
+        messenger.send('leaveRace')
+        return 'You left the race!'
+    return 'Invalid command!'

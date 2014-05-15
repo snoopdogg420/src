@@ -111,6 +111,9 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
     def setDISLid(self, id):
         self.DISLid = id
 
+    def getDISLid(self):
+        return self.DISLid
+
     def d_setFriendsList(self, friendsList):
         self.sendUpdate('setFriendsList', [friendsList])
 
@@ -124,6 +127,13 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
     def setAdminAccess(self, access):
         self.adminAccess = access
 
+    def d_setAdminAccess(self, access):
+        self.sendUpdate('setAdminAccess', [access])
+
+    def b_setAdminAccess(self, access):
+        self.setAdminAccess(access)
+        self.d_setAdminAccess(access)
+
     def getAdminAccess(self):
         return self.adminAccess
 
@@ -136,27 +146,60 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 
         self.friendsList.append((friendId, friendCode))
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[str]) # This needs a better category. 
-def smsg(text):
-    """Send a whisper to the whole district (system), un-prefixed."""
-    for doId in simbase.air.doId2do:
-        if str(doId)[:2] == '10': # Non-NPC?
-            do = simbase.air.doId2do.get(doId)
-            if isinstance(do, DistributedPlayerAI): # Toon?
-                do.d_setSystemMessage(0, text)
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[str]) # This needs a better category. 
-def gwhis(text):
-    """Send a whisper to the whole district, prefixed with 'ADMIN Name:'."""
-    text = 'ADMIN ' + spellbook.getInvoker().getName() + ': ' + text # Prepend text with Invoker's toon name.
-    for doId in simbase.air.doId2do:
-        if str(doId)[:2] == '10': # Non-NPC?
-            do = simbase.air.doId2do.get(doId)
-            if isinstance(do, DistributedPlayerAI): # Toon?
-                do.d_setSystemMessage(0, text)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
+def system(message):
+    """
+    Broadcasts a message to the server.
+    """
+    # TODO: Make this go through the UberDOG, rather than the AI server.
+    for doId, do in simbase.air.doId2do.items():
+        if isinstance(do, DistributedPlayerAI):
+            do.d_setSystemMessage(0, message)
 
-@magicWord(category=CATEGORY_MODERATION)
-def accId():
-    """Get the accountId from the target player."""
-    accountId = spellbook.getTarget().DISLid
-    return "%s has the accountId of %d" % (spellbook.getTarget().getName(), accountId)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
+def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
+    """
+    Modify the target's access level.
+    """
+    accessName2Id = {
+        'user': CATEGORY_USER.defaultAccess,
+        'communitymanager': CATEGORY_COMMUNITY_MANAGER.defaultAccess,
+        'moderator': CATEGORY_MODERATOR.defaultAccess,
+        'creative': CATEGORY_CREATIVE.defaultAccess,
+        'programmer': CATEGORY_PROGRAMMER.defaultAccess,
+        'administrator': CATEGORY_ADMINISTRATOR.defaultAccess,
+        'systemadministrator': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess
+    }
+    try:
+        accessLevel = int(accessLevel)
+    except:
+        if accessLevel not in accessName2Id:
+            return 'Invalid access level!'
+        accessLevel = accessName2Id[accessLevel]
+    if accessLevel not in accessName2Id.values():
+        return 'Invalid access level!'
+    target = spellbook.getTarget()
+    invoker = spellbook.getInvoker()
+    if invoker == target:
+        return "You can't set your own access level!"
+    if not accessLevel < invoker.getAdminAccess():
+        return "The target's access level must be lower than yours!"
+    if target.getAdminAccess() == accessLevel:
+        return "{0}'s access level is already {1}!".format(target.getName(), accessLevel)
+    target.b_setAdminAccess(accessLevel)
+    if showGM:
+        # TODO: Use the correct GM icons.
+        target.b_setGM(0)
+        if accessLevel >= 400:
+            target.b_setGM(2)
+        elif accessLevel >= 200:
+            target.b_setGM(3)
+    if storage.upper() not in ('SESSION', 'TEMP', 'TEMPORARY'):
+        target.air.dbInterface.updateObject(
+            target.air.dbId,
+            target.getDISLid(),
+            target.air.dclassesByName['AccountAI'],
+            {'ADMIN_ACCESS': accessLevel})
+    target.d_setSystemMessage(0, '{0} set your access level to {1}!'.format(invoker.getName(), accessLevel))
+    return "{0}'s access level has been set to {1}." % (target.getName(), accessLevel)

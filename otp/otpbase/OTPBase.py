@@ -250,46 +250,61 @@ class OTPBase(ShowBase):
             traceback.print_exc()
 
 
-@magicWord(category=CATEGORY_GRAPHICAL)
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def oobe():
-    'Toggle "out of body experience" view.'
+    """
+    Toggle the 'out of body experience' view.
+    """
     base.oobe()
 
-@magicWord(category=CATEGORY_GRAPHICAL)
+@magicWord(category=CATEGORY_PROGRAMMER)
 def oobeCull():
-    'Toggle "out of body experience" view, with culling debugging.'
+    """
+    Toggle the 'out of body experience' view with culling debugging.
+    """
     base.oobeCull()
 
-@magicWord(category=CATEGORY_GRAPHICAL)
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def wire():
-    'Toggle wireframe view.'
+    """
+    Toggle the 'wireframe' view.
+    """
     base.toggleWireframe()
-    
-@magicWord(category=CATEGORY_GUI)
-def showAvIds():
-    'Show avId in Nametags.'
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def idNametags():
+    """
+    Display avatar IDs inside nametags.
+    """
     messenger.send('nameTagShowAvId')
 
-@magicWord(category=CATEGORY_GUI)
-def showNames():
-    'Remove avIds in Nametags.'
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def nameNametags():
+    """
+    Display only avatar names inside nametags.
+    """
     messenger.send('nameTagShowName')
-    
-@magicWord(access=200)
-def showAccess():
-    return "Access level: " + str(spellbook.getTarget().getAdminAccess())
-    
-@magicWord(category=CATEGORY_GUI)
-def toga2d():
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def a2d():
+    """
+    Toggle aspect2d.
+    """
     if aspect2d.isHidden():
         aspect2d.show()
     else:
         aspect2d.hide()
-        
-@magicWord(category=CATEGORY_GUI)
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def placer():
+    """
+    Toggle the camera placer.
+    """
     base.camera.place()
-    
-@magicWord(category=CATEGORY_GUI)
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def explorer():
+    """
+    Toggle the scene graph explorer.
+    """
     base.render.explore()

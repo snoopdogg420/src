@@ -1821,9 +1821,11 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         return num
 
 
-@magicWord(category=CATEGORY_OVERRIDE)
+@magicWord(category=CATEGORY_ADMINISTRATOR)
 def skipMovie():
-    """Skip the currently playing battle movie."""
+    """
+    Skip the currently playing battle movie.
+    """
     invoker = spellbook.getInvoker()
     battleId = invoker.getBattleId()
     if not battleId:

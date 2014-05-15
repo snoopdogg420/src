@@ -261,22 +261,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                 self.replaceItemInAccessoriesList(ToonDNA.SHOES, 0, 0, 0, self.shoes[0], self.shoes[1], self.shoes[2])
                 self.b_setShoesList(self.shoesList)
                 self.b_setShoes(0, 0, 0)
-        self.startPing()
         from toontown.toon.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
         if not isinstance(self, DistributedNPCToonBaseAI):
             self.sendUpdate('setDefaultShard', [self.air.districtId])
-
-            if hasattr(self.air, 'aprilToonsMgr'):
-                if self.air.aprilToonsMgr.isEventActive(AprilToonsGlobals.EventRandomDialogue):
-                    # Give them a random animal sound.
-                    self.b_setAnimalSound(random.randint(0, 8))
-                if self.air.aprilToonsMgr.isEventActive(AprilToonsGlobals.EventRandomEffects):
-                    # Start a loop for random toon effects.
-                    self.wantRandomEffects = True
-                    taskMgr.doMethodLater(random.randint(AprilToonsGlobals.RandomCheesyMinTime, AprilToonsGlobals.RandomCheesyMaxTime), self.randomToonEffects, self.uniqueName('random-toon-effects'))
-                if self.air.aprilToonsMgr.isEventActive(AprilToonsGlobals.EventSirMaxBirthday):
-                    # This should be changed in the future
-                    self.b_setHat(12, 0, 0)
 
     def setLocation(self, parentId, zoneId):
         messenger.send('toon-left-%s' % self.zoneId, [self])
@@ -4495,43 +4482,56 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
         return 0
 
-    def getAchievements(self):
-        return self.achievements
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int, int])
-def setCE(CEValue, CEHood=0, CEExpire=0):
-    """Set Cheesy Effect of the target."""
-    CEHood = CEHood * 1000 #So the invoker only has to use '1' for DonaldsDock, '2' for TTC etc.
-    if not 0 <= CEValue <= 16:
-        return 'Invalid value %s specified for Cheesy Effect.' % CEValue
-    if CEHood != 0 and not 100 < CEHood < ToontownGlobals.DynamicZonesBegin:
-        return 'Invalid zoneId specified.'
-    spellbook.getTarget().b_setCheesyEffect(CEValue, CEHood, CEExpire)
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
+def cheesyEffect(value, hood=0, expire=0):
+    """
+    Modify the target's cheesy effect.
+    """
+    try:
+        value = int(value)
+    except:
+        value = value.lower()
+    if isinstance(value, str):
+        if value not in OTPGlobals.CEName2Id:
+            return 'Invalid cheesy effect value: {0}'.format(value)
+        value = OTPGlobals.CEName2Id[value]
+    elif not 0 <= value <= 15:
+        return 'Invalid cheesy effect value: {0}'.format(value)
+    if (hood != 0) and (not 1000 <= hood < ToontownGlobals.DynamicZonesBegin):
+        return 'Invalid hood ID: {0}'.format(hood)
+    target = spellbook.getTarget()
+    target.b_setCheesyEffect(value, hood, expire)
+    return "Set {0}'s cheesy effect to {1}!".format(target.getName(), value)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setHp(hpVal):
-    """Set target's current laff"""
-    if not -1 <= hpVal <= 137:
-        return 'Laff must be between -1 and 137!'
-    spellbook.getTarget().b_setHp(hpVal)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def hp(hp):
+    """
+    Modify the target's current HP.
+    """
+    target = spellbook.getTarget()
+    maxHp = target.getMaxHp()
+    if not -1 <= hp <= maxHp:
+        return 'HP must be in range (-1-{0}).'.format(maxHp)
+    target.b_setHp(hp)
+    return "Set {0}'s HP to {1}!".format(target.getName(), hp)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setMaxHp(hpVal):
-    """Set target's laff"""
-    if not 15 <= hpVal <= 137:
-        return 'Laff must be between 15 and 137!'
-    spellbook.getTarget().b_setMaxHp(hpVal)
-    spellbook.getTarget().toonUp(hpVal)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def maxHp(maxHp):
+    """
+    Modify the target's max HP.
+    """
+    if not 15 <= maxHp <= ToontownGlobals.MaxHpLimit:
+        return 'HP must be in range (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
+    target = spellbook.getTarget()
+    target.b_setMaxHp(maxHp)
+    target.toonUp(maxHp - target.getHp())
+    return "Set {0}'s max HP to {1}!".format(target.getName(), maxHp)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int, int, int, int, int, int])
-def setTrackAccess(toonup, trap, lure, sound, throw, squirt, drop):
-    """Set target's gag track access."""
-    spellbook.getTarget().b_setTrackAccess([toonup, trap, lure, sound, throw, squirt, drop])
-
-@magicWord(category=CATEGORY_OVERRIDE, types=[str])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
 def maxToon(missingTrack=None):
     """
-    Max out the invoker's stats for end-level gameplay.
+    Max the invoker's stats for end-level gameplay.
     """
     invoker = spellbook.getInvoker()
 
@@ -4568,10 +4568,10 @@ def maxToon(missingTrack=None):
     # Max out their Cog suits:
     invoker.b_setCogParts(
         [
-            CogDisguiseGlobals.PartsPerSuitBitmasks[0], # Bossbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[1], # Lawbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[2], # Cashbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[3]  # Sellbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[0],  # Bossbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[1],  # Lawbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[2],  # Cashbot
+            CogDisguiseGlobals.PartsPerSuitBitmasks[3]   # Sellbot
         ]
     )
     invoker.b_setCogLevels([49] * 4)
@@ -4598,8 +4598,11 @@ def maxToon(missingTrack=None):
 
     return 'Maxed your Toon!'
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[int, str])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, str])
 def sos(count, name):
+    """
+    Modifies the invoker's specified SOS card count.
+    """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 100:
         return 'Your SOS count must be in range (0-100).'
@@ -4610,237 +4613,274 @@ def sos(count, name):
             break
     else:
         return 'SOS card {0} was not found!'.format(name)
-    if not invoker.attemptAddNPCFriend(npcId, numCalls=count):
-        return "Couldn't add {0} {1} SOS cards.".format(count, name)
+    if (count == 0) and (npcId in invoker.NPCFriendsDict):
+        del invoker.NPCFriendsDict[npcId]
     else:
-        return "{0} {1} SOS cards have been added.".format(count, name)
+        invoker.NPCFriendsDict[npcId] = count
+    invoker.d_setNPCFriendsDict(invoker.NPCFriendsDict)
+    return "You were given {0} {1} SOS cards.".format(count, name)
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def unites(value=99):
+    """
+    Restock all resistance messages.
+    """
+    target = spellbook.getTarget()
+    target.restockAllResistanceMessages(value)
+    return 'Restocked {0} unites!'.format(value)
+
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
 def fires(count):
+    """
+    Modifies the invoker's pink slip count.
+    """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 255:
         return 'Your fire count must be in range (0-255).'
     invoker.b_setPinkSlips(count)
-    return 'Added {0} fires.'.format(count)
+    return 'You were given {0} fires.'.format(count)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setMaxMoney(moneyVal):
-    """Set target's money and maxMoney values."""
-    if not 40 <= moneyVal <= 250:
-        return 'Money value must be between 40 and 250.'
-    spellbook.getTarget().b_setMaxMoney(moneyVal)
-    spellbook.getTarget().b_setMoney(moneyVal)
-    return 'maxMoney set to %s' % moneyVal
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def maxMoney(maxMoney):
+    """
+    Modifies the target's max money value.
+    """
+    if not 40 <= maxMoney <= 250:
+        return 'Max money value must be in range (40-250).'
+    target = spellbook.getTarget()
+    spellbook.getTarget().b_setMaxMoney(maxMoney)
+    return "Set {0}'s max money value to {1}!".format(target.getName(), maxMoney)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setFishingRod(rodVal):
-    """Set target's fishing rod value."""
-    if not 0 <= rodVal <= 4:
-        return 'Rod value must be between 0 and 4.'
-    spellbook.getTarget().b_setFishingRod(rodVal)
-    return 'Rod changed to ' + str(rodVal)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def money(money):
+    """
+    Modifies the target's current money value.
+    """
+    target = spellbook.getTarget()
+    maxBankMoney = target.getMaxBankMoney()
+    if not 0 <= money <= maxBankMoney:
+        return 'Money value must be in range (0-{0}).'.format(maxBankMoney)
+    target.b_setMoney(money)
+    return "Set {0}'s money value to {1}!".format(target.getName(), money)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setMaxFishTank(tankVal):
-    """Set target's max fish tank value."""
-    if not 20 <= tankVal <= 99:
-        return 'Max fish tank value must be between 20 and 99'
-    spellbook.getTarget().b_setMaxFishTank(tankVal)
-    return 'Max size of fish tank changed to ' + str(tankVal)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str])
-def setName(nameStr=""):
-    """Set target's name."""
-    spellbook.getTarget().b_setName(nameStr)
-    return "Changed avId %s's name to %s" % (spellbook.getTarget().doId, nameStr)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS)
-def gibunites():
-    """Restock all CFO phrases."""
-    spellbook.getTarget().restockAllResistanceMessages(99)
-    return 'i gib %s all dem unitez' % spellbook.getTarget().getName()
-
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
-def setHat(hatId, hatTex=0):
-    """Set hat of target toon."""
-    if not 0 <= hatId <= 56:
-        return 'Invalid hat specified.'
-    if not 0 <= hatTex <= 20:
-        return 'Invalid hat texture specified.'
-    spellbook.getTarget().b_setHat(hatId, hatTex, 0)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
-def setGlasses(glassesId, glassesTex=0):
-    """Set glasses of target toon."""
-    if not 0 <= glassesId <= 21:
-        return 'Invalid glasses specified.'
-    if not 0 <= glassesTex <= 4:
-        return 'Invalid glasses texture specified.'
-    spellbook.getTarget().b_setGlasses(glassesId, glassesTex, 0)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
-def setBackpack(bpId, bpTex=0):
-    """Set backpack of target toon."""
-    if not 0 <= bpId <= 24:
-        return 'Invalid backpack specified.'
-    if not 0 <= bpTex <= 6:
-        return 'Invalid backpack texture specified.'
-    spellbook.getTarget().b_setBackpack(bpId, bpTex, 0)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int, int])
-def setShoes(shoesId, shoesTex=0):
-    """Set shoes of target toon."""
-    if not 0 <= shoesId <= 3:
-        return 'Invalid shoe type specified.'
-    if not 0 <= shoesTex <= 48:
-        return 'Invalid shoe specified.'
-    spellbook.getTarget().b_setShoes(shoesId, shoesTex, 0)
-
-@magicWord(category=CATEGORY_MODERATION, types=[bool])
-def kick(overrideSelfKick=False):
-    """Kick the player from the game server."""
-    if not overrideSelfKick and spellbook.getTarget() == spellbook.getInvoker():
-        return "Are you sure you want to kick yourself? Use '~kick True' if you are."
-    #spellbook.getTarget().disconnect()
-    dg = PyDatagram()
-    dg.addServerHeader(spellbook.getTarget().GetPuppetConnectionChannel(spellbook.getTarget().doId), simbase.air.ourChannel, CLIENTAGENT_EJECT)
-    dg.addUint16(155)
-    dg.addString('You were kicked by a moderator!')
-    simbase.air.send(dg)
-    return "The player %s was kicked." % spellbook.getTarget().getName()
-
-@magicWord(category=CATEGORY_MODERATION, types=[str, bool, bool], access=400) # Set to 400 for now...
-def ban(reason="Unknown reason.", confirmed=False, overrideSelfBan=False):
-    """Ban the player from the game server."""
-    return 'banManager is not currently implemented!' # Disabled until we have a working banManager.
-    if not confirmed:
-        return "Are you sure you want to ban this player? Use '~~ban REASON True' if you are."
-    if not overrideSelfBan and spellbook.getTarget() == spellbook.getInvoker():
-        return "Are you sure you want to ban yourself? Use '~ban REASON True True' if you are."
-    spellbook.getTarget().ban(reason)
-
-#This command has been disabled due to many breakingnessings. GG developers, you suck at sanity >:C
-'''
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, str])
-def ut(doField, doData=None):
-    """Update a toons field in the db."""
-
-    methodExists = hasattr(spellbook.getTarget(), doField)
-    b_methodExists = hasattr(spellbook.getTarget(), 'b_'+doField)
-    access = spellbook.getInvokerAccess()
-    if doData:
-        #There are arguments to be passed, lets find out how many.
-        theData = shlex.split(doData)
-        for count in range(0, len(theData)):
-            theData[count] = theData[count].split(',')
-            for cur in range(0, len(theData[count])):
-                try:
-                    theData[count][cur] = int(theData[count][cur])
-                except:
-                    #Could not convert to integer, pass.
-                    pass
-            if len(theData[count])==1:
-               theData[count] = theData[count][0]
-        if len(theData)==1:
-            singleData = theData[0] #Only has 1 parameter
-            if b_methodExists:
-                getattr(spellbook.getTarget(), 'b_'+doField)(singleData)
-            elif methodExists:
-                getattr(spellbook.getTarget(), doField)(singleData)
-            #elif access==500: #To prevent unexperienced admins from breaking toons.
-            else:
-                spellbook.getTarget().sendUpdate(doField, [singleData])
-            #else:
-                #return "Unable to send to Astron. Access 500 required."
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
+def bank(command, value):
+    """
+    Modifies the target's bank money values.
+    """
+    command = command.lower()
+    target = spellbook.getTarget()
+    if command == 'max':
+        if not 1000 <= value <= 12000:
+            return 'Max bank value must be in range (1000-12000).'
+        target.b_setMaxBankMoney(value)
+        return "Set {0}'s max bank money value to {1}!".format(target.getName(), value)
+    elif command == 'transfer':
+        if value == 0:
+            return 'Invalid bank transfer.'
+        bankMoney = target.getBankMoney()
+        maxBankMoney = target.getMaxBankMoney()
+        money = target.getMoney()
+        maxMoney = target.getMaxMoney()
+        if value > 0:
+            maxDeposit = money
+            maxDeposit = min(maxDeposit, maxBankMoney - money)
+            deposit = min(value, maxDeposit)
+            bankMoney += deposit
+            money -= deposit
+            target.b_setBankMoney(bankMoney)
+            target.b_setMoney(money)
         else:
-            if b_methodExists:
-                getattr(spellbook.getTarget(), 'b_'+doField)(*theData)
-            elif methodExists:
-                getattr(spellbook.getTarget(), doField)(*theData)
-            #elif access==500:
-            else:
-                spellbook.getTarget().sendUpdate(doField, theData)
-            #else:
-                #return "Unable to send to Astron. Access 500 required."
+            maxWithdrawl = maxMoney - money
+            maxWithdrawl = min(maxWithdrawl, bankMoney)
+            withdrawl = min(value, maxWithdrawl)
+            bankMoney -= withdrawl
+            money += withdrawl
+            target.b_setBankMoney(bankMoney)
+            target.b_setMoney(money)
+        return 'Bank transfer successful!'
     else:
-        #There are no arguments, we will simply call the function.
-        if b_methodExists:
-            getattr(spellbook.getTarget(), 'b_'+doField)()
-        elif methodExists:
-            getattr(spellbook.getTarget(), doField)()
-        #elif access==500:
-        else:
-            spellbook.getTarget().sendUpdate(doField)
-        #else:
-            #return "Unable to send to Astron. Access 500 required."
+        return 'Invalid command!'
 
-    return "Method " + doField + " was called on " + spellbook.getTarget().name + " successfully."
-'''
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def fishingRod(rod):
+    """
+    Modify the target's fishing rod value.
+    """
+    if not 0 <= rod <= 4:
+        return 'Rod value must be in range (0-4).'
+    target = spellbook.getTarget()
+    target.b_setFishingRod(rod)
+    return "Set {0}'s fishing rod to {1}!".format(target.getName(), rod)
 
-@magicWord(category=CATEGORY_MODERATION)
-def togGM():
-    """Toggle GM Icon for toon."""
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def maxFishTank(maxFishTank):
+    """
+    Modify the target's max fish tank value.
+    """
+    if not 20 <= maxFishTank <= 99:
+        return 'Max fish tank value must be in range (20-99).'
+    target = spellbook.getTarget()
+    target.b_setMaxFishTank(maxFishTank)
+    return "Set {0}'s max fish tank value to {1}!".format(target.getName(), maxFishTank)
+
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
+def name(name=''):
+    """
+    Modify the target's name.
+    """
+    target = spellbook.getTarget()
+    _name = target.getName()
+    target.b_setName(name)
+    return "Set {0}'s name to {1}!".format(_name, name)
+
+@magicWord(category=CATEGORY_CREATIVE, types=[int, int])
+def hat(hatIndex, hatTex=0):
+    """
+    Modify the target's hat.
+    """
+    if not 0 <= hatIndex < len(ToonDNA.HatModels):
+        return 'Invalid hat index.'
+    if not 0 <= hatTex < len(ToonDNA.HatTextures):
+        return 'Invalid hat texture.'
+    target = spellbook.getTarget()
+    target.b_setHat(hatIndex, hatTex, 0)
+    return "Set {0}'s hat to {1}, {2}!".format(target.getName(), hatIndex, hatTex)
+
+@magicWord(category=CATEGORY_CREATIVE, types=[int, int])
+def glasses(glassesIndex, glassesTex=0):
+    """
+    Modify the target's glasses.
+    """
+    if not 0 <= glassesIndex < len(ToonDNA.GlassesModels):
+        return 'Invalid glasses index.'
+    if not 0 <= glassesTex < len(ToonDNA.GlassesTextures):
+        return 'Invalid glasses texture.'
+    target = spellbook.getTarget()
+    target.b_setGlasses(glassesIndex, glassesTex, 0)
+    return "Set {0}'s glasses to {1}, {2}!".format(target.getName(), glassesIndex, glassesTex)
+
+@magicWord(category=CATEGORY_CREATIVE, types=[int, int])
+def backpack(backpackIndex, backpackTex=0):
+    """
+    Modify the target's backpack.
+    """
+    if not 0 <= backpackIndex < len(ToonDNA.BackpackModels):
+        return 'Invalid backpack index.'
+    if not 0 <= backpackTex < len(ToonDNA.BackpackTextures):
+        return 'Invalid backpack texture.'
+    target = spellbook.getTarget()
+    target.b_setBackpack(backpackIndex, backpackTex, 0)
+    return "Set {0}'s backpack to {1}, {2}!".format(target.getName(), backpackIndex, backpackTex)
+
+@magicWord(category=CATEGORY_CREATIVE, types=[int, int])
+def shoes(shoesIndex, shoesTex=0):
+    """
+    Modify the target's shoes.
+    """
+    if not 0 <= shoesIndex < len(ToonDNA.ShoesModels):
+        return 'Invalid shoes index.'
+    if not 0 <= shoesTex < len(ToonDNA.ShoesTextures):
+        return 'Invalid shoes texture.'
+    target = spellbook.getTarget()
+    target.b_setBackpack(shoesIndex, shoesTex, 0)
+    return "Set {0}'s shoes to {1}, {2}!".format(target.getName(), shoesIndex, shoesTex)
+
+@magicWord(category=CATEGORY_MODERATOR)
+def kick():
+    """
+    Kick the target from the game server.
+    """
+    target = spellbook.getTarget()
+    if target == spellbook.getInvoker():
+        return "You can't kick yourself!"
+    datagram = PyDatagram()
+    datagram.addServerHeader(
+        target.GetPuppetConnectionChannel(target.doId),
+        simbase.air.ourChannel, CLIENTAGENT_EJECT)
+    datagram.addUint16(155)
+    datagram.addString('You were kicked by a moderator!')
+    simbase.air.send(datagram)
+    return "Kicked {0} from the game server!".format(target.getName())
+
+@magicWord(category=CATEGORY_MODERATOR)
+def ban():
+    """
+    Ban the target from the game server.
+    """
+    target = spellbook.getTarget()
+    if target == spellbook.getInvoker():
+        return "You can't ban yourself!"
+    return 'Not implemented.'
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def gmIcon():
+    """
+    Toggles the invoker's GM icon.
+    """
+    invoker = spellbook.getInvoker()
     access = spellbook.getInvokerAccess()
-    if spellbook.getInvoker().isGM():
-        spellbook.getInvoker().b_setGM(0)
-        return 'You have disabled your GM icon.'
+    if invoker.isGM():
+        invoker.b_setGM(0)
+        return 'Your GM icon is now disabled!'
     else:
-        if access>=400:
-            spellbook.getInvoker().b_setGM(2)
-        elif access>=200:
-            spellbook.getInvoker().b_setGM(3)
-        return 'You have enabled your GM icon.'
+        # TODO: Implement the correct GM icons.
+        if access >= 400:
+            invoker.b_setGM(2)
+        elif access >= 200:
+            invokeer.b_setGM(3)
+        return 'Your GM icon is now enabled!'
 
-@magicWord(category=CATEGORY_MODERATION)
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def ghost():
-    """Set toon to invisible. (Access 400+ can invoke on anyone)"""
-    av = spellbook.getTarget() if spellbook.getInvokerAccess() >= 400 else spellbook.getInvoker()
-    if av.ghostMode == 0:
-        av.b_setGhostMode(1 if av.getAdminAccess() < 300 else 2)
-        return 'Time to ninja! Enabled ghost for %s' % av.getName()
+    """
+    Toggles invisibility on the invoker. Anyone with an access level below the
+    invoker will not be able to see him or her.
+    """
+    invoker = spellbook.getInvoker()
+    if invoker.ghostMode == 0:
+        invoker.b_setGhostMode(2)
+        return 'Ghost mode is enabled.'
     else:
-        av.b_setGhostMode(0)
-        return 'Disabled ghost for %s' % av.getName()
+        invoker.b_setGhostMode(0)
+        return 'Ghost mode is disabled.'
 
-@magicWord(category=CATEGORY_MODERATION)
+@magicWord(category=CATEGORY_MODERATOR)
 def badName():
-    """Set target's name to the 'REJECTED' state and rename them to their <COLOR SPECIES> name."""
-    oldname = spellbook.getTarget().name
-    dna = spellbook.getTarget().dna
-    colorstring = TTLocalizer.NumToColor[dna.headColor]
-    animaltype = TTLocalizer.AnimalToSpecies[dna.getAnimal()]
-    spellbook.getTarget().b_setName(colorstring + ' ' + animaltype)
-    spellbook.getTarget().sendUpdate('WishNameState', ['REJECTED'])
-    return "Revoked %s's name successfully. They have been renamed to %s." % (oldname, spellbook.getTarget().getName())
+    """
+    Revoke the target's name.
+    """
+    target = spellbook.getTarget()
+    _name = target.getName()
+    colorString = TTLocalizer.NumToColor[target.dna.headColor]
+    animalType = TTLocalizer.AnimalToSpecies[target.dna.getAnimal()]
+    target.b_setName(colorString + ' ' + animalType)
+    target.sendUpdate('WishNameState', ['REJECTED'])
+    return "Revoked {0}'s name!".format(_name)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setGM(gmId):
-    """Set the target's GM level (used for icon)."""
-    if gmId == 1:
-        return 'You cannot set a toon to TOON COUNCIL.'
-    if not 0 <= gmId <= 4:
-        return 'Invalid GM type specified.'
-    if spellbook.getTarget().isGM() and gmId != 0: # This is because if you change from 1 GM level to another (excluding 0), it won't update in-game.
-        spellbook.getTarget().b_setGM(0)
-    spellbook.getTarget().b_setGM(gmId)
-    return 'You have set %s to GM type %s' % (spellbook.getTarget().getName(), gmId)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def tickets(tickets):
+    """
+    Set the target's racing tickets value.
+    """
+    if not 0 <= tickets <= 99999:
+        return 'Racing tickets value must be in range (0-99999).'
+    target = spellbook.getTarget()
+    target.b_setTickets(tickets)
+    return "Set {0}'s tickets to {1}!".format(target.getName(), tickets)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[int])
-def setTickets(tixVal):
-    """Set the target's racing ticket's value."""
-    if not 0 <= tixVal <= 99999:
-        return 'Ticket value out of range (0-99999)'
-    spellbook.getTarget().b_setTickets(tixVal)
-    return "%s's tickets were set to %s." % (spellbook.getTarget().getName(), tixVal)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def cogIndex(index):
+    """
+    Modifies the invoker's Cog index.
+    """
+    if not -1 <= index <= 3:
+        return 'Invalid Cog index.'
+    invoker = spellbook.getInvoker()
+    invoker.b_setCogIndex(index)
+    return 'Set your Cog index to {0}!'.format(index)
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
-def setCogIndex(indexVal):
-    """Transform into a cog/suit. THIS SHOULD ONLY BE USED WHERE NEEDED, E.G. ELECTIONS"""
-    if not -1 <= indexVal <= 3:
-        return 'CogIndex value %s is invalid.' % str(indexVal)
-    spellbook.getTarget().b_setCogIndex(indexVal)
-
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, int, int])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int])
 def inventory(a, b=None, c=None):
     invoker = spellbook.getInvoker()
     inventory = invoker.inventory
@@ -4889,7 +4929,7 @@ def inventory(a, b=None, c=None):
         invoker.b_setInventory(inventory.makeNetString())
         return 'Restored {0} Gags to: {1}, {2}'.format(c, targetTrack, maxLevelIndex)
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, str])
+@magicWord(category=CATEGORY_CREATIVE, types=[str, str])
 def dna(part, value):
     """Modify a DNA part on the target."""
     target = spellbook.getTarget()
@@ -5101,9 +5141,11 @@ def dna(part, value):
 
     return 'Invalid part: {0}'.format(part)
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
-def setTrophyScore(value):
-    """Set the target's trophy score."""
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def trophyScore(value):
+    """
+    Modifies the target's trophy score.
+    """
     if value < 0:
         return 'Invalid trophy score: {0}'.format(value)
     target = spellbook.getTarget()
@@ -5113,76 +5155,41 @@ def setTrophyScore(value):
     messenger.send('leaderboardFlush')
     return "{0}'s trophy score has been set to: {1}".format(target.getName(), value)
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[int, int])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, int])
 def givePies(pieType, numPies=0):
-    """Give target Y number of X pies."""
-    av = spellbook.getTarget()
+    """
+    Give the target (numPies) of (pieType) pies.
+    """
+    target = spellbook.getTarget()
     if pieType == -1:
-        av.b_setNumPies(0)
-        return "Removed %s's pies." % spellbook.getTarget().getName()
+        target.b_setNumPies(0)
+        return "Removed {0}'s pies.".format(target.getName())
     if pieType == 6:
-        return "Wedding cake 'pie' cause client crashes!"
+        return 'Invalid pie type!'
     if not 0 <= pieType <= 7:
-        return "pieType value out of range (0-7)"
-    if not 0 <= numPies <= 99:
-        return "numPies value out of range (0-99)"
-    av.b_setPieType(pieType)
-    av.b_setNumPies(numPies)
-
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
-def setBonus(trackId):
-    av = spellbook.getTarget()
-    blankArray = [-1, -1, -1, -1, -1, -1, -1]
-    blankArray[trackId] = 6
-    av.b_setTrackBonusLevel(blankArray)
-
-@magicWord(category=CATEGORY_MODERATION, types=[int, str])
-def locate(avIdShort=0, returnType=''):
-    """Locate an avatar anywhere on the [CURRENT] AI."""
-    # TODO: Use Astron msgs to get location of avId from anywhere in the Astron cyber-space.
-    # NOTE: The avIdShort concept needs changing, especially when we start entering 200000000's for avIds
-    if avIdShort <= 0:
-        return "Please enter a valid avId to find! Note: You only need to enter the last few digits of the full avId!"
-    avIdFull = 400000000 - (300000000 - avIdShort)
-    av = simbase.air.doId2do.get(avIdFull, None)
-    if not av:
-        return "Could not find the avatar on the current AI."
-
-    # Get the avatar's location.
-    zoneId = av.getLocation()[1] # This returns: (parentId, zoneId)
-    trueZoneId = zoneId
-    interior = False
-
-    if returnType == 'zone':
-        # The avatar that called the MagicWord wants a zoneId... Provide them with the untouched zoneId.
-        return "%s is in zoneId %d." % (av.getName(), trueZoneId)
-
-    if returnType == 'playground':
-        # The avatar that called the MagicWord wants the playground name that the avatar is currently in.
-        zoneId = ZoneUtil.getCanonicalHoodId(zoneId)
-
-    if ZoneUtil.isInterior(zoneId):
-        # If we're in an interior, we want to fetch the street/playground zone, since there isn't
-        # any mapping for interiorId -> shop name (afaik).
-        zoneId -= 500
-        interior = True
-
-    if ZoneUtil.isPlayground(zoneId):
-        # If it's a playground, TTG contains a map of all hoodIds -> playground names.
-        where = ToontownGlobals.hoodNameMap.get(zoneId, None)
+        return 'Pie type must be in range (0-7).'
+    if not -1 <= numPies <= 99:
+        return 'Pie count out of range (-1-99).'
+    target.b_setPieType(pieType)
+    if numPies >= 0:
+        target.b_setNumPies(numPies)
     else:
-        # If it's not a playground, the TTL contains a list of all streetId -> street names.
-        zoneId = zoneId - zoneId % 100 # This essentially truncates the last 2 digits.
-        where = TTLocalizer.GlobalStreetNames.get(zoneId, None)
+        target.b_setNumPies(ToontownGlobals.FullPies)
 
-    if not where:
-        return "Failed to map the zoneId %d [trueZoneId: %d] to a location..." % (zoneId, trueZoneId)
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def trackBonus(trackIndex):
+    """
+    Modify the invoker's track bonus level.
+    """
+    invoker = spellbook.getInvoker()
+    if not 0 <= trackIndex < 7:
+        return 'Invalid track index!'
+    trackBonusLevel = [0] * 7
+    trackBonusLevel[trackIndex] = 1
+    invoker.b_setTrackBonusLevel(trackBonusLevel)
+    return 'Your track bonus level has been set!'
 
-    if interior:
-        return "%s has been located %s %s, inside a building." % (av.getName(), where[1], where[2])
-    return "%s has been located %s %s." % (av.getName(), where[1], where[2])
-
-@magicWord(category=CATEGORY_OVERRIDE, types=[str, str, int])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
 def track(command, track, value=None):
     try:
         index = ('toonup', 'trap', 'lure', 'sound', 'throw',
@@ -5214,7 +5221,7 @@ def track(command, track, value=None):
         return 'Set the experience of the {0} track to: {1}!'.format(track, value)
     return 'Invalid command.'
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[str, str])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str])
 def suit(command, suitName):
     if command.lower() == 'spawn':
         return 'Coming soon.'
@@ -5227,7 +5234,7 @@ def suit(command, suitName):
     else:
         return 'Invalid command.'
 
-@magicWord(category=CATEGORY_CHARACTERSTATS, types=[str, int])
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
 def achievements(command, achId):
     invoker = spellbook.getInvoker()
     if command.lower() == 'earn':

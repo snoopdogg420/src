@@ -4,7 +4,7 @@ from otp.ai.MagicWordGlobal import *
 
 class FriendManagerAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory("FriendManagerAI")
-    
+
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
         self.air = air
@@ -65,10 +65,10 @@ class FriendManagerAI(DistributedObjectAI):
         if response == 1:
             requested = self.air.doId2do[self.requests[context][0][1]]
             requester = self.air.doId2do[self.requests[context][0][0]]
-            
+
             requested.extendFriendsList(requester.getDoId(), 0)
             requester.extendFriendsList(requested.getDoId(), 0)
-            
+
             requested.d_setFriendsList(requested.getFriendsList())
             requester.d_setFriendsList(requester.getFriendsList())
         del self.requests[context]
@@ -111,23 +111,3 @@ class FriendManagerAI(DistributedObjectAI):
 
     def submitSecretResponse(self, todo0, todo1):
         pass
-
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
-def truefriend(avIdShort):
-    '''Automagically add a toon as a true friend.'''
-    admin = spellbook.getInvoker()
-    avIdFull = 400000000 - (300000000 - avIdShort)
-    av = simbase.air.doId2do.get(avIdFull)
-    if not av:
-        return 'avId not found/online!'
-    if int(str(avIdFull)[:2]) >= 40: # AI
-        return '%s is an NPC!' % av.getName()
-    if not av._isGM:
-        return '%s is not a staff member!' % av.getName()
-    
-    
-    admin.extendFriendsList(av.getDoId(), 1)
-    av.extendFriendsList(admin.getDoId(), 1)
-    
-    admin.d_setFriendsList(admin.getFriendsList())
-    av.d_setFriendsList(av.getFriendsList())

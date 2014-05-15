@@ -10,11 +10,10 @@ import time
 import hmac
 import hashlib
 import json
+from otp.ai.MagicWordGlobal import *
 
 def judgeName(name):
-    # Judge a typed name for approval-queue candidacy.
-    # For now we reject only "Rejectnow" for debugging.
-    return name != 'Rejectnow'
+    return False
 
 # --- ACCOUNT DATABASES ---
 class LocalAccountDB:
@@ -42,10 +41,13 @@ class LocalAccountDB:
                       'adminAccess': 500})
         else:
             # Nope, let's return w/o account ID:
+            maxAccess = CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess
+            minAccess = CATEGORY_USER.defaultAccess
+            adminAccess = maxAccess if not self.dbm else minAccess
             callback({'success': True,
                       'accountId': 0,
                       'databaseId': cookie,
-                      'adminAccess': 500})
+                      'adminAccess': adminAccess})
 
     def storeAccountID(self, databaseId, accountId, callback):
         self.dbm[databaseId] = str(accountId)
@@ -453,9 +455,9 @@ class DeleteAvatarFSM(GetAvatarsFSM):
 
         avsDeleted = list(self.account.get('ACCOUNT_AV_SET_DEL', []))
         avsDeleted.append([self.avId, int(time.time())])
-        
+
         estateId = self.account.get('ESTATE_ID', 0)
-        
+
         if estateId != 0:
             # This assumes that the house already exists, but it shouldn't
             # be a problem if it doesn't.
@@ -474,13 +476,13 @@ class DeleteAvatarFSM(GetAvatarsFSM):
              'ACCOUNT_AV_SET_DEL': avsDeleted},
             {'ACCOUNT_AV_SET': self.account['ACCOUNT_AV_SET'],
              'ACCOUNT_AV_SET_DEL': self.account['ACCOUNT_AV_SET_DEL']},
-            self.__handleDelete)      
-            
+            self.__handleDelete)
+
     def __handleDelete(self, fields):
         if fields:
             self.demand('Kill', 'Database failed to mark the avatar deleted!')
             return
-        
+
         self.csm.air.friendsManager.clearList(self.avId) #RIP friends list
         self.csm.air.writeServerEvent('avatarDeleted', self.avId, self.target)
         self.demand('QueryAvatars')
@@ -705,7 +707,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
         dg.addServerHeader(self.avId, self.csm.air.ourChannel, STATESERVER_OBJECT_SET_OWNER)
         dg.addChannel(self.target<<32 | self.avId) # accountId in high 32 bits, avatar in low
         self.csm.air.send(dg)
-        
+
         # Tell TTRFriendsManager somebody is logging in:
         self.csm.air.friendsManager.toonOnline(self.avId, self.avatar)
 
@@ -726,7 +728,7 @@ class UnloadAvatarFSM(OperationFSM):
 
     def enterUnloadAvatar(self):
         channel = self.csm.GetAccountConnectionChannel(self.target)
-        
+
         # Tell TTRFriendsManager somebody is logging off:
         self.csm.air.friendsManager.toonOffline(self.avId)
 

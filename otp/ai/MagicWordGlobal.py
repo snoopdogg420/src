@@ -1,7 +1,5 @@
 from direct.showbase import PythonUtil
 
-MINIMUM_MAGICWORD_ACCESS = 300
-
 class MagicError(Exception): pass
 
 def ensureAccess(access, msg='Insufficient access'):
@@ -71,18 +69,20 @@ spellbook = Spellbook()
 
 # CATEGORIES
 class MagicWordCategory:
-    def __init__(self, name, defaultAccess=500):
+    def __init__(self, name, defaultAccess=600):
         self.name = name
         self.defaultAccess = defaultAccess
 
 CATEGORY_UNKNOWN = MagicWordCategory('Unknown')
-CATEGORY_GRAPHICAL = MagicWordCategory('Graphical debugging', defaultAccess=300)
-CATEGORY_GUI = MagicWordCategory('GUI debugging', defaultAccess=300)
-CATEGORY_MOBILITY = MagicWordCategory('Mobility cheats', defaultAccess=300)
-CATEGORY_OVERRIDE = MagicWordCategory('Override cheats', defaultAccess=400)
-CATEGORY_CHARACTERSTATS = MagicWordCategory('Character-stats cheats', defaultAccess=400)
-CATEGORY_DEBUG = MagicWordCategory('Debug cheats', defaultAccess=300)
-CATEGORY_MODERATION = MagicWordCategory('Moderation commands', defaultAccess=300)
+CATEGORY_USER = MagicWordCategory('Community manager', defaultAccess=100)
+CATEGORY_COMMUNITY_MANAGER = MagicWordCategory('Community manager', defaultAccess=200)
+CATEGORY_MODERATOR = MagicWordCategory('Moderator', defaultAccess=300)
+CATEGORY_CREATIVE = MagicWordCategory('Creative', defaultAccess=400)
+CATEGORY_PROGRAMMER = MagicWordCategory('Programmer', defaultAccess=500)
+CATEGORY_ADMINISTRATOR = MagicWordCategory('Administrator', defaultAccess=600)
+CATEGORY_SYSTEM_ADMINISTRATOR = MagicWordCategory('System administrator', defaultAccess=700)
+
+MINIMUM_MAGICWORD_ACCESS = CATEGORY_COMMUNITY_MANAGER.defaultAccess
 
 
 class MagicWord:

@@ -398,11 +398,22 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
         self.air.achievementsManager.toonsFinishedVP(self.involvedToons)
         DistributedBossCogAI.DistributedBossCogAI.enterReward(self)
 
-@magicWord(category=CATEGORY_OVERRIDE)
+@magicWord(category=CATEGORY_ADMINISTRATOR)
 def skipVP():
-    boss = simbase.air.doFind('DistributedSellbotBossAI')
+    """
+    Skips to the final round of the VP.
+    """
+    invoker = spellbook.getInvoker()
+    boss = None
+    for do in simbase.air.doId2do.values():
+        if isinstance(do, DistributedSellbotBossAI):
+            if invoker.doId in do.involvedToons:
+                boss = do
+                break
     if not boss:
         return "You aren't in a VP!"
+    if boss.state in ('PrepareBattleThree', 'BattleThree'):
+        return "You can't skip this round."
     boss.exitIntroduction()
     boss.b_setState('PrepareBattleThree')
     return 'Skipping the first round...'

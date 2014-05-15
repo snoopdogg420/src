@@ -7,7 +7,7 @@ from otp.ai.MagicWordGlobal import *
 
 class DistributedHouseAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory("DistributedHouseAI")
-    
+
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
 
@@ -27,11 +27,11 @@ class DistributedHouseAI(DistributedObjectAI):
         self.interiorWindows = ''
         self.atticWindows = ''
         self.deletedItems = ''
-        
+
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
         self.interiorZone = self.air.allocateZone()
-            
+
         self.door = DistributedHouseDoorAI(simbase.air, self.getDoId(), DoorTypes.EXT_STANDARD)
         self.door.generateWithRequired(self.zoneId)
 
@@ -52,8 +52,8 @@ class DistributedHouseAI(DistributedObjectAI):
             self.b_setInteriorInitialized(1)
 
         self.sendUpdate('setHouseReady', [])
-        
-        
+
+
     def delete(self):
         self.door.requestDelete()
         self.interiorDoor.requestDelete()
@@ -63,79 +63,79 @@ class DistributedHouseAI(DistributedObjectAI):
 
     def setHousePos(self, pos):
         self.housePos = pos
-        
+
     def d_setHousePos(self, pos):
         self.sendUpdate('setHousePos', [pos])
-        
+
     def b_setHousePos(self, pos):
         self.setHousePos(pos)
         self.d_setHousePos(pos)
-        
+
     def getHousePos(self):
         return self.housePos
 
     def setHouseType(self, type):
         self.houseType = type
-        
+
     def d_setHouseType(self, type):
         self.sendUpdate('setHouseType', [type])
-    
+
     def b_setHouseType(self, type):
         self.setHouseType(type)
         self.d_setHouseType(type)
-        
+
     def getHouseType(self):
         return self.houseType
 
     def setGardenPos(self, pos):
         self.gardenPos = pos
-        
+
     def d_setGardenPos(self, pos):
         self.sendUpdate('setGardenPos', [pos])
-        
+
     def b_setGardenPos(self, pos):
         self.setGardenPow(pos)
         self.d_setGardenPos(pos)
-        
+
     def getGardenPos(self):
         return self.gardenPos
 
     def setAvatarId(self, avId):
         self.avatarId = avId
-        
+
     def d_setAvatarId(self, avId):
         self.sendUpdate('setAvatarId', [avId])
-        
+
     def b_setAvatarId(self, avId):
         self.setAvatarId(avId)
         self.d_setAvatarId(avId)
-        
+
     def getAvatarId(self):
         return self.avatarId
 
     def setName(self, name):
         self.name = name
-        
+
     def d_setName(self, name):
         self.sendUpdate('setName', [name])
-        
+
     def b_setName(self, name):
         self.setName(name)
         self.d_setName(name)
-        
+
     def getName(self):
         return self.name
 
     def setColor(self, color):
         self.color = color
-        
+
     def d_setColor(self, color):
         self.sendUpdate('setColor', [color])
-        
+
     def b_setColor(self, color):
         self.setColor(color)
         self.d_setColor(color)
-        
+
     def getColor(self):
         return self.color
 
@@ -161,7 +161,7 @@ class DistributedHouseAI(DistributedObjectAI):
     def b_setInteriorItems(self, interiorItems):
         self.setInteriorItems(interiorItems)
         self.d_setInteriorItems(interiorItems)
-        
+
     def getInteriorItems(self):
         return self.interiorItems
 
@@ -174,7 +174,7 @@ class DistributedHouseAI(DistributedObjectAI):
     def b_setAtticWallpaper(self, atticWallpaper):
         self.setAtticWallpaper(atticWallpaper)
         self.d_setAtticWallpaper(atticWallpaper)
-        
+
     def getAtticWallpaper(self):
         return self.atticWallpaper
 
@@ -203,7 +203,7 @@ class DistributedHouseAI(DistributedObjectAI):
 
     def getAtticWindows(self):
         return self.atticWindows
-        
+
     def setInteriorWindows(self, interiorWindows):
         self.interiorWindows = interiorWindows
 
@@ -245,20 +245,33 @@ class DistributedHouseAI(DistributedObjectAI):
 
     def setCannonEnabled(self, todo0):
         pass
-        
+
     def getCannonEnabled(self):
         return 0
 
     def setHouseReady(self):
         pass
-        
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
-def houseType(type=0):
-    """Set target house type (must be spawned!). Default (if left blank) is 0 (normal house)."""
-    if not 0 <= type <= 5:
-        return "Invalid house type!"
-    if spellbook.getTarget().getHouseId() in simbase.air.doId2do:
-        house = simbase.air.doId2do[spellbook.getTarget().getHouseId()]
-        house.b_setHouseType(type)
-        return "House type set to %d." % type
-    return "House not loaded. Could not set type."
+
+@magicWord(category=CATEGORY_CREATIVE, types=[str, str])
+def house(command, arg0=None):
+    """
+    A command set for houses.
+    """
+    command = command.lower()
+    invoker = spellbook.getInvoker()
+    if arg0 is None:
+        return 'Missing second argument!'
+    if command == 'type':
+        try:
+            arg0 = int(arg0)
+        except:
+            return 'House type index must be an integer.'
+        if not 0 <= arg0 <= 5:
+            return 'Invalid house type index.'
+        houseId = invoker.getHouseId()
+        house = simbase.air.doId2do.get(houseId)
+        if not house:
+            return 'Could not find your house!'
+        house.b_setHouseType(arg0)
+        return 'Your house type index has been set to {0}!'.format(arg0)
+    return 'Invalid command!'

@@ -422,7 +422,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             try: return types[self.animalSound]
             except: return Toon.Toon.getDialogueArray(self, *args)
         return Toon.Toon.getDialogueArray(self, *args)
-            
+
 
     def setDefaultShard(self, shard):
         self.defaultShard = shard
@@ -2641,17 +2641,17 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def setAnimalSound(self, index):
         self.animalSound = index
-        
+
     def setAchievements(self, achievements):
         self.achievements = achievements
-        messenger.send(localAvatar.uniqueName('achievementsChange'))    
-   
-@magicWord(category=CATEGORY_MODERATION)
-def globaltp():
-    spellbook.getInvoker().sendUpdate('setTeleportOverride', [1])
-    base.localAvatar.setTeleportAccess([1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000])
-    return "Global teleport activated for the current session."
-    
-@magicWord(category=CATEGORY_GUI)
-def gardenGame():
-    base.localAvatar.game = GardenDropGame.GardenDropGame()
+        messenger.send(localAvatar.uniqueName('achievementsChange'))
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def globalTeleport():
+    """
+    Activates the global teleport cheat.
+    """
+    invoker = spellbook.getInvoker()
+    invoker.sendUpdate('setTeleportOverride', [1])
+    invoker.setTeleportAccess(list(ToontownGlobals.HoodsForTeleportAll))
+    return 'Global teleport has been activated.'

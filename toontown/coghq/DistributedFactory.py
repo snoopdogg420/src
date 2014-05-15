@@ -174,9 +174,11 @@ class DistributedFactory(DistributedLevel.DistributedLevel, FactoryBase.FactoryB
     def getBossBattleTaunt(self):
         return TTLocalizer.FactoryBossBattleTaunt
 
-@magicWord(category=CATEGORY_OVERRIDE, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def factoryWarp(zoneNum):
-    """Warp to a specific factory zone."""
+    """
+    Warp to a specific factory zone.
+    """
     factory = base.cr.doFind('DistributedFactory')
     if (not factory) or (not isinstance(factory, DistributedFactory)):
         return 'You must be in a factory.'

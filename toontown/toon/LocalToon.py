@@ -127,7 +127,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             self.__presentingPie = 0
             self.__pieSequence = 0
             self.wantBattles = base.config.GetBool('want-battles', 1)
-            self.seeGhosts = base.config.GetBool('see-ghosts', 0)
             wantNameTagAvIds = base.config.GetBool('want-nametag-avids', 0)
             if wantNameTagAvIds:
                 messenger.send('nameTagShowAvId', [])
@@ -253,8 +252,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             self.nametag.manage(base.marginManager)
         DistributedToon.DistributedToon.announceGenerate(self)
         from otp.friends import FriendInfo
-        if self.adminAccess >= 300:
-            self.seeGhosts = 1
 
     def disable(self):
         self.laffMeter.destroy()
@@ -407,9 +404,9 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         self.accept('InputState-turnLeft', self.__toonMoved)
         self.accept('InputState-turnRight', self.__toonMoved)
         self.accept('InputState-slide', self.__toonMoved)
-        
+
         self.achievementGui = AchievementGui.AchievementGui()
-        
+
         QuestParser.init()
         return
 
@@ -1963,10 +1960,10 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
 
     def getPetId(self):
         return False
-    
+
     def hasPet(self):
         return False
-    
+
     def setAchievements(self, achievements):
         if base.wantAchievements:
             if self.canEarnAchievements:
