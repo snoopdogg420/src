@@ -4,7 +4,7 @@ from pandac.PandaModules import *
 from toontown.golf import DistributedGolfCourseAI
 
 
-RequestHole = { }
+RequestHole = {}
 
 
 def GolfManagerAI():
@@ -54,5 +54,4 @@ class __GolfManagerAI(DirectObject.DirectObject):
                 if avId in RequestHole:
                     if not RequestHole[avId][1]:
                         del RequestHole[avId]
-                RequestHole[avId][1]
             self.courseList.remove(course)
