@@ -37,8 +37,7 @@ class LocalAccountDB:
             # Return it w/ account ID!
             callback({'success': True,
                       'accountId': int(self.dbm[cookie]),
-                      'databaseId': cookie,
-                      'adminAccess': 500})
+                      'databaseId': cookie})
         else:
             # Nope, let's return w/o account ID:
             maxAccess = CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess
@@ -240,8 +239,7 @@ class LoginAccountFSM(OperationFSM):
             self.accountId,
             self.csm.air.dclassesByName['AccountUD'],
             {'LAST_LOGIN': time.ctime(),
-             'ACCOUNT_ID': str(self.databaseId),
-             'ADMIN_ACCESS': self.adminAccess})
+             'ACCOUNT_ID': str(self.databaseId)})
 
         # We're done.
         self.csm.air.writeServerEvent('accountLogin', self.target, self.accountId, self.databaseId)
