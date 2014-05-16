@@ -133,7 +133,7 @@ class DistributedRingGame(DistributedMinigame):
         camera.reparentTo(render)
         camera.reparentTo(base.localAvatar)
         camera.setPosHpr(0, self.CAMERA_Y + self.TOON_Y, 0, 0, 0, 0)
-        base.camLens.setFov(80)
+        base.camLens.setMinFov(80/(4./3.))
         base.camLens.setFar(self.FAR_PLANE_DIST)
         base.setBackgroundColor(self.WATER_COLOR)
         self.__fog = Fog('ringGameFog')

@@ -294,7 +294,7 @@ class Purchase(PurchaseBase):
         camera.setPos(0, 16.0, 2.0)
         camera.lookAt(0, 0, 0.75)
         base.transitions.irisIn(0.4)
-        base.camLens.setFov(60)
+        base.camLens.setMinFov(60/(4./3.))
         base.setBackgroundColor(Vec4(0, 0.6, 1, 1))
         self.title.reparentTo(aspect2d)
         self.foreground.reparentTo(render)

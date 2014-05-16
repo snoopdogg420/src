@@ -352,7 +352,7 @@ class DistributedTugOfWarGame(DistributedMinigame):
         lerpDur = 8
         self.introTrack = LerpPosHprInterval(camera, lerpDur, pos=gameCamPos, hpr=gameCamHpr, blendType='easeInOut', name=self.uniqueName('introLerpCameraPos'))
         self.introTrack.start()
-        base.camLens.setFov(60 + 2 * self.numPlayers)
+        base.camLens.setMinFov((60 + 2 * self.numPlayers)/(4./3.))
         base.camLens.setFar(450.0)
         return
 
