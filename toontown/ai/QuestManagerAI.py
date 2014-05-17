@@ -42,7 +42,7 @@ class QuestManagerAI:
                     self.completeQuest(toon, questId)
                     self.avatarProgressTier(toon)
 
-                    break
+                break
         else:
             if (len(toonQuests) == toonQuestPocketSize*5):
                 npc.rejectAvatar(avId)
@@ -87,7 +87,9 @@ class QuestManagerAI:
         currentHistory = toon.getRewardHistory()[1]
 
         if Quests.avatarHasAllRequiredRewards(toon, currentTier):
-            currentTier += 1
+            if currentTier != Quests.ELDER_TIER:
+                currentTier += 1
+                
             toon.b_setRewardHistory(currentTier, [])
 
     def completeQuest(self, toon, completeQuestId):
