@@ -226,7 +226,8 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
             self.__beginLegType(self.legList.getType(nextLeg))
             zoneId = self.legList.getZoneId(nextLeg)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.branchId)
-            self.__enterZone(zoneId)
+            if zoneId:
+                self.__enterZone(zoneId)
             self.notify.debug('Suit %s reached leg %s of %s in zone %s.' % (self.getDoId(),
              nextLeg,
              numLegs - 1,

@@ -81,7 +81,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         self.setupDNA()
         if self.notify.getDebug():
             self.notify.debug('Creating a building manager AI in zone' + str(self.zoneId))
-        self.buildingMgr = None # self.air.buildingManagers.get(self.zoneId)
+        self.buildingMgr = self.air.buildingManagers.get(self.zoneId)
         if self.buildingMgr:
             (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks, animBldgBlocks) = self.buildingMgr.getDNABlockLists()
             for currBlock in blocks:
@@ -426,7 +426,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
     def pointCollision(self, point, adjacentPoint, elapsedTime):
         for suit in self.suitList:
             if suit.pointInMyPath(point, elapsedTime):
-                return 1
+                return 0
         if adjacentPoint is not None:
             return self.battleCollision(point, adjacentPoint)
         else:
@@ -437,7 +437,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 p = self.pointIndexes[pi]
                 i -= 1
                 if self.battleCollision(point, p):
-                    return 1
+                    return 0
         return 0
 
     def battleCollision(self, point, adjacentPoint):
@@ -473,7 +473,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         taskMgr.doMethodLater(t, self.adjustSuitPopulation, self.taskName('sptAdjustPopulation'))
 
     def upkeepSuitPopulation(self, task):
-        self.setupDNA()
         targetFlyInNum = self.calcDesiredNumFlyInSuits()
         targetFlyInNum = min(targetFlyInNum, self.TOTAL_MAX_SUITS - self.numBuildingSuits)
         streetPoints = self.streetPointList[:]

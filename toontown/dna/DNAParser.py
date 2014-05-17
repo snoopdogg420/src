@@ -172,9 +172,9 @@ class DNAStorage:
     def getAdjacentPoints(self, point):
         path = DNASuitPath()
         pointIndex = point.getIndex()
-        if ((pointIndex-1) > 0) and (pointIndex in self.suitPointMap):
+        if pointIndex-1 > 0 and pointIndex-1 in self.suitPointMap:
             path.addPoint(self.suitPointMap[pointIndex - 1])
-        if (pointIndex+1) in self.suitPointMap:
+        if pointIndex+1 in self.suitPointMap:
             path.addPoint(self.suitPointMap[pointIndex + 1])
         return path
 
