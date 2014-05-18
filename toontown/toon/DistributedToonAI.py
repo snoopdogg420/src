@@ -4732,7 +4732,10 @@ def name(name=''):
     target = spellbook.getTarget()
     _name = target.getName()
     target.b_setName(name)
-    return "Set {0}'s name to {1}!".format(_name, name)
+    if name:
+        return "Set {0}'s name to {1}!".format(_name, name)
+    else:
+        return "{0}'s name is now empty!".format(_name)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def hat(hatIndex, hatTex=0):
@@ -4783,7 +4786,7 @@ def shoes(shoesIndex, shoesTex=0):
     if not 0 <= shoesTex < len(ToonDNA.ShoesTextures):
         return 'Invalid shoes texture.'
     target = spellbook.getTarget()
-    target.b_setBackpack(shoesIndex, shoesTex, 0)
+    target.b_setShoes(shoesIndex, shoesTex, 0)
     return "Set {0}'s shoes to {1}, {2}!".format(target.getName(), shoesIndex, shoesTex)
 
 @magicWord(category=CATEGORY_MODERATOR)

@@ -153,7 +153,7 @@ def system(message):
     Broadcasts a message to the server.
     """
     # TODO: Make this go through the UberDOG, rather than the AI server.
-    for doId, do in simbase.air.doId2do.items():
+    for _, do in simbase.air.doId2do.items():
         if isinstance(do, DistributedPlayerAI):
             do.d_setSystemMessage(0, message)
 
@@ -202,4 +202,4 @@ def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
             target.air.dclassesByName['AccountAI'],
             {'ADMIN_ACCESS': accessLevel})
     target.d_setSystemMessage(0, '{0} set your access level to {1}!'.format(invoker.getName(), accessLevel))
-    return "{0}'s access level has been set to {1}." % (target.getName(), accessLevel)
+    return "{0}'s access level has been set to {1}.".format(target.getName(), accessLevel)
