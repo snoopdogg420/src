@@ -200,7 +200,6 @@ class QuestManagerAI:
         for i in range(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
-            minChance = questClass.getPercentChance()
 
             if isinstance(questClass, Quests.RecoverItemQuest):
                 if not hasPickedQuest:
