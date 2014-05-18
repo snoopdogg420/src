@@ -607,8 +607,7 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
         self.castGui.setPos(0, 1, 0)
         for nodeName in ('bucket', 'jar', 'display_bucket', 'display_jar'):
             self.castGui.find('**/' + nodeName).reparentTo(self.castGui)
-
-        self.exitButton = DirectButton(parent=self.castGui, relief=None, text=('', TTLocalizer.FishingExit, TTLocalizer.FishingExit), text_align=TextNode.ACenter, text_scale=0.1, text_fg=Vec4(1, 1, 1, 1), text_shadow=Vec4(0, 0, 0, 1), text_pos=(0.0, -0.12), pos=(1.75, 0, -1.33), textMayChange=0, image=(self.castGui.find('**/exit_buttonUp'), self.castGui.find('**/exit_buttonDown'), self.castGui.find('**/exit_buttonRollover')), command=self.__userExit)
+        self.exitButton = DirectButton(parent=self.castGui, relief=None, text=('', TTLocalizer.FishingExit, TTLocalizer.FishingExit), text_align=TextNode.ACenter, text_scale=0.1, text_fg=Vec4(1, 1, 1, 1), text_shadow=Vec4(0, 0, 0, 1), text_pos=(0.0, -0.12), pos=(1.75*(4./3.), 0, -1.33), textMayChange=0, image=(self.castGui.find('**/exit_buttonUp'), self.castGui.find('**/exit_buttonDown'), self.castGui.find('**/exit_buttonRollover')), command=self.__userExit)
         self.castGui.find('**/exitButton').removeNode()
         self.castButton = DirectButton(parent=self.castGui, relief=None, text=TTLocalizer.FishingCast, text_align=TextNode.ACenter, text_scale=(3, 3 * 0.75, 3 * 0.75), text_fg=Vec4(1, 1, 1, 1), text_shadow=Vec4(0, 0, 0, 1), text_pos=(0, -4), image=self.castGui.find('**/castButton'), image0_color=(1, 0, 0, 1), image1_color=(0, 1, 0, 1), image2_color=(1, 1, 0, 1), image3_color=(0.8, 0.5, 0.5, 1), pos=(0, -0.05, -0.666), scale=(0.036, 1, 0.048))
         self.castGui.find('**/castButton').removeNode()
