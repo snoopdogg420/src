@@ -495,7 +495,6 @@ class DistributedBanquetTable(DistributedObject.DistributedObject, FSM.FSM, Banq
             self.waterPitcherNode = self.tableGroup.attachNewNode('pitcherNode')
             self.waterPitcherNode.setPos(pos)
             self.waterPitcherModel.reparentTo(self.waterPitcherNode)
-            self.waterPitcherModel.ls()
             self.nozzle = self.waterPitcherModel.find('**/nozzle_tip')
             self.handLocator = self.waterPitcherModel.find('**/hand_locator')
             self.handPos = self.handLocator.getPos()

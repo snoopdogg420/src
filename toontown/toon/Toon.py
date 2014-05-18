@@ -2710,12 +2710,6 @@ class Toon(Avatar.Avatar, ToonHead):
             return self.__doSnowManHeadSwitch(lerpTime, toSnowMan=False)
         elif effect == ToontownGlobals.CEGreenToon:
             return self.__doGreenToon(lerpTime, toGreen=False)
-        elif effect == ToontownGlobals.CERogerDog:
-            return self.__doRogerDog(lerpTime, toRoger=False)
-        elif effect == ToontownGlobals.CEFlippy:
-            return self.__doFlippy(lerpTime, toFlippy=False)
-        elif effect == ToontownGlobals.CESurlee:
-            return self.__doSurlee(lerpTime, toSurlee=False)
         elif effect == ToontownGlobals.CEVirtual:
             return self.__doUnVirtual()
         elif effect == ToontownGlobals.CEGhost:
