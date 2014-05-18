@@ -1,10 +1,12 @@
 from direct.showbase import GarbageReport
 from otp.ai.AIBaseGlobal import *
+from otp.ai.MagicWordGlobal import *
 from otp.avatar import DistributedAvatarAI
 from otp.avatar import PlayerBase
 from otp.distributed.ClsendTracker import ClsendTracker
 from otp.otpbase import OTPGlobals
-from otp.ai.MagicWordGlobal import *
+from toontown.toonbase.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
+
 
 class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.PlayerBase, ClsendTracker):
 
@@ -153,9 +155,10 @@ def system(message):
     Broadcasts a message to the server.
     """
     # TODO: Make this go through the UberDOG, rather than the AI server.
-    for _, do in simbase.air.doId2do.items():
+    for do in simbase.air.doId2do.values():
         if isinstance(do, DistributedPlayerAI):
-            do.d_setSystemMessage(0, message)
+            if not isinstance(do, DistributedNPCToonBaseAI):
+                do.d_setSystemMessage(0, message)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
 def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
@@ -164,12 +167,29 @@ def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
     """
     accessName2Id = {
         'user': CATEGORY_USER.defaultAccess,
+        'u': CATEGORY_USER.defaultAccess,
         'communitymanager': CATEGORY_COMMUNITY_MANAGER.defaultAccess,
+        'community': CATEGORY_COMMUNITY_MANAGER.defaultAccess,
+        'c': CATEGORY_COMMUNITY_MANAGER.defaultAccess,
         'moderator': CATEGORY_MODERATOR.defaultAccess,
+        'mod': CATEGORY_MODERATOR.defaultAccess,
+        'm': CATEGORY_MODERATOR.defaultAccess,
         'creative': CATEGORY_CREATIVE.defaultAccess,
+        'creativity': CATEGORY_CREATIVE.defaultAccess,
+        'c': CATEGORY_CREATIVE.defaultAccess,
         'programmer': CATEGORY_PROGRAMMER.defaultAccess,
+        'coder': CATEGORY_PROGRAMMER.defaultAccess,
+        'p': CATEGORY_PROGRAMMER.defaultAccess,
         'administrator': CATEGORY_ADMINISTRATOR.defaultAccess,
-        'systemadministrator': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess
+        'admin': CATEGORY_ADMINISTRATOR.defaultAccess,
+        'a': CATEGORY_ADMINISTRATOR.defaultAccess,
+        'systemadministrator': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess,
+        'systemadmin': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess,
+        'sysadministrator': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess,
+        'sysadmin': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess,
+        'system': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess,
+        'sys': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess,
+        's': CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess
     }
     try:
         accessLevel = int(accessLevel)
@@ -191,15 +211,28 @@ def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
     if showGM:
         # TODO: Use the correct GM icons.
         target.b_setGM(0)
-        if accessLevel >= 400:
-            target.b_setGM(2)
-        elif accessLevel >= 200:
+        if accessLevel == 200:
             target.b_setGM(3)
-    if storage.upper() not in ('SESSION', 'TEMP', 'TEMPORARY'):
+        elif accessLevel == 300:
+            target.b_setGM(3)
+        elif accessLevel == 400:
+            target.b_setGM(2)
+        elif accessLevel == 500:
+            target.b_setGM(2)
+        elif accessLevel == 600:
+            target.b_setGM(2)
+        elif accessLevel == 700:
+            target.b_setGM(2)
+    temporary = storage.upper() in ('SESSION', 'TEMP', 'TEMPORARY')
+    if not temporary:
         target.air.dbInterface.updateObject(
             target.air.dbId,
             target.getDISLid(),
             target.air.dclassesByName['AccountAI'],
             {'ADMIN_ACCESS': accessLevel})
-    target.d_setSystemMessage(0, '{0} set your access level to {1}!'.format(invoker.getName(), accessLevel))
-    return "{0}'s access level has been set to {1}.".format(target.getName(), accessLevel)
+    if not temporary:
+        target.d_setSystemMessage(0, '{0} set your access level to {1}!'.format(invoker.getName(), accessLevel))
+        return "{0}'s access level has been set to {1}.".format(target.getName(), accessLevel)
+    else:
+        target.d_setSystemMessage(0, '{0} set your access level to {1} temporarily!'.format(invoker.getName(), accessLevel))
+        return "{0}'s access level has been set to {1} temporarily.".format(target.getName(), accessLevel)
