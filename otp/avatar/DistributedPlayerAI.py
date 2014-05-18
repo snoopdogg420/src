@@ -5,7 +5,6 @@ from otp.avatar import DistributedAvatarAI
 from otp.avatar import PlayerBase
 from otp.distributed.ClsendTracker import ClsendTracker
 from otp.otpbase import OTPGlobals
-from toontown.toon.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
 
 
 class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.PlayerBase, ClsendTracker):
@@ -155,9 +154,9 @@ def system(message):
     Broadcasts a message to the server.
     """
     # TODO: Make this go through the UberDOG, rather than the AI server.
-    for do in simbase.air.doId2do.values():
+    for doId, do in simbase.air.doId2do.items():
         if isinstance(do, DistributedPlayerAI):
-            if not isinstance(do, DistributedNPCToonBaseAI):
+            if str(doId)[0] != str(simbase.air.districtId)[0]:
                 do.d_setSystemMessage(0, message)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
