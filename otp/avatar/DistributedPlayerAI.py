@@ -5,7 +5,7 @@ from otp.avatar import DistributedAvatarAI
 from otp.avatar import PlayerBase
 from otp.distributed.ClsendTracker import ClsendTracker
 from otp.otpbase import OTPGlobals
-from toontown.toonbase.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
+from toontown.toon.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
 
 
 class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.PlayerBase, ClsendTracker):
