@@ -19,20 +19,14 @@ class BattleSounds:
 
     def setupSearchPath(self):
         self.sfxSearchPath = DSearchPath()
-        if AppRunnerGlobal.appRunner:
-            self.sfxSearchPath.appendDirectory(Filename.expandFrom('$TT_3_ROOT/phase_3/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename.expandFrom('$TT_3_5_ROOT/phase_3.5/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename.expandFrom('$TT_4_ROOT/phase_4/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename.expandFrom('$TT_5_ROOT/phase_5/audio/sfx'))
-        else:
-            self.sfxSearchPath.appendDirectory(Filename('phase_3/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename('phase_3.5/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename('phase_4/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename('phase_5/audio/sfx'))
-            self.sfxSearchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('../RetroResources/phase_3/audio/sfx')))
-            self.sfxSearchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('../RetroResources/phase_3.5/audio/sfx')))
-            self.sfxSearchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('../RetroResources/phase_4/audio/sfx')))
-            self.sfxSearchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('../RetroResources/phase_5/audio/sfx')))
+        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_3/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_3.5/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_4/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_5/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('phase_3/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('phase_3.5/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('phase_4/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('phase_5/audio/sfx'))
 
     def clear(self):
         if self.isValid:
