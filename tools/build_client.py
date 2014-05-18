@@ -30,6 +30,4 @@ cmd += ' {0}'.format(args.main_module)  # "main" module
 
 os.system(cmd)
 
-# TODO: Encrypt GameData.pyd.
-
 print 'Done building the client.'
