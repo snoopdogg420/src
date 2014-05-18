@@ -166,14 +166,26 @@ if args.build_mfs:
     os.mkdir(dest)
     dest = os.path.realpath(dest)
     os.chdir(args.resources_dir)
+    if not os.path.exists('last-modified.dat'):
+        with open('last-modified.dat', 'w') as f:
+            f.write('MODIFIED = {}')
+    with open('last-modified.dat', 'r') as f:
+        exec(f.read())
     for phase in os.listdir('.'):
         if not phase.startswith('phase_'):
             continue
         if not os.path.isdir(phase):
             continue
+        if phase in MODIFIED:
+            if MODIFIED[phase] == int(os.path.getmtime(phase)):
+                continue
         filename = phase + '.mf'
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
         os.system('multify -c -f {0} {1}'.format(filepath, phase))
+        if phase not in MODIFIED:
+            MODIFIED[phase] = int(os.path.getmtime(phase))
+    with open('last-modified.dat', 'w') as f:
+        f.write('MODIFIED = %r' % MODIFIED)
 
 print 'Done preparing the client.'
