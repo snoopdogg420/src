@@ -28,9 +28,8 @@ args = parser.parse_args()
 print 'Preparing the client...'
 
 # Create a clean build directory for us to store our build material:
-if os.path.exists(args.build_dir):
-    shutil.rmtree(args.build_dir)
-os.mkdir(args.build_dir)
+if not os.path.exists(args.build_dir):
+    os.mkdir(args.build_dir)
 print 'Build directory = {0}'.format(args.build_dir)
 
 # This next part is only required if the invoker wants to include the Git
@@ -163,7 +162,8 @@ with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
 if args.build_mfs:
     print 'Building multifiles...'
     dest = os.path.join(args.build_dir, 'resources')
-    os.mkdir(dest)
+    if not os.path.exists(dest):
+        os.mkdir(dest)
     dest = os.path.realpath(dest)
     os.chdir(args.resources_dir)
     if not os.path.exists('last-modified.dat'):
