@@ -44,23 +44,29 @@ class ToonBase(OTPBase.OTPBase):
 
             # Separate the 16:9 aspect ratios from the 4:3 aspect ratios:
             resList16x9 = []
+            resList16x10 = []
             resList4x3  = []
             for res in resList:
                 if round(float(res[0])/float(res[1]), 2) == round(16.0/9.0, 2):
                     resList16x9.append(res)
             for res in resList:
+                if round(float(res[0])/float(res[1]), 2) == round(16.0/10.0, 2):
+                    resList16x10.append(res)
+            for res in resList:
                 if round(float(res[0])/float(res[1]), 2) == round(4.0/3.0, 2):
                     resList4x3.append(res)
 
-            # It appears that with 16:9, the second largest looks the best.
-            # However, with 4:3, the second smallest fits best. If we only have
-            # one 16:9 resolution, we must assume that this is the user's
-            # native resolution, therefore we can't use this in windowed mode.
-            # TODO: Add support for more resolutions.
-            #       Planned resolutions: 16:10
-            if len(resList16x9) > 1:
+            # It appears that with every aspect ratio, besides 4:3, the second
+            # largest resolution looks best. With 4:3, we use the second
+            # smallest so that the window doesn't go outside the user's
+            # perspective. If we only have one resolution in any of these
+            # resolution lists, we must assume that this is the user's native
+            # screen resolution.
+            if len(resList16x9) > 1:  # We have 16:9 support, use it.
                 res = resList16x9[-2]
-            else:
+            elif len(resList16x10) > 1:  # We have 16:10 support, use it.
+                resList = resList16x10[-2]
+            else:  # Otherwise, default to a 4:3 ratio.
                 res = resList4x3[1]
             self.settings.set('res', res)
 
