@@ -32,7 +32,8 @@ class ToonBase(OTPBase.OTPBase):
         OTPBase.OTPBase.__init__(self)
         # If we don't have a resolution defined, choose an optimal default
         # resolution:
-        if 'res' not in self.settings.all():
+        fullscreen = self.settings.get('fullscreen', False)
+        if ('res' not in self.settings.all()) or fullscreen:
             resList = []
             displayInfo = self.pipe.getDisplayInformation()
             for i in range(displayInfo.getTotalDisplayModes()):
@@ -61,7 +62,6 @@ class ToonBase(OTPBase.OTPBase):
 
             # Now, reload the graphics pipe:
             properties = WindowProperties()
-            fullscreen = self.settings.get('fullscreen', False)
 
             # If we're in fullscreen mode, we'll want to fit to the screen:
             if fullscreen:

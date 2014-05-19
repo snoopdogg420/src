@@ -16,11 +16,6 @@ default-model-extension .bam
 # Audio...
 audio-library-name p3fmod_audio
 
-# Display...
-load-display pandagl
-load-display pandadx9
-load-display pandadx8
-
 # Database...
 accountdb-type local
 accountdb-local-file astron/databases/csm-cookies.db

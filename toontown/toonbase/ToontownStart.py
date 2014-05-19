@@ -27,6 +27,9 @@ if 'musicVol' not in settings.all():
 sfxVol = settings.get('sfxVol', 1.0)
 if 'sfxVol' not in settings.all():
     settings.set('sfxVol', sfxVol)
+loadDisplay = settings.get('loadDisplay', 'pandagl')
+if 'loadDisplay' not in settings.all():
+    settings.set('loadDisplay', loadDisplay)
 loadPrcFileData('toonBase Settings Window Res', 'win-size %s %s' % (res[0], res[1]))
 loadPrcFileData('toonBase Settings Window FullScreen', 'fullscreen %s' % fullscreen)
 loadPrcFileData('toonBase Settings Music Active', 'audio-music-active %s' % music)
@@ -34,6 +37,7 @@ loadPrcFileData('toonBase Settings Sound Active', 'audio-sfx-active %s' % sfx)
 loadPrcFileData('toonBase Settings Music Volume', 'audio-master-music-volume %s' % musicVol)
 loadPrcFileData('toonBase Settings Sfx Volume', 'audio-master-sfx-volume %s' % sfxVol)
 loadPrcFileData('toonBase Settings Toon Chat Sounds', 'toon-chat-sounds %s' % toonChatSounds)
+loadPrcFileData('toonBase Settings Load Display', 'load-display %s' % loadDisplay)
 
 class game:
     name = 'toontown'
