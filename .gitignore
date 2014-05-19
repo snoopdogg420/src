@@ -21,4 +21,5 @@ buildbot_last-rev.dat
 
 # Toontown Infinite Retro
 PPYTHON_PATH
+preferences.gz
 .DS_Store

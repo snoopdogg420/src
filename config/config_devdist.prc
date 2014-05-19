@@ -33,8 +33,8 @@ vfs-mount resources/phase_13.mf /
 audio-library-name p3fmod_audio
 
 # Display...
-load-display pandadx9
 load-display pandagl
+load-display pandadx9
 load-display pandadx8
 
 # Database...
