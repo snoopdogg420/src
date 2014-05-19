@@ -4,6 +4,23 @@ import __builtin__
 if __debug__:
     loadPrcFile('config/config_dev.prc')
 
+from otp.settings.Settings import Settings
+settings = Settings(ConfigVariableString('preferences-filename', 'preferences.gz').getValue())
+res = settings.get('res', (1280, 720))
+fullscreen = settings.get('fullscreen', False)
+music = settings.get('music', True)
+sfx = settings.get('sfx', True)
+toonChatSounds = settings.get('toonChatSounds', True)
+musicVol = settings.get('musicVol', 1.0)
+sfxVol = settings.get('sfxVol', 1.0)
+loadPrcFileData('toonBase Settings Window Res', 'win-size %s %s' % (res[0], res[1]))
+loadPrcFileData('toonBase Settings Window FullScreen', 'fullscreen %s' % fullscreen)
+loadPrcFileData('toonBase Settings Music Active', 'audio-music-active %s' % music)
+loadPrcFileData('toonBase Settings Sound Active', 'audio-sfx-active %s' % sfx)
+loadPrcFileData('toonBase Settings Music Volume', 'audio-master-music-volume %s' % musicVol)
+loadPrcFileData('toonBase Settings Sfx Volume', 'audio-master-sfx-volume %s' % sfxVol)
+loadPrcFileData('toonBase Settings Toon Chat Sounds', 'toon-chat-sounds %s' % toonChatSounds)
+
 class game:
     name = 'toontown'
     process = 'client'
