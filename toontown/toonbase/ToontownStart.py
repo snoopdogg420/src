@@ -36,6 +36,7 @@ else:
 tempLoader = Loader()
 backgroundNode = tempLoader.loadSync(Filename('phase_3/models/gui/loading-background'))
 from direct.gui import DirectGuiGlobals
+from direct.gui.DirectGui import *
 print 'ToontownStart: setting default font'
 import ToontownGlobals
 DirectGuiGlobals.setDefaultFontFunc(ToontownGlobals.getInterfaceFont)
@@ -53,8 +54,16 @@ ConfigVariableDouble('extractor-step-time').setValue(0.01)
 backgroundNodePath = aspect2d.attachNewNode(backgroundNode, 0)
 backgroundNodePath.setPos(0.0, 0.0, 0.0)
 backgroundNodePath.setScale(render2d, VBase3(1))
-backgroundNodePath.find('**/fg').setBin('fixed', 20)
-backgroundNodePath.find('**/fg').setScale(1 / (4.0/3.0), 1, 16.0 / 9.0)
+backgroundNodePath.find('**/fg').hide()
+logo = OnscreenImage(
+    image='phase_3/maps/toontown-logo.png',
+    scale=(1 / (4.0/3.0), 1, 1 / (4.0/3.0)),
+    pos=backgroundNodePath.find('**/fg').getPos())
+logo.setTransparency(TransparencyAttrib.MAlpha)
+logo.setBin('fixed', 20)
+logo.reparentTo(backgroundNodePath)
+# backgroundNodePath.find('**/fg').setBin('fixed', 20)
+# backgroundNodePath.find('**/fg').setScale(1 / (4.0/3.0), 1, 16.0 / 9.0)
 backgroundNodePath.find('**/bg').setBin('fixed', 10)
 base.graphicsEngine.renderFrame()
 DirectGuiGlobals.setDefaultRolloverSound(base.loadSfx('phase_3/audio/sfx/GUI_rollover.ogg'))
