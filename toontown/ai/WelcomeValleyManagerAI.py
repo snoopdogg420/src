@@ -7,6 +7,9 @@ class WelcomeValleyManagerAI(DistributedObjectAI):
     def clientSetZone(self, todo0):
         pass
 
+    def toonSetZone(self, doId, newZoneId):
+        pass #TODO
+        
     def requestZoneIdMessage(self, todo0, todo1):
         pass
 

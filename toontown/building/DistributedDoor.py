@@ -197,7 +197,8 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         self.doPostAnnounceGenerate()
 
     def doPostAnnounceGenerate(self):
-        if self.doorType == DoorTypes.INT_STANDARD:
+        flatDoorTypes = [DoorTypes.INT_STANDARD, DoorTypes.INT_HQ]
+        if self.doorType in flatDoorTypes:
             self.bHasFlat = True
         else:
             self.bHasFlat = not self.findDoorNode('door*flat', True).isEmpty()

@@ -42,7 +42,7 @@ from toontown.suit.SuitInvasionManagerAI import SuitInvasionManagerAI
 from toontown.toon import NPCToons
 from toontown.toonbase import ToontownGlobals
 from toontown.uberdog.DistributedPartyManagerAI import DistributedPartyManagerAI
-
+from toontown.ai.WelcomeValleyManagerAI import WelcomeValleyManagerAI
 
 class ToontownAIRepository(ToontownInternalRepository):
     def __init__(self, baseChannel, stateServerChannel, districtName):
@@ -95,6 +95,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.suitInvasionManager = SuitInvasionManagerAI(self)
         self.trophyMgr = DistributedTrophyMgrAI(self)
         self.trophyMgr.generateWithRequired(2)
+        self.welcomeValleyManager = WelcomeValleyManagerAI(self)
+        self.welcomeValleyManager.generateWithRequired(2)
         if self.wantFishing:
             self.fishManager = FishManagerAI(self)
         if self.wantHousing:
