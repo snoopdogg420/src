@@ -23,7 +23,7 @@ class Settings:
         f.write(json.dumps(self.data))
         f.close()
 
-    def add(self, key, value):
+    def set(self, key, value):
         self.data[key] = value
         self.write()
 

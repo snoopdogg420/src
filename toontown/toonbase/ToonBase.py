@@ -57,7 +57,7 @@ class ToonBase(OTPBase.OTPBase):
                 res = resList16x9[-2]
             else:
                 res = resList4x3[1]
-            self.settings.add('res', res)
+            self.settings.set('res', res)
 
             # Now, reload the graphics pipe:
             properties = WindowProperties()
