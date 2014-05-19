@@ -53,8 +53,12 @@ class ToonBase(OTPBase.OTPBase):
                     resList4x3.append(res)
 
             # It appears that with 16:9, the second largest looks the best.
-            # However, with 4:3, the second smallest fits best.
-            if resList16x9:
+            # However, with 4:3, the second smallest fits best. If we only have
+            # one 16:9 resolution, we must assume that this is the user's
+            # native resolution, therefore we can't use this in windowed mode.
+            # TODO: Add support for more resolutions.
+            #       Planned resolutions: 16:10
+            if len(resList16x9) > 1:
                 res = resList16x9[-2]
             else:
                 res = resList4x3[1]
