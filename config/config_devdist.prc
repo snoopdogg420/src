@@ -1,7 +1,6 @@
 # Window options...
 window-title Toontown Infinite - Retro
 win-origin -1 -1
-win-size 1280 720
 
 # Filenames/filepaths...
 cursor-filename /phase_3/etc/toonmono.cur

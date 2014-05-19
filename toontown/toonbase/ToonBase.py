@@ -30,6 +30,71 @@ class ToonBase(OTPBase.OTPBase):
 
     def __init__(self):
         OTPBase.OTPBase.__init__(self)
+        # If we don't have a resolution defined, choose an optimal default
+        # resolution:
+        if 'res' not in self.settings.all():
+            resList = []
+            displayInfo = self.pipe.getDisplayInformation()
+            for i in range(displayInfo.getTotalDisplayModes()):
+                width = displayInfo.getDisplayModeWidth(i)
+                height = displayInfo.getDisplayModeHeight(i)
+                if (width, height) not in resList:
+                    resList.append((width, height))
+
+            # Separate the 16:9 aspect ratios from the 4:3 aspect ratios:
+            resList16x9 = []
+            resList4x3  = []
+            for res in resList:
+                if round(float(res[0])/float(res[1]), 2) == round(16.0/9.0, 2):
+                    resList16x9.append(res)
+            for res in resList:
+                if round(float(res[0])/float(res[1]), 2) == round(4.0/3.0, 2):
+                    resList4x3.append(res)
+
+            # It appears that with 16:9, the second largest looks the best.
+            # However, with 4:3, the second smallest fits best.
+            if resList16x9:
+                res = resList16x9[-2]
+            else:
+                res = resList4x3[1]
+            self.settings.add('res', res)
+
+            # Now, reload the graphics pipe:
+            properties = WindowProperties()
+            fullscreen = self.settings.get('fullscreen', False)
+
+            # If we're in fullscreen mode, we'll want to fit to the screen:
+            if fullscreen:
+                res = resList[-1]
+
+            properties.setSize(res[0], res[1])
+            properties.setFullscreen(fullscreen)
+            properties.setParentWindow(0)
+            sort = self.win.getSort()
+
+            if self.win:
+                currentProperties = WindowProperties(base.win.getProperties())
+                gsg = self.win.getGsg()
+            else:
+                currentProperties = WindowProperties.getDefault()
+                gsg = None
+            newProperties = WindowProperties(currentProperties)
+            newProperties.addProperties(properties)
+            if (gsg is None) or (currentProperties.getFullscreen() != newProperties.getFullscreen()) or (currentProperties.getParentWindow() != newProperties.getParentWindow()):
+                self.openMainWindow(props=properties, gsg=gsg, keepCamera=True)
+                self.graphicsEngine.openWindows()
+                self.disableShowbaseMouse()
+
+                from otp.nametag import NametagGlobals
+                NametagGlobals.setCamera(self.cam)
+                NametagGlobals.setMouseWatcher(self.mouseWatcherNode)
+            else:
+                self.win.requestProperties(properties)
+                self.graphicsEngine.renderFrame()
+
+            self.win.setSort(sort)
+            self.graphicsEngine.renderFrame()
+            self.graphicsEngine.renderFrame()
         self.disableShowbaseMouse()
         self.addCullBins()
         base.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
