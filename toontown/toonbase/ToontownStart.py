@@ -5,7 +5,9 @@ if __debug__:
     loadPrcFile('config/config_dev.prc')
 
 from otp.settings.Settings import Settings
-settings = Settings(ConfigVariableString('preferences-filename', 'preferences.gz').getValue())
+preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
+print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
+settings = Settings(preferencesFilename)
 res = settings.get('res', (1280, 720))
 fullscreen = settings.get('fullscreen', False)
 music = settings.get('music', True)
