@@ -2309,6 +2309,9 @@ def loadDNAFile(dnaStore, filename):
 def loadDNAFileAI(dnaStore, filename):
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
-    filename = '../RetroResources/' + filename
+    if __debug__:
+        filename = '../RetroResources/' + filename
+    else:
+        filename = '/' + filename
     dnaloader.getData().read(open(filename, 'r'))
     return dnaloader.getData()
