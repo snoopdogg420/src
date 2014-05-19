@@ -22,7 +22,7 @@ class SuitLeg:
         TFromSuitBuilding: 'FromSuitBuilding',
         TToSuitBuilding: 'ToSuitBuilding',
         TToToonBuilding: 'ToToonBuilding',
-        TToToonBuilding: 'FromCogHQ',
+        TFromCogHQ: 'FromCogHQ',
         TToCogHQ: 'ToCogHQ',
         TOff: 'Off'
     }
@@ -91,62 +91,51 @@ class SuitLegList:
         self.toToonBuilding = toToonBuilding
         self.legs = []
         # startTime, zoneId, blockNumber, pointA, pointB, type
-        # TODO: What is startTime used for?
         # TODO: What is blockNumber used for?
         startPoint = path.getPoint(0)
-        for edge in self.dnaStore.suitEdges[startPoint.getIndex()]:
-            if edge.getStartPoint() is startPoint:
-                print 'found start edge'
-                break
-        zoneId = edge.getZoneId()
-        self.legs.append(SuitLeg(0, zoneId, 0, startPoint, startPoint, SuitLeg.TFromSky))
+        zoneId = self.dnaStore.suitEdges[startPoint.getIndex()][0].getZoneId()
+        self.legs.append(SuitLeg(self.getStartTime(0), zoneId, 0, startPoint, startPoint, SuitLeg.TFromSky))
         for i in range(path.getNumPoints()):
             if not 0 < i < (path.getNumPoints()-1):
                 continue
             pointA = path.getPoint(i)
             pointB = path.getPoint(i + 1)
             zoneId = self.dnaStore.getSuitEdgeZone(pointA.getIndex(), pointB.getIndex())
-            if not zoneId:
-                print 'SuitLegList WARNING: Skipping suit edge for: {0}, {1}'.format(pointA.getIndex(), pointB.getIndex())
-                continue
-            self.legs.append(SuitLeg(0, zoneId, 0, pointA, pointB, SuitLeg.TWalk))
-        endPointA = path.getPoint(path.getNumPoints() - 2)
-        endPointB = path.getPoint(path.getNumPoints() - 1)
-        zoneId = self.dnaStore.getSuitEdgeZone(endPointA.getIndex(), endPointB.getIndex())
-        self.legs.append(SuitLeg(0, zoneId, 0, endPointB, endPointB, SuitLeg.TToSky))
+            self.legs.append(SuitLeg(self.getStartTime(i), zoneId, 0, pointA, pointB, SuitLeg.TWalk))
+        endPoint = path.getPoint(path.getNumPoints() - 1)
+        zoneId = self.dnaStore.suitEdges[endPoint.getIndex()][0].getZoneId()
+        self.legs.append(SuitLeg(self.getStartTime(path.getNumPoints() - 1), zoneId, 0, endPoint, endPoint, SuitLeg.TToSky))
 
     def getNumLegs(self):
         return len(self.legs)
 
     def getLeg(self, i):
-        if i < self.getNumLegs():
-            return self.legs[i]
+        return self.legs[i]
 
     def getType(self, i):
-        if i < self.getNumLegs():
-            return self.legs[i].getType()
+        return self.legs[i].getType()
 
     def getLegTime(self, i):
+        # TODO: The error-checking should only be temporary.
         if i < self.getNumLegs():
             return self.legs[i].getLegTime()
+        return 0
 
     def getZoneId(self, i):
-        if i < self.getNumLegs():
-            return self.legs[i].getZoneId()
+        return self.legs[i].getZoneId()
 
     def getBlockNumber(self, i):
-        if i < self.getNumLegs():
-            return self.legs[i].getBlockNumber()
+        return self.legs[i].getBlockNumber()
 
     def getPointA(self, i):
-        if i < self.getNumLegs():
-            return self.legs[i].getPointA()
+        return self.legs[i].getPointA()
 
     def getPointB(self, i):
-        if i < self.getNumLegs():
-            return self.legs[i].getPointB()
+        return self.legs[i].getPointB()
 
     def getStartTime(self, i):
+        # Accumulate the leg times until we find the leg time for this leg
+        # index.
         time = 0
         legIndex = 0
         while (legIndex < self.getNumLegs()) and (legIndex < i):
@@ -158,16 +147,10 @@ class SuitLegList:
         endTime = 0
         i = 0
         while i < startLeg:
-            try:
-                endTime += self.getLegTime(i)
-            except:
-                pass
+            endTime += self.getLegTime(i)
             i += 1
         while i < self.getNumLegs():
-            try:
-                endTime += self.getLegTime(i)
-            except:
-                pass
+            endTime += self.getLegTime(i)
             if endTime > time:
                 return i
             i += 1

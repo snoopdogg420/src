@@ -144,13 +144,18 @@ class DNAStorage:
         self.catalogCodes = {}
 
     def getSuitPath(self, startPoint, endPoint, minPathLen=10, maxPathLen=20):
-        startPointIndex = self.suitPoints.index(startPoint)
-        endPointIndex = self.suitPoints.index(endPoint)
-        points = self.suitPoints[startPointIndex:endPointIndex]
-        points = points[:maxPathLen]
-        if len(points) < minPathLen:
-            neededPoints = minPathLen - len(points)
-            points.extend(self.suitPoints[endPointIndex:(endPointIndex+neededPoints)])
+        points = [startPoint]
+        startIndex = startPoint.getIndex()
+        while True:
+            if startIndex not in self.suitEdges:
+                raise DNAError("Could not find path.")
+            edge = self.suitEdges[startIndex][0]
+            startIndex = edge.getEndPoint().getIndex()
+            points.append(self.getSuitPointWithIndex(startIndex))
+            if startIndex == endPoint.getIndex():
+                break
+            if len(points) == maxPathLen:
+                break
         path = DNASuitPath()
         for point in points:
             path.addPoint(point)
@@ -165,14 +170,12 @@ class DNAStorage:
         return distance / suitWalkSpeed
 
     def getSuitEdgeZone(self, startIndex, endIndex):
-        suitEdge = self.getSuitEdge(startIndex, endIndex)
-        if suitEdge:
-            return suitEdge.getZoneId()
+        self.getSuitEdge(startIndex, endIndex).getZoneId()
 
     def getAdjacentPoints(self, point):
         path = DNASuitPath()
         pointIndex = point.getIndex()
-        if pointIndex-1 > 0 and pointIndex-1 in self.suitPointMap:
+        if (pointIndex-1 > 0) and (pointIndex-1 in self.suitPointMap):
             path.addPoint(self.suitPointMap[pointIndex - 1])
         if pointIndex+1 in self.suitPointMap:
             path.addPoint(self.suitPointMap[pointIndex + 1])
@@ -223,17 +226,16 @@ class DNAStorage:
     def storeSuitEdge(self, startIndex, endIndex, zoneId):
         startPoint = self.getSuitPointWithIndex(startIndex)
         endPoint = self.getSuitPointWithIndex(endIndex)
-        if (startPoint is None) or (endPoint is None):
-            return
         edge = DNASuitEdge(startPoint, endPoint, zoneId)
         self.suitEdges.setdefault(startIndex, []).append(edge)
+        return edge
 
     def getSuitEdge(self, startIndex, endIndex):
-        if not startIndex in self.suitEdges:
-            return
-        for edge in self.suitEdges[startIndex]:
+        edges = self.suitEdges[startIndex]
+        for edge in edges:
             if edge.getEndPoint().getIndex() == endIndex:
                 return edge
+        return self.suitEdges[startIndex][0]  # TODO: Should this be able to occur?
 
     def removeBattleCell(self, cell):
         self.battleCells.remove(cell)
@@ -400,8 +402,7 @@ class DNASuitPath:
         return len(self.suitPoints)
 
     def getPointIndex(self, pointIndex):
-        if pointIndex < self.getNumPoints():
-            return self.suitPoints[pointIndex].getIndex()
+        return self.suitPoints[pointIndex].getIndex()
 
     def addPoint(self, point):
         self.suitPoints.append(point)
@@ -437,6 +438,9 @@ class DNASuitPoint:
                 pointTypeStr = k
         return 'DNASuitPoint index: ' + str(self.index) + ', pointType: ' + pointTypeStr + ', pos: ' + str(self.pos)
 
+    def setIndex(self, index):
+        self.index = index
+
     def getIndex(self):
         return self.index
 
@@ -454,9 +458,6 @@ class DNASuitPoint:
 
     def setGraphId(self, id):
         self.graphId = id
-
-    def setIndex(self, index):
-        self.index = index
 
     def setLandmarkBuildingIndex(self, index):
         self.landmarkBuildingIndex = index
@@ -571,17 +572,17 @@ class DNAVisGroup(DNAGroup):
     def getVisGroup(self):
         return self
 
-    def addBattleCell(self, cell):
-        self.battleCells += [cell]
+    def addBattleCell(self, battleCell):
+        self.battleCells.append(battleCell)
 
-    def addSuitEdge(self, edge):
-        self.suitEdges += [edge]
+    def addSuitEdge(self, suitEdge):
+        self.suitEdges.append(suitEdge)
 
     def addVisible(self, visible):
         self.visibles.append(visible)
 
-    def getBattleCell(self, index):
-        return self.battleCells[index]
+    def getBattleCell(self, i):
+        return self.battleCells[i]
 
     def getNumBattleCells(self):
         return len(self.battleCells)
@@ -592,11 +593,11 @@ class DNAVisGroup(DNAGroup):
     def getNumVisibles(self):
         return len(self.visibles)
 
-    def getSuitEdge(self, index):
-        return self.suitEdges[index]
+    def getSuitEdge(self, i):
+        return self.suitEdges[i]
 
-    def getVisibleName(self, index):
-        return self.visibles[index]
+    def getVisibleName(self, i):
+        return self.visibles[i]
 
     def removeBattleCell(self, cell):
         self.battleCells.remove(cell)
@@ -1801,8 +1802,9 @@ def p_signtextdef(p):
 p_signtextdef.__doc__ = '''signtextdef : TEXT'''
 
 def p_suitedge(p):
-    zoneId = p.parser.parentGroup.getName()
-    p.parser.dnaStore.storeSuitEdge(p[3], p[4], zoneId)
+    zoneId = int(p.parser.parentGroup.getName())
+    edge = p.parser.dnaStore.storeSuitEdge(p[3], p[4], zoneId)
+    p.parser.parentGroup.addSuitEdge(edge)
 p_suitedge.__doc__ = '''suitedge : SUIT_EDGE "[" number number "]"'''
 
 def p_battlecell(p):

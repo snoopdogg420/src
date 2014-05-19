@@ -62,8 +62,6 @@ logo = OnscreenImage(
 logo.setTransparency(TransparencyAttrib.MAlpha)
 logo.setBin('fixed', 20)
 logo.reparentTo(backgroundNodePath)
-# backgroundNodePath.find('**/fg').setBin('fixed', 20)
-# backgroundNodePath.find('**/fg').setScale(1 / (4.0/3.0), 1, 16.0 / 9.0)
 backgroundNodePath.find('**/bg').setBin('fixed', 10)
 base.graphicsEngine.renderFrame()
 DirectGuiGlobals.setDefaultRolloverSound(base.loadSfx('phase_3/audio/sfx/GUI_rollover.ogg'))
