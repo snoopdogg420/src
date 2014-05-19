@@ -10,11 +10,23 @@ print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
 settings = Settings(preferencesFilename)
 res = settings.get('res', (1280, 720))
 fullscreen = settings.get('fullscreen', False)
+if 'fullscreen' not in settings.all():
+    settings.add('fullscreen', fullscreen)
 music = settings.get('music', True)
+if 'music' not in settings.all():
+    settings.add('music', music)
 sfx = settings.get('sfx', True)
+if 'sfx' not in settings.all():
+    settings.add('sfx', sfx)
 toonChatSounds = settings.get('toonChatSounds', True)
+if 'toonChatSounds' not in settings.all():
+    settings.add('toonChatSounds', toonChatSounds)
 musicVol = settings.get('musicVol', 1.0)
+if 'musicVol' not in settings.all():
+    settings.add('musicVol', musicVol)
 sfxVol = settings.get('sfxVol', 1.0)
+if 'sfxVol' not in settings.all():
+    settings.add('sfxVol', sfxVol)
 loadPrcFileData('toonBase Settings Window Res', 'win-size %s %s' % (res[0], res[1]))
 loadPrcFileData('toonBase Settings Window FullScreen', 'fullscreen %s' % fullscreen)
 loadPrcFileData('toonBase Settings Music Active', 'audio-music-active %s' % music)

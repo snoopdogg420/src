@@ -35,6 +35,7 @@ class Settings:
     def get(self, key, default=None):
         if key in self.data:
             return self.data[key]
-        else:
-            self.add(key, default)
         return default
+
+    def all(self):
+        return self.data.keys()
