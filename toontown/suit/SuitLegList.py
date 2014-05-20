@@ -71,8 +71,9 @@ class SuitLeg:
         return self.pointB.getPos()
 
     def getPosAtTime(self, time):
-        pos = self.getPosB() - self.getPosA()
-        return self.getPosA() + (pos*(time/self.getLegTime()))
+        posA = self.getPosA()
+        posB = self.getPosB()
+        return posA + ((posB-posA) * (time/self.getLegTime()))
 
     def getType(self):
         return self.type
@@ -86,7 +87,8 @@ class SuitLeg:
 
 
 class SuitLegList:
-    def __init__(self, path, dnaStore, suitWalkSpeed, fromSky, toSky, fromSuitBuilding, toSuitBuilding, toToonBuilding):
+    def __init__(self, path, dnaStore, suitWalkSpeed, fromSky, toSky,
+            fromSuitBuilding, toSuitBuilding, toToonBuilding):
         self.path = path
         self.dnaStore = dnaStore
         self.suitWalkSpeed = suitWalkSpeed
@@ -98,19 +100,31 @@ class SuitLegList:
         self.legs = []
         # startTime, zoneId, blockNumber, pointA, pointB, type
         # TODO: What is blockNumber used for?
-        startPoint = path.getPoint(0)
-        zoneId = self.dnaStore.suitEdges[startPoint.getIndex()][0].getZoneId()
-        self.legs.append(SuitLeg(self.getStartTime(0), zoneId, 0, startPoint, startPoint, SuitLeg.TFromSky))
-        for i in range(path.getNumPoints()):
-            if not 0 < i < (path.getNumPoints()-1):
+        startPoint = self.path.getPoint(0)
+        startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
+        zoneId = startEdge.getZoneId()
+        startLeg = SuitLeg(
+            self.getStartTime(0), zoneId, 0, startPoint, startPoint,
+            SuitLeg.TFromSky)
+        self.legs.append(startLeg)
+        for i in range(self.path.getNumPoints()):
+            if not 0 < i < (self.path.getNumPoints()-1):
                 continue
-            pointA = path.getPoint(i)
-            pointB = path.getPoint(i + 1)
-            zoneId = self.dnaStore.getSuitEdgeZone(pointA.getIndex(), pointB.getIndex())
-            self.legs.append(SuitLeg(self.getStartTime(i), zoneId, 0, pointA, pointB, SuitLeg.TWalk))
-        endPoint = path.getPoint(path.getNumPoints() - 1)
-        zoneId = self.dnaStore.suitEdges[endPoint.getIndex()][0].getZoneId()
-        self.legs.append(SuitLeg(self.getStartTime(path.getNumPoints() - 1), zoneId, 0, endPoint, endPoint, SuitLeg.TToSky))
+            pointA = self.path.getPoint(i)
+            pointB = self.path.getPoint(i + 1)
+            zoneId = self.dnaStore.getSuitEdgeZone(
+                pointA.getIndex(), pointB.getIndex())
+            leg = SuitLeg(
+                self.getStartTime(i), zoneId, 0, pointA, pointB, SuitLeg.TWalk)
+            self.legs.append(leg)
+        endIndex = self.path.getNumPoints() - 1
+        endPoint = self.path.getPoint()
+        endEdge = self.dnaStore.suitEdges[endIndex][0]
+        zoneId = endEdge.getZoneId()
+        endLeg = SuitLeg(
+            self.getStartTime(endIndex), zoneId, 0, endPoint, endPoint,
+            SuitLeg.TToSky)
+        self.legs.append(endLeg)
 
     def getNumLegs(self):
         return len(self.legs)
@@ -122,10 +136,7 @@ class SuitLegList:
         return self.legs[i].getType()
 
     def getLegTime(self, i):
-        # TODO: The error-checking should only be temporary.
-        if i < self.getNumLegs():
-            return self.legs[i].getLegTime()
-        return 0
+        return self.legs[i].getLegTime()
 
     def getZoneId(self, i):
         return self.legs[i].getZoneId()
