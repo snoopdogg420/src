@@ -74,7 +74,7 @@ want-find-four #f
 
 # Core features...
 want-fishing #t
-want-housing #f
+want-housing #t
 want-pets #t
 want-karts #t
 want-parties #f

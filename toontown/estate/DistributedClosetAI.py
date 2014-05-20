@@ -3,9 +3,16 @@ from toontown.estate.DistributedFurnitureItemAI import DistributedFurnitureItemA
 
 class DistributedClosetAI(DistributedFurnitureItemAI):
     notify = DirectNotifyGlobal.directNotify.newCategory("DistributedClosetAI")
+    
+    def __init__(self, air, furnitureMgr, catalogItem, ownerId):
+        DistributedFurnitureItemAI.__init__(self, air, furnitureMgr, catalogItem)
+        self.ownerId = ownerId
 
-    def setOwnerId(self, todo0):
-        pass
+    def setOwnerId(self, ownerId):
+        self.ownerId = ownerId
+    
+    def getOwnerId(self):
+        return self.ownerId
 
     def enterAvatar(self):
         pass

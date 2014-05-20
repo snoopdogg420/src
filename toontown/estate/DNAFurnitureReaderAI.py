@@ -7,7 +7,6 @@ from toontown.catalog import CatalogItem
 DNA2Furniture = {
     'house_interiorA': None,
     'GardenA': None,
-
     'chairA': 100,
     'chair': 110,
     'regular_bed': 200,
@@ -29,7 +28,6 @@ DNA2Furniture = {
     'bookcase_low': 1130,
     'ending_table': 1200,
     'jellybeanBank': 1300,
-
 }
 
 class DNAFurnitureReaderAI:
@@ -69,8 +67,9 @@ class DNAFurnitureReaderAI:
 
             x, y, z = child.getPos()
             h, p, r = child.getHpr()
+
             self.itemList.append(CatalogFurnitureItem(itemId,
-                                                      posHpr=(x, y, z, h, p, r)))
+                                                      posHpr=(x, y, z, h, 0, 0)))
 
     def getList(self):
         if not self.itemList:

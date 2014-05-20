@@ -5,6 +5,13 @@ from toontown.catalog import CatalogItem
 from toontown.catalog.CatalogFurnitureItem import CatalogFurnitureItem
 from toontown.toonbase import ToontownGlobals
 from DistributedFurnitureItemAI import DistributedFurnitureItemAI
+from DistributedBankAI import DistributedBankAI
+from DistributedClosetAI import DistributedClosetAI
+
+furnitureId2Do = {
+    500: DistributedClosetAI,
+    1300: DistributedBankAI
+}
 
 class FurnitureError(Exception):
     def __init__(self, code):
@@ -85,10 +92,16 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
         self.items = []
 
         for item in items:
-            do = DistributedFurnitureItemAI(self.air, self, item)
-            if self.isGenerated():
-                do.generateWithRequired(self.zoneId)
-            self.items.append(do)
+            if item.furnitureType in furnitureId2Do:
+                do = furnitureId2Do[item.furnitureType](self.air, self, item, self.ownerId)
+                if self.isGenerated():
+                    do.generateWithRequired(self.zoneId)
+                self.items.append(do)
+            else:
+                do = DistributedFurnitureItemAI(self.air, self, item)
+                if self.isGenerated():
+                    do.generateWithRequired(self.zoneId)
+                self.items.append(do)
 
     def getItems(self):
         items = CatalogItemList(store=CatalogItem.Customization|CatalogItem.Location)
