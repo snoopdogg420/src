@@ -24,7 +24,7 @@ class PetNameGenerator:
         if AppRunnerGlobal.appRunner:
             searchPath.appendDirectory(Filename.expandFrom('$TT_3_ROOT/phase_3/etc'))
         else:
-            searchPath.appendDirectory(Filename('phase_3/etc'))
+            searchPath.appendDirectory(Filename('/phase_3/etc'))
             if os.path.expandvars('$TOONTOWN') != '':
                 searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('$TOONTOWN/src/configfiles')))
             else:
@@ -33,7 +33,7 @@ class PetNameGenerator:
         if __debug__:
             filename = '../RetroResources/phase_3/etc/'+TTLocalizer.PetNameMaster
         else:
-            filename = 'phase_3/etc/'+TTLocalizer.PetNameMaster
+            filename = '/phase_3/etc/'+TTLocalizer.PetNameMaster
         input = open(filename, 'r')
         if not input:
             self.notify.error('PetNameGenerator: Error opening name list text file.')
