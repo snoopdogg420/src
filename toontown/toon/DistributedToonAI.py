@@ -4598,6 +4598,13 @@ def maxToon(missingTrack=None):
 
     return 'Maxed your Toon!'
 
+@magicWord(category=CATEGORY_ADMINISTRATOR)
+def unlocks():
+    """
+    Unlocks teleport access, emotions, and pet phrases.
+    """
+    return 'Not implemented.'  # TODO: Too lazy to finish this right now.
+
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, str])
 def sos(count, name):
     """

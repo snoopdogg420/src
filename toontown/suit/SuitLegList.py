@@ -46,6 +46,12 @@ class SuitLeg:
             return SuitTimings.fromSky
         elif self.getType() == SuitLeg.TToSky:
             return SuitTimings.toSky
+        elif self.getType() == SuitLeg.TFromSuitBuilding:
+            return SuitTimings.fromSuitBuilding
+        elif self.getType() == SuitLeg.TToSuitBuilding:
+            return SuitTimings.toSuitBuilding
+        elif self.getType() == SuitLeg.TToToonBuilding:
+            return SuitTimings.toToonBuilding
         else:
             return (self.getPosA()-self.getPosB()).length() / ToontownGlobals.SuitWalkSpeed
 
