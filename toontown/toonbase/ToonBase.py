@@ -32,42 +32,51 @@ class ToonBase(OTPBase.OTPBase):
         OTPBase.OTPBase.__init__(self)
         # If we don't have a resolution defined, choose an optimal default
         # resolution:
+        self.resList = []
+        displayInfo = self.pipe.getDisplayInformation()
+        for i in range(displayInfo.getTotalDisplayModes()):
+            width = displayInfo.getDisplayModeWidth(i)
+            height = displayInfo.getDisplayModeHeight(i)
+            if (width, height) not in self.resList:
+                self.resList.append((width, height))
+
+        # Separate the resolutions:
+        self.resList16x9 = []
+        self.resList5x3 = []
+        self.resList16x10 = []
+        self.resList4x3  = []
+        for res in self.resList:
+            if round(float(res[0])/float(res[1]), 2) == round(16.0/9.0, 2):
+                self.resList16x9.append(res)
+        for res in self.resList:
+            if round(float(res[0])/float(res[1]), 2) == round(5.0/3.0, 2):
+                self.resList5x3.append(res)
+        for res in self.resList:
+            if round(float(res[0])/float(res[1]), 2) == round(16.0/10.0, 2):
+                self.resList16x10.append(res)
+        for res in self.resList:
+            if round(float(res[0])/float(res[1]), 2) == round(4.0/3.0, 2):
+                self.resList4x3.append(res)
+
+        # Next, if we are fullscreen, or we don't have a resolution defined in
+        # our preferences, choose the best resolution and reload the graphics
+        # pipe:
         fullscreen = self.settings.get('fullscreen', False)
         if ('res' not in self.settings.all()) or fullscreen:
-            resList = []
-            displayInfo = self.pipe.getDisplayInformation()
-            for i in range(displayInfo.getTotalDisplayModes()):
-                width = displayInfo.getDisplayModeWidth(i)
-                height = displayInfo.getDisplayModeHeight(i)
-                if (width, height) not in resList:
-                    resList.append((width, height))
-
-            # Separate the 16:9 aspect ratios from the 4:3 aspect ratios:
-            resList16x9 = []
-            resList16x10 = []
-            resList4x3  = []
-            for res in resList:
-                if round(float(res[0])/float(res[1]), 2) == round(16.0/9.0, 2):
-                    resList16x9.append(res)
-            for res in resList:
-                if round(float(res[0])/float(res[1]), 2) == round(16.0/10.0, 2):
-                    resList16x10.append(res)
-            for res in resList:
-                if round(float(res[0])/float(res[1]), 2) == round(4.0/3.0, 2):
-                    resList4x3.append(res)
-
             # It appears that with every aspect ratio, besides 4:3, the second
             # largest resolution looks best. With 4:3, we use the second
             # smallest so that the window doesn't go outside the user's
             # perspective. If we only have one resolution in any of these
             # resolution lists, we must assume that this is the user's native
             # screen resolution.
-            if len(resList16x9) > 1:  # We have 16:9 support, use it.
-                res = resList16x9[-2]
-            elif len(resList16x10) > 1:  # We have 16:10 support, use it.
-                resList = resList16x10[-2]
+            if len(self.resList16x9) > 1:  # We have 16:9 support, use it.
+                res = self.resList16x9[-2]
+            elif len(self.resList5x3) > 1:  # We have 5:3 support, use it.
+                res = self.resList5x3[-2]
+            elif len(self.resList16x10) > 1:  # We have 16:10 support, use it.
+                res = self.resList16x10[-2]
             else:  # Otherwise, default to a 4:3 ratio.
-                res = resList4x3[1]
+                res = self.resList4x3[1]
             self.settings.set('res', res)
 
             # Now, reload the graphics pipe:
@@ -75,15 +84,17 @@ class ToonBase(OTPBase.OTPBase):
 
             # If we're in fullscreen mode, we'll want to fit to the screen:
             if fullscreen:
-                res = resList[-1]
+                res = self.resList[-1]
 
             properties.setSize(res[0], res[1])
             properties.setFullscreen(fullscreen)
             properties.setParentWindow(0)
+
+            # Store the window sort for later:
             sort = self.win.getSort()
 
             if self.win:
-                currentProperties = WindowProperties(base.win.getProperties())
+                currentProperties = WindowProperties(self.win.getProperties())
                 gsg = self.win.getGsg()
             else:
                 currentProperties = WindowProperties.getDefault()
@@ -107,9 +118,9 @@ class ToonBase(OTPBase.OTPBase):
             self.graphicsEngine.renderFrame()
         self.disableShowbaseMouse()
         self.addCullBins()
-        base.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
+        self.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
         self.toonChatSounds = self.config.GetBool('toon-chat-sounds', 1)
-        self.placeBeforeObjects = config.GetBool('place-before-objects', 1)
+        self.placeBeforeObjects = self.config.GetBool('place-before-objects', 1)
         self.endlessQuietZone = False
         self.wantDynamicShadows = 0
         self.exitErrorCode = 0
