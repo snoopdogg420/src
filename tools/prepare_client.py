@@ -3,6 +3,7 @@ import os
 from pandac.PandaModules import *
 import shutil
 import subprocess
+import hashlib
 
 import pytz
 
@@ -158,6 +159,31 @@ ZONEINFO = %r'''
 with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
     f.write(gameData % (configData, dcData, zoneInfo))
 
+
+def getDirectoryMD5Hash(directory):
+    def _updateChecksum(checksum, dirname, filenames):
+        for filename in sorted(filenames):
+            path = os.path.join(dirname, filename)
+            if os.path.isfile(path):
+                fh = open(path, 'rb')
+                while True:
+                    buf = fh.read(4096)
+                    if not buf:
+                        break
+                    checksum.update(buf)
+                fh.close()
+    checksum = hashlib.md5()
+    directory = os.path.normpath(directory)
+    if os.path.exists(directory):
+        if os.path.isdir(directory):
+            os.path.walk(directory, _updateChecksum, checksum)
+        elif os.path.isfile(directory):
+            _updateChecksum(
+                checksum, os.path.dirname(directory),
+                os.path.basename(directory))
+    return checksum.hexdigest()
+
+
 # We have all of the code gathered together. Let's create the multifiles now:
 if args.build_mfs:
     print 'Building multifiles...'
@@ -166,26 +192,27 @@ if args.build_mfs:
         os.mkdir(dest)
     dest = os.path.realpath(dest)
     os.chdir(args.resources_dir)
-    if not os.path.exists('last-modified.dat'):
-        with open('last-modified.dat', 'w') as f:
-            f.write('MODIFIED = {}')
-    with open('last-modified.dat', 'r') as f:
+    if not os.path.exists('local-patcher.ver'):
+        with open('local-patcher.ver', 'w') as f:
+            f.write('RESOURCES = {}')
+    with open('local-patcher.ver', 'r') as f:
         exec(f.read())
     for phase in os.listdir('.'):
         if not phase.startswith('phase_'):
             continue
         if not os.path.isdir(phase):
             continue
-        if phase in MODIFIED:
-            if MODIFIED[phase] == int(os.path.getmtime(phase)):
+        phaseMd5 = getDirectoryMD5Hash(phase)
+        if phase in RESOURCES:
+            if RESOURCES[phase] == phaseMd5:
                 continue
         filename = phase + '.mf'
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
         os.system('multify -c -f {0} {1}'.format(filepath, phase))
-        if phase not in MODIFIED:
-            MODIFIED[phase] = int(os.path.getmtime(phase))
-    with open('last-modified.dat', 'w') as f:
-        f.write('MODIFIED = %r' % MODIFIED)
+        if phase not in RESOURCES:
+            RESOURCES[phase] = phaseMd5
+    with open('local-patcher.ver', 'w') as f:
+        f.write('RESOURCES = %r' % RESOURCES)
 
 print 'Done preparing the client.'
