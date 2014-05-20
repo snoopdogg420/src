@@ -8,7 +8,7 @@ class ChatBalloon:
     MIN_HEIGHT = 1.0
     BUBBLE_PADDING = 0.4
     BUBBLE_PADDING_PROP = 0.05
-    BUTTON_SCALE = 8
+    BUTTON_SCALE = 10
     BUTTON_SHIFT = (-0.2, 0, 0.6)
 
     def __init__(self, model):
@@ -55,9 +55,10 @@ class ChatBalloon:
         # Give the chat bubble a button, if one is requested:
         if button:
             np = button.copyTo(root)
-            np.setPos(t, width, 0, -height)
+            np.setPos(t, width - bubblePadding, 0, -height + bubblePadding)
             np.setPos(np, self.BUTTON_SHIFT)
             np.setScale(self.BUTTON_SCALE)
+            t.setZ(t, bubblePadding * 2)
 
         if width < self.MIN_WIDTH:
             width = self.MIN_WIDTH
@@ -65,9 +66,11 @@ class ChatBalloon:
             t.node().setAlign(TextNode.ACenter)
 
         # Set the balloon's size:
-        width *= 1+self.BUBBLE_PADDING_PROP
+        width *= 1 + self.BUBBLE_PADDING_PROP
         width += bubblePadding
         balloon.setSx(width/self.NATIVE_WIDTH)
+        if button:
+            height += bubblePadding * 2
         middle.setSz(height)
         top.setZ(top, height-1)
 
