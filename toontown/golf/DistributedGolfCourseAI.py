@@ -457,13 +457,13 @@ class DistributedGolfCourseAI(DistributedObjectAI.DistributedObjectAI, FSM):
                     aimTime = self.aimTimes[avId]
                 aimTimesList[aimIndex] = aimTime
             aimIndex += 1
-        self.sendUpdate(
-            'setReward', [
-                trophiesList, self.rankings, holeBestList, courseBestList,
-                cupList, self.winnerByTieBreak, aimTimesList[0],
-                aimTimesList[1], aimTimesList[2], aimTimesList[3]
-            ]
-        )
+        #self.sendUpdate(
+        #    'setReward', [
+        #        trophiesList, self.rankings, holeBestList, courseBestList,
+        #        cupList, self.winnerByTieBreak, aimTimesList[0],
+        #        aimTimesList[1], aimTimesList[2], aimTimesList[3]
+        #    ]
+        #)
 
         def allAvatarsRewarded(self = self):
             self.notify.debug('GOLF COURSE: all avatars rewarded')
