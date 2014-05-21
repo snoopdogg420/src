@@ -4846,7 +4846,7 @@ def gmIcon(accessLevel=None):
             return 'Your GM icon has been disabled for this session!'
         return "{0}'s GM icon has been disabled for this session!".format(target.getName())
     else:
-        target._gmDsiabled = False
+        target._gmDisabled = False
         if accessLevel is None:
             accessLevel = target.getAdminAccess()
         if accessLevel != target.getGMType():
