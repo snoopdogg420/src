@@ -4127,26 +4127,28 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def setAwardNotify(self, awardNotify):
         self.awardNotify = awardNotify
 
-    def b_setGM(self, type):
-        self.sendUpdate('setGM', [type])
-        self.setGM(type)
+    def b_setGM(self, gmType):
+        if (gmType < CATEGORY_USER.defaultAccess) and (gmType != 0):
+            gmType = self.getGMType()
+        self.sendUpdate('setGM', [gmType])
+        self.setGM(gmType)
 
-    def setGM(self, type):
-        wasGM = self._isGM
-        formerType = self._gmType
-        self._isGM = type != 0
+    def setGM(self, gmType):
+        if (gmType < CATEGORY_USER.defaultAccess) and (gmType != 0):
+            gmType = self.getGMType()
+        self._isGM = gmType != 0
         self._gmType = None
         if self._isGM:
-            self._gmType = type - 1
-            MaxGMType = len(TTLocalizer.GM_NAMES) - 1
-            if self._gmType > MaxGMType:
-                self.notify.warning('toon %s has invalid GM type: %s' % (self.doId, self._gmType))
-                self._gmType = MaxGMType
-        #self._updateGMName(formerType)
-        return
+            self._gmType = gmType
 
     def isGM(self):
         return self._isGM
+
+    def getGMType(self):
+        gmType = self._gmType
+        if (gmType < CATEGORY_USER.defaultAccess) and (gmType != 0):
+            gmType = self.getAdminAccess()
+        return gmType
 
     def _nameIsPrefixed(self, prefix):
         if len(self.name) > len(prefix):
@@ -4823,23 +4825,46 @@ def ban():
         return "You can't ban yourself!"
     return 'Not implemented.'
 
-@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
-def gmIcon():
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[int])
+def gmIcon(accessLevel=None):
     """
-    Toggles the invoker's GM icon.
+    Toggles the target's GM icon. If an access level is provided, however, the
+    target's GM icon will be overridden.
     """
     invoker = spellbook.getInvoker()
-    access = spellbook.getInvokerAccess()
-    if invoker.isGM():
-        invoker.b_setGM(0)
-        return 'Your GM icon is now disabled!'
+    target = spellbook.getTarget()
+    invokerAccess = spellbook.getInvokerAccess()
+    if invokerAccess != CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess:
+        if accessLevel is not None:
+            return "You must be of a higher access level to override your GM icon."
+        target = spellbook.getInvoker()
+    target.sendUpdate('setGM', [0])
+    if target.isGM() and (accessLevel is None):
+        if target == invoker:
+            return 'Your GM icon has been disabled for this session!'
+        return "{0}'s GM icon has been disabled for this session!".format(target.getName())
     else:
-        # TODO: Implement the correct GM icons.
-        if access >= 400:
-            invoker.b_setGM(2)
-        elif access >= 200:
-            invokeer.b_setGM(3)
-        return 'Your GM icon is now enabled!'
+        if accessLevel is None:
+            accessLevel = target.getAdminAccess()
+        if accessLevel != target.getGMType():
+            if invokerAccess != CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess:
+                accessLevel = target.getGMType()
+        if accessLevel not in (0,
+                               CATEGORY_COMMUNITY_MANAGER.defaultAccess,
+                               CATEGORY_MODERATOR.defaultAccess,
+                               CATEGORY_CREATIVE.defaultAccess,
+                               CATEGORY_PROGRAMMER.defaultAccess,
+                               CATEGORY_ADMINISTRATOR.defaultAccess,
+                               CATEGORY_SYSTEM_ADMINISTRATOR.defaultAccess):
+            return 'Invalid access level!'
+        target.b_setGM(accessLevel)
+        if accessLevel == target.getAdminAccess():
+            if target == invoker:
+                return 'Your GM icon is now enabled!'
+            return "{0}'s GM icon is now enabled!".format(target.getName())
+        if target == invoker:
+            return 'Your GM icon has been set to: {0}'.format(accessLevel)
+        return "{0}'s GM icon has been set to: {1}".format(target.getName(), accessLevel)
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def ghost():
