@@ -66,6 +66,27 @@ want-donald-dreamland #f
 want-chip-and-dale #f
 want-goofy #f
 
+# Minigames...
+want-minigames #t
+want-race-game #t
+want-cannon-game #t
+want-tag-game #t
+want-pattern-game #t
+want-ring-game #t
+want-maze-game #t
+want-tug-game #t
+want-catch-game #t
+want-diving-game #t
+want-target-game #t
+want-pairing-game #t
+want-vine-game #t
+want-ice-game #t
+want-thief-game #t
+want-2d-game #t
+want-photo-game #t
+want-travel-game #f
+force-minigame 0
+
 # Picnic table board games...
 want-game-tables #t
 want-checkers #t
@@ -88,6 +109,7 @@ show-total-population #t
 want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
+want-long-pattern-game #t
 
 # Developer options...
 want-dev #f

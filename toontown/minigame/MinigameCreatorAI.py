@@ -155,50 +155,52 @@ def minigame(command, arg0=None):
     """
     command = command.lower()
     invoker = spellbook.getInvoker()
-    if (arg0 is None) and (command not in ('abort',)):
-        return 'Missing second argument!'
+    if (arg0 is None) and (command not in ('remove', 'abort')):
+        return '~minigame {0} takes exactly 1 argument (0 given)'.format(command)
+    elif arg0 and (command in ('remove', 'abort')):
+        return '~minigame {0} takes no arguments (1 given)'.format(command)
     if command == 'request':
         for name in ToontownGlobals.MinigameNames:
-            if arg0.lower() == name:
-                RequestMinigame[invoker.doId] = (
-                    ToontownGlobals.MinigameNames[name], False, None, None)
-                return 'Your request for {0} was added.'.format(arg0)
-        return 'Your request for {0} could not be added.'.format(arg0)
+            if arg0.lower() != name:
+                continue
+            name = ToontownGlobals.MinigameNames[name]
+            RequestMinigame[invoker.doId] = (name, False, None, None)
+            return 'Stored your request for minigame: {0}'.format(arg0)
+        return "Couldn't store your request for minigame: {0}".format(arg0)
     if command == 'force':
         for name in ToontownGlobals.MinigameNames:
-            if arg0.lower() == name:
-                RequestMinigame[invoker.doId] = (
-                    ToontownGlobals.MinigameNames[name], True, None, None)
-                return 'The minigame {0} is not being forced.'.format(arg0)
-        return "Couldn't force minigame: {0}".format(arg0)
+            if arg0.lower() != name:
+                break
+            name = ToontownGlobals.MinigameNames[name]
+            RequestMinigame[invoker.doId] = (name, True, None, None)
+            return 'Stored your force request for minigame: {0}'.format(arg0)
+        return "Couldn't store your force request for minigame: {0}".format(arg0)
     if command == 'remove':
         if invoker.doId in RequestMinigame:
             del RequestMinigame[invoker.doId]
-            return 'Your trolley game request has been removed.'
-        return 'You have no trolley game requests!'
+            return 'Your minigame request has been removed.'
+        return 'You have no minigame requests!'
     if command == 'difficulty':
         if invoker.doId not in RequestMinigame:
-            return 'You have no trolley game requests!'
+            return 'You have no minigame requests!'
         try:
             arg0 = int(arg0)
         except:
-            return 'Argument 0 must be an integer, got type: {0}'.format(type(arg0))
+            return 'Argument 0 must be of type: {0}'.format(int)
         request = RequestMinigame[invoker.doId]
-        newRequest = request[:2] + arg0 + request[3:]
-        RequestMinigame[invoker.doId] = newRequest
-        return 'You request for minigame difficulty {0} was added.'.format(arg0)
+        RequestMinigame[invoker.doId] = request[:2] + (arg0,) + request[3:]
+        return 'Stored your request for the minigame difficulty: {0}'.format(arg0)
     if command == 'safezone':
         if invoker.doId not in RequestMinigame:
-            return 'You have no trolley game requests!'
+            return 'You have no minigame requests!'
         try:
             arg0 = int(arg0)
         except:
-            return 'Second argument must be an integer.'
+            return 'Argument 0 must be of type: {0}'.format(int)
         request = RequestMinigame[invoker.doId]
-        newRequest = request[:3] + arg0 + request[4:]
-        RequestMinigame[invoker.doId] = newRequest
-        return 'You request for minigame safezone {0} was added.'.format(arg0)
-    elif command == 'abort':
+        RequestMinigame[invoker.doId] = request[:3] + (arg0,) + request[4:]
+        return 'Stored your request for the minigame safezone: {0}'.format(arg0)
+    if command == 'abort':
         for do in simbase.air.doId2do.values():
             if not isinstance(do, DistributedMinigameAI.DistributedMinigameAI):
                 continue
@@ -206,4 +208,5 @@ def minigame(command, arg0=None):
                 continue
             do.setGameAbort()
             return 'Skipped minigame!'
+        return 'You are not currently in a minigame!'
     return 'Invalid command.'
