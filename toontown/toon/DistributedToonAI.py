@@ -231,6 +231,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.modulelist = ModuleListAI.ModuleList()
         self._dbCheckDoLater = None
         self.teleportOverride = 0
+        self._gmDisabled = False
         return
 
     def generate(self):
@@ -4142,7 +4143,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self._gmType = gmType
 
     def isGM(self):
-        return self._isGM
+        return (self._isGM and (not self._gmDisabled))
 
     def getGMType(self):
         gmType = self._gmType
@@ -4840,10 +4841,12 @@ def gmIcon(accessLevel=None):
         target = spellbook.getInvoker()
     target.sendUpdate('setGM', [0])
     if target.isGM() and (accessLevel is None):
+        target._gmDisabled = True
         if target == invoker:
             return 'Your GM icon has been disabled for this session!'
         return "{0}'s GM icon has been disabled for this session!".format(target.getName())
     else:
+        target._gmDsiabled = False
         if accessLevel is None:
             accessLevel = target.getAdminAccess()
         if accessLevel != target.getGMType():
