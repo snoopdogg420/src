@@ -12,6 +12,7 @@ import time
 from otp.chat.TalkGlobals import *
 from otp.chat.ChatGlobals import *
 from otp.nametag.NametagConstants import CFSpeech, CFTimeout, CFThought
+from toontown.toon.DistributedSmartNPC import DistributedSmartNPC
 ThoughtPrefix = '.'
 
 class TalkAssistant(DirectObject.DirectObject):
@@ -613,10 +614,10 @@ class TalkAssistant(DirectObject.DirectObject):
     def sendOpenTalk(self, message):
         error = None
         doId = base.localAvatar.doId
-        #This is for the smart NPC
-        if base.localAvatar.zoneId == 2000:
-            base.cr.doFind('Talkative Tyler').sendUpdate('talkMessage', [doId, message])
-            print 'sent update'
+        if base.config.GetBool('want-talkative-tyler', False):
+            if base.localAvatar.zoneId == 2000:
+                for do in base.cr.doFindAllInstances(DistributedSmartNPC):
+                    do.sendUpdate('talkMessage', [doId, message])
         if base.cr.wantMagicWords and len(message) > 0 and message[0] == '~':
             messenger.send('magicWord', [message])
             self.receiveDeveloperMessage(message)
@@ -629,10 +630,7 @@ class TalkAssistant(DirectObject.DirectObject):
         return error
 
     def sendWhisperTalk(self, message, receiverAvId):
-        # This is TT specific... which goes against all things OTP. But oh well.
-        # Route through the TTRFMUD.
         base.cr.ttrFriendsManager.sendUpdate('sendTalkWhisper', [receiverAvId, message])
-        return None
 
     def sendAccountTalk(self, message, receiverAccount):
         error = None
