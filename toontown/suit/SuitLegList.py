@@ -1,5 +1,5 @@
 from toontown.toonbase import ToontownGlobals
-import SuitTimings
+
 
 class SuitLeg:
     TWalkFromStreet = 0
@@ -42,18 +42,8 @@ class SuitLeg:
         return self.startTime
 
     def getLegTime(self):
-        if self.getType() == SuitLeg.TFromSky:
-            return SuitTimings.fromSky
-        elif self.getType() == SuitLeg.TToSky:
-            return SuitTimings.toSky
-        elif self.getType() == SuitLeg.TFromSuitBuilding:
-            return SuitTimings.fromSuitBuilding
-        elif self.getType() == SuitLeg.TToSuitBuilding:
-            return SuitTimings.toSuitBuilding
-        elif self.getType() == SuitLeg.TToToonBuilding:
-            return SuitTimings.toToonBuilding
-        else:
-            return (self.getPosA()-self.getPosB()).length() / ToontownGlobals.SuitWalkSpeed
+        distance = (self.getPosB() - self.getPosA()).length()
+        return distance / ToontownGlobals.SuitWalkSpeed
 
     def getBlockNumber(self):
         return self.blockNumber
@@ -79,11 +69,10 @@ class SuitLeg:
         return self.type
 
     @staticmethod
-    def getTypeName(type):
-        if type in SuitLeg.TypeToName:
-            return SuitLeg.TypeToName[type]
-        else:
-            return '**invalid**'
+    def getTypeName(legType):
+        if legType in SuitLeg.TypeToName:
+            return SuitLeg.TypeToName[legType]
+        return '**invalid**'
 
 
 class SuitLegList:
@@ -98,7 +87,7 @@ class SuitLegList:
         self.toSuitBuilding = toSuitBuilding
         self.toToonBuilding = toToonBuilding
         self.legs = []
-        # startTime, zoneId, blockNumber, pointA, pointB, type
+        # SuitLeg.__init__(startTime, zoneId, blockNumber, pointA, pointB, type)
         # TODO: What is blockNumber used for?
         startPoint = self.path.getPoint(0)
         startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
@@ -108,18 +97,19 @@ class SuitLegList:
             SuitLeg.TFromSky)
         self.legs.append(startLeg)
         for i in range(self.path.getNumPoints()):
-            if not 0 < i < (self.path.getNumPoints()-1):
+            if not 0 < i < (self.path.getNumPoints() - 1):
                 continue
             pointA = self.path.getPoint(i)
             pointB = self.path.getPoint(i + 1)
             zoneId = self.dnaStore.getSuitEdgeZone(
                 pointA.getIndex(), pointB.getIndex())
             leg = SuitLeg(
-                self.getStartTime(i), zoneId, 0, pointA, pointB, SuitLeg.TWalk)
+                self.getStartTime(i), zoneId, 0, pointA, pointB,
+                SuitLeg.TWalk)
             self.legs.append(leg)
         endIndex = self.path.getNumPoints() - 1
-        endPoint = self.path.getPoint()
-        endEdge = self.dnaStore.suitEdges[endIndex][0]
+        endPoint = self.path.getPoint(endIndex)
+        endEdge = self.dnaStore.suitEdges[endPoint.getIndex()][0]
         zoneId = endEdge.getZoneId()
         endLeg = SuitLeg(
             self.getStartTime(endIndex), zoneId, 0, endPoint, endPoint,
@@ -129,58 +119,72 @@ class SuitLegList:
     def getNumLegs(self):
         return len(self.legs)
 
-    def getLeg(self, i):
-        return self.legs[i]
+    def getLeg(self, index):
+        return self.legs[index]
 
-    def getType(self, i):
-        return self.legs[i].getType()
+    def getType(self, index):
+        return self.legs[index].getType()
 
-    def getLegTime(self, i):
-        return self.legs[i].getLegTime()
+    def getLegTime(self, index):
+        if self.getType(index) == SuitLeg.TFromSky:
+            return self.fromSky
+        if self.getType(index) == SuitLeg.TToSky:
+            return self.toSky
+        if self.getType(index) == SuitLeg.TFromSuitBuilding:
+            return self.fromSuitBuilding
+        if self.getType(index) == SuitLeg.TToSuitBuilding:
+            return self.toSuitBuilding
+        if self.getType(index) == SuitLeg.TToToonBuilding:
+            return self.toToonBuilding
+        return self.legs[index].getLegTime()
 
-    def getZoneId(self, i):
-        return self.legs[i].getZoneId()
+    def getZoneId(self, index):
+        return self.legs[index].getZoneId()
 
-    def getBlockNumber(self, i):
-        return self.legs[i].getBlockNumber()
+    def getBlockNumber(self, index):
+        return self.legs[index].getBlockNumber()
 
-    def getPointA(self, i):
-        return self.legs[i].getPointA()
+    def getPointA(self, index):
+        return self.legs[index].getPointA()
 
-    def getPointB(self, i):
-        return self.legs[i].getPointB()
+    def getPointB(self, index):
+        return self.legs[index].getPointB()
 
-    def getStartTime(self, i):
-        # Accumulate the leg times until we find the leg time for this leg
-        # index.
-        time = 0
+    def getStartTime(self, index):
+        startTime = 0
         legIndex = 0
-        while (legIndex < self.getNumLegs()) and (legIndex < i):
-            time += self.getLegTime(legIndex)
+        while (legIndex < self.getNumLegs()) and (legIndex < index):
+            startTime += self.getLegTime(legIndex)
             legIndex += 1
-        return time
+        return startTime
 
     def getLegIndexAtTime(self, time, startLeg):
-        endTime = 0
-        i = 0
-        while i < startLeg:
-            endTime += self.getLegTime(i)
-            i += 1
-        while i < self.getNumLegs():
-            endTime += self.getLegTime(i)
-            if endTime > time:
-                return i
-            i += 1
+        legIndex = startLeg
+        while legIndex < self.getNumLegs():
+            startTime = self.getStartTime(legIndex)
+            endTime = startTime + self.getLegTime(legIndex)
+            if startTime <= time < endTime:
+                return legIndex
+            legIndex += 1
         return self.getNumLegs() - 1
 
-    def isPointInRange(self, point, lo, hi):
+    def isPointInRange(self, point, lowTime, highTime):
+        # Check if this point is in the provided time range:
         pointIndex = point.getIndex()
-        if self.getLegIndexAtTime(lo, 0) > self.getLegIndexAtTime(hi, pointIndex):
-            return 0
-        return 1
+        startLegIndex = self.getLegIndexAtTime(lowTime, 0)
+        endLegIndex = self.getLegIndexAtTime(highTime, pointIndex)
+        for leg in self.legs[startLegIndex:endLegIndex + 1]:
+            if leg.getPointA().getIndex() == pointIndex:
+                return 1
+            if leg.getPointB().getIndex() == pointIndex:
+                return 1
+        return 0
 
     def getFirstLegType(self):
         return self.getType(0)
+
+    def getNextLegType(self, index):
+        return self.getType(index + 1)
 
     def getLastLegType(self):
         return self.getType(self.getNumLegs() - 1)

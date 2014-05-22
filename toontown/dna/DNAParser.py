@@ -146,13 +146,20 @@ class DNAStorage:
     def getSuitPath(self, startPoint, endPoint, minPathLen=10, maxPathLen=20):
         points = [startPoint]
         startIndex = startPoint.getIndex()
+        reachedEnd = False
         while True:
             if startIndex not in self.suitEdges:
                 raise DNAError("Could not find path.")
             edge = self.suitEdges[startIndex][0]
             startIndex = edge.getEndPoint().getIndex()
-            points.append(self.getSuitPointWithIndex(startIndex))
-            if startIndex == endPoint.getIndex():
+            point = self.getSuitPointWithIndex(startIndex)
+            if point.getPointType() != DNASuitPoint.pointTypeMap['STREET_POINT']:
+                continue
+            points.append(point)
+            if (startIndex == endPoint.getIndex()) or reachedEnd:
+                reachedEnd = True
+                if len(points) < minPathLen:
+                    continue
                 break
             if len(points) == maxPathLen:
                 break
