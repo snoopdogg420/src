@@ -385,7 +385,6 @@ class Street(BattlePlace.BattlePlace):
                     self.visInterestHandle = base.cr.addInterest(base.localAvatar.defaultShard, self.visZones, 'streetVis')
             else:
                 base.cr.alterInterest(self.visInterestHandle, base.localAvatar.defaultShard, self.visZones)
-            print 'visZones changed: %s' % (self.visZones)
             
     def doEnterZone(self, newZoneId):
         if self.zoneId != None:
