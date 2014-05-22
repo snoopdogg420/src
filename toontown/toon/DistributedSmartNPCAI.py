@@ -71,7 +71,6 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
         self.response(answer, sender)
 
     def response(self, response, sendTo):
-        time.sleep(1) #Makes his talking seem more realistic
         self.sendUpdate('respond', [self.npcId, response, sendTo])
         self.restartTask()
         
