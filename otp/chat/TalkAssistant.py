@@ -12,7 +12,6 @@ import time
 from otp.chat.TalkGlobals import *
 from otp.chat.ChatGlobals import *
 from otp.nametag.NametagConstants import CFSpeech, CFTimeout, CFThought
-from toontown.toon.DistributedSmartNPC import DistributedSmartNPC
 ThoughtPrefix = '.'
 
 class TalkAssistant(DirectObject.DirectObject):
@@ -616,8 +615,9 @@ class TalkAssistant(DirectObject.DirectObject):
         doId = base.localAvatar.doId
         if base.config.GetBool('want-talkative-tyler', False):
             if base.localAvatar.zoneId == 2000:
-                for do in base.cr.doFindAllInstances(DistributedSmartNPC):
-                    do.sendUpdate('talkMessage', [doId, message])
+                tyler = base.cr.doFind('Talkative Tyler')
+                if tyler:
+                    tyler.sendUpdate('talkMessage', [doId, message])
         if base.cr.wantMagicWords and len(message) > 0 and message[0] == '~':
             messenger.send('magicWord', [message])
             self.receiveDeveloperMessage(message)
