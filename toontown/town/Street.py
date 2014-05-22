@@ -112,6 +112,9 @@ class Street(BattlePlace.BattlePlace):
         base.localAvatar.setGeom(self.loader.geom)
         base.localAvatar.setOnLevelGround(1)
         self._telemLimiter = TLGatherAllAvs('Street', RotationLimitToH)
+        self.zone = requestStatus['zoneId']
+        trueZone = ZoneUtil.getBranchZone(requestStatus['zoneId'])
+        self.visZones.append(trueZone)
         #NametagGlobals.setMasterArrowsOn(arrowsOn) #TODO: fix me cfsworks
 
         def __lightDecorationOn__():
@@ -168,8 +171,6 @@ class Street(BattlePlace.BattlePlace):
         self.tunnelOriginList = base.cr.hoodMgr.addLinkTunnelHooks(self, self.loader.nodeList, self.zoneId)
         self.fsm.request(requestStatus['how'], [requestStatus])
         self.replaceStreetSignTextures()
-        trueZone = ZoneUtil.getBranchZone(self.zone)
-        self.visZones.append(trueZone)
         return
 
     def exit(self, visibilityFlag = 1):
