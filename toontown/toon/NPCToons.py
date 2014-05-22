@@ -171,9 +171,6 @@ def createNpcsInZone(air, zoneId):
     npcs = []
     canonicalZoneId = ZoneUtil.getCanonicalZoneId(zoneId)
     npcIdList = zone2NpcDict.get(canonicalZoneId, [])
-    if zoneId == 2000:
-        npcIdList.append(998)
-    print npcIdList
     for i in range(len(npcIdList)):
         npcId = npcIdList[i]
         npcDesc = NPCToonDict.get(npcId)
@@ -183,8 +180,10 @@ def createNpcsInZone(air, zoneId):
         if npcDesc[5] == NPC_PARTYPERSON:
             if not air.wantParties:
                 continue
+        if npcDesc[5] == NPC_SMART:
+            if not config.GetBool('want-talkative-tyler', False):
+                continue
         npcs.append(createNPC(air, npcId, npcDesc, zoneId, posIndex=i))
-
     return npcs
 
 
@@ -240,7 +239,7 @@ NPCToonDict = {20000: (-1,
          'm',
          1,
          NPC_REGULAR),
- 998: (-1,
+ 998: (2000,
        lnames[998],
        'r',
        'm',

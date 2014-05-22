@@ -117,6 +117,7 @@ want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
 want-long-pattern-game #t
+want-talkative-tyler #f
 
 # Developer options...
 want-dev #f
