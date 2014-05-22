@@ -19,13 +19,11 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
         self.engine = self.factory.create(ChatterBotType.CLEVERBOT)
         self.brain = self.engine.create_session()
         self.myTask = taskMgr.doMethodLater(0.5, self.tylerTask, 'tylerTask')
-        self.busy = 0
+        self.index = 0
         
     def tylerTask(self, task):
-        if task.time <= 5:
-            self.busy = 1
-            return task.cont
-        self.busy = 0
+        if task.time >= 5:
+            self.index  = 0
         if task.time <= 25:
             return task.cont
         self.response('I guess you don\'t want to talk anymore %s' % self.nameOfInterest + '...', self.personOfInterest)
@@ -56,10 +54,16 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
         
     def talkMessage(self, sender, message):
         if sender == self.personOfInterest:
-            if not self.busy:
-                self.restartTask()
-                self.busy = 1
-                self.generateAnswer(message, sender)
+            self.index += 1
+            if self.index >= 4:
+                self.stopDouble = self.personOfInterest
+                self.personOfInterest = 0
+                self.nameOfInterest = ''
+                taskMgr.remove(self.myTask)
+                self.sendUpdate('dismiss', [sender, 1])
+                return
+            self.restartTask()
+            self.generateAnswer(message, sender)
             
     def generateAnswer(self, message, sender):
         name = self.air.doId2do.get(sender).getName()
@@ -68,6 +72,5 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
 
     def response(self, response, sendTo):
         self.sendUpdate('respond', [self.npcId, response, sendTo])
-        self.busy = 0
         self.restartTask()
         
