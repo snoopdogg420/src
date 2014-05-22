@@ -13,18 +13,23 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
         DistributedNPCToonBaseAI.__init__(self, air, npcId, questCallback)
         self.air = air
         self.personOfInterest = 0
+        self.stopDouble = 0
         self.nameOfInterest = ''
         self.factory = ChatterBotFactory()
         self.engine = self.factory.create(ChatterBotType.CLEVERBOT)
         self.brain = self.engine.create_session()
-        self.myTask = taskMgr.doMethodLater(2, self.timeoutTask, 'timeoutTask')
-        self.setPos(0, 0, 0)
-        self.setHpr(0, 0, 0)
+        self.myTask = taskMgr.doMethodLater(0.5, self.tylerTask, 'tylerTask')
+        self.busy = 0
         
-    def timeoutTask(self, task):
-        if task.time <= 20:
+    def tylerTask(self, task):
+        if task.time <= 5:
+            self.busy = 1
+            return task.cont
+        self.busy = 0
+        if task.time <= 25:
             return task.cont
         self.response('I guess you don\'t want to talk anymore %s' % self.nameOfInterest + '...', self.personOfInterest)
+        self.stopDouble = self.personOfInterest
         self.personOfInterest = 0
         self.nameOfInterest = ''
         return task.done
@@ -35,27 +40,34 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
 
     def avatarEnter(self):
         if not self.personOfInterest:
-            avId = self.air.getAvatarIdFromSender()
-            name = self.air.doId2do.get(avId).getName()
-            self.personOfInterest = avId
-            self.nameOfInterest = name
-            self.sendUpdate('greet', [self.npcId, avId])
-            self.brain = self.engine.create_session()
+            sender = self.air.getAvatarIdFromSender()
+            if not sender == self.stopDouble:
+                name = self.air.doId2do.get(sender).getName()
+                self.personOfInterest = sender
+                self.nameOfInterest = name
+                self.sendUpdate('greet', [self.npcId, sender])
+                self.brain = self.engine.create_session()
+            else:
+                self.sendUpdate('dismiss', [sender, 2])
+                pass
         else:
             #Tyler is busy!
             pass
         
     def talkMessage(self, sender, message):
         if sender == self.personOfInterest:
-            self.restartTask()
-            self.generateAnswer(message, sender)
+            if not self.busy:
+                self.restartTask()
+                self.busy = 1
+                self.generateAnswer(message, sender)
             
     def generateAnswer(self, message, sender):
         name = self.air.doId2do.get(sender).getName()
         answer = self.brain.think(message)
         self.response(answer, sender)
-        
+
     def response(self, response, sendTo):
         self.sendUpdate('respond', [self.npcId, response, sendTo])
+        self.busy = 0
         self.restartTask()
         

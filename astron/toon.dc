@@ -1819,6 +1819,7 @@ dclass DistributedSmartNPC : DistributedNPCToonBase {
   greet(uint32, uint32) broadcast ram;
   talkMessage(uint32, string) airecv clsend;
   respond(uint32, string, uint32) broadcast ram;
+  dismiss(uint32, uint16) broadcast ram;
 };
 
 dclass DistributedNPCSpecialQuestGiver : DistributedNPCToonBase {
