@@ -210,8 +210,7 @@ if args.build_mfs:
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
         os.system('multify -c -f {0} {1}'.format(filepath, phase))
-        if phase not in RESOURCES:
-            RESOURCES[phase] = phaseMd5
+        RESOURCES[phase] = phaseMd5
     with open('local-patcher.ver', 'w') as f:
         f.write('RESOURCES = %r' % RESOURCES)
 
