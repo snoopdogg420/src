@@ -321,6 +321,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if revives:
             newSuit.setSkeleRevives(revives)
         newSuit.generateWithRequired(newSuit.zoneId)
+        print 'DSP doId: %s' % (self.doId)
+        newSuit.d_setSPDoId(self.doId)
         newSuit.moveToNextLeg(None)
         self.suitList.append(newSuit)
         if newSuit.flyInSuit:
@@ -426,7 +428,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
     def pointCollision(self, point, adjacentPoint, elapsedTime):
         for suit in self.suitList:
             if suit.pointInMyPath(point, elapsedTime):
-                return 0
+                return 1
         if adjacentPoint is not None:
             return self.battleCollision(point, adjacentPoint)
         else:
@@ -437,7 +439,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 p = self.pointIndexes[pi]
                 i -= 1
                 if self.battleCollision(point, p):
-                    return 0
+                    return 1
         return 0
 
     def battleCollision(self, point, adjacentPoint):
