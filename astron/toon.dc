@@ -95,6 +95,7 @@ from toontown.coghq import DistributedCogHQDoor/AI
 from toontown.coghq import DistributedSellbotHQDoor/AI
 from toontown.toon import DistributedNPCToonBase/AI
 from toontown.toon import DistributedNPCToon/AI
+from toontown.toon import DistributedSmartNPC/AI
 from toontown.toon import DistributedNPCSnowballGiver/AI
 from toontown.toon import DistributedNPCSpecialQuestGiver/AI
 from toontown.toon import DistributedNPCFlippyInToonHall/AI
@@ -1812,6 +1813,12 @@ dclass DistributedNPCToon : DistributedNPCToonBase {
 
 dclass DistributedNPCSnowballGiver : DistributedNPCToonBase {
   gaveSnowballs(uint32, uint32, uint8) broadcast ram;
+};
+
+dclass DistributedSmartNPC : DistributedNPCToonBase {
+  greet(uint32, uint32) broadcast ram;
+  talkMessage(uint32, string) airecv clsend;
+  respond(uint32, string, uint32) broadcast ram;
 };
 
 dclass DistributedNPCSpecialQuestGiver : DistributedNPCToonBase {

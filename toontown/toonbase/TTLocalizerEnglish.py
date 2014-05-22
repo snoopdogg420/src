@@ -6995,6 +6995,7 @@ CatalogCurrentButtonText = 'To Current Items'
 CatalogPastButtonText = 'To Past Items'
 TutorialHQOfficerName = 'HQ Harry'
 NPCToonNames = {20000: 'Tutorial Tom',
+ 998: 'Talkative Tyler',
  999: 'Toon Tailor',
  1000: lToonHQ,
  20001: Flippy,

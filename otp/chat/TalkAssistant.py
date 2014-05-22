@@ -612,6 +612,11 @@ class TalkAssistant(DirectObject.DirectObject):
 
     def sendOpenTalk(self, message):
         error = None
+        doId = base.localAvatar.doId
+        #This is for the smart NPC
+        if base.localAvatar.zoneId == 2000:
+            base.cr.doFind('Talkative Tyler').sendUpdate('talkMessage', [doId, message])
+            print 'sent update'
         if base.cr.wantMagicWords and len(message) > 0 and message[0] == '~':
             messenger.send('magicWord', [message])
             self.receiveDeveloperMessage(message)

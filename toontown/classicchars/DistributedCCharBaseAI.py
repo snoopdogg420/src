@@ -131,6 +131,7 @@ class DistributedCCharBaseAI(DistributedAvatarAI.DistributedAvatarAI):
         avId = self.air.getAvatarIdFromSender()
         self.notify.debug('setNearbyAvatarChat: avatar ' + str(avId) + ' said ' + str(msg))
         self._DistributedCCharBaseAI__avatarSpoke(avId)
+        self.air.doFind('DistributedSmartNPC').sendUpdate('talkMessage', [avId, msg])
 
     
     def setNearbyAvatarSC(self, msgIndex):
