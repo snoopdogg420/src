@@ -96,6 +96,8 @@ def minify(f):
                 line = line[:thisIndentLevel] + line[thisIndentLevel+2:]
             data += line
             debugBlock = False
+            elseBlock = False
+            indentLevel = 0
             continue
         if elseBlock:
             data += line[4:]
