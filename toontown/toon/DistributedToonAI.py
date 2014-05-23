@@ -4604,9 +4604,27 @@ def maxToon(missingTrack=None):
 @magicWord(category=CATEGORY_ADMINISTRATOR)
 def unlocks():
     """
-    Unlocks teleport access, emotions, and pet phrases.
+    Unlocks the invoker's teleport access, emotions, and pet trick phrases.
     """
-    return 'Not implemented.'  # TODO: Too lazy to finish this right now.
+    invoker = spellbook.getInvoker()
+
+    # First, unlock their teleport access:
+    hoods = list(ToontownGlobals.HoodsForTeleportAll)
+    invoker.b_setHoodsVisited(hoods)
+    invoker.b_setTeleportAccess(hoods)
+
+    # Next, unlock all of their emotions:
+    emotes = list(invoker.getEmoteAccess())
+    for emoteId in OTPLocalizer.EmoteFuncDict.values():
+        if emoteId >= len(emotes):
+            continue
+        emotes[emoteId] = 1
+    invoker.b_setEmoteAccess(emotes)
+
+    # Finally, unlock all of their pet phrases:
+    invoker.b_setPetTrickPhrases(range(7))
+
+    return 'Unlocked teleport access, emotions, and pet trick phrases!'
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, str])
 def sos(count, name):
