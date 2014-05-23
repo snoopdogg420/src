@@ -60,7 +60,7 @@ want-lawbot-headquarters #t
 want-bossbot-headquarters #t
 
 want-treasure-planners #t
-want-suit-planners #f
+want-suit-planners #t
 want-butterflies #f
 
 # Classic characters...
@@ -118,7 +118,7 @@ want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
 want-long-pattern-game #t
-want-talkative-tyler #t
+want-talkative-tyler #f
 
 # Developer options...
 want-dev #f

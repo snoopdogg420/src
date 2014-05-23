@@ -150,7 +150,7 @@ class DNAStorage:
         while True:
             if startIndex not in self.suitEdges:
                 raise DNAError("Could not find path.")
-            edge = self.suitEdges[startIndex][0]
+            edge = random.choice(self.suitEdges[startIndex]) #lol
             startIndex = edge.getEndPoint().getIndex()
             point = self.getSuitPointWithIndex(startIndex)
             if point.getPointType() != DNASuitPoint.pointTypeMap['STREET_POINT']:

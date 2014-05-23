@@ -269,7 +269,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             p = random.choice(streetPoints)
             streetPoints.remove(p)
             if not self.pointCollision(p, None, SuitTimings.fromSky):
-                print 'DSP suit start point: %s' % (p)
                 startPoint = p
                 startTime = SuitTimings.fromSky
                 continue
@@ -321,7 +320,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if revives:
             newSuit.setSkeleRevives(revives)
         newSuit.generateWithRequired(newSuit.zoneId)
-        print 'DSP doId: %s' % (self.doId)
         newSuit.d_setSPDoId(self.doId)
         newSuit.moveToNextLeg(None)
         self.suitList.append(newSuit)
@@ -331,7 +329,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             self.numBuildingSuits += 1
         if newSuit.attemptingTakeover:
             self.numAttemptingTakeover += 1
-        print 'DSP created new suit %s in the zoneId %s.' % (newSuit.dna.name, newSuit.zoneId)
         return newSuit
 
     def countNumNeededBuildings(self):
@@ -428,7 +425,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
     def pointCollision(self, point, adjacentPoint, elapsedTime):
         for suit in self.suitList:
             if suit.pointInMyPath(point, elapsedTime):
-                return 0
+                return 1
         if adjacentPoint is not None:
             return self.battleCollision(point, adjacentPoint)
         else:
@@ -439,7 +436,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 p = self.pointIndexes[pi]
                 i -= 1
                 if self.battleCollision(point, p):
-                    return 0
+                    return 1
         return 0
 
     def battleCollision(self, point, adjacentPoint):
@@ -467,7 +464,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
 
     def __waitForNextUpkeep(self):
         t = random.random() * 2.0 + self.POP_UPKEEP_DELAY
-        print 'Upkeeping the suit population'
         taskMgr.doMethodLater(t, self.upkeepSuitPopulation, self.taskName('sptUpkeepPopulation'))
 
     def __waitForNextAdjust(self):
@@ -531,7 +527,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                         0])
                     oldest.updateSavedBy(None)
                     oldest.toonTakeOver()
-        print 'Waiting for next upkeep'
         self.__waitForNextUpkeep()
         return Task.done
 
@@ -791,18 +786,20 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 suit.flyAwayNow()
 
     def requestBattle(self, zoneId, suit, toonId):
-        self.notify.debug('requestBattle() - zone: %s suit: %s toon: %s' % (zoneId, suit.doId, toonId))
+        print 'requestBattle() - zone: %s suit: %s toon: %s' % (zoneId, suit.doId, toonId)
         canonicalZoneId = ZoneUtil.getCanonicalZoneId(zoneId)
         if canonicalZoneId not in self.battlePosDict:
+            print 'ERROR! canonicalZoneId not in self.battlePosDict FIX ME!!!!'
             return 0
         toon = self.air.doId2do.get(toonId)
         if toon.getBattleId() > 0:
-            self.notify.warning('We tried to request a battle when the toon was already in battle')
+            print 'We tried to request a battle when the toon was already in battle'
             return 0
         if toon:
             if hasattr(toon, 'doId'):
                 print 'Setting toonID ', toonId
                 toon.b_setBattleId(toonId)
+                print 'Set toon battle ID'
         pos = self.battlePosDict[canonicalZoneId]
         interactivePropTrackBonus = -1
         if simbase.config.GetBool('props-buff-battles', True) and (canonicalZoneId in self.cellToGagBonusDict):
@@ -817,8 +814,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 if simbase.air.holidayManager.isHolidayRunning(holidayId) and (simbase.air.holidayManager.getCurPhase(holidayId) >= 1):
                     interactivePropTrackBonus = tentativeBonusTrack
         self.battleMgr.newBattle(zoneId, zoneId, pos, suit, toonId, self.__battleFinished, self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_SMAX], interactivePropTrackBonus)
+        print 'Battle Manager created new battle!'
         for currOther in self.zoneInfo[zoneId]:
-            self.notify.debug('Found suit %s in this new battle zone %s' % (currOther.getDoId(), zoneId))
+            print 'Found suit %s in this new battle zone %s' % (currOther.getDoId(), zoneId)
             if currOther != suit:
                 if currOther.pathState == 1 and currOther.legType == SuitLeg.TWalk:
                     self.checkForBattle(zoneId, currOther)

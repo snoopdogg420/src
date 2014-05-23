@@ -147,15 +147,21 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         if self.doorType in self.specialDoorTypes:
             self.hideIfHasFlat(self.findDoorNode('rightDoor'))
             self.hideIfHasFlat(self.findDoorNode('leftDoor'))
-            self.findDoorNode('doorFrameHoleRight').hide()
-            self.findDoorNode('doorFrameHoleLeft').hide()
-
+            try:
+                self.findDoorNode('doorFrameHoleRight').hide()
+                self.findDoorNode('doorFrameHoleLeft').hide()
+            except:
+                pass
+                
     def setTriggerName(self):
         if self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
             doorTrigger = building.find('**/door_' + str(self.doorIndex) + '/**/door_trigger*')
-            doorTrigger.node().setName(self.getTriggerName())
-
+            try:
+                doorTrigger.node().setName(self.getTriggerName())
+            except:
+                pass
+                
     def setTriggerName_wip(self):
         building = self.getBuilding()
         doorTrigger = building.find('**/door_%d/**/door_trigger_%d' % (self.doorIndex, self.block))
