@@ -462,7 +462,7 @@ class SuitPlannerBase:
          0]
         for level in levels:
             minFloors, maxFloors = SuitBuildingGlobals.SuitBuildingInfo[level - 1][0]
-            for i in range(minFloors - 1, maxFloors):
+            for i in xrange(minFloors - 1, maxFloors):
                 heights[i] += 1
 
         currHoodInfo[SUIT_HOOD_INFO_HEIGHTS] = heights
@@ -523,7 +523,7 @@ class SuitPlannerBase:
             self.notify.info('zone %s has %s disconnected suit paths.' % (self.zoneId, numGraphs))
         self.battlePosDict = {}
         self.cellToGagBonusDict = {}
-        for i in range(self.dnaStore.getNumDNAVisGroupsAI()):
+        for i in xrange(self.dnaStore.getNumDNAVisGroupsAI()):
             vg = self.dnaStore.getDNAVisGroupAI(i)
             zoneId = int(self.extractGroupName(vg.getName()))
             if vg.getNumBattleCells() == 1:
@@ -539,7 +539,7 @@ class SuitPlannerBase:
         self.sidedoorPointList = []
         self.cogHQDoorPointList = []
         numPoints = self.dnaStore.getNumSuitPoints()
-        for i in range(numPoints):
+        for i in xrange(numPoints):
             point = self.dnaStore.getSuitPointAtIndex(i)
             if point.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
                 self.frontdoorPointList.append(point)
@@ -561,7 +561,7 @@ class SuitPlannerBase:
         endPoint = startAndEnd[1]
         path = self.dnaStore.getSuitPath(startPoint, endPoint)
         numPathPoints = path.getNumPoints()
-        for i in range(numPathPoints - 1):
+        for i in xrange(numPathPoints - 1):
             zone = self.dnaStore.getSuitEdgeZone(path.getPointIndex(i), path.getPointIndex(i + 1))
             travelTime = self.dnaStore.getSuitEdgeTravelTime(path.getPointIndex(i), path.getPointIndex(i + 1), self.suitWalkSpeed)
             self.notify.debug('edge from point ' + `i` + ' to point ' + `(i + 1)` + ' is in zone: ' + `zone` + ' and will take ' + `travelTime` + ' seconds to walk.')

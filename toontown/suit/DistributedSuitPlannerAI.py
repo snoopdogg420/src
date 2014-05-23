@@ -14,9 +14,11 @@ from toontown.building import HQBuildingAI
 from toontown.building import SuitBuildingGlobals
 from toontown.dna.DNAParser import DNASuitPoint
 from toontown.hood import ZoneUtil
+from toontown.suit.SuitLegList import *
 from toontown.toon import NPCToons
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import ToontownGlobals
+
 
 class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlannerBase.SuitPlannerBase):
     notify = directNotify.newCategory('DistributedSuitPlannerAI')
@@ -56,7 +58,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                     hoodInfo[self.SUIT_HOOD_INFO_BMIN] = int(0.5 + self.CogdoPopFactor * hoodInfo[self.SUIT_HOOD_INFO_BMIN])
                     hoodInfo[self.SUIT_HOOD_INFO_BMAX] = int(0.5 + self.CogdoPopFactor * hoodInfo[self.SUIT_HOOD_INFO_BMAX])
         self.hoodInfoIdx = -1
-        for index in range(len(self.SuitHoodInfo)):
+        for index in xrange(len(self.SuitHoodInfo)):
             currHoodInfo = self.SuitHoodInfo[index]
             if currHoodInfo[self.SUIT_HOOD_INFO_ZONE] == self.canonicalZoneId:
                 self.hoodInfoIdx = index
@@ -634,7 +636,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         while numToAssign > 0:
             smallestCount = None
             smallestTracks = []
-            for trackIndex in range(4):
+            for trackIndex in xrange(4):
                 if totalWeightPerTrack[trackIndex]:
                     track = SuitDNA.suitDepts[trackIndex]
                     count = numPerTrack[track]
@@ -650,7 +652,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             buildingTrackIndex = SuitDNA.suitDepts.index(buildingTrack)
             smallestCount = None
             smallestHeights = []
-            for height in range(5):
+            for height in xrange(5):
                 if totalWeightPerHeight[height]:
                     count = float(numPerHeight[height]) / float(self.BUILDING_HEIGHT_DISTRIBUTION[height])
                     if (smallestCount is None) or (count < smallestCount):
@@ -756,7 +758,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         totalWeight = sum(dist)
         c = random.random() * totalWeight
         t = 0
-        for i in range(len(hoodInfo)):
+        for i in xrange(len(hoodInfo)):
             t += dist[i]
             if c < t:
                 return hoodInfo[i]
@@ -857,7 +859,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             if suit.zoneId == currBattle[0]:
                 self.notify.debug('    battle found' + str(suit.zoneId))
                 for currPath in currBattle[1]:
-                    for currPathPtSuit in range(suit.currWpt, suit.myPath.getNumPoints()):
+                    for currPathPtSuit in xrange(suit.currWpt, suit.myPath.getNumPoints()):
                         ptIdx = suit.myPath.getPointIndex(currPathPtSuit)
                         if self.notify.getDebug():
                             self.notify.debug('    comparing' + str(ptIdx) + 'with' + str(currPath))
@@ -867,7 +869,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                             return 0
             battleIndex += 1
         pointList = []
-        for currPathPtSuit in range(suit.currWpt, suit.myPath.getNumPoints()):
+        for currPathPtSuit in xrange(suit.currWpt, suit.myPath.getNumPoints()):
             ptIdx = suit.myPath.getPointIndex(currPathPtSuit)
             if self.notify.getDebug():
                 self.notify.debug('    appending point with index of' + str(ptIdx))

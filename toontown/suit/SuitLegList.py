@@ -94,7 +94,7 @@ class SuitLegList:
             self.getStartTime(0), zoneId, -1, startPoint, startPoint,
             SuitLeg.TFromSky)
         self.legs.append(startLeg)
-        for i in range(self.path.getNumPoints()):
+        for i in xrange(self.path.getNumPoints()):
             if not 0 < i < (self.path.getNumPoints() - 1):
                 continue
             pointA = self.path.getPoint(i)
@@ -149,22 +149,20 @@ class SuitLegList:
         return self.legs[index].getPointB()
 
     def getStartTime(self, index):
-        startTime = 0
-        legIndex = 0
-        while (legIndex < self.getNumLegs()) and (legIndex < index):
+        startTime = 0.0
+        for legIndex in xrange(self.getNumLegs()):
+            if legIndex == index:
+                break
             startTime += self.getLegTime(legIndex)
-            legIndex += 1
         return startTime
 
     def getLegIndexAtTime(self, time, startLeg):
-        legIndex = startLeg
-        while legIndex < self.getNumLegs():
-            startTime = self.getStartTime(legIndex)
-            endTime = startTime + self.getLegTime(legIndex)
-            if startTime <= time < endTime:
-                return legIndex
-            legIndex += 1
-        return self.getNumLegs() - 1
+        endTime = 0.0
+        for legIndex in xrange(self.getNumLegs()):
+            endTime += self.getLegTime(legIndex)
+            if endTime > time:
+                break
+        return legIndex
 
     def isPointInRange(self, point, lowTime, highTime):
         # Check if this point is in the provided time range:
