@@ -616,7 +616,6 @@ class DNAVisGroup(DNAGroup):
         self.visibles.remove(visible)
 
     def traverse(self, nodePath, dnaStorage):
-        dnaStorage.storeDNAVisGroup(self)
         DNAGroup.traverse(self, nodePath, dnaStorage)
 
 class DNAData(DNAGroup):
@@ -1563,6 +1562,7 @@ def p_visgroupdef(p):
     p.parser.parentGroup.add(p[0])
     p[0].setParent(p.parser.parentGroup)
     p.parser.parentGroup = p[0]
+    p.parser.dnaStore.storeDNAVisGroup(p[0])
 p_visgroupdef.__doc__ = '''visgroupdef : VISGROUP string'''
 
 def p_dnagroup(p):
