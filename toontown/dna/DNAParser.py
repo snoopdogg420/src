@@ -143,14 +143,24 @@ class DNAStorage:
         self.textures = {}
         self.catalogCodes = {}
 
-    def getSuitPath(self, startPoint, endPoint, minPathLen=10, maxPathLen=20):
+    def getSuitPath(self, startPoint, endPoint, minPathLen=40, maxPathLen=300):
         points = [startPoint]
         startIndex = startPoint.getIndex()
         reachedEnd = False
         while True:
             if startIndex not in self.suitEdges:
                 raise DNAError("Could not find path.")
-            edge = self.suitEdges[startIndex][0]
+            edges = self.suitEdges[startIndex]
+            if len(edges) == 1:
+                edge = edges[0]
+            else:
+                for edge in edges:
+                    endPointPos = edge.getEndPoint().getPos()
+                    startPointPos = startPoint.getPos()
+                    diffPos = endPointPos - startPointPos
+                    if diffPos[0] and diffPos[1]:
+                        continue
+                    break
             startIndex = edge.getEndPoint().getIndex()
             point = self.getSuitPointWithIndex(startIndex)
             if point.getPointType() != DNASuitPoint.pointTypeMap['STREET_POINT']:

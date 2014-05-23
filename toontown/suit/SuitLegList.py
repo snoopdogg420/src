@@ -1,3 +1,4 @@
+from toontown.suit import SuitTimings
 from toontown.toonbase import ToontownGlobals
 
 
@@ -44,6 +45,16 @@ class SuitLeg:
         return self.startTime
 
     def getLegTime(self):
+        if self.getType() == SuitLeg.TFromSky:
+            return SuitTimings.fromSky
+        if self.getType() == SuitLeg.TToSky:
+            return SuitTimings.toSky
+        if self.getType() == SuitLeg.TFromSuitBuilding:
+            return SuitTimings.fromSuitBuilding
+        if self.getType() == SuitLeg.TToSuitBuilding:
+            return SuitTimings.toSuitBuilding
+        if self.getType() == SuitLeg.TToToonBuilding:
+            return SuitTimings.toToonBuilding
         return self.legTime
 
     def getBlockNumber(self):
@@ -125,16 +136,6 @@ class SuitLegList:
         return self.legs[index].getType()
 
     def getLegTime(self, index):
-        if self.getType(index) == SuitLeg.TFromSky:
-            return self.fromSky
-        if self.getType(index) == SuitLeg.TToSky:
-            return self.toSky
-        if self.getType(index) == SuitLeg.TFromSuitBuilding:
-            return self.fromSuitBuilding
-        if self.getType(index) == SuitLeg.TToSuitBuilding:
-            return self.toSuitBuilding
-        if self.getType(index) == SuitLeg.TToToonBuilding:
-            return self.toToonBuilding
         return self.legs[index].getLegTime()
 
     def getZoneId(self, index):
