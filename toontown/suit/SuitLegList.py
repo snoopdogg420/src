@@ -161,7 +161,7 @@ class SuitLegList:
 
     def getLegIndexAtTime(self, time, startLeg):
         endTime = 0.0
-        for legIndex in xrange(startLeg, self.getNumLegs()):
+        for legIndex in xrange(self.getNumLegs()):
             endTime += self.getLegTime(legIndex)
             if endTime > time:
                 break
