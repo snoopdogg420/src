@@ -431,7 +431,7 @@ class DNASuitPoint:
     }
     ivPointTypeMap = {v: k for k, v in pointTypeMap.items()}
 
-    def __init__(self, index, pointType, pos, landmarkBuildingIndex = -1):
+    def __init__(self, index, pointType, pos, landmarkBuildingIndex=-1):
         self.index = index
         self.pointType = pointType
         self.pos = pos
@@ -1523,10 +1523,15 @@ def p_lpoint3f(p):
 p_lpoint3f.__doc__ = '''lpoint3f : number number number'''
 
 def p_suitpoint(p):
-    p.parser.dnaStore.storeSuitPoint(DNASuitPoint(p[3], p[5], p[7]))
+    landmarkBuildingIndex = -1
+    if len(p) > 9:
+        landmarkBuildingIndex = p[9]
+    point = DNASuitPoint(p[3], p[5], p[7],
+                         landmarkBuildingIndex=landmarkBuildingIndex)
+    p.parser.dnaStore.storeSuitPoint(point)
 p_suitpoint.__doc__ = \
     '''suitpoint : STORE_SUIT_POINT "[" number "," suitpointtype "," lpoint3f "]"
-                 | STORE_SUIT_POINT "[" number "," suitpointtype "," lpoint3f "," number "]"''' #last # is landmark building index
+                 | STORE_SUIT_POINT "[" number "," suitpointtype "," lpoint3f "," number "]"'''
 
 def p_suitpointtype(p):
     p[0] = DNASuitPoint.pointTypeMap[p[1]]

@@ -128,8 +128,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         self.buildingSideDoors = {}
         for p in self.frontdoorPointList:
             blockNumber = p.getLandmarkBuildingIndex()
-            if p < 0:
-                self.notify.warning('No landmark building for (%s) in zone %s' % (repr(p), self.zoneId))
+            if blockNumber < 0:
+                self.notify.warning('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
                 continue
             if blockNumber in self.buildingFrontDoors:
                 self.notify.warning('Multiple front doors for building %s in zone %s' % (blockNumber, self.zoneId))
@@ -137,8 +137,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             self.buildingFrontDoors[blockNumber] = p
         for p in self.sidedoorPointList:
             blockNumber = p.getLandmarkBuildingIndex()
-            if p < 0:
-                self.notify.warning('No landmark building for (%s) in zone %s' % (repr(p), self.zoneId))
+            if blockNumber < 0:
+                self.notify.warning('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
                 continue
             if blockNumber in self.buildingSideDoors:
                 self.buildingSideDoors[blockNumber].append(p)
@@ -289,11 +289,11 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                     suitTrack = self.pendingBuildingTracks[0]
                     del self.pendingBuildingTracks[0]
                     self.pendingBuildingTracks.append(suitTrack)
-                
+
                 if buildingHeight == None and len(self.pendingBuildingHeights) > 0:
                     buildingHeight = self.pendingBuildingHeights[0]
                     del self.pendingBuildingHeights[0]
-                    self.pendingBuildingHeights.append(buildingHeight)    
+                    self.pendingBuildingHeights.append(buildingHeight)
         if suitName == None:
             (suitName, skelecog) = self.air.suitInvasionManager.getInvadingCog()
             if suitName == None:
@@ -311,7 +311,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             self.notify.debug("Couldn't get a destination in %d!" % self.zoneId)
             newSuit.doNotDeallocateChannel = None
             newSuit.delete()
-            print 'DSP failed to create a new suit! REASON: gotDestination = None' 
+            print 'DSP failed to create a new suit! REASON: gotDestination = None'
             return None
         newSuit.initializePath()
         self.zoneChange(newSuit, None, newSuit.zoneId)
@@ -515,8 +515,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                             if age > oldestAge:
                                 oldest = building
                                 oldestAge = age
-                            
-                        
+
+
                     building.elevator.fsm.getCurrentState().getName() == 'waitEmpty'
                 if oldestAge > timeout:
                     self.notify.info('Street %d has %d buildings; reclaiming %0.2f-hour-old building.' % (self.zoneId, len(suitBuildings), oldestAge / 3600.0))

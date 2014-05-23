@@ -87,13 +87,11 @@ class SuitLegList:
         self.toSuitBuilding = toSuitBuilding
         self.toToonBuilding = toToonBuilding
         self.legs = []
-        # SuitLeg.__init__(startTime, zoneId, blockNumber, pointA, pointB, type)
-        # TODO: What is blockNumber used for?
         startPoint = self.path.getPoint(0)
         startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
         zoneId = startEdge.getZoneId()
         startLeg = SuitLeg(
-            self.getStartTime(0), zoneId, 0, startPoint, startPoint,
+            self.getStartTime(0), zoneId, -1, startPoint, startPoint,
             SuitLeg.TFromSky)
         self.legs.append(startLeg)
         for i in range(self.path.getNumPoints()):
@@ -104,7 +102,7 @@ class SuitLegList:
             zoneId = self.dnaStore.getSuitEdgeZone(
                 pointA.getIndex(), pointB.getIndex())
             leg = SuitLeg(
-                self.getStartTime(i), zoneId, 0, pointA, pointB,
+                self.getStartTime(i), zoneId, -1, pointA, pointB,
                 SuitLeg.TWalk)
             self.legs.append(leg)
         endIndex = self.path.getNumPoints() - 1
@@ -112,7 +110,7 @@ class SuitLegList:
         endEdge = self.dnaStore.suitEdges[endPoint.getIndex()][0]
         zoneId = endEdge.getZoneId()
         endLeg = SuitLeg(
-            self.getStartTime(endIndex), zoneId, 0, endPoint, endPoint,
+            self.getStartTime(endIndex), zoneId, -1, endPoint, endPoint,
             SuitLeg.TToSky)
         self.legs.append(endLeg)
 
