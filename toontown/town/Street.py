@@ -361,8 +361,8 @@ class Street(BattlePlace.BattlePlace):
         self.showAllVisibles()
 
     def addVisInterest(self, zone):
-        if not self.zone:
-            self.zone = zone
+        if self.zone and (zone not in self.visZones):
+            self.visZones.append(self.zone)
         self.notify.debug('addVisInterest zone=%i'%zone)
         self.visZones.append(zone)
         self.visInterestChanged = True
@@ -374,8 +374,7 @@ class Street(BattlePlace.BattlePlace):
             self.visInterestChanged = True
         except ValueError: #item was not in the list
             self.notify.warning('Street.removeVisInterest called on zone %i that isn\'t in interest' % zone)
-        trueZone = ZoneUtil.getBranchZone(zone)
-            
+
     def updateVisInterest(self):
         if self.visInterestChanged:
             self.notify.debug('updateVisInterest zones=' + str(self.visZones) + ' handle=' +str(self.visInterestHandle))
@@ -385,7 +384,7 @@ class Street(BattlePlace.BattlePlace):
                     self.visInterestHandle = base.cr.addInterest(base.localAvatar.defaultShard, self.visZones, 'streetVis')
             else:
                 base.cr.alterInterest(self.visInterestHandle, base.localAvatar.defaultShard, self.visZones)
-            
+
     def doEnterZone(self, newZoneId):
         if self.zoneId != None:
             for i in self.loader.nodeDict[self.zoneId]:
