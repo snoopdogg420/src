@@ -2321,9 +2321,9 @@ def loadDNAFile(dnaStore, filename):
 def loadDNAFileAI(dnaStore, filename):
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
-    try:
-        file = open('../RetroResources/' + filename, 'r')
-    except:
-        file = open('/' + filename, 'r')
-    dnaloader.getData().read(file)
+    if __debug__:
+        filename = '../RetroResources/' + filename
+    else:
+        filename = '/' + filename
+    dnaloader.getData().read(open(filename, 'r'))
     return dnaloader.getData()
