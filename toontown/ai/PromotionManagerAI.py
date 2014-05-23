@@ -6,7 +6,7 @@ class PromotionManagerAI:
     def __init__(self, air):
         self.air = air
 
-    def recoverMerits(self, toon, suitsKilled, zoneId, multiplier):
+    def recoverMerits(self, toon, suitsKilled, zoneId, multiplier=1.0):
         cogMerits = toon.getCogMerits()
         parts = toon.getCogParts()
         completedSuits = (
