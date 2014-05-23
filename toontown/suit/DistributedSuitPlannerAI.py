@@ -786,20 +786,18 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 suit.flyAwayNow()
 
     def requestBattle(self, zoneId, suit, toonId):
-        print 'requestBattle() - zone: %s suit: %s toon: %s' % (zoneId, suit.doId, toonId)
+        self.notify.debug('requestBattle() - zone: %s suit: %s toon: %s' % (zoneId, suit.doId, toonId))
         canonicalZoneId = ZoneUtil.getCanonicalZoneId(zoneId)
         if canonicalZoneId not in self.battlePosDict:
-            print 'ERROR! canonicalZoneId not in self.battlePosDict FIX ME!!!!'
             return 0
         toon = self.air.doId2do.get(toonId)
         if toon.getBattleId() > 0:
-            print 'We tried to request a battle when the toon was already in battle'
+            self.notify.warning('We tried to request a battle when the toon was already in battle')
             return 0
         if toon:
             if hasattr(toon, 'doId'):
                 print 'Setting toonID ', toonId
                 toon.b_setBattleId(toonId)
-                print 'Set toon battle ID'
         pos = self.battlePosDict[canonicalZoneId]
         interactivePropTrackBonus = -1
         if simbase.config.GetBool('props-buff-battles', True) and (canonicalZoneId in self.cellToGagBonusDict):
@@ -814,9 +812,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 if simbase.air.holidayManager.isHolidayRunning(holidayId) and (simbase.air.holidayManager.getCurPhase(holidayId) >= 1):
                     interactivePropTrackBonus = tentativeBonusTrack
         self.battleMgr.newBattle(zoneId, zoneId, pos, suit, toonId, self.__battleFinished, self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_SMAX], interactivePropTrackBonus)
-        print 'Battle Manager created new battle!'
         for currOther in self.zoneInfo[zoneId]:
-            print 'Found suit %s in this new battle zone %s' % (currOther.getDoId(), zoneId)
+            self.notify.debug('Found suit %s in this new battle zone %s' % (currOther.getDoId(), zoneId))
             if currOther != suit:
                 if currOther.pathState == 1 and currOther.legType == SuitLeg.TWalk:
                     self.checkForBattle(zoneId, currOther)
