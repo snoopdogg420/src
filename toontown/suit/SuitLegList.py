@@ -34,6 +34,8 @@ class SuitLeg:
         self.pointA = pointA
         self.pointB = pointB
         self.type = type
+        distance = (self.getPosB() - self.getPosA()).length()
+        self.legTime = distance / ToontownGlobals.SuitWalkSpeed
 
     def getZoneId(self):
         return self.zoneId
@@ -42,8 +44,7 @@ class SuitLeg:
         return self.startTime
 
     def getLegTime(self):
-        distance = (self.getPosB() - self.getPosA()).length()
-        return distance / ToontownGlobals.SuitWalkSpeed
+        return self.legTime
 
     def getBlockNumber(self):
         return self.blockNumber
@@ -149,6 +150,8 @@ class SuitLegList:
         return self.legs[index].getPointB()
 
     def getStartTime(self, index):
+        if index < (self.getNumLegs() - 1):
+            return self.legs[index].getStartTime()
         startTime = 0.0
         for legIndex in xrange(self.getNumLegs()):
             if legIndex == index:
@@ -158,7 +161,7 @@ class SuitLegList:
 
     def getLegIndexAtTime(self, time, startLeg):
         endTime = 0.0
-        for legIndex in xrange(self.getNumLegs()):
+        for legIndex in xrange(startLeg, self.getNumLegs()):
             endTime += self.getLegTime(legIndex)
             if endTime > time:
                 break
