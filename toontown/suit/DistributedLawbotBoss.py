@@ -101,7 +101,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.juryMovesSfx = loader.loadSfx('phase_11/audio/sfx/LB_jury_moves.ogg')
         self.toonUpSfx = loader.loadSfx('phase_11/audio/sfx/LB_toonup.ogg')
         self.strafeSfx = []
-        for i in range(10):
+        for i in xrange(10):
             self.strafeSfx.append(loader.loadSfx('phase_3.5/audio/sfx/SA_shred.ogg'))
 
         render.setTag('pieCode', str(ToontownGlobals.PieCodeNotBossCog))
@@ -217,7 +217,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def __gotLawyers(self, lawyers):
         self.lawyerRequest = None
         self.lawyers = lawyers
-        for i in range(len(self.lawyers)):
+        for i in xrange(len(self.lawyers)):
             suit = self.lawyers[i]
             suit.fsm.request('neutral')
             suit.loop('neutral')
@@ -845,7 +845,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             self.toonsToBattlePosition(self.toonsB, self.battleBNode)
         base.playMusic(self.battleTwoMusic, looping=1, volume=0.9)
         self.startJuryBoxMoving()
-        for index in range(len(self.cannons)):
+        for index in xrange(len(self.cannons)):
             cannon = self.cannons[index]
             cannon.cannon.show()
 
@@ -1187,7 +1187,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def __toonsToPromotionPosition(self, toonIds, battleNode):
         self.notify.debug('----- __toonsToPromotionPosition')
         points = BattleBase.BattleBase.toonPoints[len(toonIds) - 1]
-        for i in range(len(toonIds)):
+        for i in xrange(len(toonIds)):
             toon = base.cr.doId2do.get(toonIds[i])
             if toon:
                 toon.reparentTo(render)
@@ -1312,7 +1312,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             spread = -spread
         dist = 50
         rate = time / numGears
-        for i in range(numGears):
+        for i in xrange(numGears):
             node = gearRoot.attachNewNode(str(i))
             node.hide()
             node.setPos(0, 0, 0)
@@ -1341,7 +1341,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
                 self.notify.warning('Not a collision node: %s' % repr(cnp))
                 break
             newCollideMask = newCollideMask | cn.getIntoCollideMask()
-            for i in range(cn.getNumSolids()):
+            for i in xrange(cn.getNumSolids()):
                 solid = cn.getSolid(i)
                 if isinstance(solid, CollisionPolygon):
                     plane = Plane(solid.getPlane())
@@ -1403,7 +1403,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         ival = Parallel()
         points = BattleBase.BattleBase.toonPoints[len(toonIds) - 1]
         self.notify.debug('walkToonsToBattlePosition: points = %s' % points[0][0])
-        for i in range(len(toonIds)):
+        for i in xrange(len(toonIds)):
             toon = base.cr.doId2do.get(toonIds[i])
             if toon:
                 pos, h = points[i]
@@ -1436,7 +1436,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             points = list(BattleBase.BattleBase.toonPoints[3])
             points.extend(BattleBase.BattleBase.toonPoints[len(toonIds) - 5])
         self.notify.debug('toonsToBattlePosition: points = %s' % points[0][0])
-        for i in range(len(toonIds)):
+        for i in xrange(len(toonIds)):
             toon = base.cr.doId2do.get(toonIds[i])
             if toon:
                 toon.wrtReparentTo(render)
@@ -1484,7 +1484,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         vertexWriter.addData3f(x2, y1, z2)
         vertexWriter.addData3f(x1, y2, z2)
         vertexWriter.addData3f(x2, y2, z2)
-        for index in range(8):
+        for index in xrange(8):
             normalWriter.addData3f(1.0, 1.0, 1.0)
             colorWriter.addData4f(r, g, b, a)
             texWriter.addData2f(1.0, 1.0)
@@ -1643,7 +1643,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         radius = 7
         numToons = len(self.involvedToons)
         center = (numToons - 1) / 2.0
-        for i in range(numToons):
+        for i in xrange(numToons):
             toon = self.cr.doId2do.get(self.involvedToons[i])
             if toon:
                 angle = 90 - 15 * (i - center)

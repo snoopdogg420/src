@@ -846,7 +846,7 @@ class DistributedVineGame(DistributedMinigame):
             swingSeq = curInfo[6]
             if swingSeq:
                 curFrame = -1
-                for i in range(len(swingSeq)):
+                for i in xrange(len(swingSeq)):
                     self.notify.debug('testing actor interval i=%d' % i)
                     actorIval = swingSeq[i]
                     if not actorIval.isStopped():

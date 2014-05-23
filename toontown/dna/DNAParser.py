@@ -921,7 +921,7 @@ class DNAFlatBuilding(DNANode): #TODO: finish me
             windowCollection.reparentTo(wallDecal)
             doorCollection.reparentTo(wallDecal)
             corniceCollection.reparentTo(wallDecal)
-            for i in range(wallHolder.getNumChildren()):
+            for i in xrange(wallHolder.getNumChildren()):
                 iNode = wallHolder.getChild(i)
                 iNode.clearTag('DNACode')
                 iNode.clearTag('DNARoot')

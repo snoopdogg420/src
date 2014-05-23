@@ -239,7 +239,7 @@ class SuitDNA(AvatarDNA.AvatarDNA):
         base = index * suitsPerDept
         offset = 0
         if level > 1:
-            for i in range(1, level):
+            for i in xrange(1, level):
                 offset = offset + suitsPerLevel[i - 1]
 
         bottom = base + offset

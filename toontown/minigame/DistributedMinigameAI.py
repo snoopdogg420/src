@@ -349,7 +349,7 @@ class DistributedMinigameAI(DistributedObjectAI.DistributedObjectAI):
         if self.metagameRound < TravelGameGlobals.FinalMetagameRoundIndex:
             newRound = self.metagameRound
             if not self.minigameId == ToontownGlobals.TravelGameId:
-                for index in range(len(scoreList)):
+                for index in xrange(len(scoreList)):
                     votesArray[index] += scoreList[index]
 
             self.notify.debug('votesArray = %s' % votesArray)

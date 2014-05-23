@@ -310,13 +310,13 @@ class Playground(Place.Place):
 
     def showTreasurePoints(self, points):
         self.hideDebugPointText()
-        for i in range(len(points)):
+        for i in xrange(len(points)):
             p = points[i]
             self.showDebugPointText(str(i), p)
 
     def showDropPoints(self, points):
         self.hideDebugPointText()
-        for i in range(len(points)):
+        for i in xrange(len(points)):
             p = points[i]
             self.showDebugPointText(str(i), p)
 
@@ -350,7 +350,7 @@ class Playground(Place.Place):
     def hideDebugPointText(self):
         if hasattr(self, 'debugText'):
             children = self.debugText.getChildren()
-            for i in range(children.getNumPaths()):
+            for i in xrange(children.getNumPaths()):
                 children[i].removeNode()
 
     def showDebugPointText(self, text, point):
@@ -661,7 +661,7 @@ class Playground(Place.Place):
 
     def makeDictionaries(self, dnaStore):
         self.nodeList = []
-        for i in range(dnaStore.getNumDNAVisGroups()):
+        for i in xrange(dnaStore.getNumDNAVisGroups()):
             groupFullName = dnaStore.getDNAVisGroupName(i)
             groupName = base.cr.hoodMgr.extractGroupName(groupFullName)
             groupNode = self.geom.find('**/' + groupFullName)
@@ -677,7 +677,7 @@ class Playground(Place.Place):
 
     def removeLandmarkBlockNodes(self):
         npc = self.geom.findAllMatches('**/suit_building_origin')
-        for i in range(npc.getNumPaths()):
+        for i in xrange(npc.getNumPaths()):
             npc.getPath(i).removeNode()
 
     def enterTFA(self, requestStatus):

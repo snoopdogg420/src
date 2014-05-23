@@ -67,7 +67,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
          State.State('sitting', self.enterSitting, self.exitSitting, ['off']),
          State.State('observing', self.enterObserving, self.exitObserving, ['off'])], 'off', 'off')
         self.fsm.enterInitialState()
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.seats.append(self.picnicTable.find('**/*seat%d' % (i + 1)))
             self.jumpOffsets.append(self.picnicTable.find('**/*jumpOut%d' % (i + 1)))
 
@@ -82,7 +82,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
 
     def announceGenerate(self):
         DistributedNode.DistributedNode.announceGenerate(self)
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.picnicTableSphereNodes.append(self.seats[i].attachNewNode(CollisionNode('picnicTable_sphere_%d_%d' % (self.getDoId(), i))))
             self.picnicTableSphereNodes[i].node().addSolid(CollisionSphere(0, 0, 0, 2))
 
@@ -483,18 +483,18 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
         self.cameraBoardTrack.start()
 
     def __enableCollisions(self):
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.accept('enterpicnicTable_sphere_%d_%d' % (self.getDoId(), i), self.handleEnterPicnicTableSphere, [i])
             self.picnicTableSphereNodes[i].setCollideMask(ToontownGlobals.WallBitmask)
 
         self.tableclothSphereNode.setCollideMask(ToontownGlobals.WallBitmask)
 
     def __disableCollisions(self):
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.ignore('enterpicnicTable_sphere_%d_%d' % (self.getDoId(), i))
             self.ignore('enterPicnicTableOK_%d_%d' % (self.getDoId(), i))
 
-        for i in range(self.numSeats):
+        for i in xrange(self.numSeats):
             self.picnicTableSphereNodes[i].setCollideMask(BitMask32(0))
 
         self.tableclothSphereNode.setCollideMask(BitMask32(0))

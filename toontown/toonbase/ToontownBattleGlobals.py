@@ -796,7 +796,7 @@ def getMoreXpHolidayMultiplier():
 
 def encodeUber(trackList):
     bitField = 0
-    for trackIndex in range(len(trackList)):
+    for trackIndex in xrange(len(trackList)):
         if trackList[trackIndex] > 0:
             bitField += pow(2, trackIndex)
 

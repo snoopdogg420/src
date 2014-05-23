@@ -580,7 +580,7 @@ class DistributedGolfCourseAI(DistributedObjectAI.DistributedObjectAI, FSM):
         if simbase.air.config.GetBool('golf-course-randomized', 1):
             retval = self.calcHolesToUseRandomized(self.courseId)
             self.notify.debug('randomized courses!')
-            for x in range(len(retval)):
+            for x in xrange(len(retval)):
                 self.notify.debug('Hole is: %s' % retval[x])
         else:
             validHoles = self.calcUniqueHoles(self.courseId)

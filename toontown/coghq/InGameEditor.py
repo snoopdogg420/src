@@ -93,7 +93,7 @@ class InGameEditor(AppShell):
         entTypes.sort()
         numEntities = len(entTypes)
         cascadeMenu = ''
-        for index in range(numEntities):
+        for index in xrange(numEntities):
             type = entTypes[index]
             if index % 10 == 0:
                 lastIndex = min(index + 9, numEntities - 1)

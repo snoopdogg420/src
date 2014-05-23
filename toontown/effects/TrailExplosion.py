@@ -32,7 +32,7 @@ class TrailExplosion(PooledEffect, EffectController):
         vels = None
         if self.numTrails >= 3 and self.numTrails <= 5:
             vels = self.trailsVel[self.numTrails - 3]
-        for i in range(self.numTrails):
+        for i in xrange(self.numTrails):
             self.trails.append(self.attachNewNode('trail'))
             vel = Vec3(0, 0, 0)
             if vels:

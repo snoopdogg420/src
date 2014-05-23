@@ -310,7 +310,7 @@ class DistributedCannonGame(DistributedMinigame):
             self.cannonDict[avId] = [cannon, barrel]
 
         numAvs = self.numPlayers
-        for i in range(numAvs):
+        for i in xrange(numAvs):
             avId = self.avIdList[i]
             self.cannonLocationDict[avId] = Point3(i * CANNON_X_SPACING - (numAvs - 1) * CANNON_X_SPACING / 2, CANNON_Y, CANNON_Z)
             if self.DEBUG_TOWER_RANGE:

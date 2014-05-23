@@ -18016,7 +18016,7 @@ def chooseBestQuests(tier, currentNpc, av):
     if numChoices == 0:
         numChoices = 1
     bestQuests = []
-    for i in range(numChoices):
+    for i in xrange(numChoices):
         if len(validQuestPool) == 0:
             break
         if len(rewards) == 0:
@@ -18650,7 +18650,7 @@ def getNextRewards(numChoices, tier, av):
         else:
             return [rewardTier[0]]
     rewardPool = rewardTier[:numChoices]
-    for i in range(len(rewardPool), numChoices * 2):
+    for i in xrange(len(rewardPool), numChoices * 2):
         if optRewards:
             optionalReward = seededRandomChoice(optRewards)
             optRewards.remove(optionalReward)
@@ -18665,7 +18665,7 @@ def getNextRewards(numChoices, tier, av):
             notify.debug('getNextRewards: no rewards left at all')
         return []
     finalRewardPool = [rewardPool.pop(0)]
-    for i in range(numChoices - 1):
+    for i in xrange(numChoices - 1):
         if len(rewardPool) == 0:
             break
         selectedReward = seededRandomChoice(rewardPool)
@@ -19740,7 +19740,7 @@ def avatarHasCompletedPhoneQuest(av):
 def avatarWorkingOnRequiredRewards(av):
     tier = av.getRewardTier()
     rewardList = list(getRewardsInTier(tier))
-    for i in range(len(rewardList)):
+    for i in xrange(len(rewardList)):
         actualRewardId = transformReward(rewardList[i], av)
         rewardList[i] = actualRewardId
 

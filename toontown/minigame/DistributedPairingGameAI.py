@@ -149,9 +149,9 @@ class DistributedPairingGameAI(DistributedMinigameAI):
         for oneToonFaceUpList in self.faceUpDict.values():
             faceUpList += oneToonFaceUpList
 
-        for i in range(len(faceUpList)):
+        for i in xrange(len(faceUpList)):
             cardA = faceUpList[i]
-            for j in range(i + 1, len(faceUpList)):
+            for j in xrange(i + 1, len(faceUpList)):
                 cardB = faceUpList[j]
                 if self.cards[cardA].rank == self.cards[cardB].rank:
                     return (cardA, cardB)

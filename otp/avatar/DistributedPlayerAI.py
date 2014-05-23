@@ -139,7 +139,7 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
         return self.adminAccess
 
     def extendFriendsList(self, friendId, friendCode):
-        for i in range(len(self.friendsList)):
+        for i in xrange(len(self.friendsList)):
             friendPair = self.friendsList[i]
             if friendPair[0] == friendId:
                 self.friendsList[i] = (friendId, friendCode)

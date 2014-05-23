@@ -84,7 +84,7 @@ class DistributedGagTree(DistributedPlantBase.DistributedPlantBase):
         self.model.reparentTo(self.rotateNode)
         if self.isFruiting() and not self.isWilted():
             self.fruits = []
-            for i in range(1, self.maxFruit + 1):
+            for i in xrange(1, self.maxFruit + 1):
                 pos = self.model.find('**/locator' + str(i))
                 if pos and not pos.isEmpty():
                     fruit = self.prop.copyTo(self.model)
@@ -342,7 +342,7 @@ class DistributedGagTree(DistributedPlantBase.DistributedPlantBase):
         picker.traverse(render)
         if queue.getNumEntries() > 0:
             queue.sortEntries()
-            for index in range(queue.getNumEntries()):
+            for index in xrange(queue.getNumEntries()):
                 entry = queue.getEntry(index)
                 if DistributedLawnDecor.recurseParent(entry.getIntoNode(), 'terrain_DNARoot'):
                     self.signModel.wrtReparentTo(render)
@@ -370,7 +370,7 @@ class DistributedGagTree(DistributedPlantBase.DistributedPlantBase):
                     levelsInTrack.append(curLevel)
                     levelTreeDict[curLevel] = gagTree
 
-        for levelToTest in range(myLevel):
+        for levelToTest in xrange(myLevel):
             if levelToTest not in levelsInTrack:
                 return False
             curTree = levelTreeDict[levelToTest]

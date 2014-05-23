@@ -192,7 +192,7 @@ class Lexer:
 
         for key, lre in self.lexstatere.items():
              titem = []
-             for i in range(len(lre)):
+             for i in xrange(len(lre)):
                   titem.append((self.lexstateretext[key][i],_funcs_to_names(lre[i][1],self.lexstaterenames[key][i])))
              tabre[key] = titem
 
@@ -235,7 +235,7 @@ class Lexer:
         for key,lre in lextab._lexstatere.items():
              titem = []
              txtitem = []
-             for i in range(len(lre)):
+             for i in xrange(len(lre)):
                   titem.append((re.compile(lre[i][0],lextab._lexreflags | re.VERBOSE),_names_to_funcs(lre[i][1],fdict)))
                   txtitem.append(lre[i][0])
              self.lexstatere[key] = titem
@@ -521,7 +521,7 @@ def _form_master_re(relist,reflags,ldict,toknames):
 def _statetoken(s,names):
     nonstate = 1
     parts = s.split("_")
-    for i in range(1,len(parts)):
+    for i in xrange(1,len(parts)):
          if not parts[i] in names and parts[i] != 'ANY': break
     if i > 1:
        states = tuple(parts[1:i])
@@ -956,7 +956,7 @@ def lex(module=None,object=None,debug=0,optimize=0,lextab="lextab",reflags=0,now
         lexobj.lexstateretext[state] = re_text
         lexobj.lexstaterenames[state] = re_names
         if debug:
-            for i in range(len(re_text)):
+            for i in xrange(len(re_text)):
                 debuglog.info("lex: state '%s' : regex[%d] = '%s'",state, i, re_text[i])
 
     # For inclusive states, we need to add the regular expressions from the INITIAL state

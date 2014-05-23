@@ -37,7 +37,7 @@ class LevelMgr(LevelMgrBase.LevelMgrBase):
 
     def privAssignZoneIds(self):
         self.zoneNums.sort()
-        for i in range(len(self.zoneNums)):
+        for i in xrange(len(self.zoneNums)):
             zoneNum = self.zoneNums[i]
             zoneEnt = self.level.getEntity(zoneNum)
             zoneId = self.level.zoneIds[i]

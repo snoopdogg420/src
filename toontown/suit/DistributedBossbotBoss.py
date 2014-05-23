@@ -401,7 +401,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         radius = 9
         numToons = len(self.involvedToons)
         center = (numToons - 1) / 2.0
-        for i in range(numToons):
+        for i in xrange(numToons):
             toon = self.cr.doId2do.get(self.involvedToons[i])
             if toon:
                 angle = 90 - 25 * (i - center)
@@ -854,7 +854,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         radius = 7
         numToons = len(self.involvedToons)
         center = (numToons - 1) / 2.0
-        for i in range(numToons):
+        for i in xrange(numToons):
             toon = self.cr.doId2do.get(self.involvedToons[i])
             if toon:
                 angle = 90 - 15 * (i - center)
@@ -882,7 +882,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             if not self.twoFaced:
                 neutral = 'Ff_neutral'
             gearTrack = Parallel()
-            for i in range(4):
+            for i in xrange(4):
                 nodeName = '%s-%s' % (str(i), globalClock.getFrameTime())
                 node = gearRoot.attachNewNode(nodeName)
                 node.hide()
@@ -1295,7 +1295,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             if not self.twoFaced:
                 neutral = 'Ff_neutral'
             gearTrack = Parallel()
-            for i in range(5):
+            for i in xrange(5):
                 nodeName = '%s-%s' % (str(i), globalClock.getFrameTime())
                 node = gearRoot.attachNewNode(nodeName)
                 node.hide()
@@ -1384,7 +1384,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             ballLaunch.reparentTo(gearRoot)
             ballLaunch.setPos(self.BallLaunchOffset)
             gearTrack = Parallel()
-            for i in range(5):
+            for i in xrange(5):
                 nodeName = '%s-%s' % (str(i), globalClock.getFrameTime())
                 node = gearRoot.attachNewNode(nodeName)
                 node.hide()
@@ -1497,7 +1497,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             if not self.twoFaced:
                 neutral = 'Ff_neutral'
             gearTrack = Parallel()
-            for i in range(4):
+            for i in xrange(4):
                 node = gearRoot.attachNewNode(str(i))
                 node.hide()
                 node.setPos(0, 5.85, 4.0)

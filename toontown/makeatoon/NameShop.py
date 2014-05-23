@@ -460,7 +460,7 @@ class NameShop(StateData.StateData):
         self.approvalDialog.buttonList[0].setPos(0, 0, -.3)
         self.approvalDialog.buttonList[1].setPos(0, 0, -.43)
         self.approvalDialog['image_scale'] = (0.8, 1, 0.77)
-        for x in range(0, 2):
+        for x in xrange(0, 2):
             self.approvalDialog.buttonList[x]['text_pos'] = (0, -.01)
             self.approvalDialog.buttonList[x]['text_scale'] = (0.04, 0.05999)
             self.approvalDialog.buttonList[x].setScale(1.2, 1, 1)

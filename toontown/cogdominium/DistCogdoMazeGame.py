@@ -45,7 +45,7 @@ class DistCogdoMazeGame(DistCogdoGame, DistCogdoMazeGameBase):
         bossCode = None
         if self._numSuits[0] > 0:
             bossCode = ''
-            for u in range(self._numSuits[0]):
+            for u in xrange(self._numSuits[0]):
                 bossCode += '%X' % self.randomNumGen.randint(0, 15)
 
         self.game.load(mazeFactory, self._numSuits, bossCode)

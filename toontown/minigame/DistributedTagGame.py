@@ -114,7 +114,7 @@ class DistributedTagGame(DistributedMinigame):
             self.acceptTagEvent(avId)
 
         myPos = self.avIdList.index(self.localAvId)
-        for i in range(self.numPlayers):
+        for i in xrange(self.numPlayers):
             avId = self.avIdList[i]
             avatar = self.getAvatar(avId)
             if avatar:
@@ -141,7 +141,7 @@ class DistributedTagGame(DistributedMinigame):
 
     def enterPlay(self):
         self.notify.debug('enterPlay')
-        for i in range(self.numPlayers):
+        for i in xrange(self.numPlayers):
             avId = self.avIdList[i]
             avName = self.getAvatarName(avId)
             scorePanel = MinigameAvatarScorePanel.MinigameAvatarScorePanel(avId, avName)
@@ -228,7 +228,7 @@ class DistributedTagGame(DistributedMinigame):
         spinTrack = LerpHprInterval(toon.getGeomNode(), duration, Point3(0, 0, 0), startHpr=Point3(-5.0 * 360.0, 0, 0), blendType='easeOut')
         growTrack = Parallel()
         gs = 2.5
-        for hi in range(toon.headParts.getNumPaths()):
+        for hi in xrange(toon.headParts.getNumPaths()):
             head = toon.headParts[hi]
             growTrack.append(LerpScaleInterval(head, duration, Point3(gs, gs, gs)))
 
@@ -259,7 +259,7 @@ class DistributedTagGame(DistributedMinigame):
         if self.IT:
             it = self.getAvatar(self.IT)
             shrinkTrack = Parallel()
-            for hi in range(it.headParts.getNumPaths()):
+            for hi in xrange(it.headParts.getNumPaths()):
                 head = it.headParts[hi]
                 scale = ToontownGlobals.toonHeadScales[it.style.getAnimal()]
                 shrinkTrack.append(LerpScaleInterval(head, duration, scale))
@@ -282,5 +282,5 @@ class DistributedTagGame(DistributedMinigame):
         if not self.hasLocalToon:
             return
         self.notify.debug('setTreasureScore: %s' % scores)
-        for i in range(len(self.scorePanels)):
+        for i in xrange(len(self.scorePanels)):
             self.scorePanels[i].setScore(scores[i])

@@ -76,14 +76,14 @@ def pickSuitAttack(attacks, suitLevel):
     if configAttackName == 'random':
         return attackNum
     elif configAttackName == 'sequence':
-        for i in range(len(attacks)):
+        for i in xrange(len(attacks)):
             if not debugAttackSequence.has_key(attacks[i]):
                 debugAttackSequence[attacks[i]] = 1
                 return i
 
         return attackNum
     else:
-        for i in range(len(attacks)):
+        for i in xrange(len(attacks)):
             if attacks[i][0] == configAttackName:
                 return i
 

@@ -64,7 +64,7 @@ class DistributedElevatorFloorAI(DistributedElevatorFSMAI.DistributedElevatorFSM
         DistributedElevatorFSMAI.DistributedElevatorFSMAI.generateWithRequired(self, self.zoneId)
 
     def delete(self):
-        for seatIndex in range(len(self.seats)):
+        for seatIndex in xrange(len(self.seats)):
             avId = self.seats[seatIndex]
             if avId:
                 self.clearFullNow(seatIndex)
@@ -148,7 +148,7 @@ class DistributedElevatorFloorAI(DistributedElevatorFSMAI.DistributedElevatorFSM
 
     def enterWaitEmpty(self):
         self.lastState = self.state
-        for i in range(len(self.seats)):
+        for i in xrange(len(self.seats)):
             self.seats[i] = None
         print self.seats
         if self.wantState == 'closed':
@@ -213,7 +213,7 @@ class DistributedElevatorFloorAI(DistributedElevatorFSMAI.DistributedElevatorFSM
                     players.append(i)
                     continue
             sittingAvIds = []
-            for seatIndex in range(len(self.seats)):
+            for seatIndex in xrange(len(self.seats)):
                 avId = self.seats[seatIndex]
                 if avId:
                     sittingAvIds.append(avId)

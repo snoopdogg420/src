@@ -90,7 +90,7 @@ class CharWalkState(StateData.StateData):
         if raycast:
             track.append(Func(nodePath.enableRaycast, 1))
         startHpr = nodePath.getHpr()
-        for pointIndex in range(len(posPoints) - 1):
+        for pointIndex in xrange(len(posPoints) - 1):
             startPoint = posPoints[pointIndex]
             endPoint = posPoints[pointIndex + 1]
             track.append(Func(nodePath.setPos, startPoint))

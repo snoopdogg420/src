@@ -122,7 +122,7 @@ class DistributedRace(DistributedObject.DistributedObject):
         localAvatar.d_broadcastPositionNow()
         DistributedSmoothNode.activateSmoothing(1, 1)
         self.reversed = self.trackId / 2.0 > int(self.trackId / 2.0)
-        for i in range(3):
+        for i in xrange(3):
             base.loader.tick()
 
         self.sky = loader.loadModel('phase_3.5/models/props/TT_sky')
@@ -136,7 +136,7 @@ class DistributedRace(DistributedObject.DistributedObject):
             self.loadFog()
         self.setupGeom()
         self.startSky()
-        for i in range(5):
+        for i in xrange(5):
             base.loader.tick()
 
     def disable(self):
@@ -422,7 +422,7 @@ class DistributedRace(DistributedObject.DistributedObject):
             self.spin = Vec3(180, 0, 0)
         else:
             self.spin = Vec3(0, 0, 0)
-        for i in range(4):
+        for i in xrange(4):
             base.loader.tick()
 
         self.gui.initRaceMode()
@@ -775,7 +775,7 @@ class DistributedRace(DistributedObject.DistributedObject):
             self.buildingGroups[side] = []
             self.currBldgInd[side] = None
             self.currBldgGroups[side] = None
-            for i in range(maxNum):
+            for i in xrange(maxNum):
                 for barricade in ('innerbarricade', 'outerbarricade'):
                     bldgGroup = self.townGeom.find('**/Buildings_' + side + '-' + barricade + '_' + str(i))
                     if bldgGroup.isEmpty():
@@ -916,7 +916,7 @@ class DistributedRace(DistributedObject.DistributedObject):
     def setupGeom(self):
         trackFilepath = RaceGlobals.TrackDict[self.trackId][0]
         self.geom = loader.loadModel(trackFilepath)
-        for i in range(10):
+        for i in xrange(10):
             base.loader.tick()
 
         self.geom.reparentTo(render)
@@ -926,12 +926,12 @@ class DistributedRace(DistributedObject.DistributedObject):
             lapStartPos = self.geom.find('**/lap_start').getPos()
         self.startPos = lapStartPos
         lapMidPos = self.geom.find('**/lap_middle').getPos()
-        for i in range(5):
+        for i in xrange(5):
             base.loader.tick()
 
         self.startingPos = []
         posLocators = self.geom.findAllMatches('**/start_pos*')
-        for i in range(posLocators.getNumPaths()):
+        for i in xrange(posLocators.getNumPaths()):
             base.loader.tick()
             self.startingPos.append([posLocators[i].getPos(), posLocators[i].getHpr()])
 
@@ -945,35 +945,35 @@ class DistributedRace(DistributedObject.DistributedObject):
             self.curve = self.geom.find('**/curve_reverse').node()
         else:
             self.curve = self.geom.find('**/curve_forward').node()
-        for i in range(4000):
+        for i in xrange(4000):
             self.curvePoints.append(Point3(0, 0, 0))
             self.curve.getPoint(i / 4000.0 * (self.curve.getMaxT() - 1e-11), self.curvePoints[-1])
             self.curveTs.append(i / 4000.0 * (self.curve.getMaxT() - 1e-11))
 
         if self.trackId in (RaceGlobals.RT_Urban_2, RaceGlobals.RT_Urban_2_rev):
             self.precomputeSideStreets()
-        for i in range(10):
+        for i in xrange(10):
             base.loader.tick()
 
         self.startT = self.getNearestT(lapStartPos)
         self.midT = self.getNearestT(lapMidPos)
         self.gags = []
         gagList = RaceGlobals.TrackDict[self.trackId][4]
-        for i in range(len(gagList)):
+        for i in xrange(len(gagList)):
             self.notify.debug('generating gag: %s' % i)
             self.gags.append(RaceGag(self, i, Vec3(*gagList[i]) + Vec3(0, 0, 3)))
 
-        for i in range(5):
+        for i in xrange(5):
             base.loader.tick()
 
     def precomputeSideStreets(self):
         farDist = base.camLens.getFar() + 300
         farDistSquared = farDist * farDist
-        for i in range(int(self.barricadeSegments)):
+        for i in xrange(int(self.barricadeSegments)):
             testPoint = Point3(0, 0, 0)
             self.curve.getPoint(i / self.barricadeSegments * (self.curve.getMaxT() - 1e-11), testPoint)
             for side in ('innersidest', 'outersidest'):
-                for bldgGroupIndex in range(len(self.buildingGroups[side])):
+                for bldgGroupIndex in xrange(len(self.buildingGroups[side])):
                     bldgGroup = self.buildingGroups[side][bldgGroupIndex]
                     if not bldgGroup.getNode(0).getBounds().isEmpty():
                         bldgPoint = bldgGroup.getNode(0).getBounds().getCenter()
@@ -1022,7 +1022,7 @@ class DistributedRace(DistributedObject.DistributedObject):
         minIndex = -1
         currPoint = Point3(0, 0, 0)
         kartPoint = self.localKart.getPos()
-        for i in range(len(self.curvePoints)):
+        for i in xrange(len(self.curvePoints)):
             currPoint = self.curvePoints[i]
             currLength2 = (kartPoint - currPoint).lengthSquared()
             if currLength2 < minLength2:
@@ -1049,7 +1049,7 @@ class DistributedRace(DistributedObject.DistributedObject):
         minLength2 = 1000000
         minIndex = -1
         currPoint = Point3(0, 0, 0)
-        for i in range(len(self.curvePoints)):
+        for i in xrange(len(self.curvePoints)):
             currPoint = self.curvePoints[i]
             currLength2 = (pos - currPoint).lengthSquared()
             if currLength2 < minLength2:

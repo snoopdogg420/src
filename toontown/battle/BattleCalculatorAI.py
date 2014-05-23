@@ -116,7 +116,7 @@ class BattleCalculatorAI:
                 return (0, 0)
         elif atkTrack == DROP:
             allLured = True
-            for i in range(len(atkTargets)):
+            for i in xrange(len(atkTargets)):
                 if self.__suitIsLured(atkTargets[i].getDoId()):
                     pass
                 else:
@@ -412,7 +412,7 @@ class BattleCalculatorAI:
         validTargetAvail = 0
         lureDidDamage = 0
         currLureId = -1
-        for currTarget in range(len(targetList)):
+        for currTarget in xrange(len(targetList)):
             attackLevel = -1
             attackTrack = None
             attackDamage = 0
@@ -620,7 +620,7 @@ class BattleCalculatorAI:
     def __calcToonAccBonus(self, attackKey):
         numPrevHits = 0
         attackIdx = self.toonAtkOrder.index(attackKey)
-        for currPrevAtk in range(attackIdx - 1, -1, -1):
+        for currPrevAtk in xrange(attackIdx - 1, -1, -1):
             attack = self.battle.toonAttacks[attackKey]
             atkTrack, atkLevel = self.__getActualTrackLevel(attack)
             prevAttackKey = self.toonAtkOrder[currPrevAtk]
@@ -641,7 +641,7 @@ class BattleCalculatorAI:
         track = self.__getActualTrack(attack)
         if track != NO_ATTACK and track != SOS and track != TRAP and track != NPCSOS:
             targets = self.__getToonTargets(attack)
-            for position in range(len(targets)):
+            for position in xrange(len(targets)):
                 if hpbonus:
                     if targets[position] in self.__createToonTargetList(toonId):
                         damageDone = attack[TOON_HPBONUS_COL]
@@ -850,7 +850,7 @@ class BattleCalculatorAI:
             self.battle.toonAttacks[attackIdx] = getToonAttack(attackIdx)
             longest = max(len(self.battle.activeToons), len(self.battle.activeSuits))
             taList = self.battle.toonAttacks
-            for j in range(longest):
+            for j in xrange(longest):
                 taList[attackIdx][TOON_HP_COL].append(-1)
                 taList[attackIdx][TOON_KBBONUS_COL].append(-1)
 
@@ -1158,7 +1158,7 @@ class BattleCalculatorAI:
     def __calcSuitAtkHp(self, attackIndex):
         targetList = self.__createSuitTargetList(attackIndex)
         attack = self.battle.suitAttacks[attackIndex]
-        for currTarget in range(len(targetList)):
+        for currTarget in xrange(len(targetList)):
             toonId = targetList[currTarget]
             toon = self.battle.getToon(toonId)
             result = 0
@@ -1230,7 +1230,7 @@ class BattleCalculatorAI:
         self.notify.debug('\n')
 
     def __calculateSuitAttacks(self):
-        for i in range(len(self.battle.suitAttacks)):
+        for i in xrange(len(self.battle.suitAttacks)):
             if i < len(self.battle.activeSuits):
                 suitId = self.battle.activeSuits[i].doId
                 self.battle.suitAttacks[i][SUIT_ID_COL] = suitId
@@ -1305,7 +1305,7 @@ class BattleCalculatorAI:
         for atk in attacks:
             self.toonAtkOrder.append(atk[TOON_ID_COL])
 
-        for track in range(HEAL, DROP + 1):
+        for track in xrange(HEAL, DROP + 1):
             attacks = findToonAttack(self.battle.activeToons, self.battle.toonAttacks, track)
             if track == TRAP:
                 sortedTraps = []
@@ -1353,12 +1353,12 @@ class BattleCalculatorAI:
     def calculateRound(self):
         longest = max(len(self.battle.activeToons), len(self.battle.activeSuits))
         for t in self.battle.activeToons:
-            for j in range(longest):
+            for j in xrange(longest):
                 self.battle.toonAttacks[t][TOON_HP_COL].append(-1)
                 self.battle.toonAttacks[t][TOON_KBBONUS_COL].append(-1)
 
-        for i in range(4):
-            for j in range(len(self.battle.activeToons)):
+        for i in xrange(4):
+            for j in xrange(len(self.battle.activeToons)):
                 self.battle.suitAttacks[i][SUIT_HP_COL].append(-1)
 
         toonsHit, cogsMiss = self.__initRound()

@@ -51,7 +51,7 @@ class OZHoodAI(HoodAI.HoodAI):
         picnicTables = []
         if isinstance(dnaGroup, DNAGroup) and ('picnic_table' in dnaGroup.getName()):
             nameInfo = dnaGroup.getName().split('_')
-            for i in range(dnaGroup.getNumChildren()):
+            for i in xrange(dnaGroup.getNumChildren()):
                 childDnaGroup = dnaGroup.at(i)
                 if 'picnic_table' in childDnaGroup.getName():
                     pos = childDnaGroup.getPos()
@@ -63,7 +63,7 @@ class OZHoodAI(HoodAI.HoodAI):
                     picnicTables.append(picnicTable)
         elif isinstance(dnaGroup, DNAVisGroup) and (not overrideDNAZone):
             zoneId = ZoneUtil.getTrueZoneId(int(dnaGroup.getName().split(':')[0]), zoneId)
-        for i in range(dnaGroup.getNumChildren()):
+        for i in xrange(dnaGroup.getNumChildren()):
             foundPicnicTables = self.findPicnicTables(
                 dnaGroup.at(i), zoneId, area, overrideDNAZone=overrideDNAZone)
             picnicTables.extend(foundPicnicTables)
@@ -85,7 +85,7 @@ class OZHoodAI(HoodAI.HoodAI):
     def findGameTables(self, dnaGroup, zoneId, area, overrideDNAZone=False):
         gameTables = []
         if isinstance(dnaGroup, DNAGroup) and ('game_table' in dnaGroup.getName()):
-            for i in range(dnaGroup.getNumChildren()):
+            for i in xrange(dnaGroup.getNumChildren()):
                 childDnaGroup = dnaGroup.at(i)
                 if 'game_table' in childDnaGroup.getName():
                     pos = childDnaGroup.getPos()
@@ -95,7 +95,7 @@ class OZHoodAI(HoodAI.HoodAI):
                     gameTable.generateWithRequired(zoneId)
         elif isinstance(dnaGroup, DNAVisGroup) and (not overrideDNAZone):
             zoneId = ZoneUtil.getTrueZoneId(int(dnaGroup.getName().split(':')[0]), zoneId)
-        for i in range(dnaGroup.getNumChildren()):
+        for i in xrange(dnaGroup.getNumChildren()):
             foundGameTables = self.findGameTables(
                 dnaGroup.at(i), zoneId, area, overrideDNAZone=overrideDNAZone)
             gameTables.extend(foundGameTables)

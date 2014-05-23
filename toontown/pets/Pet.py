@@ -281,7 +281,7 @@ class Pet(Avatar.Avatar):
         self.moodIcons.setScale(2.0)
         self.moodIcons.setZ(3.65)
         moods = moodIcons.findAllMatches('**/+GeomNode')
-        for moodNum in range(0, moods.getNumPaths()):
+        for moodNum in xrange(0, moods.getNumPaths()):
             mood = moods.getPath(moodNum)
             mood.reparentTo(self.moodIcons)
             mood.setBillboardPointEye()
@@ -650,7 +650,7 @@ def gridPets():
     offsetX = 0
     offsetY = 0
     startPos = base.localAvatar.getPos()
-    for body in range(0, len(BodyTypes)):
+    for body in xrange(0, len(BodyTypes)):
         colors = getColors(body)
         for color in colors:
             p = Pet()

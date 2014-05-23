@@ -31,7 +31,7 @@ class DistributedGagshopInterior(DistributedObject.DistributedObject):
     def replaceRandomInModel(self, model):
         baseTag = 'random_'
         npc = model.findAllMatches('**/' + baseTag + '???_*')
-        for i in range(npc.getNumPaths()):
+        for i in xrange(npc.getNumPaths()):
             np = npc.getPath(i)
             name = np.getName()
             b = len(baseTag)

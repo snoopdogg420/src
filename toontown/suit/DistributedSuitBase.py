@@ -298,7 +298,7 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
     def makePathTrack(self, nodePath, posPoints, velocity, name):
         track = Sequence(name=name)
         restOfPosPoints = posPoints[1:]
-        for pointIndex in range(len(posPoints) - 1):
+        for pointIndex in xrange(len(posPoints) - 1):
             startPoint = posPoints[pointIndex]
             endPoint = posPoints[pointIndex + 1]
             track.append(Func(nodePath.headsUp, endPoint[0], endPoint[1], endPoint[2]))

@@ -33,7 +33,7 @@ WateringMult = 2
 
 def getWateringCanPower(wateringCan, wateringCanSkill):
     numBoxes = 0
-    for curWateringCan in range(wateringCan + 1):
+    for curWateringCan in xrange(wateringCan + 1):
         wateringCanAttrib = WateringCanAttributes[curWateringCan]
         curBoxes = wateringCanAttrib['numBoxes']
         skill = wateringCanAttrib['skillPts']
@@ -308,7 +308,7 @@ def getTreeTypeIndex(track, level):
 
 
 NUM_GAGS = 7 * 7
-for i in range(NUM_GAGS):
+for i in xrange(NUM_GAGS):
     track, level = getTreeTrackAndLevel(i)
     if level <= 6:
         name = TTLocalizer.BattleGlobalAvPropStrings[track][level] + TTLocalizer.GardenGagTree
@@ -494,7 +494,7 @@ ShovelAttributes = {0: {'numBoxes': 2,
 
 def getShovelPower(shovel, shovelSkill):
     numBoxes = 0
-    for curShovel in range(shovel + 1):
+    for curShovel in xrange(shovel + 1):
         shovelAttrib = ShovelAttributes[curShovel]
         curBoxes = shovelAttrib['numBoxes']
         skill = shovelAttrib['skillPts']
@@ -597,7 +597,7 @@ def getSpeciesVarietyGivenRecipe(recipeKey):
         if attrib['plantType'] == GAG_TREE_TYPE:
             continue
         if attrib.has_key('varieties'):
-            for variety in range(len(attrib['varieties'])):
+            for variety in xrange(len(attrib['varieties'])):
                 if attrib['varieties'][variety][0] == recipeKey:
                     return (species, variety)
 
@@ -652,7 +652,7 @@ def validateRecipes(notify):
 def validatePlantAttributes(notify):
     uniqueRecipes = []
     flowerRecipeDistribution = []
-    for i in range(getNumberOfShovelBoxes() + 1):
+    for i in xrange(getNumberOfShovelBoxes() + 1):
         flowerRecipeDistribution.append([])
 
     for key in PlantAttributes.keys():
@@ -674,7 +674,7 @@ def validatePlantAttributes(notify):
                     newInfo = (getFlowerVarietyName(key, list(varieties).index(variety)), Recipes[recipeNum]['beans'], TTLocalizer.FlowerColorStrings[variety[1]])
                     flowerRecipeDistribution[recipeLength].append(newInfo)
 
-    for numBeans in range(len(flowerRecipeDistribution)):
+    for numBeans in xrange(len(flowerRecipeDistribution)):
         notify.debug('%d flowers with %d beans' % (len(flowerRecipeDistribution[numBeans]), numBeans))
         for flower in flowerRecipeDistribution[numBeans]:
             notify.debug('    %s,  beans = %s, color=%s' % (flower[0], flower[1], flower[2]))

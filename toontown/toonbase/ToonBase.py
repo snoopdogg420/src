@@ -34,7 +34,7 @@ class ToonBase(OTPBase.OTPBase):
         # resolution:
         self.resList = []
         displayInfo = self.pipe.getDisplayInformation()
-        for i in range(displayInfo.getTotalDisplayModes()):
+        for i in xrange(displayInfo.getTotalDisplayModes()):
             width = displayInfo.getDisplayModeWidth(i)
             height = displayInfo.getDisplayModeHeight(i)
             if (width, height) not in self.resList:

@@ -112,7 +112,7 @@ class DistributedToonStatuary(DistributedStatuary.DistributedStatuary):
                 if sleeves:
                     sleeves.setTexture(desatSleeveTex, 1)
                 bottoms = torso.findAllMatches('**/torso-bot*')
-                for bottomNum in range(0, bottoms.getNumPaths()):
+                for bottomNum in xrange(0, bottoms.getNumPaths()):
                     bottom = bottoms.getPath(bottomNum)
                     if bottom:
                         if self.toon.style.torso[1] == 's':

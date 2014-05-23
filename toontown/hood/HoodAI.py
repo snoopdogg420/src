@@ -93,7 +93,7 @@ class HoodAI:
             fishingPonds.append(fishingPond)
         elif isinstance(dnaGroup, DNAVisGroup):
             zoneId = ZoneUtil.getTrueZoneId(int(dnaGroup.getName().split(':')[0]), zoneId)
-        for i in range(dnaGroup.getNumChildren()):
+        for i in xrange(dnaGroup.getNumChildren()):
             (foundFishingPonds, foundFishingPondGroups) = self.findFishingPonds(dnaGroup.at(i), zoneId, area)
             fishingPonds.extend(foundFishingPonds)
             fishingPondGroups.extend(foundFishingPondGroups)
@@ -110,7 +110,7 @@ class HoodAI:
             fishingSpot.generateWithRequired(fishingPond.zoneId)
 
             fishingSpots.append(fishingSpot)
-        for i in range(dnaGroup.getNumChildren()):
+        for i in xrange(dnaGroup.getNumChildren()):
             foundFishingSpots = self.findFishingSpots(dnaGroup.at(i), fishingPond)
             fishingSpots.extend(foundFishingSpots)
         return fishingSpots
@@ -140,7 +140,7 @@ class HoodAI:
             partyGate.generateWithRequired(zoneId)
 
             partyGates.append(partyGates)
-        for i in range(dnaGroup.getNumChildren()):
+        for i in xrange(dnaGroup.getNumChildren()):
             foundPartyGates = self.findPartyGates(dnaGroup.at(i), zoneId)
             partyGates.extend(foundPartyGates)
         return partyGates

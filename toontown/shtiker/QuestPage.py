@@ -48,7 +48,7 @@ class QuestPage(ShtikerPage.ShtikerPage):
           0,
           0))
         self.questFrames = []
-        for i in range(ToontownGlobals.MaxQuestCarryLimit):
+        for i in xrange(ToontownGlobals.MaxQuestCarryLimit):
             frame = QuestBookPoster.QuestBookPoster(reverse=i > 1, mapIndex=i + 1)
             frame.reparentTo(self)
             frame.setPosHpr(*questFramePlaceList[i])
@@ -84,7 +84,7 @@ class QuestPage(ShtikerPage.ShtikerPage):
         self.quests[index] = questDesc
 
     def getLowestUnusedIndex(self):
-        for i in range(ToontownGlobals.MaxQuestCarryLimit):
+        for i in xrange(ToontownGlobals.MaxQuestCarryLimit):
             if self.quests[i] == None:
                 return i
 
@@ -94,7 +94,7 @@ class QuestPage(ShtikerPage.ShtikerPage):
         self.notify.debug('updatePage()')
         newQuests = base.localAvatar.quests
         carryLimit = base.localAvatar.getQuestCarryLimit()
-        for i in range(ToontownGlobals.MaxQuestCarryLimit):
+        for i in xrange(ToontownGlobals.MaxQuestCarryLimit):
             if i < carryLimit:
                 self.questFrames[i].show()
             else:
@@ -143,7 +143,7 @@ class QuestPage(ShtikerPage.ShtikerPage):
         if self.onscreen or base.localAvatar.invPage.onscreen:
             return
         self.onscreen = 1
-        for i in range(ToontownGlobals.MaxQuestCarryLimit):
+        for i in xrange(ToontownGlobals.MaxQuestCarryLimit):
             if hasattr(self.questFrames[i], 'mapIndex'):
                 self.questFrames[i].mapIndex.show()
 
@@ -160,7 +160,7 @@ class QuestPage(ShtikerPage.ShtikerPage):
         if not self.onscreen:
             return
         self.onscreen = 0
-        for i in range(ToontownGlobals.MaxQuestCarryLimit):
+        for i in xrange(ToontownGlobals.MaxQuestCarryLimit):
             if hasattr(self.questFrames[i], 'mapIndex'):
                 self.questFrames[i].mapIndex.hide()
 

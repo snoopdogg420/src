@@ -37,13 +37,13 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         if store:
             numVisGroups = store.getNumDNAVisGroupsAI()
             myVisGroup = None
-            for index in range(numVisGroups):
+            for index in xrange(numVisGroups):
                 if store.getDNAVisGroupAI(index).getName() == str(self.zoneId):
                     myVisGroup = store.getDNAVisGroupAI(index)
 
             if myVisGroup:
                 numVisibles = myVisGroup.getNumVisibles()
-                for index in range(numVisibles):
+                for index in xrange(numVisibles):
                     newVisible = myVisGroup.getVisibleName(index)
                     self.visibleZones.append(int(newVisible))
 

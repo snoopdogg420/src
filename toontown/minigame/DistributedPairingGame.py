@@ -123,7 +123,7 @@ class DistributedPairingGame(DistributedMinigame):
         self.matchSfx = base.loadSfx('phase_4/audio/sfx/MG_pairing_match.ogg')
         self.matchWithBonusSfx = base.loadSfx('phase_4/audio/sfx/MG_pairing_match_bonus_both.ogg')
         self.signalSfx = []
-        for i in range(4):
+        for i in xrange(4):
             self.signalSfx.append(base.loadSfx('phase_4/audio/sfx/MG_pairing_jumping_signal.ogg'))
 
         self.bonusMovesSfx = base.loadSfx('phase_4/audio/sfx/MG_pairing_bonus_moves.ogg')
@@ -152,7 +152,7 @@ class DistributedPairingGame(DistributedMinigame):
         del self.music
         del self.matchSfx
         del self.matchWithBonusSfx
-        for i in range(4):
+        for i in xrange(4):
             del self.signalSfx[0]
 
         self.signalSfx = []

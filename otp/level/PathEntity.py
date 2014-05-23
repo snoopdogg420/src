@@ -33,7 +33,7 @@ class PathEntity(BasicEntities.NodePathEntity):
             track.append(WaitInterval(1.0))
             return track
         path = self.path + [self.path[0]]
-        for pointIndex in range(len(path) - 1):
+        for pointIndex in xrange(len(path) - 1):
             startPoint = Point3(path[pointIndex]) * self.pathScale
             endPoint = Point3(path[pointIndex + 1]) * self.pathScale
             v = startPoint - endPoint

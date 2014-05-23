@@ -25,7 +25,7 @@ class DistributedLawOfficeElevatorIntAI(DistributedElevatorFloorAI.DistributedEl
                 if i not in [None, 0]:
                     players.append(i)
             sittingAvIds = []
-            for seatIndex in range(len(self.seats)):
+            for seatIndex in xrange(len(self.seats)):
                 avId = self.seats[seatIndex]
                 if avId:
                     sittingAvIds.append(avId)

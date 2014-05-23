@@ -610,8 +610,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             else:
                 newInventory = InventoryBase.InventoryBase(self)
                 oldList = emptyInv.makeFromNetStringForceSize(inventoryNetString, oldTracks, oldLevels)
-                for indexTrack in range(0, oldTracks):
-                    for indexGag in range(0, oldLevels):
+                for indexTrack in xrange(0, oldTracks):
+                    for indexGag in xrange(0, oldLevels):
                         newInventory.addItems(indexTrack, indexGag, oldList[indexTrack][indexGag])
 
                 self.inventory.unload()
@@ -665,7 +665,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         return self.friendsList
 
     def extendFriendsList(self, friendId, friendCode):
-        for i in range(len(self.friendsList)):
+        for i in xrange(len(self.friendsList)):
             friendPair = self.friendsList[i]
             if friendPair[0] == friendId:
                 self.friendsList[i] = (friendId, friendCode)
@@ -879,7 +879,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         else:
             return 0
         index = 0
-        for i in range(0, len(itemList), 3):
+        for i in xrange(0, len(itemList), 3):
             if itemList[i] == geomIdx and itemList[i + 1] == texIdx and itemList[i + 2] == colorIdx:
                 return 0
 
@@ -913,7 +913,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         else:
             return 0
         index = 0
-        for i in range(0, len(itemList), 3):
+        for i in xrange(0, len(itemList), 3):
             if itemList[i] == geomIdxA and itemList[i + 1] == texIdxA and itemList[i + 2] == colorIdxA:
                 if accessoryType == ToonDNA.HAT:
                     self.hatList[i] = geomIdxB
@@ -979,7 +979,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.notify.warning('Accessory list is not long enough to delete anything')
             return 0
         index = 0
-        for i in range(0, len(itemList), 3):
+        for i in xrange(0, len(itemList), 3):
             if itemList[i] == geomIdx and itemList[i + 1] == texIdx and itemList[i + 2] == colorIdx:
                 itemList = itemList[0:i] + itemList[i + 3:listLen]
                 if accessoryType == ToonDNA.HAT:
@@ -1047,7 +1047,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if self.isClosetFull():
             return 0
         index = 0
-        for i in range(0, len(self.clothesTopsList), 4):
+        for i in xrange(0, len(self.clothesTopsList), 4):
             if self.clothesTopsList[i] == topTex and self.clothesTopsList[i + 1] == topTexColor and self.clothesTopsList[i + 2] == sleeveTex and self.clothesTopsList[i + 3] == sleeveTexColor:
                 return 0
 
@@ -1059,7 +1059,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def replaceItemInClothesTopsList(self, topTexA, topTexColorA, sleeveTexA, sleeveTexColorA, topTexB, topTexColorB, sleeveTexB, sleeveTexColorB):
         index = 0
-        for i in range(0, len(self.clothesTopsList), 4):
+        for i in xrange(0, len(self.clothesTopsList), 4):
             if self.clothesTopsList[i] == topTexA and self.clothesTopsList[i + 1] == topTexColorA and self.clothesTopsList[i + 2] == sleeveTexA and self.clothesTopsList[i + 3] == sleeveTexColorA:
                 self.clothesTopsList[i] = topTexB
                 self.clothesTopsList[i + 1] = topTexColorB
@@ -1075,7 +1075,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.notify.warning('Clothes top list is not long enough to delete anything')
             return 0
         index = 0
-        for i in range(0, listLen, 4):
+        for i in xrange(0, listLen, 4):
             if self.clothesTopsList[i] == topTex and self.clothesTopsList[i + 1] == topTexColor and self.clothesTopsList[i + 2] == sleeveTex and self.clothesTopsList[i + 3] == sleeveTexColor:
                 self.clothesTopsList = self.clothesTopsList[0:i] + self.clothesTopsList[i + 4:listLen]
                 return 1
@@ -1101,7 +1101,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.notify.warning('clothes bottoms list is full')
             return 0
         index = 0
-        for i in range(0, len(self.clothesBottomsList), 2):
+        for i in xrange(0, len(self.clothesBottomsList), 2):
             if self.clothesBottomsList[i] == botTex and self.clothesBottomsList[i + 1] == botTexColor:
                 return 0
 
@@ -1111,7 +1111,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def replaceItemInClothesBottomsList(self, botTexA, botTexColorA, botTexB, botTexColorB):
         index = 0
-        for i in range(0, len(self.clothesBottomsList), 2):
+        for i in xrange(0, len(self.clothesBottomsList), 2):
             if self.clothesBottomsList[i] == botTexA and self.clothesBottomsList[i + 1] == botTexColorA:
                 self.clothesBottomsList[i] = botTexB
                 self.clothesBottomsList[i + 1] = botTexColorB
@@ -1125,7 +1125,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.notify.warning('Clothes bottoms list is not long enough to delete anything')
             return 0
         index = 0
-        for i in range(0, len(self.clothesBottomsList), 2):
+        for i in xrange(0, len(self.clothesBottomsList), 2):
             if self.clothesBottomsList[i] == botTex and self.clothesBottomsList[i + 1] == botTexColor:
                 self.clothesBottomsList = self.clothesBottomsList[0:i] + self.clothesBottomsList[i + 2:listLen]
                 return 1
@@ -1638,7 +1638,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.notify.debug('setting quests to %s' % flattenedQuests)
         questList = []
         questLen = 5
-        for i in range(0, len(flattenedQuests), questLen):
+        for i in xrange(0, len(flattenedQuests), questLen):
             questList.append(flattenedQuests[i:i + questLen])
 
         self.quests = questList
@@ -1673,7 +1673,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def removeQuest(self, id, visitNpcId = None):
         index = -1
-        for i in range(len(self.quests)):
+        for i in xrange(len(self.quests)):
             if self.quests[i][0] == id:
                 if visitNpcId:
                     otherId = self.quests[i][2]
@@ -2053,9 +2053,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             anyChanged = 1
         inventoryChanged = 0
         carry = self.maxCarry
-        for track in range(len(ToontownBattleGlobals.Tracks)):
+        for track in xrange(len(ToontownBattleGlobals.Tracks)):
             if not self.hasTrackAccess(track):
-                for level in range(len(ToontownBattleGlobals.Levels[track])):
+                for level in xrange(len(ToontownBattleGlobals.Levels[track])):
                     count = self.inventory.inventory[track][level]
                     if count != 0:
                         self.notify.info('Changed avatar %d to throw away %d items in track %d level %d; no access to track.' % (self.doId,
@@ -2067,7 +2067,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
             else:
                 curSkill = self.experience.getExp(track)
-                for level in range(len(ToontownBattleGlobals.Levels[track])):
+                for level in xrange(len(ToontownBattleGlobals.Levels[track])):
                     count = self.inventory.inventory[track][level]
                     if curSkill < ToontownBattleGlobals.Levels[track][level]:
                         if count != 0:
@@ -2183,7 +2183,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def addResistanceMessage(self, textId):
         msgs = self.getResistanceMessages()
-        for i in range(len(msgs)):
+        for i in xrange(len(msgs)):
             if msgs[i][0] == textId:
                 msgs[i][1] += 1
                 self.b_setResistanceMessages(msgs)
@@ -2194,7 +2194,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def removeResistanceMessage(self, textId):
         msgs = self.getResistanceMessages()
-        for i in range(len(msgs)):
+        for i in xrange(len(msgs)):
             if msgs[i][0] == textId:
                 msgs[i][1] -= 1
                 if msgs[i][1] <= 0:
@@ -3382,10 +3382,10 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         return curSetting
 
     def hasParticularCogSummons(self, deptIndex, level, type):
-        if deptIndex not in range(len(SuitDNA.suitDepts)):
+        if deptIndex not in xrange(len(SuitDNA.suitDepts)):
             self.notify.warning('invalid parameter deptIndex %s' % deptIndex)
             return False
-        if level not in range(SuitDNA.suitsPerDept):
+        if level not in xrange(SuitDNA.suitsPerDept):
             self.notify.warning('invalid parameter level %s' % level)
             return False
         suitIndex = deptIndex * SuitDNA.suitsPerDept + level
@@ -3394,13 +3394,13 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def assignNewCogSummons(self, level = None, summonType = None, deptIndex = None):
         if level != None:
-            if deptIndex in range(len(SuitDNA.suitDepts)):
+            if deptIndex in xrange(len(SuitDNA.suitDepts)):
                 dept = deptIndex
             else:
                 numDepts = len(SuitDNA.suitDepts)
                 dept = random.randrange(0, numDepts)
             suitIndex = dept * SuitDNA.suitsPerDept + level
-        elif deptIndex in range(len(SuitDNA.suitDepts)):
+        elif deptIndex in xrange(len(SuitDNA.suitDepts)):
             randomLevel = random.randrange(0, SuitDNA.suitsPerDept)
             suitIndex = deptIndex * SuitDNA.suitsPerLevel + randomLevel
         else:
@@ -4376,7 +4376,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             return Task.done
 
         val = ''
-        for i in range(14):
+        for i in xrange(14):
             val = val + random.choice('abcdefghijklmnopqrstuvwxyz')
 
         self.sendUpdateToAvatarId(self.doId, 'ping', [val])
@@ -4951,7 +4951,7 @@ def inventory(a, b=None, c=None):
         targetTrack = -1 or c
         if not -1 <= targetTrack < len(ToontownBattleGlobals.Tracks):
             return 'Invalid target track index: {0}'.format(targetTrack)
-        for track in range(0, len(ToontownBattleGlobals.Tracks)):
+        for track in xrange(0, len(ToontownBattleGlobals.Tracks)):
             if (targetTrack == -1) or (track == targetTrack):
                 inventory.inventory[track][:maxLevelIndex + 1] = [0] * (maxLevelIndex+1)
         invoker.b_setInventory(inventory.makeNetString())

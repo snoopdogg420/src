@@ -1737,7 +1737,7 @@ class Grammar(object):
             didadd = 0
             for p in self.Productions[1:]:
                 # Here is the production set
-                for i in range(len(p.prod)):
+                for i in xrange(len(p.prod)):
                     B = p.prod[i]
                     if B in self.Nonterminals:
                         # Okay. We got a non-terminal in a production
@@ -2119,7 +2119,7 @@ class LRGeneratedTable(LRTable):
 
     def find_nonterminal_transitions(self,C):
          trans = []
-         for state in range(len(C)):
+         for state in xrange(len(C)):
              for p in C[state]:
                  if p.lr_index < p.len - 1:
                       t = (state,p.prod[p.lr_index+1])

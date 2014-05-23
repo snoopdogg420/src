@@ -82,7 +82,7 @@ class DistributedSuitInterior(DistributedObject.DistributedObject):
 
     def setElevatorLights(self, elevatorModel):
         npc = elevatorModel.findAllMatches('**/floor_light_?;+s')
-        for i in range(npc.getNumPaths()):
+        for i in xrange(npc.getNumPaths()):
             np = npc.getPath(i)
             floor = int(np.getName()[-1:]) - 1
             if floor == self.currentFloor:
@@ -214,7 +214,7 @@ class DistributedSuitInterior(DistributedObject.DistributedObject):
                 self.notify.warning('setSuits() - no suit: %d' % suitId)
 
         self.reserveSuits = []
-        for index in range(len(reserveIds)):
+        for index in xrange(len(reserveIds)):
             suitId = reserveIds[index]
             if self.cr.doId2do.has_key(suitId):
                 suit = self.cr.doId2do[suitId]
@@ -266,7 +266,7 @@ class DistributedSuitInterior(DistributedObject.DistributedObject):
         self.floorModel.reparentTo(render)
         elevIn = self.floorModel.find('**/elevator-in')
         elevOut = self.floorModel.find('**/elevator-out')
-        for index in range(len(self.suits)):
+        for index in xrange(len(self.suits)):
             self.suits[index].setPos(SuitPositions[index])
             if len(self.suits) > 2:
                 self.suits[index].setH(SuitHs[index])

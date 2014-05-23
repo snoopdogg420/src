@@ -1102,10 +1102,10 @@ class DistributedBanquetTable(DistributedObject.DistributedObject, FSM.FSM, Banq
     def __updateKeyPressRateTask(self, task):
         if self.state not in 'Controlled':
             return Task.done
-        for i in range(len(self.keyTTL)):
+        for i in xrange(len(self.keyTTL)):
             self.keyTTL[i] -= 0.1
 
-        for i in range(len(self.keyTTL)):
+        for i in xrange(len(self.keyTTL)):
             if self.keyTTL[i] <= 0:
                 a = self.keyTTL[0:i]
                 del self.keyTTL

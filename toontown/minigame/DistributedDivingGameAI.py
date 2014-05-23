@@ -11,7 +11,7 @@ import types
 
 class DistributedDivingGameAI(DistributedMinigameAI):
     fishProportions = []
-    for i in range(6):
+    for i in xrange(6):
         fishProportions.append([])
 
     n = 100
@@ -271,7 +271,7 @@ class DistributedDivingGameAI(DistributedMinigameAI):
         self.REWARDMOD = self.difficultyPatternsAI[self.getSafezoneId()][2]
         DistributedMinigameAI.setGameReady(self)
         self.spawnings = []
-        for i in range(DivingGameGlobals.NUM_SPAWNERS):
+        for i in xrange(DivingGameGlobals.NUM_SPAWNERS):
             self.spawnings.append(Sequence(Func(self.spawnFish, i), Wait(self.SPAWNTIME + random.random()), Func(self.spawnFish, i), Wait(self.SPAWNTIME - 0.5 + random.random())))
             self.spawnings[i].loop()
 
@@ -374,12 +374,12 @@ class DistributedDivingGameAI(DistributedMinigameAI):
         return Task.done
 
     def exitSwimming(self):
-        for i in range(DivingGameGlobals.NUM_SPAWNERS):
+        for i in xrange(DivingGameGlobals.NUM_SPAWNERS):
             self.spawnings[i].pause()
 
     def enterCleanup(self):
         self.notify.debug('enterCleanup')
-        for i in range(DivingGameGlobals.NUM_SPAWNERS):
+        for i in xrange(DivingGameGlobals.NUM_SPAWNERS):
             self.spawnings[i].finish()
 
         del self.spawnings
@@ -415,7 +415,7 @@ class DistributedDivingGameAI(DistributedMinigameAI):
         timestamp = globalClockDelta.getFrameNetworkTime()
         props = self.proportion[spawnerId]
         num = random.random()
-        for i in range(len(props)):
+        for i in xrange(len(props)):
             prop = props[i]
             low = prop[0]
             high = prop[1]

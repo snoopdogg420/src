@@ -32,7 +32,7 @@ class PairingGameCard(PlayingCardNodePath):
         prop.setScale(7)
         oneCard.find('**/glow').removeNode()
         cs = oneCard.find('**/collision')
-        for solidIndex in range(cs.node().getNumSolids()):
+        for solidIndex in xrange(cs.node().getNumSolids()):
             cs.node().modifySolid(solidIndex).setTangible(False)
 
         cs.node().setName('cardCollision-%d' % self.value)

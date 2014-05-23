@@ -43,7 +43,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
         if not readResult:
             self.notify.error("Could not read dc file.")
         self.hashVal = dcFile.getHash()
-        for n in range(dcFile.getNumImportModules()):
+        for n in xrange(dcFile.getNumImportModules()):
             moduleName = dcFile.getImportModule(n)[:]
             suffix = moduleName.split('/')
             moduleName = suffix[0]
@@ -53,7 +53,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
             elif self.dcSuffix == 'UD' and 'AI' in suffix: #HACK:
                 moduleName += 'AI'
             importSymbols = []
-            for i in range(dcFile.getNumImportSymbols(n)):
+            for i in xrange(dcFile.getNumImportSymbols(n)):
                 symbolName = dcFile.getImportSymbol(n, i)
                 suffix = symbolName.split('/')
                 symbolName = suffix[0]
@@ -64,7 +64,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
                     symbolName += 'AI'
                 importSymbols.append(symbolName)
             self.importModule(dcImports, moduleName, importSymbols)
-        for i in range(dcFile.getNumClasses()):
+        for i in xrange(dcFile.getNumClasses()):
             dclass = dcFile.getClass(i)
             number = dclass.getNumber()
             className = dclass.getName() + self.dcSuffix
@@ -95,7 +95,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
         if self.hasOwnerView():
             ownerDcSuffix = self.dcSuffix + 'OV'
             ownerImportSymbols = {}
-            for n in range(dcFile.getNumImportModules()):
+            for n in xrange(dcFile.getNumImportModules()):
                 moduleName = dcFile.getImportModule(n)
                 suffix = moduleName.split('/')
                 moduleName = suffix[0]
@@ -103,7 +103,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
                 if ownerDcSuffix in suffix:
                     moduleName = moduleName + ownerDcSuffix
                 importSymbols = []
-                for i in range(dcFile.getNumImportSymbols(n)):
+                for i in xrange(dcFile.getNumImportSymbols(n)):
                     symbolName = dcFile.getImportSymbol(n, i)
                     suffix = symbolName.split('/')
                     symbolName = suffix[0]
@@ -113,7 +113,7 @@ class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
                     importSymbols.append(symbolName)
                     ownerImportSymbols[symbolName] = None
                 self.importModule(dcImports, moduleName, importSymbols)
-            for i in range(dcFile.getNumClasses()):
+            for i in xrange(dcFile.getNumClasses()):
                 dclass = dcFile.getClass(i)
                 if ((dclass.getName()+ownerDcSuffix) in ownerImportSymbols):
                     number = dclass.getNumber()

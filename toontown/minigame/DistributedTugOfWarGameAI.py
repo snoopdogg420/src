@@ -243,7 +243,7 @@ class DistributedTugOfWarGameAI(DistributedMinigameAI):
                     self.losers.append(self.suitId)
                 else:
                     self.winners.append(self.suitId)
-                for i in range(0, self.numPlayers):
+                for i in xrange(0, self.numPlayers):
                     avId = self.avIdList[i]
                     if self.side[avId] != self.losingSide:
                         self.scoreDict[avId] = self.suitJellybeanReward + TugOfWarGameGlobals.WIN_JELLYBEANS
@@ -253,7 +253,7 @@ class DistributedTugOfWarGameAI(DistributedMinigameAI):
                         self.losers.append(avId)
 
             else:
-                for i in range(0, self.numPlayers):
+                for i in xrange(0, self.numPlayers):
                     avId = self.avIdList[i]
                     if self.side[avId] != self.losingSide:
                         self.scoreDict[avId] = TugOfWarGameGlobals.WIN_JELLYBEANS
@@ -263,7 +263,7 @@ class DistributedTugOfWarGameAI(DistributedMinigameAI):
                         self.losers.append(avId)
 
         elif self.gameType == TugOfWarGameGlobals.TOON_VS_COG:
-            for i in range(0, self.numPlayers):
+            for i in xrange(0, self.numPlayers):
                 avId = self.avIdList[i]
                 if -self.offsetDict[avId] > self.suitOffset:
                     self.scoreDict[avId] = self.suitJellybeanReward / 2 + TugOfWarGameGlobals.TIE_WIN_JELLYBEANS
@@ -276,7 +276,7 @@ class DistributedTugOfWarGameAI(DistributedMinigameAI):
         else:
             maxOffset = -100
             minOffset = 100
-            for i in range(0, self.numPlayers):
+            for i in xrange(0, self.numPlayers):
                 avId = self.avIdList[i]
                 if self.side[avId] == 0:
                     if -self.offsetDict[avId] > maxOffset:
@@ -289,7 +289,7 @@ class DistributedTugOfWarGameAI(DistributedMinigameAI):
                     elif self.offsetDict[avId] < minOffset:
                         minOffset = self.offsetDict[avId]
 
-            for i in range(0, self.numPlayers):
+            for i in xrange(0, self.numPlayers):
                 avId = self.avIdList[i]
                 if maxOffset != minOffset:
                     if self.side[avId] == 0:

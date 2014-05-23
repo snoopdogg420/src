@@ -202,7 +202,7 @@ class LoadEstateFSM(FSM):
     def enterLoadHouses(self):
         self.houseFSMs = []
 
-        for houseIndex in range(6):
+        for houseIndex in xrange(6):
             fsm = LoadHouseFSM(self.mgr, self.estate, houseIndex,
                                self.toons[houseIndex], self.__houseDone)
             self.houseFSMs.append(fsm)

@@ -68,9 +68,9 @@ class GardenDropGame(DirectObject.DirectObject):
         self.gridDimZ = gZ
         self.gridBrick = False
         base.gardenGame = self
-        for countX in range(self.gridDimX):
+        for countX in xrange(self.gridDimX):
             newRow = []
-            for countZ in range(self.gridDimZ):
+            for countZ in xrange(self.gridDimZ):
                 offset = 0
                 if countZ % 2 == 0:
                     offset = size / 2
@@ -81,7 +81,7 @@ class GardenDropGame(DirectObject.DirectObject):
         self.controlSprite = None
         self.cogSprite = self.addUnSprite(self.block, posX=0.25, posZ=0.5)
         self.cogSprite.setColor(self.colorShadow)
-        for ball in range(0, 3):
+        for ball in xrange(0, 3):
             place = random.random() * self.rangeX
             newSprite = self.addSprite(self.block, size=0.5, posX=self.minX + place, posZ=0.0, found=1)
             self.stickInGrid(newSprite, 1)
@@ -100,8 +100,8 @@ class GardenDropGame(DirectObject.DirectObject):
     def findGrid(self, x, z, force = 0):
         currentClosest = None
         currentDist = 10000000
-        for countX in range(self.gridDimX):
-            for countZ in range(self.gridDimZ):
+        for countX in xrange(self.gridDimX):
+            for countZ in xrange(self.gridDimZ):
                 testDist = self.testPointDistanceSquare(x, z, self.grid[countX][countZ][1], self.grid[countX][countZ][2])
                 if self.grid[countX][countZ][0] == None and testDist < currentDist and (force or self.hasNeighbor(countX, countZ)):
                     currentClosest = self.grid[countX][countZ]
@@ -416,8 +416,8 @@ class GardenDropGame(DirectObject.DirectObject):
         if self.tick > 5:
             self.tick = 0
         sizeSprites = len(self.sprites)
-        for movingSpriteIndex in range(len(self.sprites)):
-            for testSpriteIndex in range(movingSpriteIndex, len(self.sprites)):
+        for movingSpriteIndex in xrange(len(self.sprites)):
+            for testSpriteIndex in xrange(movingSpriteIndex, len(self.sprites)):
                 movingSprite = self.getSprite(movingSpriteIndex)
                 testSprite = self.getSprite(testSpriteIndex)
                 if testSprite and movingSprite:

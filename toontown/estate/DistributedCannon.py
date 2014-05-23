@@ -1507,7 +1507,7 @@ class DistributedCannon(DistributedObject.DistributedObject):
          (0, 1, 5, 4),
          (0, 4, 7, 3),
          (1, 2, 6, 5)]
-        for i in range(len(vertices)):
+        for i in xrange(len(vertices)):
             vertex = vertices[i]
             vertexWriter.addData3f(vertex[0], vertex[1], vertex[2])
             colorWriter.addData4f(*colors[i])

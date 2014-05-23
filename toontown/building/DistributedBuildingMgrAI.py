@@ -85,7 +85,7 @@ class DistributedBuildingMgrAI:
         petshopBlocks = []
         kartshopBlocks = []
         animBldgBlocks = []
-        for i in range(self.dnaStore.getNumBlockNumbers()):
+        for i in xrange(self.dnaStore.getNumBlockNumbers()):
             blockNumber = self.dnaStore.getBlockNumberAt(i)
             buildingType = self.dnaStore.getBlockBuildingType(blockNumber)
             if buildingType == 'hq':

@@ -1017,7 +1017,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def setQuests(self, flattenedQuests):
         questList = []
         questLen = 5
-        for i in range(0, len(flattenedQuests), questLen):
+        for i in xrange(0, len(flattenedQuests), questLen):
             questList.append(flattenedQuests[i:i + questLen])
 
         self.quests = questList
@@ -1135,7 +1135,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def getResistanceMessageCharges(self, textId):
         msgs = self.resistanceMessages
-        for i in range(len(msgs)):
+        for i in xrange(len(msgs)):
             if msgs[i][0] == textId:
                 return msgs[i][1]
 
@@ -1995,7 +1995,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             trackAndLevelList.append((tree.gagTrack, tree.gagLevel))
 
         haveRequired = True
-        for curLevel in range(level):
+        for curLevel in xrange(level):
             testTuple = (track, curLevel)
             if testTuple not in trackAndLevelList:
                 haveRequired = False

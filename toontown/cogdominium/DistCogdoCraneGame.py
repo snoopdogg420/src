@@ -102,7 +102,7 @@ class DistCogdoCraneGame(CogdoCraneGameBase, DistCogdoLevelGame):
                 self.notify.warning('Not a collision node: %s' % repr(cnp))
                 break
             newCollideMask = newCollideMask | cn.getIntoCollideMask()
-            for i in range(cn.getNumSolids()):
+            for i in xrange(cn.getNumSolids()):
                 solid = cn.getSolid(i)
                 if isinstance(solid, PM.CollisionPolygon):
                     plane = PM.Plane(solid.getPlane())

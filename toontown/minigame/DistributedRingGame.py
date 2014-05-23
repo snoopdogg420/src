@@ -143,19 +143,19 @@ class DistributedRingGame(DistributedMinigame):
             render.setFog(self.__fog)
         self.environNode = render.attachNewNode('environNode')
         self.environBlocks = []
-        for i in range(0, 2):
+        for i in xrange(0, 2):
             instance = self.environModel.instanceUnderNode(self.environNode, 'model')
             y = self.ENVIRON_LENGTH * i
             instance.setY(y)
             self.environBlocks.append(instance)
-            for j in range(0, 2):
+            for j in xrange(0, 2):
                 instance = self.environModel.instanceUnderNode(self.environNode, 'blocks')
                 x = self.ENVIRON_LENGTH * (j + 1)
                 instance.setY(y)
                 instance.setX(-x)
                 self.environBlocks.append(instance)
 
-            for j in range(0, 2):
+            for j in xrange(0, 2):
                 instance = self.environModel.instanceUnderNode(self.environNode, 'blocks')
                 x = self.ENVIRON_LENGTH * (j + 1)
                 instance.setY(y)
@@ -165,7 +165,7 @@ class DistributedRingGame(DistributedMinigame):
         self.ringNode = render.attachNewNode('ringNode')
         self.sndTable = {'gotRing': [None] * self.numPlayers,
          'missedRing': [None] * self.numPlayers}
-        for i in range(0, self.numPlayers):
+        for i in xrange(0, self.numPlayers):
             self.sndTable['gotRing'][i] = base.loadSfx('phase_4/audio/sfx/ring_get.ogg')
             self.sndTable['missedRing'][i] = base.loadSfx('phase_4/audio/sfx/ring_miss.ogg')
 
@@ -315,13 +315,13 @@ class DistributedRingGame(DistributedMinigame):
         self.__tallyTextNode.setFont(ToontownGlobals.getSignFont())
         self.__tallyTextNode.setAlign(TextNode.ACenter)
         self.tallyMarkers = [None] * self.__numRingGroups
-        for i in range(0, self.__numRingGroups):
+        for i in xrange(0, self.__numRingGroups):
             self.__createTallyMarker(i, self.RT_UNKNOWN)
 
         return
 
     def __destroyTallyDisplay(self):
-        for i in range(0, self.__numRingGroups):
+        for i in xrange(0, self.__numRingGroups):
             self.__deleteTallyMarker(i)
 
         del self.tallyMarkers
@@ -529,11 +529,11 @@ class DistributedRingGame(DistributedMinigame):
             return 1
 
         pattern = self.randomNumGen.choice(difficultyPatterns[self.getSafezoneId()])
-        for i in range(0, self.__numRingGroups):
+        for i in xrange(0, self.__numRingGroups):
             numRings = self.numPlayers
             trackGroup = RingTrackGroups.getRandomRingTrackGroup(pattern[i], numRings, self.randomNumGen)
             ringGroup = RingGroup.RingGroup(trackGroup, self.ringModel, RingGameGlobals.MAX_TOONXZ, self.colorIndices)
-            for r in range(numRings):
+            for r in xrange(numRings):
                 self.__addRingDropShadow(ringGroup.getRing(r))
 
             self.ringGroups.append(ringGroup)
@@ -639,7 +639,7 @@ class DistributedRingGame(DistributedMinigame):
         list.append([shadow, object])
 
     def __removeDropShadow_INTERNAL(self, object, list):
-        for i in range(len(list)):
+        for i in xrange(len(list)):
             entry = list[i]
             if entry[1] == object:
                 entry[0].removeNode()
@@ -868,7 +868,7 @@ class DistributedRingGame(DistributedMinigame):
         groupIndex = self.__nextRingGroupResultIndex
         ringGroup = self.ringGroups[self.__nextRingGroupResultIndex]
         self.__nextRingGroupResultIndex += 1
-        for i in range(0, self.numPlayers):
+        for i in xrange(0, self.numPlayers):
             if self.avIdList[i] != self.localAvId:
                 ring = ringGroup.getRing(i)
                 self.__makeRingFadeAway(ring, results[i], i)

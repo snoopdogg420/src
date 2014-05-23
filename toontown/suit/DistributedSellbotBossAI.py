@@ -359,7 +359,7 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
 
     def __makeDoobers(self):
         self.__resetDoobers()
-        for i in range(8):
+        for i in xrange(8):
             suit = DistributedSuitAI.DistributedSuitAI(self.air, None)
             level = random.randrange(len(SuitDNA.suitsPerLevel))
             suit.dna = SuitDNA.SuitDNA()

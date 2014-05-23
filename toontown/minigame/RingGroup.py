@@ -17,7 +17,7 @@ class RingGroup(NodePath):
         self.__numRings = len(trackGroup.tracks)
         self.__rings = []
         self.__ringModels = []
-        for i in range(0, self.__numRings):
+        for i in xrange(0, self.__numRings):
             track = trackGroup.tracks[i]
             tOffset = trackGroup.trackTOffsets[i]
             ring = Ring.Ring(track, tOffset, posScale)

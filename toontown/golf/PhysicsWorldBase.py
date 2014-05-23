@@ -143,7 +143,7 @@ class PhysicsWorldBase:
         self.DTA = 0.0
         self.frameCounter = 0
         if self.canRender:
-            for count in range(self.jointMarkerCount):
+            for count in xrange(self.jointMarkerCount):
                 testMarker = render.attachNewNode('Joint Marker')
                 ballmodel = loader.loadModel('phase_3/models/misc/sphere')
                 ballmodel.reparentTo(testMarker)
@@ -233,7 +233,7 @@ class PhysicsWorldBase:
 
     def postStep(self):
         if self.showContacts and self.canRender:
-            for count in range(self.jointMarkerCount):
+            for count in xrange(self.jointMarkerCount):
                 pandaNodePathGeom = self.jointMarkers[count]
                 if count < self.colCount:
                     pandaNodePathGeom.setPos(self.space.getContactData(count * 3 + 0), self.space.getContactData(count * 3 + 1), self.space.getContactData(count * 3 + 2))
@@ -255,7 +255,7 @@ class PhysicsWorldBase:
                 eventData = entry[6]
                 model = entry[7]
                 force = 0.0
-                for index in range(len(timeData)):
+                for index in xrange(len(timeData)):
                     if index == len(timeData) - 1 and timeData[index] < time or timeData[index] < time and timeData[index + 1] > time:
                         force = forceData[index]
                         event = eventData[index]
@@ -328,7 +328,7 @@ class PhysicsWorldBase:
         self.setTimeIntoCycle(time[2])
         if time[2] > self.timingCycleLength:
             pass
-        for dataIndex in range(1, len(objectData)):
+        for dataIndex in xrange(1, len(objectData)):
             data = objectData[dataIndex]
             commonObject = self.commonObjectDict[data[0]]
             commonObject[2].setPosition(data[2], data[3], data[4])
@@ -689,7 +689,7 @@ class PhysicsWorldBase:
             someNodePathGeom = render.attachNewNode('pinwheel')
         else:
             someNodePathGeom = self.root.attachNewNode('pinwheel')
-        for num in range(numBoxes):
+        for num in xrange(numBoxes):
             spin = 360.0 * float(num) / float(numBoxes) + float(offRot)
             self.placerNode.setH(spin)
             geom = OdeBoxGeom(space, boxsize)

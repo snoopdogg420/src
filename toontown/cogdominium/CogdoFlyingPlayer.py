@@ -233,14 +233,14 @@ class CogdoFlyingPlayer(FSM):
             return
         numBlades = fuelState - 1
         if len(self.activeBlades) != numBlades:
-            for i in range(len(self.activeBlades)):
+            for i in xrange(len(self.activeBlades)):
                 blade = self.activeBlades.pop()
                 blade.stash()
 
             if numBlades > len(self.blades):
                 numBlades = len(self.blades)
             if numBlades > 0:
-                for i in range(numBlades):
+                for i in xrange(numBlades):
                     blade = self.blades[i]
                     self.activeBlades.append(blade)
                     blade.unstash()

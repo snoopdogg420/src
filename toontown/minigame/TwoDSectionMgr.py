@@ -99,7 +99,7 @@ class TwoDSectionMgr(DirectObject):
 
     def setupSections(self, sectionsSelected):
         self.incrementX = -24
-        for index in range(0, len(sectionsSelected)):
+        for index in xrange(0, len(sectionsSelected)):
             sectionNP = NodePath('Section' + str(index))
             sectionNP.reparentTo(self.game.assetMgr.world)
             sectionNP.setX(self.incrementX)

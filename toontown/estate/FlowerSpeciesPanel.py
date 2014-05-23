@@ -84,7 +84,7 @@ class FlowerSpeciesPanel(DirectFrame):
             startPos = len(varietyList) / 2 * offset
             if not len(varietyList) % 2:
                 startPos -= offset / 2
-            for variety in range(len(varietyList)):
+            for variety in xrange(len(varietyList)):
                 label = DirectButton(parent=self, frameSize=(0,
                  0.445,
                  -0.02,
@@ -123,7 +123,7 @@ class FlowerSpeciesPanel(DirectFrame):
         if base.localAvatar.flowerCollection.hasSpecies(self.species):
             self.flowerPanel.show(showBackground=0)
             self['text'] = TTLocalizer.FlowerSpeciesNames[self.species]
-        for variety in range(len(GardenGlobals.getFlowerVarieties(self.species))):
+        for variety in xrange(len(GardenGlobals.getFlowerVarieties(self.species))):
             if base.localAvatar.flowerCollection.hasFlower(self.species, variety):
                 name = GardenGlobals.getFlowerVarietyName(self.species, variety)
                 self.speciesLabels[variety]['text'] = name

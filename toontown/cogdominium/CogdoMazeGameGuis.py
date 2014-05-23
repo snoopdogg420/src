@@ -188,7 +188,7 @@ class CogdoMazeBossGui(DirectFrame):
         self._openDoor.stash()
         spacingX = codeFrameWidth + codeFrameGap
         startX = -0.5 * ((self._codeLength - 1) * spacingX - codeFrameGap)
-        for i in range(self._codeLength):
+        for i in xrange(self._codeLength):
             marker = CogdoMazeBossCodeFrame(i, self._code[i], bossCard)
             marker.reparentTo(self)
             marker.setPos(bossCard, startX + spacingX * i, 0, 0)

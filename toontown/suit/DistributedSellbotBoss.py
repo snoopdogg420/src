@@ -84,7 +84,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.piesRestockSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_SOS_pies_restock.ogg')
         self.rampSlideSfx = loader.loadSfx('phase_9/audio/sfx/CHQ_VP_ramp_slide.ogg')
         self.strafeSfx = []
-        for i in range(10):
+        for i in xrange(10):
             self.strafeSfx.append(loader.loadSfx('phase_3.5/audio/sfx/SA_shred.ogg'))
 
         render.setTag('pieCode', str(ToontownGlobals.PieCodeNotBossCog))
@@ -1088,7 +1088,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         radius = 15
         numToons = len(self.involvedToons)
         center = (numToons - 1) / 2.0
-        for i in range(numToons):
+        for i in xrange(numToons):
             toon = base.cr.doId2do.get(self.involvedToons[i])
             if toon:
                 angle = 270 - 15 * (i - center)
@@ -1119,7 +1119,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def __toonsToPromotionPosition(self, toonIds, battleNode):
         points = BattleBase.BattleBase.toonPoints[len(toonIds) - 1]
-        for i in range(len(toonIds)):
+        for i in xrange(len(toonIds)):
             toon = base.cr.doId2do.get(toonIds[i])
             if toon:
                 toon.reparentTo(render)
@@ -1128,7 +1128,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def __doobersToPromotionPosition(self, doobers, battleNode):
         points = BattleBase.BattleBase.toonPoints[len(doobers) - 1]
-        for i in range(len(doobers)):
+        for i in xrange(len(doobers)):
             suit = doobers[i]
             suit.fsm.request('neutral')
             suit.loop('neutral')
@@ -1235,7 +1235,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             spread = -spread
         dist = 50
         rate = time / numGears
-        for i in range(numGears):
+        for i in xrange(numGears):
             node = gearRoot.attachNewNode(str(i))
             node.hide()
             node.setPos(0, 0, 0)

@@ -145,7 +145,7 @@ def __propPreflight(props, suit, toon, battle):
     toon.update(0)
     prop.wrtReparentTo(battle)
     props[1].reparentTo(hidden)
-    for ci in range(prop.getNumChildren()):
+    for ci in xrange(prop.getNumChildren()):
         prop.getChild(ci).setHpr(0, -90, 0)
 
     targetPnt = MovieUtil.avatarFacePoint(suit, other=battle)
@@ -157,7 +157,7 @@ def __propPreflightGroup(props, suits, toon, battle):
     toon.update(0)
     prop.wrtReparentTo(battle)
     props[1].reparentTo(hidden)
-    for ci in range(prop.getNumChildren()):
+    for ci in xrange(prop.getNumChildren()):
         prop.getChild(ci).setHpr(0, -90, 0)
 
     avgTargetPt = Point3(0, 0, 0)

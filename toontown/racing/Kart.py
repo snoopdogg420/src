@@ -68,13 +68,13 @@ class Kart(NodePath, ShadowCaster.ShadowCaster):
             levelIn[0] = base.config.GetInt('lod1-in', 2500)
             levelIn[1] = base.config.GetInt('lod1-out', 0)
         self.toonSeat = NodePath('toonSeat')
-        for level in range(lodRequired):
+        for level in xrange(lodRequired):
             self.__createLODKart(level)
             self.LODnode.addSwitch(levelIn[level], levelOut[level])
 
         self.setScale(self.baseScale)
         self.flattenMedium()
-        for level in range(lodRequired):
+        for level in xrange(lodRequired):
             self.toonSeat = self.toonSeat.instanceTo(self.toonNode[level])
 
         self.LODpath.reparentTo(self.rotateNode)

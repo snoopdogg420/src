@@ -24,7 +24,7 @@ class NPCFriendPanel(DirectFrame):
 
     def update(self, friendDict, fCallable = 0):
         friendList = friendDict.keys()
-        for i in range(self.maxNPCFriends):
+        for i in xrange(self.maxNPCFriends):
             card = self.cardList[i]
             try:
                 NPCID = friendList[i]
@@ -56,7 +56,7 @@ class NPCFriendPanel(DirectFrame):
         else:
             self.notify.error('got wrong max SOS cards %s' % self.maxNPCFriends)
         count = 0
-        for i in range(self.maxNPCFriends):
+        for i in xrange(self.maxNPCFriends):
             card = NPCFriendCard(parent=self, rotateCard=rotateCard, doneEvent=self['doneEvent'])
             self.cardList.append(card)
             card.setPos(xOffset, 1, yOffset)
@@ -128,7 +128,7 @@ class NPCFriendCard(DirectFrame):
         self.sosCountInfo = DirectLabel(parent=self.front, relief=None, text='', text_fg=self.normalTextColor, text_scale=0.75, text_align=TextNode.ALeft, textMayChange=1, pos=(0.0, 0, -1.0))
         star = loader.loadModel('phase_3.5/models/gui/name_star')
         self.rarityStars = []
-        for i in range(self.maxRarity):
+        for i in xrange(self.maxRarity):
             label = DirectLabel(parent=self.front, relief=None, image=star, image_scale=rarityScale, image_color=Vec4(0.502, 0.251, 0.251, 1.0), pos=(1.1 - i * 0.24, 0, rarityPosZ))
             label.hide()
             self.rarityStars.append(label)
@@ -173,7 +173,7 @@ class NPCFriendCard(DirectFrame):
                     sosText += ' ' + self.sosTracks[level]
             sosText = TextEncoder.upper(sosText)
             self.sosTypeInfo['text'] = sosText
-            for i in range(self.maxRarity):
+            for i in xrange(self.maxRarity):
                 if i < rarity:
                     self.rarityStars[i].show()
                 else:

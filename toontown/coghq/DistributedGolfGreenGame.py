@@ -164,9 +164,9 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         self.controlOffsetX = 0.0
         self.controlOffsetZ = 0.0
         self.grid = []
-        for countX in range(0, self.gridDimX):
+        for countX in xrange(0, self.gridDimX):
             newRow = []
-            for countZ in range(self.gridDimZ):
+            for countZ in xrange(self.gridDimZ):
                 offset = 0
                 margin = self.cellSizeX * 0.4375
                 if countZ % 2 == 0:
@@ -226,19 +226,19 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
 
     def printGrid(self):
         printout = '       '
-        for columnIndex in range(self.gridDimX - 1, -1, -1):
+        for columnIndex in xrange(self.gridDimX - 1, -1, -1):
             if columnIndex < 10:
                 printout += '%s  ' % columnIndex
             else:
                 printout += '%s ' % columnIndex
 
         print printout
-        for rowIndex in range(self.gridDimZ - 1, -1, -1):
+        for rowIndex in xrange(self.gridDimZ - 1, -1, -1):
             if rowIndex < 10:
                 printout = 'row  %s ' % rowIndex
             else:
                 printout = 'row %s ' % rowIndex
-            for columnIndex in range(self.gridDimX - 1, -1, -1):
+            for columnIndex in xrange(self.gridDimX - 1, -1, -1):
                 hasSprite = '_'
                 if self.grid[columnIndex][rowIndex][0]:
                     hasSprite = 'X'
@@ -575,8 +575,8 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
     def findGrid(self, x, z, force = 0):
         currentClosest = None
         currentDist = 10000000
-        for countX in range(self.gridDimX):
-            for countZ in range(self.gridDimZ):
+        for countX in xrange(self.gridDimX):
+            for countZ in xrange(self.gridDimZ):
                 testDist = self.testPointDistanceSquare(x, z, self.grid[countX][countZ][1], self.grid[countX][countZ][2])
                 if self.grid[countX][countZ][0] == None and testDist < currentDist and (force or self.hasNeighbor(countX, countZ) != None):
                     currentClosest = self.grid[countX][countZ]
@@ -619,7 +619,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         self.grounded = []
         self.unknown = []
         groundZ = self.gridDimZ - 1
-        for indexX in range(0, self.gridDimX):
+        for indexX in xrange(0, self.gridDimX):
             gridCell = self.grid[indexX][groundZ]
             if gridCell[0]:
                 self.grounded.append((indexX, groundZ))
@@ -1166,8 +1166,8 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         if self.tick > 5:
             self.tick = 0
         sizeSprites = len(self.sprites)
-        for movingSpriteIndex in range(len(self.sprites)):
-            for testSpriteIndex in range(movingSpriteIndex, len(self.sprites)):
+        for movingSpriteIndex in xrange(len(self.sprites)):
+            for testSpriteIndex in xrange(movingSpriteIndex, len(self.sprites)):
                 movingSprite = self.getSprite(movingSpriteIndex)
                 testSprite = self.getSprite(testSpriteIndex)
                 if testSprite and movingSprite:
@@ -1415,7 +1415,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
             panel = self.toonPanels[panelIndex]
             panel.extraData['text'] = TTLocalizer.GolfGreenGamePlayerScore % 0
 
-        for entryIndex in range(len(scoreList)):
+        for entryIndex in xrange(len(scoreList)):
             entry = scoreList[entryIndex]
             if self.toonPanels.has_key(entry[0]):
                 panel = self.toonPanels[entry[0]]

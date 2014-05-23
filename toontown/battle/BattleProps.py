@@ -336,7 +336,7 @@ class PropPool:
             self.props[name].setTexture(tex, 1)
         elif name == 'dust':
             bin = 110
-            for cloudNum in range(1, 12):
+            for cloudNum in xrange(1, 12):
                 cloudName = '**/cloud' + str(cloudNum)
                 cloud = self.props[name].find(cloudName)
                 cloud.setBin('fixed', bin)

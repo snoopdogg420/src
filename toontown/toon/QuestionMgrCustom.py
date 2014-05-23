@@ -12,7 +12,7 @@ class QuestionMgr:
     def ask(self, message, sender):
         msg = message.lower()
         vbls = msg.split()
-        for i in range(0, len(vbls)):
+        for i in xrange(0, len(vbls)):
             if vbls[i] in self.greetings:
                 index = random.randint(0, len(self.greetingResp) -1)
                 helloResp = self.greetingResp[index]

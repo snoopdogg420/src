@@ -18,6 +18,6 @@ class SCEmoteMenu(SCMenu):
         except:
             return
 
-        for i in range(len(lt.emoteAccess)):
+        for i in xrange(len(lt.emoteAccess)):
             if lt.emoteAccess[i]:
                 self.append(SCEmoteTerminal(i))

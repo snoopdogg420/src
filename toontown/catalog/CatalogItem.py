@@ -337,13 +337,13 @@ class CatalogItem:
                 tex = loader.loadTexture(color)
                 tex.setMinfilter(Texture.FTLinearMipmapLinear)
                 tex.setMagfilter(Texture.FTLinear)
-                for i in range(matches.getNumPaths()):
+                for i in xrange(matches.getNumPaths()):
                     matches.getPath(i).setTexture(tex, 1)
 
             else:
                 needsAlpha = color[3] != 1
                 color = VBase4(color[0], color[1], color[2], color[3])
-                for i in range(matches.getNumPaths()):
+                for i in xrange(matches.getNumPaths()):
                     matches.getPath(i).setColorScale(color, 1)
                     if needsAlpha:
                         matches.getPath(i).setTransparency(1)

@@ -95,14 +95,14 @@ class DistributedCashbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
     def __makeBattleThreeObjects(self):
         if self.cranes == None:
             self.cranes = []
-            for index in range(len(ToontownGlobals.CashbotBossCranePosHprs)):
+            for index in xrange(len(ToontownGlobals.CashbotBossCranePosHprs)):
                 crane = DistributedCashbotBossCraneAI.DistributedCashbotBossCraneAI(self.air, self, index)
                 crane.generateWithRequired(self.zoneId)
                 self.cranes.append(crane)
 
         if self.safes == None:
             self.safes = []
-            for index in range(len(ToontownGlobals.CashbotBossSafePosHprs)):
+            for index in xrange(len(ToontownGlobals.CashbotBossSafePosHprs)):
                 safe = DistributedCashbotBossSafeAI.DistributedCashbotBossSafeAI(self.air, self, index)
                 safe.generateWithRequired(self.zoneId)
                 self.safes.append(safe)

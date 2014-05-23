@@ -101,11 +101,11 @@ class DistributedHouseInterior(DistributedObject.DistributedObject):
             return
         numSurfaceTypes = CatalogSurfaceItem.NUM_ST_TYPES
         numRooms = min(len(self.wallpaper) / numSurfaceTypes, len(RoomNames))
-        for room in range(numRooms):
+        for room in xrange(numRooms):
             roomName = RoomNames[room]
             roomNode = self.interior.find(roomName)
             if not roomNode.isEmpty():
-                for surface in range(numSurfaceTypes):
+                for surface in xrange(numSurfaceTypes):
                     slot = room * numSurfaceTypes + surface
                     wallpaper = self.wallpaper[slot]
                     color = wallpaper.getColor()

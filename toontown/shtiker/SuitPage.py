@@ -203,7 +203,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
         gui = loader.loadModel('phase_3.5/models/gui/suitpage_gui')
         self.panelModel = gui.find('**/card')
         self.shadowModels = []
-        for index in range(1, len(SuitDNA.suitHeadTypes) + 1):
+        for index in xrange(1, len(SuitDNA.suitHeadTypes) + 1):
             self.shadowModels.append(gui.find('**/shadow' + str(index)))
 
         del gui
@@ -254,7 +254,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
         taskMgr.remove('suitListResponseTimeout-later')
         taskMgr.remove('showCogRadarLater')
         taskMgr.remove('showBuildingRadarLater')
-        for index in range(0, len(self.radarOn)):
+        for index in xrange(0, len(self.radarOn)):
             if self.radarOn[index]:
                 self.toggleRadar(index)
                 self.radarButtons[index]['state'] = DGG.NORMAL
@@ -338,10 +338,10 @@ class SuitPage(ShtikerPage.ShtikerPage):
         yStart = -0.18
         xOffset = 0.199
         yOffset = 0.284
-        for dept in range(0, len(SuitDNA.suitDepts)):
+        for dept in xrange(0, len(SuitDNA.suitDepts)):
             row = []
             color = PANEL_COLORS[dept]
-            for type in range(0, SuitDNA.suitsPerDept):
+            for type in xrange(0, SuitDNA.suitsPerDept):
                 panel = DirectLabel(parent=self.panelNode, pos=(xStart + type * xOffset, 0.0, yStart - dept * yOffset), relief=None, state=DGG.NORMAL, image=self.panelModel, image_scale=(1, 1, 1), image_color=color, text=TTLocalizer.SuitPageMystery, text_scale=0.045, text_fg=(0, 0, 0, 1), text_pos=(0, 0.185, 0), text_font=ToontownGlobals.getSuitFont(), text_wordwrap=7)
                 panel.scale = 0.6
                 panel.setScale(panel.scale)
@@ -473,7 +473,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
             panel['image_color'] = PANEL_COLORS_COMPLETE2[index / SuitDNA.suitsPerDept]
 
     def updateAllCogs(self, status):
-        for index in range(0, len(base.localAvatar.cogs)):
+        for index in xrange(0, len(base.localAvatar.cogs)):
             base.localAvatar.cogs[index] = status
 
         self.updatePage()
@@ -481,8 +481,8 @@ class SuitPage(ShtikerPage.ShtikerPage):
     def updatePage(self):
         index = 0
         cogs = base.localAvatar.cogs
-        for dept in range(0, len(SuitDNA.suitDepts)):
-            for type in range(0, SuitDNA.suitsPerDept):
+        for dept in xrange(0, len(SuitDNA.suitDepts)):
+            for type in xrange(0, SuitDNA.suitsPerDept):
                 self.updateCogStatus(dept, type, cogs[index])
                 index += 1
 
@@ -516,7 +516,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
                 self.setPanelStatus(panel, COG_COMPLETE2)
 
     def updateCogRadarButtons(self, radars):
-        for index in range(0, len(radars)):
+        for index in xrange(0, len(radars)):
             if radars[index] == 1:
                 self.radarButtons[index]['state'] = DGG.NORMAL
 
@@ -555,7 +555,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
         return
 
     def updateBuildingRadarButtons(self, radars):
-        for index in range(0, len(radars)):
+        for index in xrange(0, len(radars)):
             if radars[index] == 1:
                 self.radarButtons[index].building = 1
 

@@ -41,12 +41,12 @@ class DistributedGolfKartAI(DistributedObjectAI.DistributedObjectAI):
         DistributedObjectAI.DistributedObjectAI.delete(self)
 
     def findAvailableSeat(self):
-        for i in range(len(self.seats)):
+        for i in xrange(len(self.seats)):
             if self.seats[i] is None:
                 return i
 
     def findAvatar(self, avId):
-        for i in range(len(self.seats)):
+        for i in xrange(len(self.seats)):
             if self.seats[i] == avId:
                 return i
 
@@ -169,7 +169,7 @@ class DistributedGolfKartAI(DistributedObjectAI.DistributedObjectAI):
     def enterOff(self):
         self.accepting = 0
         if hasattr(self, 'doId'):
-            for seatIndex in range(4):
+            for seatIndex in xrange(4):
                 taskMgr.remove(self.uniqueName('clearEmpty-' + str(seatIndex)))
 
     def exitOff(self):
@@ -266,7 +266,7 @@ class DistributedGolfKartAI(DistributedObjectAI.DistributedObjectAI):
         numPlayers = self.countFullSeats()
         avIdList = []
         if numPlayers > 0:
-            for seatIndex in range(len(self.seats)):
+            for seatIndex in xrange(len(self.seats)):
                 avId = self.seats[seatIndex]
                 avIdList.append(avId)
                 self.clearFullNow(seatIndex)

@@ -714,9 +714,9 @@ def getAllWallpapers(*typeList):
                     numBorderColors = len(borderData[BDColor])
                 else:
                     numBorderColors = 1
-                for borderColorIndex in range(numBorderColors):
+                for borderColorIndex in xrange(numBorderColors):
                     colors = WallpaperTypes[index][WTColor]
-                    for n in range(len(colors)):
+                    for n in xrange(len(colors)):
                         list.append(CatalogWallpaperItem(index, n, borderKey, borderColorIndex))
 
     return list
@@ -742,9 +742,9 @@ def getWallpaperRange(fromIndex, toIndex, *otherRanges):
                         numBorderColors = len(borderData[BDColor])
                     else:
                         numBorderColors = 1
-                    for borderColorIndex in range(numBorderColors):
+                    for borderColorIndex in xrange(numBorderColors):
                         colors = WallpaperTypes[patternIndex][WTColor]
-                        for n in range(len(colors)):
+                        for n in xrange(len(colors)):
                             list.append(CatalogWallpaperItem(patternIndex, n, borderKey, borderColorIndex))
 
     return list

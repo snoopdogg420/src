@@ -441,7 +441,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
         if len(oldSuitTraps) != len(self.suitTraps):
             self.needAdjustTownBattle = 1
         else:
-            for i in range(len(oldSuitTraps)):
+            for i in xrange(len(oldSuitTraps)):
                 if oldSuitTraps[i] == '9' and self.suitTraps[i] != '9' or oldSuitTraps[i] != '9' and self.suitTraps[i] == '9':
                     self.needAdjustTownBattle = 1
                     break
@@ -558,7 +558,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
         targetIndices = []
         unAttack = 0
         localToonInList = 0
-        for i in range(len(ids)):
+        for i in xrange(len(ids)):
             track = tracks[i]
             level = levels[i]
             toon = self.findToon(ids[i])
@@ -605,7 +605,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
                     targetIndex = -1
             targetIndices.append(targetIndex)
 
-        for i in range(4 - len(ids)):
+        for i in xrange(4 - len(ids)):
             toonIndices.append(-1)
             tracks.append(-1)
             levels.append(-1)

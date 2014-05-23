@@ -160,14 +160,14 @@ def doEffect(textId, speakingToon, nearbyToons):
         icons = []
 
         if itemValue != -1:
-            for item in range(6):
+            for item in xrange(6):
                 iconName = ToontownBattleGlobals.AvPropsNew[itemValue][item]
                 icons.append(invModel.find('**/%s' % iconName))
 
         else:
             tracks = range(7)
             random.shuffle(tracks)
-            for i in range(6):
+            for i in xrange(6):
                 track = tracks[i]
                 item = random.randint(0, 5)
                 iconName = ToontownBattleGlobals.AvPropsNew[track][item]

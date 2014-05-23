@@ -26,7 +26,7 @@ class TTRFriendsManagerUD(DistributedObjectGlobalUD):
                 return
             newList = []
             friendsList = fields['setFriendsList'][0]
-            for i in range(len(friendsList)):
+            for i in xrange(len(friendsList)):
                 if friendsList[i][0] == t2:
                     continue
                 newList.append(friendsList[i])

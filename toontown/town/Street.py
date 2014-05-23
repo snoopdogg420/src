@@ -338,7 +338,7 @@ class Street(BattlePlace.BattlePlace):
             collNodePaths = i.findAllMatches('**/+CollisionNode')
             numCollNodePaths = collNodePaths.getNumPaths()
             visGroupName = i.node().getName()
-            for j in range(numCollNodePaths):
+            for j in xrange(numCollNodePaths):
                 collNodePath = collNodePaths.getPath(j)
                 bitMask = collNodePath.node().getIntoCollideMask()
                 if bitMask.getBit(1):

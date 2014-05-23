@@ -523,7 +523,7 @@ class PlayGame(StateData.StateData):
     def getCatalogCodes(self, category):
         numCodes = self.dnaStore.getNumCatalogCodes(category)
         codes = []
-        for i in range(numCodes):
+        for i in xrange(numCodes):
             codes.append(self.dnaStore.getCatalogCode(category, i))
 
         return codes

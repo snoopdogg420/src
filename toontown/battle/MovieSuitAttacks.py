@@ -555,7 +555,7 @@ def getToonTrack(attack, damageDelay = 1e-06, damageAnimNames = None, dodgeDelay
 def getToonTracks(attack, damageDelay = 1e-06, damageAnimNames = None, dodgeDelay = 1e-06, dodgeAnimNames = None, splicedDamageAnims = None, splicedDodgeAnims = None, showDamageExtraTime = 0.01, showMissedExtraTime = 0.5):
     toonTracks = Parallel()
     targets = attack['target']
-    for i in range(len(targets)):
+    for i in xrange(len(targets)):
         tgt = targets[i]
         toonTracks.append(getToonTrack(attack, damageDelay, damageAnimNames, dodgeDelay, dodgeAnimNames, splicedDamageAnims, splicedDodgeAnims, target=tgt, showDamageExtraTime=showDamageExtraTime, showMissedExtraTime=showMissedExtraTime))
 
@@ -632,7 +632,7 @@ def getPropThrowTrack(attack, prop, hitPoints = [], missPoints = [], hitDuration
     battle = attack['battle']
 
     def getLambdas(list, prop, toon):
-        for i in range(len(list)):
+        for i in xrange(len(list)):
             if list[i] == 'face':
                 list[i] = lambda toon = toon: __toonFacePoint(toon)
             elif list[i] == 'miss':
@@ -654,12 +654,12 @@ def getPropThrowTrack(attack, prop, hitPoints = [], missPoints = [], hitDuration
     if lookAt != 'none':
         propTrack.append(Func(prop.lookAt, lookAt))
     if dmg > 0:
-        for i in range(len(hitPoints)):
+        for i in xrange(len(hitPoints)):
             pos = hitPoints[i]
             propTrack.append(LerpPosInterval(prop, hitDuration, pos=pos))
 
     else:
-        for i in range(len(missPoints)):
+        for i in xrange(len(missPoints)):
             pos = missPoints[i]
             propTrack.append(LerpPosInterval(prop, missDuration, pos=pos))
 
@@ -761,7 +761,7 @@ def getSplicedLerpAnims(animName, origDuration, newDuration, startTime = 0, fps 
     animInterval = origDuration / numAnims
     if reverse == 1:
         animInterval = -animInterval
-    for i in range(0, int(numAnims)):
+    for i in xrange(0, int(numAnims)):
         anims.append([animName,
          timeInterval,
          startTime + addition,
@@ -906,7 +906,7 @@ def doFillWithLead(attack):
 
     def colorParts(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
 
@@ -914,7 +914,7 @@ def doFillWithLead(attack):
 
     def resetParts(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.clearColorScale))
 
@@ -981,13 +981,13 @@ def doFountainPen(attack):
         splashTrack = Sequence(Func(battle.movie.needRestoreRenderProp, splash), Wait(1.65), Func(prepSplash, splash, __toonFacePoint(toon)), ActorInterval(splash, 'splash-from-splat'), Func(MovieUtil.removeProp, splash), Func(battle.movie.clearRenderProp, splash))
         headParts = toon.getHeadParts()
         splashTrack.append(Func(battle.movie.needRestoreColor))
-        for partNum in range(0, headParts.getNumPaths()):
+        for partNum in xrange(0, headParts.getNumPaths()):
             nextPart = headParts.getPath(partNum)
             splashTrack.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
 
         splashTrack.append(Func(MovieUtil.removeProp, splash))
         splashTrack.append(Wait(2.6))
-        for partNum in range(0, headParts.getNumPaths()):
+        for partNum in xrange(0, headParts.getNumPaths()):
             nextPart = headParts.getPath(partNum)
             splashTrack.append(Func(nextPart.clearColorScale))
 
@@ -1039,7 +1039,7 @@ def doRubOut(attack):
 
     def hideParts(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.setTransparency, 1))
             track.append(LerpFunctionInterval(nextPart.setAlphaScale, fromData=1, toData=0, duration=0.2))
@@ -1048,7 +1048,7 @@ def doRubOut(attack):
 
     def showParts(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.clearColorScale))
             track.append(Func(nextPart.clearTransparency))
@@ -1327,7 +1327,7 @@ def doBuzzWord(attack):
      'buzzwords-main',
      'buzzwords-over',
      'buzzwords-syn']
-    for i in range(0, 5):
+    for i in xrange(0, 5):
         effect = BattleParticles.createParticleEffect('BuzzWord')
         if random.random() > 0.5:
             BattleParticles.setEffectTexture(effect, texturesList[i], color=Vec4(1, 0.94, 0.02, 1))
@@ -1596,7 +1596,7 @@ def doReOrg(attack):
         print '***********headParts pos=', headParts[0].getPos()
         print '***********headParts hpr=', headParts[0].getHpr()
         headTracks = Parallel()
-        for partNum in range(0, headParts.getNumPaths()):
+        for partNum in xrange(0, headParts.getNumPaths()):
             part = headParts.getPath(partNum)
             x = part.getX()
             y = part.getY()
@@ -1615,7 +1615,7 @@ def doReOrg(attack):
         sleeves = toon.findAllMatches('**/sleeves')
         hands = toon.findAllMatches('**/hands')
         print '*************arms hpr=', arms[0].getHpr()
-        for partNum in range(0, arms.getNumPaths()):
+        for partNum in xrange(0, arms.getNumPaths()):
             chestTracks.append(getChestTrack(arms.getPath(partNum)))
             chestTracks.append(getChestTrack(sleeves.getPath(partNum)))
             chestTracks.append(getChestTrack(hands.getPath(partNum)))
@@ -1703,7 +1703,7 @@ def doGlowerPower(attack):
     battle = attack['battle']
     leftKnives = []
     rightKnives = []
-    for i in range(0, 3):
+    for i in xrange(0, 3):
         leftKnives.append(globalPropPool.getProp('dagger'))
         rightKnives.append(globalPropPool.getProp('dagger'))
 
@@ -1720,7 +1720,7 @@ def doGlowerPower(attack):
         rightPosPoints = [Point3(-0.4, 3.8, 3.7), MovieUtil.PNT3_ZERO]
     leftKnifeTracks = Parallel()
     rightKnifeTracks = Parallel()
-    for i in range(0, 3):
+    for i in xrange(0, 3):
         knifeDelay = 0.11
         leftTrack = Sequence()
         leftTrack.append(Wait(1.1))
@@ -1825,7 +1825,7 @@ def doHeadShrink(attack):
 
         def scaleHeadParallel(scale, duration, headParts = headParts):
             headTracks = Parallel()
-            for partNum in range(0, headParts.getNumPaths()):
+            for partNum in xrange(0, headParts.getNumPaths()):
                 nextPart = headParts.getPath(partNum)
                 headTracks.append(LerpScaleInterval(nextPart, duration, Point3(scale, scale, scale)))
 
@@ -2183,7 +2183,7 @@ def doHotAir(attack):
 
     def changeColor(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
 
@@ -2191,7 +2191,7 @@ def doHotAir(attack):
 
     def resetColor(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.clearColorScale))
 
@@ -2273,7 +2273,7 @@ def doFilibuster(attack):
     sprayTrack3 = getPartTrack(sprayEffect3, partDelay + 1.6, partDuration, [sprayEffect3, suit, 0])
     sprayTrack4 = getPartTrack(sprayEffect4, partDelay + 2.4, partDuration, [sprayEffect4, suit, 0])
     damageAnims = []
-    for i in range(0, 4):
+    for i in xrange(0, 4):
         damageAnims.append(['cringe',
          1e-05,
          0.3,
@@ -2297,7 +2297,7 @@ def doSchmooze(attack):
      'schmooze-instant',
      'schmooze-master',
      'schmooze-viz']
-    for i in range(0, 4):
+    for i in xrange(0, 4):
         upperEffect = BattleParticles.createParticleEffect(file='schmoozeUpperSpray')
         lowerEffect = BattleParticles.createParticleEffect(file='schmoozeLowerSpray')
         BattleParticles.setEffectTexture(upperEffect, textureNames[i], color=Vec4(0, 0, 1, 1))
@@ -2321,12 +2321,12 @@ def doSchmooze(attack):
     suitTrack = getSuitTrack(attack)
     upperPartTracks = Parallel()
     lowerPartTracks = Parallel()
-    for i in range(0, 4):
+    for i in xrange(0, 4):
         upperPartTracks.append(getPartTrack(upperEffects[i], partDelay + i * 0.65, 0.8, [upperEffects[i], suit, 0]))
         lowerPartTracks.append(getPartTrack(lowerEffects[i], partDelay + i * 0.65 + 0.7, 1.0, [lowerEffects[i], suit, 0]))
 
     damageAnims = []
-    for i in range(0, 3):
+    for i in xrange(0, 3):
         damageAnims.append(['conked',
          0.01,
          0.3,
@@ -2412,7 +2412,7 @@ def doRedTape(attack):
     dmg = target['hp']
     tape = globalPropPool.getProp('redtape')
     tubes = []
-    for i in range(0, 3):
+    for i in xrange(0, 3):
         tubes.append(globalPropPool.getProp('redtape-tube'))
 
     suitTrack = getSuitTrack(attack)
@@ -2446,7 +2446,7 @@ def doRedTape(attack):
     tubePosPoints = [Point3(0, 0, tubeHeight), MovieUtil.PNT3_ZERO]
     tubeTracks = Parallel()
     tubeTracks.append(Func(battle.movie.needRestoreHips))
-    for partNum in range(0, hips.getNumPaths()):
+    for partNum in xrange(0, hips.getNumPaths()):
         nextPart = hips.getPath(partNum)
         tubeTracks.append(getPropTrack(tubes[partNum], nextPart, tubePosPoints, 3.25, 3.17, scaleUpPoint=scaleUpPoint))
 
@@ -2504,7 +2504,7 @@ def doParadigmShift(attack):
             shakeTrack.append(Wait(damageDelay + 0.25))
             shakeTrack.append(Func(shadow.hide))
             shakeTrack.append(LerpPosInterval(toon, 1.1, risePoint))
-            for i in range(0, 17):
+            for i in xrange(0, 17):
                 shakeTrack.append(LerpPosInterval(toon, 0.03, shakeLeft))
                 shakeTrack.append(LerpPosInterval(toon, 0.03, shakeRight))
 
@@ -2720,7 +2720,7 @@ def doFired(attack):
 
     def changeColor(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
 
@@ -2728,7 +2728,7 @@ def doFired(attack):
 
     def resetColor(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.clearColorScale))
 
@@ -2903,7 +2903,7 @@ def doCrunch(attack):
     numberSpillTrack2 = getPartTrack(numberSpill2, 1.5, 1.0, [numberSpill2, suit, 0])
     numberSprayTracks = Parallel()
     numOfNumbers = random.randint(5, 9)
-    for i in range(0, numOfNumbers - 1):
+    for i in xrange(0, numOfNumbers - 1):
         nextSpray = BattleParticles.createParticleEffect(file='numberSpray')
         nextTexture = random.choice(numberNames)
         BattleParticles.setEffectTexture(nextSpray, 'audit-' + nextTexture)
@@ -2913,7 +2913,7 @@ def doCrunch(attack):
         numberSprayTracks.append(nextSprayTrack)
 
     numberTracks = Parallel()
-    for i in range(0, numOfNumbers):
+    for i in xrange(0, numOfNumbers):
         texture = random.choice(numberNames)
         next = MovieUtil.copyProp(BattleParticles.getParticle('audit-' + texture))
         next.reparentTo(suit.getRightHand())
@@ -3229,7 +3229,7 @@ def doWithdrawal(attack):
 
     def changeColor(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.setColorScale, Vec4(0, 0, 0, 1)))
 
@@ -3237,7 +3237,7 @@ def doWithdrawal(attack):
 
     def resetColor(parts):
         track = Parallel()
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             nextPart = parts.getPath(partNum)
             track.append(Func(nextPart.clearColorScale))
 
@@ -3520,7 +3520,7 @@ def doPeckingOrder(attack):
     numBirds = random.randint(4, 7)
     birdTracks = Parallel()
     propDelay = 1.5
-    for i in range(0, numBirds):
+    for i in xrange(0, numBirds):
         next = globalPropPool.getProp('bird')
         next.setScale(0.01)
         next.reparentTo(suit.getRightHand())

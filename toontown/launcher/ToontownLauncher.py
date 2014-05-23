@@ -108,7 +108,7 @@ class ToontownLauncher(LauncherBase):
         l = s.split('&')
         length = len(l)
         dict = {}
-        for index in range(0, len(l)):
+        for index in xrange(0, len(l)):
             args = l[index].split('=')
             if len(args) == 3:
                 [name, value] = args[-2:]

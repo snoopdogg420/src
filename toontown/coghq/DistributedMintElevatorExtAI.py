@@ -34,7 +34,7 @@ class DistributedMintElevatorExtAI(DistributedElevatorExtAI.DistributedElevatorE
                     players.append(i)
 
             mintZone = self.bldg.createMint(self.mintId, players)
-            for seatIndex in range(len(self.seats)):
+            for seatIndex in xrange(len(self.seats)):
                 avId = self.seats[seatIndex]
                 if avId:
                     self.sendUpdateToAvatarId(avId, 'setMintInteriorZone', [mintZone])

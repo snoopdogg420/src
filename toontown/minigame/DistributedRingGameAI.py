@@ -62,7 +62,7 @@ class DistributedRingGameAI(DistributedMinigameAI):
          None,
          None]
         chooseFrom = RingGameGlobals.ringColorSelection[:]
-        for i in range(0, 4):
+        for i in xrange(0, 4):
             c = random.choice(chooseFrom)
             chooseFrom.remove(c)
             if isinstance(c, types.TupleType):

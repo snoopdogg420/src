@@ -19,7 +19,7 @@ class QuestManagerAI:
         self.avatarProgressTier(toon)
         toonQuests = toon.getQuests()
 
-        for i in range(0, len(toonQuests), 5):
+        for i in xrange(0, len(toonQuests), 5):
             questDesc = toonQuests[i:i + 5]
             questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
             questClass = Quests.getQuest(questId)
@@ -95,7 +95,7 @@ class QuestManagerAI:
     def completeQuest(self, toon, completeQuestId):
         toonQuests = toon.getQuests()
 
-        for i in range(0, len(toonQuests), 5):
+        for i in xrange(0, len(toonQuests), 5):
             questDesc = toonQuests[i:i + 5]
             questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
             questClass = Quests.getQuest(questId)
@@ -113,7 +113,7 @@ class QuestManagerAI:
         toonQuests = toon.getQuests() #Flattened Quests.
         questList = [] #Unflattened Quests.
 
-        for i in range(0, len(toonQuests), 5):
+        for i in xrange(0, len(toonQuests), 5):
             questDesc = toonQuests[i:i + 5]
 
             if questDesc[0] == questId:
@@ -146,7 +146,7 @@ class QuestManagerAI:
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
@@ -162,7 +162,7 @@ class QuestManagerAI:
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
@@ -179,7 +179,7 @@ class QuestManagerAI:
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
@@ -197,7 +197,7 @@ class QuestManagerAI:
         questList = [] #unflattened
         hasPickedQuest = 0
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
@@ -231,7 +231,7 @@ class QuestManagerAI:
         recoveredItems = []
         unrecoveredItems = []
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
@@ -265,7 +265,7 @@ class QuestManagerAI:
 
         flattenedQuests = toon.getQuests()
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
@@ -279,7 +279,7 @@ class QuestManagerAI:
         flattenedQuests = toon.getQuests()
         questList = []
 
-        for i in range(0, len(flattenedQuests), 5):
+        for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
 
             if isinstance(questClass, Quests.DeliverItemQuest):
@@ -293,7 +293,7 @@ def quests(command, arg0=0, arg1=0):
     currQuests = target.getQuests()
     currentQuestIds = []
 
-    for i in range(0, len(currQuests), 5):
+    for i in xrange(0, len(currQuests), 5):
         currentQuestIds.append(currQuests[i])
 
     pocketSize = target.getQuestCarryLimit()
@@ -358,7 +358,7 @@ def quests(command, arg0=0, arg1=0):
                 questList = []
                 wantedQuestId = currentQuestIds[arg0 - 1]
 
-                for i in range(0, len(currQuests), 5):
+                for i in xrange(0, len(currQuests), 5):
                     questDesc = currQuests[i : i + 5]
 
                     if questDesc[0] == wantedQuestId:
@@ -372,7 +372,7 @@ def quests(command, arg0=0, arg1=0):
                 if arg0 in currentQuestIds:
                     questList = []
 
-                    for i in range(0, len(currQuests), 5):
+                    for i in xrange(0, len(currQuests), 5):
                         questDesc = currQuests[i : i + 5]
 
                         if questDesc[0] == arg0:

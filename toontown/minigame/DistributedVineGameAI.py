@@ -284,10 +284,10 @@ class DistributedVineGameAI(DistributedMinigameAI):
 
         maxSpiders = VineGameGlobals.SpiderLimits[szId]
         curSpiders = 0
-        for i in range(4):
+        for i in xrange(4):
             spidersLeft = maxSpiders - curSpiders
             validChoices = []
-            for numSpiders in range(spidersLeft + 1):
+            for numSpiders in xrange(spidersLeft + 1):
                 validChoices += pool[numSpiders]
 
             if not validChoices:

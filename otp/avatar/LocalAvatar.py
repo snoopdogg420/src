@@ -590,7 +590,7 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar, DistributedSmoothNode.Dis
 
     def printCameraPositions(self):
         print '['
-        for i in range(len(self.cameraPositions)):
+        for i in xrange(len(self.cameraPositions)):
             self.printCameraPosition(i)
             print ','
 

@@ -149,7 +149,7 @@ class DistributedTravelGame(DistributedMinigame):
         self.numKeys = self.keys.getNumPaths()
         self.keyInit = []
         self.keyRef = []
-        for i in range(self.numKeys):
+        for i in xrange(self.numKeys):
             key = self.keys[i]
             key.setTwoSided(1)
             ref = self.trolleyCar.attachNewNode('key' + `i` + 'ref')
@@ -161,7 +161,7 @@ class DistributedTravelGame(DistributedMinigame):
         self.numFrontWheels = self.frontWheels.getNumPaths()
         self.frontWheelInit = []
         self.frontWheelRef = []
-        for i in range(self.numFrontWheels):
+        for i in xrange(self.numFrontWheels):
             wheel = self.frontWheels[i]
             ref = self.trolleyCar.attachNewNode('frontWheel' + `i` + 'ref')
             ref.iPosHpr(wheel)
@@ -172,7 +172,7 @@ class DistributedTravelGame(DistributedMinigame):
         self.numBackWheels = self.backWheels.getNumPaths()
         self.backWheelInit = []
         self.backWheelRef = []
-        for i in range(self.numBackWheels):
+        for i in xrange(self.numBackWheels):
             wheel = self.backWheels[i]
             ref = self.trolleyCar.attachNewNode('backWheel' + `i` + 'ref')
             ref.iPosHpr(wheel)
@@ -441,7 +441,7 @@ class DistributedTravelGame(DistributedMinigame):
         self.notify.debug('setGameReady')
         if DistributedMinigame.setGameReady(self):
             return
-        for index in range(self.numPlayers):
+        for index in xrange(self.numPlayers):
             avId = self.avIdList[index]
             name = ''
             avatar = self.getAvatar(avId)
@@ -510,7 +510,7 @@ class DistributedTravelGame(DistributedMinigame):
         self.directionReason = directionReason
         self.resultsStr = ''
         directionTotals = [0] * TravelGameGlobals.MaxDirections
-        for index in range(len(votes)):
+        for index in xrange(len(votes)):
             if index < len(self.avNames):
                 avId = self.avIdList[index]
                 dir = directions[index]
@@ -523,7 +523,7 @@ class DistributedTravelGame(DistributedMinigame):
                     self.resultsStr += curStr
 
         directionStr = TTLocalizer.TravelGameTotals
-        for index in range(len(directionTotals)):
+        for index in xrange(len(directionTotals)):
             directionStr += ' ' + TTLocalizer.TravelGameDirections[index] + ':'
             directionStr += str(directionTotals[index])
 
@@ -721,7 +721,7 @@ class DistributedTravelGame(DistributedMinigame):
         if not len(startingVotesArray) == len(self.avIdList):
             self.notify.error('length does not match, startingVotes=%s, avIdList=%s' % (startingVotesArray, self.avIdList))
             return
-        for index in range(len(self.avIdList)):
+        for index in xrange(len(self.avIdList)):
             avId = self.avIdList[index]
             self.startingVotes[avId] = startingVotesArray[index]
             if not self.currentVotes.has_key(avId):
@@ -755,7 +755,7 @@ class DistributedTravelGame(DistributedMinigame):
             self.scrollList.removeAllItems()
         self.indexToVotes = {}
         index = 0
-        for vote in range(available)[::-1]:
+        for vote in xrange(available)[::-1]:
             self.scrollList.addItem(str(-(vote + 1)))
             self.indexToVotes[index] = vote + 1
             index += 1
@@ -764,7 +764,7 @@ class DistributedTravelGame(DistributedMinigame):
         self.indexToVotes[index] = 0
         self.zeroVoteIndex = index
         index += 1
-        for vote in range(available):
+        for vote in xrange(available):
             self.scrollList.addItem(str(vote + 1))
             self.indexToVotes[index] = vote + 1
             index += 1
@@ -854,7 +854,7 @@ class DistributedTravelGame(DistributedMinigame):
         return Task.done
 
     def updateCurrentVotes(self):
-        for index in range(len(self.resultVotes)):
+        for index in xrange(len(self.resultVotes)):
             avId = self.avIdList[index]
             oldCurrentVotes = self.currentVotes[avId]
             self.currentVotes[avId] -= self.resultVotes[index]
@@ -884,7 +884,7 @@ class DistributedTravelGame(DistributedMinigame):
         if not self.hasLocalToon:
             return
         self.switchToMinigameDict = {}
-        for index in range(len(switches)):
+        for index in xrange(len(switches)):
             switch = switches[index]
             minigame = minigames[index]
             self.switchToMinigameDict[switch] = minigame
@@ -975,7 +975,7 @@ class DistributedTravelGame(DistributedMinigame):
         if not self.hasLocalToon:
             return
         self.avIdBonuses = {}
-        for index in range(len(self.avIdList)):
+        for index in xrange(len(self.avIdList)):
             avId = self.avIdList[index]
             switch = switches[index]
             bean = beans[index]
@@ -1009,27 +1009,27 @@ class DistributedTravelGame(DistributedMinigame):
         return retval
 
     def animateTrolley(self, t, keyAngle, wheelAngle):
-        for i in range(self.numKeys):
+        for i in xrange(self.numKeys):
             key = self.keys[i]
             ref = self.keyRef[i]
             key.setH(ref, t * keyAngle)
 
-        for i in range(self.numFrontWheels):
+        for i in xrange(self.numFrontWheels):
             frontWheel = self.frontWheels[i]
             ref = self.frontWheelRef[i]
             frontWheel.setH(ref, t * wheelAngle)
 
-        for i in range(self.numBackWheels):
+        for i in xrange(self.numBackWheels):
             backWheel = self.backWheels[i]
             ref = self.backWheelRef[i]
             backWheel.setH(ref, t * wheelAngle)
 
     def resetAnimation(self):
-        for i in range(self.numKeys):
+        for i in xrange(self.numKeys):
             self.keys[i].setTransform(self.keyInit[i])
 
-        for i in range(self.numFrontWheels):
+        for i in xrange(self.numFrontWheels):
             self.frontWheels[i].setTransform(self.frontWheelInit[i])
 
-        for i in range(self.numBackWheels):
+        for i in xrange(self.numBackWheels):
             self.backWheels[i].setTransform(self.backWheelInit[i])

@@ -27,7 +27,7 @@ for type in DropObjectTypes:
 Name2DOTypeId = {}
 names = Name2DropObjectType.keys()
 names.sort()
-for i in range(len(names)):
+for i in xrange(len(names)):
     Name2DOTypeId[names[i]] = i
 
 DOTypeId2Name = names

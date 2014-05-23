@@ -127,7 +127,7 @@ class SCTerminal(SCElement):
     def updateEmoteIcon(self):
         if hasattr(self, 'button'):
             self.lastEmoteIconColor = self.getEmoteIconColor()
-            for i in range(self.button['numStates']):
+            for i in xrange(self.button['numStates']):
                 self.button['image%s_image' % i].setColorScale(*self.lastEmoteIconColor)
 
         else:

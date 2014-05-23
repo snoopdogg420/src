@@ -769,7 +769,7 @@ class Suit(Avatar.Avatar):
             filePrefix, phase = ModelDict[self.style.body]
         headModel = loader.loadModel('phase_' + str(phase) + filePrefix + 'heads')
         headReferences = headModel.findAllMatches('**/' + headType)
-        for i in range(0, headReferences.getNumPaths()):
+        for i in xrange(0, headReferences.getNumPaths()):
             if base.config.GetBool('want-new-cogs', 0):
                 headPart = self.instance(headReferences.getPath(i), 'modelRoot', 'to_head')
                 if not headPart:
@@ -970,7 +970,7 @@ class Suit(Avatar.Avatar):
         self.generateCorporateTie()
         self.setHeight(self.height)
         parts = self.findAllMatches('**/pPlane*')
-        for partNum in range(0, parts.getNumPaths()):
+        for partNum in xrange(0, parts.getNumPaths()):
             bb = parts.getPath(partNum)
             bb.setTwoSided(1)
 

@@ -139,7 +139,7 @@ class OTPClientRepository(ClientRepositoryBase):
                               '&CHAT_CODE_CREATION_RULE=%s' % config.GetString('fake-DISL-ChatCodeCreation', 'YES') +
                               '&FAMILY_MEMBERS=%s' % config.GetString('fake-DISL-FamilyMembers') + '&PIRATES_SUB_COUNT=%s' % subCount)
 
-            for i in range(subCount):
+            for i in xrange(subCount):
                 self.DISLToken += ('&PIRATES_SUB_%s_ACCESS=%s' % (i, config.GetString('fake-DISL-Sub-%s-Access' % i, 'FULL')) +
                                    '&PIRATES_SUB_%s_ACTIVE=%s' % (i, config.GetString('fake-DISL-Sub-%s-Active' % i, 'YES')) +
                                    '&PIRATES_SUB_%s_ID=%s' % (i, config.GetInt('fake-DISL-Sub-%s-Id' % i, playerAccountId) +  config.GetInt('fake-DISL-Sub-Id-Offset', 0)) +
@@ -1227,7 +1227,7 @@ class OTPClientRepository(ClientRepositoryBase):
         numIvals = ivalMgr.getNumIntervals()
         if numIvals > 0:
             print "You can't leave until you clean up your intervals: {"
-            for i in range(ivalMgr.getMaxIndex()):
+            for i in xrange(ivalMgr.getMaxIndex()):
                 ival = None
                 if i < len(ivalMgr.ivals):
                     ival = ivalMgr.ivals[i]

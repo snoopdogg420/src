@@ -27,7 +27,7 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
             simbase.air.elevatorTripId += 1
         else:
             self.elevatorTripId = 0
-        for seat in range(numSeats):
+        for seat in xrange(numSeats):
             self.seats.append(None)
 
         self.accepting = 0
@@ -60,14 +60,14 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
         return self.bldgDoId
 
     def findAvailableSeat(self):
-        for i in range(len(self.seats)):
+        for i in xrange(len(self.seats)):
             if self.seats[i] == None:
                 return i
 
         return
 
     def findAvatar(self, avId):
-        for i in range(len(self.seats)):
+        for i in xrange(len(self.seats)):
             if self.seats[i] == avId:
                 return i
 
@@ -83,7 +83,7 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
 
     def countOpenSeats(self):
         openSeats = 0
-        for i in range(len(self.seats)):
+        for i in xrange(len(self.seats)):
             if self.seats[i] == None:
                 openSeats += 1
 
@@ -218,7 +218,7 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
         self.timeOfBoarding = None
         self.timeOfGroupBoarding = None
         if hasattr(self, 'doId'):
-            for seatIndex in range(len(self.seats)):
+            for seatIndex in xrange(len(self.seats)):
                 taskMgr.remove(self.uniqueName('clearEmpty-' + str(seatIndex)))
 
         return

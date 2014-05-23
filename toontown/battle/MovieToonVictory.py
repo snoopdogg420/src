@@ -102,7 +102,7 @@ def doToonVictory(localToonActive, toons, rewardToonIds, rewardDicts, deathList,
     skipper = ToonVictorySkipper(len(toonList), noSkip)
     lastListenIndex = 0
     track.append(skipper.getSetupFunc(lastListenIndex))
-    for tIndex in range(len(toonList)):
+    for tIndex in xrange(len(toonList)):
         t = toonList[tIndex]
         rdict = __findToonReward(rewardDicts, t)
         if rdict != None:

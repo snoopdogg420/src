@@ -16,7 +16,7 @@ def _registerTempMinigame(name, Class, id, minPlayers = 1, maxPlayers = 4):
     ToontownGlobals.MinigameIDs += (id,)
     ToontownGlobals.MinigameNames[name] = id
     TempMgCtors[id] = Class
-    for i in range(minPlayers, maxPlayers):
+    for i in xrange(minPlayers, maxPlayers):
         ToontownGlobals.MinigamePlayerMatrix[i] += (id,)
 
     _printMessage('registerTempMinigame: ' + name)

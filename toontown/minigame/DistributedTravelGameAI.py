@@ -90,7 +90,7 @@ class DistributedTravelGameAI(DistributedMinigameAI):
 
     def enterProcessChoices(self):
         self.directionVotes = []
-        for dir in range(TravelGameGlobals.MaxDirections):
+        for dir in xrange(TravelGameGlobals.MaxDirections):
             self.directionVotes.append([dir, 0])
 
         for key in self.avatarChoices:

@@ -195,7 +195,7 @@ class ShardPage(ShtikerPage.ShtikerPage):
         totalWVPop = 0
         currentMap = {}
         self.shardButtons = []
-        for i in range(len(curShardTuples)):
+        for i in xrange(len(curShardTuples)):
             shardId, name, pop, WVPop = curShardTuples[i]
             if shardId == actualShardId:
                 actualShardName = name

@@ -172,7 +172,7 @@ class QuestPoster(DirectFrame):
          None,
          None]
         npc = elevatorModel.findAllMatches('**/floor_light_?;+s')
-        for i in range(npc.getNumPaths()):
+        for i in xrange(npc.getNumPaths()):
             np = npc.getPath(i)
             floor = int(np.getName()[-1:]) - 1
             floorIndicator[floor] = np

@@ -399,7 +399,7 @@ class DistributedPartyCatchActivity(DistributedPartyActivity, DistributedPartyCa
          Toon.Toon(),
          Toon.Toon(),
          Toon.Toon()]
-        for i in range(len(self.posts)):
+        for i in xrange(len(self.posts)):
             tree = self.posts[i]
             tree.reparentTo(render)
             x = self.StageHalfWidth
@@ -420,10 +420,10 @@ class DistributedPartyCatchActivity(DistributedPartyActivity, DistributedPartyCa
     def showDropGrid(self):
         self.hideDropGrid()
         self.dropMarkers = []
-        for row in range(self.DropRows):
+        for row in xrange(self.DropRows):
             self.dropMarkers.append([])
             rowList = self.dropMarkers[row]
-            for column in range(self.DropColumns):
+            for column in xrange(self.DropColumns):
                 toon = Toon.Toon()
                 toon.setDNA(base.localAvatar.getStyle())
                 toon.reparentTo(self.root)

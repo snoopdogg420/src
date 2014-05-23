@@ -150,7 +150,7 @@ class QuestMap(DirectFrame):
                 hoodId = ZoneUtil.getCanonicalHoodId(npcZone)
                 branchId = ZoneUtil.getCanonicalBranchZone(npcZone)
                 if self.hoodId == hoodId and self.zoneId == branchId:
-                    for blockIndex in range(dnaStore.getNumBlockTitles()):
+                    for blockIndex in xrange(dnaStore.getNumBlockTitles()):
                         blockNumber = dnaStore.getTitleBlockAt(blockIndex)
                         zone = dnaStore.getZoneFromBlockNumber(blockNumber)
                         branchZone = zone - zone % 100

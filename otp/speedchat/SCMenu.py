@@ -426,7 +426,7 @@ class SCMenu(SCObject, NodePath):
 
         if self.holder is not None:
             self.holder.updateViewability()
-        for i in range(len(self.__members)):
+        for i in xrange(len(self.__members)):
             self.__members[i].posInParentMenu = i
 
         self.invalidate()

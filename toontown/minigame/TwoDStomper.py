@@ -116,7 +116,7 @@ class TwoDStomper(DirectObject):
 
     def adjustCollSolidHeight(self, t):
         heightDiff = self.head.getZ() - self.headStartZ
-        for i in range(1, len(self.collSolids) - 1):
+        for i in xrange(1, len(self.collSolids) - 1):
             self.collSolids[i].setZ(heightDiff * i / (self.numCollSolids - 1))
 
     def start(self, elapsedTime):

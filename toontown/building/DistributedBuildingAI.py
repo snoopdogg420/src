@@ -220,7 +220,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
         self.victorList = victorList
 
     def findVictorIndex(self, avId):
-        for i in range(len(self.victorList)):
+        for i in xrange(len(self.victorList)):
             if self.victorList[i] == avId:
                 return i
 
@@ -292,7 +292,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
                 self.air.writeServerEvent('buildingDefeated', t, '%s|%s|%s|%s' % (self.track, self.numFloors, self.zoneId, victorList))
             if toon is not None:
                 self.air.questManager.toonKilledBuilding(toon, self.track, self.difficulty, self.numFloors, self.zoneId, activeToons)
-        for i in range(0, 4):
+        for i in xrange(0, 4):
             victor = victorList[i]
             if (victor is None) or (victory not in self.air.doId2do):
                 victorList[i] = 0
@@ -325,7 +325,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
                 self.air.writeServerEvent('buildingDefeated', t, '%s|%s|%s|%s' % (self.track, self.numFloors, self.zoneId, victorList))
             if toon is not None:
                 self.air.questManager.toonKilledCogdo(toon, self.difficulty, self.numFloors, self.zoneId, activeToons)
-        for i in range(0, 4):
+        for i in xrange(0, 4):
             victor = victorList[i]
             if (victor is None) or (victor not in self.air.doId2do):
                 victorList[i] = 0

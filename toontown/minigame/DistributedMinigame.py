@@ -434,7 +434,7 @@ class DistributedMinigame(DistributedObject.DistributedObject):
         if not len(startingVotesArray) == len(self.avIdList):
             self.notify.error('length does not match, startingVotes=%s, avIdList=%s' % (startingVotesArray, self.avIdList))
             return
-        for index in range(len(self.avIdList)):
+        for index in xrange(len(self.avIdList)):
             avId = self.avIdList[index]
             self.startingVotes[avId] = startingVotesArray[index]
 

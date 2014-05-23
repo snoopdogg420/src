@@ -58,7 +58,7 @@ class DistributedTrolley(DistributedObject.DistributedObject):
         self.numKeys = self.keys.getNumPaths()
         self.keyInit = []
         self.keyRef = []
-        for i in range(self.numKeys):
+        for i in xrange(self.numKeys):
             key = self.keys[i]
             key.setTwoSided(1)
             ref = self.trolleyCar.attachNewNode('key' + `i` + 'ref')
@@ -70,7 +70,7 @@ class DistributedTrolley(DistributedObject.DistributedObject):
         self.numFrontWheels = self.frontWheels.getNumPaths()
         self.frontWheelInit = []
         self.frontWheelRef = []
-        for i in range(self.numFrontWheels):
+        for i in xrange(self.numFrontWheels):
             wheel = self.frontWheels[i]
             ref = self.trolleyCar.attachNewNode('frontWheel' + `i` + 'ref')
             ref.iPosHpr(wheel)
@@ -81,7 +81,7 @@ class DistributedTrolley(DistributedObject.DistributedObject):
         self.numBackWheels = self.backWheels.getNumPaths()
         self.backWheelInit = []
         self.backWheelRef = []
-        for i in range(self.numBackWheels):
+        for i in xrange(self.numBackWheels):
             wheel = self.backWheels[i]
             ref = self.trolleyCar.attachNewNode('backWheel' + `i` + 'ref')
             ref.iPosHpr(wheel)
@@ -357,29 +357,29 @@ class DistributedTrolley(DistributedObject.DistributedObject):
         self.trolleyExitTrack.finish()
 
     def animateTrolley(self, t, keyAngle, wheelAngle):
-        for i in range(self.numKeys):
+        for i in xrange(self.numKeys):
             key = self.keys[i]
             ref = self.keyRef[i]
             key.setH(ref, t * keyAngle)
 
-        for i in range(self.numFrontWheels):
+        for i in xrange(self.numFrontWheels):
             frontWheel = self.frontWheels[i]
             ref = self.frontWheelRef[i]
             frontWheel.setH(ref, t * wheelAngle)
 
-        for i in range(self.numBackWheels):
+        for i in xrange(self.numBackWheels):
             backWheel = self.backWheels[i]
             ref = self.backWheelRef[i]
             backWheel.setH(ref, t * wheelAngle)
 
     def resetAnimation(self):
-        for i in range(self.numKeys):
+        for i in xrange(self.numKeys):
             self.keys[i].setTransform(self.keyInit[i])
 
-        for i in range(self.numFrontWheels):
+        for i in xrange(self.numFrontWheels):
             self.frontWheels[i].setTransform(self.frontWheelInit[i])
 
-        for i in range(self.numBackWheels):
+        for i in xrange(self.numBackWheels):
             self.backWheels[i].setTransform(self.backWheelInit[i])
 
     def getStareAtNodeAndOffset(self):

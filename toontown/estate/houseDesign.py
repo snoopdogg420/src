@@ -567,7 +567,7 @@ class ObjectManager(NodePath, DirectObject):
             self.movingObject = 1
 
     def setLnpColor(self, r, g, b):
-        for i in range(5):
+        for i in xrange(5):
             self.lnp.lineSegs.setVertexColor(i, r, g, b)
 
     def markNewPosition(self, isValid):
@@ -937,7 +937,7 @@ class ObjectManager(NodePath, DirectObject):
         self.bindHelpText(self.inRoomButton, 'Room')
         self.inTrashButton = DirectButton(parent=self.itemBackgroundFrame, relief=None, text=TTLocalizer.HDInTrashLabel, text_pos=(-0.1, -0.25), image=[tagUp, tagDown, tagRollover], pos=(2.85, 0, -1.8), scale=0.8, command=self.showInTrashPicker)
         self.bindHelpText(self.inTrashButton, 'Trash')
-        for i in range(4):
+        for i in xrange(4):
             self.inAtticButton.component('text%d' % i).setR(-90)
             self.inRoomButton.component('text%d' % i).setR(-90)
             self.inTrashButton.component('text%d' % i).setR(-90)
@@ -1000,17 +1000,17 @@ class ObjectManager(NodePath, DirectObject):
 
     def createAtticPicker(self):
         self.atticItemPanels = []
-        for itemIndex in range(len(self.furnitureManager.atticItems)):
+        for itemIndex in xrange(len(self.furnitureManager.atticItems)):
             panel = FurnitureItemPanel(self.furnitureManager.atticItems[itemIndex], itemIndex, command=self.bringItemFromAttic, deleteMode=self.deleteMode, helpCategory='FurnitureItemPanelAttic')
             self.atticItemPanels.append(panel)
 
         self.atticWallpaperPanels = []
-        for itemIndex in range(len(self.furnitureManager.atticWallpaper)):
+        for itemIndex in xrange(len(self.furnitureManager.atticWallpaper)):
             panel = FurnitureItemPanel(self.furnitureManager.atticWallpaper[itemIndex], itemIndex, command=self.bringWallpaperFromAttic, deleteMode=self.deleteMode, helpCategory='FurnitureItemPanelAttic')
             self.atticWallpaperPanels.append(panel)
 
         self.atticWindowPanels = []
-        for itemIndex in range(len(self.furnitureManager.atticWindows)):
+        for itemIndex in xrange(len(self.furnitureManager.atticWindows)):
             panel = FurnitureItemPanel(self.furnitureManager.atticWindows[itemIndex], itemIndex, command=self.bringWindowFromAttic, deleteMode=self.deleteMode, helpCategory='FurnitureItemPanelAttic')
             self.atticWindowPanels.append(panel)
 
@@ -1069,7 +1069,7 @@ class ObjectManager(NodePath, DirectObject):
 
     def createInTrashPicker(self):
         self.inTrashPanels = []
-        for itemIndex in range(len(self.furnitureManager.deletedItems)):
+        for itemIndex in xrange(len(self.furnitureManager.deletedItems)):
             panel = FurnitureItemPanel(self.furnitureManager.deletedItems[itemIndex], itemIndex, command=self.requestReturnToAtticFromTrash, helpCategory='FurnitureItemPanelTrash')
             self.inTrashPanels.append(panel)
 
@@ -1173,7 +1173,7 @@ class ObjectManager(NodePath, DirectObject):
         self.atticItemPanels.append(panel)
         self.regenerateAtticPicker()
         if self.inRoomPicker:
-            for i in range(len(self.inRoomPanels)):
+            for i in xrange(len(self.inRoomPanels)):
                 if self.inRoomPanels[i].itemId == objectId:
                     del self.inRoomPanels[i]
                     self.regenerateInRoomPicker()
@@ -1297,7 +1297,7 @@ class ObjectManager(NodePath, DirectObject):
         objectId = mo.id()
         self.atticItemPanels[itemIndex].destroy()
         del self.atticItemPanels[itemIndex]
-        for i in range(itemIndex, len(self.atticItemPanels)):
+        for i in xrange(itemIndex, len(self.atticItemPanels)):
             self.atticItemPanels[i].itemId -= 1
 
         self.regenerateAtticPicker()
@@ -1317,7 +1317,7 @@ class ObjectManager(NodePath, DirectObject):
             return
         self.atticItemPanels[itemIndex].destroy()
         del self.atticItemPanels[itemIndex]
-        for i in range(itemIndex, len(self.atticItemPanels)):
+        for i in xrange(itemIndex, len(self.atticItemPanels)):
             self.atticItemPanels[i].itemId -= 1
 
         self.regenerateAtticPicker()
@@ -1356,7 +1356,7 @@ class ObjectManager(NodePath, DirectObject):
             return
         self.atticWallpaperPanels[itemIndex].destroy()
         del self.atticWallpaperPanels[itemIndex]
-        for i in range(itemIndex, len(self.atticWallpaperPanels)):
+        for i in xrange(itemIndex, len(self.atticWallpaperPanels)):
             self.atticWallpaperPanels[i].itemId -= 1
 
         self.regenerateAtticPicker()
@@ -1386,7 +1386,7 @@ class ObjectManager(NodePath, DirectObject):
         else:
             self.atticWindowPanels[itemIndex].destroy()
             del self.atticWindowPanels[itemIndex]
-            for i in range(itemIndex, len(self.atticWindowPanels)):
+            for i in xrange(itemIndex, len(self.atticWindowPanels)):
                 self.atticWindowPanels[i].itemId -= 1
 
         self.regenerateAtticPicker()
@@ -1402,7 +1402,7 @@ class ObjectManager(NodePath, DirectObject):
             return
         self.atticWindowPanels[itemIndex].destroy()
         del self.atticWindowPanels[itemIndex]
-        for i in range(itemIndex, len(self.atticWindowPanels)):
+        for i in xrange(itemIndex, len(self.atticWindowPanels)):
             self.atticWindowPanels[i].itemId -= 1
 
         self.regenerateAtticPicker()
@@ -1555,7 +1555,7 @@ class ObjectManager(NodePath, DirectObject):
     def requestReturnToAttic(self, item, objectId):
         self.__cleanupVerifyDelete()
         itemIndex = None
-        for i in range(len(self.inRoomPanels)):
+        for i in xrange(len(self.inRoomPanels)):
             if self.inRoomPanels[i].itemId == objectId:
                 itemIndex = i
                 self.__enableItemButtons(0)
@@ -1602,7 +1602,7 @@ class ObjectManager(NodePath, DirectObject):
         self.__enableItemButtons(1)
         self.inTrashPanels[itemIndex].destroy()
         del self.inTrashPanels[itemIndex]
-        for i in range(itemIndex, len(self.inTrashPanels)):
+        for i in xrange(itemIndex, len(self.inTrashPanels)):
             self.inTrashPanels[i].itemId -= 1
 
         self.regenerateInTrashPicker()

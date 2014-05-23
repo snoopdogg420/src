@@ -113,7 +113,7 @@ def createMinigame(air, playerArray, trolleyZone, minigameZone=None,
         for avId in playerArray:
             mg.setStartingVote(avId, TravelGameGlobals.DefaultStartingVotes)
     else:
-        for index in range(len(startingVotes)):
+        for index in xrange(len(startingVotes)):
             avId = playerArray[index]
             votes = startingVotes[index]
             if votes < 0:

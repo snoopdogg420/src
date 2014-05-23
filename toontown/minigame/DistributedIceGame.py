@@ -1040,7 +1040,7 @@ class DistributedIceGame(DistributedMinigame.DistributedMinigame, DistributedIce
         DistributedIceWorld.DistributedIceWorld.postStep(self)
         if not self.colCount:
             return
-        for count in range(self.colCount):
+        for count in xrange(self.colCount):
             c0, c1 = self.getOrderedContacts(count)
             if c1 in self.tireCollideIds:
                 tireIndex = self.tireCollideIds.index(c1)
