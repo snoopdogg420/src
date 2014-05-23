@@ -50,7 +50,7 @@ class Nametag3d(Nametag):
 
         # As 3D nametags can move around on their own, we need to update the
         # click frame constantly:
-        self.updateClickRegion(-1,1,-1,1)
+        self.updateClickRegion(-1, 1, -1, 1)
 
     def getSpeechBalloon(self):
         return NametagGlobals.speechBalloon3d
