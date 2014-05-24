@@ -67,6 +67,7 @@ NPC_FLIPPYTOONHALL = 10
 NPC_SCIENTIST = 11
 NPC_SNOWBALLGIVER = 12
 NPC_SMART = 13
+NPC_BANKER = 14
 CLERK_COUNTDOWN_TIME = 120
 TAILOR_COUNTDOWN_TIME = 300
 RTDNAFile = '/RTDNAFile.txt'
@@ -92,6 +93,7 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     import DistributedNPCScientistAI
     import DistributedNPCSnowballGiverAI
     import DistributedSmartNPCAI
+    import DistributedBankerBobNPCAI
     canonicalZoneId, name, dnaType, gender, protected, type = desc
     if type == NPC_REGULAR:
         npc = DistributedNPCToonAI.DistributedNPCToonAI(air, npcId, questCallback=questCallback)
@@ -121,6 +123,8 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
         npc = DistributedNPCSnowballGiverAI.DistributedNPCSnowballGiverAI(air, npcId)
     elif type == NPC_SMART:
         npc = DistributedSmartNPCAI.DistributedSmartNPCAI(air, npcId)
+    elif type == NPC_BANKER:
+        npc = DistributedBankerBobNPCAI.DistributedBankerBobNPCAI(air, npcId)
     else:
         print 'createNPC() error!!!'
     npc.setName(name)
@@ -294,7 +298,7 @@ NPCToonDict = {20000: (-1,
          18),
         'm',
         1,
-        NPC_REGULAR),
+        NPC_BANKER),
  2003: (2516,
         lnames[2003],
         ('cll',

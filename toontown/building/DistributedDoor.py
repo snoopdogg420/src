@@ -289,7 +289,8 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         vec = base.localAvatar.getRelativeVector(self.currentDoorNp, self.currentDoorVec)
         netScale = self.currentDoorNp.getNetTransform().getScale()
         yToTest = vec.getY() / netScale[1]
-        return yToTest < -0.5
+        #return yToTest < -0.5
+        return yToTest
 
     def enterDoor(self):
         if self.allowedToEnter():
