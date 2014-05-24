@@ -280,8 +280,6 @@ class TownLoader(StateData.StateData):
                 nextZoneId = ZoneUtil.getTrueZoneId(nextZoneId, self.zoneId)
                 visNode = self.zoneDict[nextZoneId]
                 self.nodeDict[zoneId].append(visNode)
-
-        print 'ZONE DICT FDHSD HFHJKSDFHJLLH %r' % (self.zoneVisDict)
                 
         self.hood.dnaStore.resetPlaceNodes()
         self.hood.dnaStore.resetDNAGroups()
