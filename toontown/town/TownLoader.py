@@ -237,6 +237,7 @@ class TownLoader(StateData.StateData):
         self.nodeDict = {}
         self.zoneDict = {}
         self.zoneVisDict = {}
+        self.visList = []
         self.nodeList = []
         self.fadeInDict = {}
         self.fadeOutDict = {}
@@ -261,11 +262,9 @@ class TownLoader(StateData.StateData):
             self.nodeDict[zoneId] = []
             self.nodeList.append(groupNode)
             self.zoneDict[zoneId] = groupNode
-            visibles = []
             for i in xrange(visGroup.getNumVisibles()):
-                visibles.append(int(visGroup.visibles[i]))
-            visibles.append(ZoneUtil.getBranchZone(zoneId))
-            self.zoneVisDict[zoneId] = visibles
+                if not int(visGroup.visibles[i]) in self.visList:
+                    self.visList.append(int(visGroup.visibles[i]))
             fadeDuration = 0.5
             self.fadeOutDict[groupNode] = Sequence(Func(groupNode.setTransparency, 1), LerpColorScaleInterval(groupNode, fadeDuration, a0, startColorScale=a1), Func(groupNode.clearColorScale), Func(groupNode.clearTransparency), Func(groupNode.stash), name='fadeZone-' + str(zoneId), autoPause=1)
             self.fadeInDict[groupNode] = Sequence(Func(groupNode.unstash), Func(groupNode.setTransparency, 1), LerpColorScaleInterval(groupNode, fadeDuration, a1, startColorScale=a0), Func(groupNode.clearColorScale), Func(groupNode.clearTransparency), name='fadeZone-' + str(zoneId), autoPause=1)
@@ -286,7 +285,7 @@ class TownLoader(StateData.StateData):
         self.hood.dnaStore.resetDNAGroups()
         self.hood.dnaStore.resetDNAVisGroups()
         self.hood.dnaStore.resetDNAVisGroupsAI()
-
+        
     def renameFloorPolys(self, nodeList):
         for i in nodeList:
             collNodePaths = i.findAllMatches('**/+CollisionNode')
