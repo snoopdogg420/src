@@ -60,6 +60,7 @@ class DistributedSmartNPCAI(DistributedNPCToonBaseAI):
                 self.personOfInterest = 0
                 self.nameOfInterest = ''
                 taskMgr.remove(self.myTask)
+                self.index = 0
                 self.sendUpdate('dismiss', [sender, 1])
                 return
             self.restartTask()
