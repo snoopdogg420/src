@@ -104,10 +104,11 @@ class SuitLegList:
 
         # First, add the initial SuitLeg. This will always be of type TFromSky:
         startPoint = self.path.getPoint(0)
+        headingPoint = self.path.getPoint(1)
         startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
         zoneId = startEdge.getZoneId()
         startLeg = SuitLeg(
-            self.getStartTime(0), zoneId, -1, startPoint, startPoint,
+            self.getStartTime(0), zoneId, -1, startPoint, headingPoint,
             SuitLeg.TFromSky)
         self.legs.append(startLeg)
 
