@@ -11,7 +11,6 @@ from toontown.ai.FishManagerAI import  FishManagerAI
 from toontown.ai.HolidayManagerAI import HolidayManagerAI
 from toontown.ai.NewsManagerAI import NewsManagerAI
 from toontown.ai.QuestManagerAI import QuestManagerAI
-from toontown.catalog.CatalogManagerAI import CatalogManagerAI
 from toontown.ai.AchievementsManagerAI import AchievementsManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 from toontown.coghq import CountryClubManagerAI
@@ -23,6 +22,8 @@ from toontown.distributed.ToontownDistrictStatsAI import ToontownDistrictStatsAI
 from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
 from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.estate.EstateManagerAI import EstateManagerAI
+from toontown.uberdog.DistributedDeliveryManagerAI import DistributedDeliveryManagerAI
+from toontown.catalog.CatalogManagerAI import CatalogManagerAI
 from toontown.hood import BRHoodAI
 from toontown.hood import BossbotHQAI
 from toontown.hood import CashbotHQAI
@@ -102,6 +103,8 @@ class ToontownAIRepository(ToontownInternalRepository):
             self.estateManager.generateWithRequired(2)
             self.catalogManager = CatalogManagerAI(self)
             self.catalogManager.generateWithRequired(2)
+            self.deliveryManager = self.generateGlobalObject(
+                OTP_DO_ID_TOONTOWN_DELIVERY_MANAGER, 'DistributedDeliveryManager')
         if self.wantPets:
             self.petMgr = PetManagerAI(self)
         if self.wantParties:

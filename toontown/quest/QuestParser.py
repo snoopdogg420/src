@@ -43,7 +43,10 @@ def init():
      'chatScButton': base.localAvatar.chatMgr.scButton,
      'arrows': BlinkingArrows.BlinkingArrows()})
   
-    readFile('../RetroResources/phase_3/etc/QuestScripts.txt')
+    if __debug__:
+        readFile('../RetroResources/phase_3/etc/QuestScripts.txt')
+    else:
+        readFile('phase_3/etc/QuestScripts.txt')
 
 
 def clear():
