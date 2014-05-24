@@ -56,3 +56,10 @@ class SellbotHQAI(CogHQAI.CogHQAI):
         suitPlanner.initTasks()
         self.suitPlanners.append(suitPlanner)
         self.air.suitPlanners[self.zoneId] = suitPlanner
+        
+        suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, ToontownGlobals.SellbotFactoryExt)
+        suitPlanner.generateWithRequired(ToontownGlobals.SellbotFactoryExt)
+        suitPlanner.d_setZoneId(ToontownGlobals.SellbotFactoryExt)
+        suitPlanner.initTasks()
+        self.suitPlanners.append(suitPlanner)
+        self.air.suitPlanners[ToontownGlobals.SellbotFactoryExt] = suitPlanner

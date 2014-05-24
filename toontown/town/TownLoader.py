@@ -5,7 +5,6 @@ from toontown.distributed.ToontownMsgTypes import *
 from toontown.toonbase.ToontownGlobals import *
 from direct.gui.DirectGui import cleanupDialog
 from direct.directnotify import DirectNotifyGlobal
-from direct.interval.IntervalGlobal import *
 from toontown.hood import Place
 from direct.showbase import DirectObject
 from direct.fsm import StateData
@@ -14,15 +13,13 @@ from direct.fsm import State
 from direct.task import Task
 import TownBattle
 from toontown.toon import Toon
-from toontown.toon import NPCToons
-from otp.nametag.NametagConstants import *
 from toontown.toon.Toon import teleportDebug
 from toontown.battle import BattleParticles
 from direct.fsm import StateData
 from toontown.building import ToonInterior
 from toontown.hood import QuietZoneState
 from toontown.hood import ZoneUtil
-from random import randint
+from direct.interval.IntervalGlobal import *
 
 class TownLoader(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('TownLoader')
@@ -68,40 +65,6 @@ class TownLoader(StateData.StateData):
         self.townBattle = TownBattle.TownBattle(self.townBattleDoneEvent)
         self.townBattle.load()
 
-        if base.config.GetBool('want-april-toons', 0):
-            self.npc = NPCToons.createLocalNPC(91915)
-            self.npc.reparentTo(base.localAvatar)
-            self.npc.setZ(30)
-            self.npc.hide()
-            self.piano = loader.loadModel('phase_5/models/props/piano-mod.bam')
-            self.piano.setZ(250)
-            self.piano.setHpr(0, 90, 0)
-            self.piano.reparentTo(base.localAvatar)
-            self.piano.setScale(0)
-            self.pianoSfx = base.loadSfx('phase_5/audio/sfx/AA_drop_piano.ogg')
-            self.dropSfx = base.loadSfx('phase_5/audio/sfx/cogbldg_drop.ogg')
-            self.pianoDropSound = Sequence(
-                Func(base.playSfx, self.dropSfx),
-                Wait(6.7),
-                Func(base.playSfx, self.pianoSfx),
-                Func(base.localAvatar.b_setAnimState, 'Squish'),
-                Wait(2.5),
-                Func(self.pianoSfx.stop)
-            )
-            self.pianoDropSequence = Sequence(
-                Wait(randint(10, 60)),
-                Func(self.pianoDropSound.start),
-                Parallel(self.piano.scaleInterval(1, (3, 3, 3)), self.piano.posInterval(7, (0, 0, 0))),
-                self.piano.posInterval(0.1, (0, 0, 0.5)),
-                self.piano.posInterval(0.1, (0, 0, 0)),
-                Wait(0.4),
-                Parallel(Func(self.npc.addActive), Func(self.npc.setChatAbsolute, 'Whoops! My bad!', CFSpeech|CFTimeout)),
-                self.piano.scaleInterval(1, (0, 0, 0)),
-                Wait(5),
-                Func(self.npc.removeActive)
-            )
-            self.pianoDropSequence.loop()
-
     def unload(self):
         self.unloadBattleAnims()
         globalPropPool.unloadProps()
@@ -118,7 +81,6 @@ class TownLoader(StateData.StateData):
         del self.hood
         del self.nodeDict
         del self.zoneDict
-        del self.nodeToZone
         del self.fadeInDict
         del self.fadeOutDict
         del self.nodeList
@@ -135,15 +97,6 @@ class TownLoader(StateData.StateData):
         cleanupDialog('globalDialog')
         ModelPool.garbageCollect()
         TexturePool.garbageCollect()
-        if base.config.GetBool('want-april-toons', 0):
-            self.pianoDropSequence.finish()
-            self.pianoDropSound.finish()
-            del self.pianoDropSequence
-            del self.pianoDropSound
-            self.piano.removeNode()
-            del self.pianoSfx
-            del self.dropSfx
-            del self.npc
 
     def enter(self, requestStatus):
         teleportDebug(requestStatus, 'TownLoader.enter(%s)' % requestStatus)
@@ -282,15 +235,16 @@ class TownLoader(StateData.StateData):
     def makeDictionaries(self, dnaStore):
         self.nodeDict = {}
         self.zoneDict = {}
-        self.nodeToZone = {}
+        self.zoneVisDict = {}
         self.nodeList = []
         self.fadeInDict = {}
         self.fadeOutDict = {}
         a1 = Vec4(1, 1, 1, 1)
         a0 = Vec4(1, 1, 1, 0)
-        numVisGroups = dnaStore.getNumDNAVisGroups()
+        numVisGroups = dnaStore.getNumDNAVisGroupsAI()
         for i in xrange(numVisGroups):
             groupFullName = dnaStore.getDNAVisGroupName(i)
+            visGroup = dnaStore.getDNAVisGroupAI(i)
             groupName = base.cr.hoodMgr.extractGroupName(groupFullName)
             zoneId = int(groupName)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
@@ -306,7 +260,11 @@ class TownLoader(StateData.StateData):
             self.nodeDict[zoneId] = []
             self.nodeList.append(groupNode)
             self.zoneDict[zoneId] = groupNode
-            self.nodeToZone[groupNode] = zoneId
+            visibles = []
+            for i in xrange(visGroup.getNumVisibles()):
+                visibles.append(int(visGroup.visibles[i]))
+            visibles.append(ZoneUtil.getBranchZone(zoneId))
+            self.zoneVisDict[zoneId] = visibles
             fadeDuration = 0.5
             self.fadeOutDict[groupNode] = Sequence(Func(groupNode.setTransparency, 1), LerpColorScaleInterval(groupNode, fadeDuration, a0, startColorScale=a1), Func(groupNode.clearColorScale), Func(groupNode.clearTransparency), Func(groupNode.stash), name='fadeZone-' + str(zoneId), autoPause=1)
             self.fadeInDict[groupNode] = Sequence(Func(groupNode.unstash), Func(groupNode.setTransparency, 1), LerpColorScaleInterval(groupNode, fadeDuration, a1, startColorScale=a0), Func(groupNode.clearColorScale), Func(groupNode.clearTransparency), name='fadeZone-' + str(zoneId), autoPause=1)
@@ -323,6 +281,8 @@ class TownLoader(StateData.StateData):
                 visNode = self.zoneDict[nextZoneId]
                 self.nodeDict[zoneId].append(visNode)
 
+        print 'ZONE DICT FDHSD HFHJKSDFHJLLH %r' % (self.zoneVisDict)
+                
         self.hood.dnaStore.resetPlaceNodes()
         self.hood.dnaStore.resetDNAGroups()
         self.hood.dnaStore.resetDNAVisGroups()
