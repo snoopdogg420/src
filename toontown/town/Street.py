@@ -112,9 +112,7 @@ class Street(BattlePlace.BattlePlace):
         base.localAvatar.setGeom(self.loader.geom)
         base.localAvatar.setOnLevelGround(1)
         self._telemLimiter = TLGatherAllAvs('Street', RotationLimitToH)
-        self.zone = requestStatus['zoneId']
-        trueZone = ZoneUtil.getBranchZone(requestStatus['zoneId'])
-        self.visZones.append(trueZone)
+        self.zone = ZoneUtil.getBranchZone(requestStatus['zoneId'])
         #NametagGlobals.setMasterArrowsOn(arrowsOn) #TODO: fix me cfsworks
 
         def __lightDecorationOn__():
@@ -178,9 +176,6 @@ class Street(BattlePlace.BattlePlace):
             self.visibilityOff()
         self.loader.geom.reparentTo(hidden)
         self._telemLimiter.destroy()
-        trueZone = ZoneUtil.getBranchZone(self.zone)
-        self.visZones.remove(trueZone)
-        self.zone = None
         del self._telemLimiter
 
         def __lightDecorationOff__():
@@ -361,8 +356,6 @@ class Street(BattlePlace.BattlePlace):
         self.showAllVisibles()
 
     def addVisInterest(self, zone):
-        if self.zone and (zone not in self.visZones):
-            self.visZones.append(self.zone)
         self.notify.debug('addVisInterest zone=%i'%zone)
         self.visZones.append(zone)
         self.visInterestChanged = True
@@ -379,12 +372,15 @@ class Street(BattlePlace.BattlePlace):
         if self.visInterestChanged:
             self.notify.debug('updateVisInterest zones=' + str(self.visZones) + ' handle=' +str(self.visInterestHandle))
             self.visInterestChanged = False
+            tempVisZones = self.visZones
+            if not self.zone in tempVisZones:
+                tempVisZones.append(self.zone)
             if self.visInterestHandle is None:
                 if len(self.visZones) > 0:
-                    self.visInterestHandle = base.cr.addInterest(base.localAvatar.defaultShard, self.visZones, 'streetVis')
+                    self.visInterestHandle = base.cr.addInterest(base.localAvatar.defaultShard, tempVisZones, 'streetVis')
             else:
-                base.cr.alterInterest(self.visInterestHandle, base.localAvatar.defaultShard, self.visZones)
-
+                base.cr.alterInterest(self.visInterestHandle, base.localAvatar.defaultShard, tempVisZones)
+                
     def doEnterZone(self, newZoneId):
         if self.zoneId != None:
             for i in self.loader.nodeDict[self.zoneId]:

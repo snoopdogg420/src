@@ -27,6 +27,14 @@ from random import randint
 class TownLoader(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('TownLoader')
 
+    zone2music = {
+        ToontownCentral : 'phase_9/audio/bgm/encntr_suit_ttc.ogg',
+        DonaldsDock : 'phase_9/audio/bgm/encntr_suit_dd.ogg',
+        DaisyGardens : 'phase_9/audio/bgm/encntr_suit_dg.ogg',
+        MinniesMelodyland : 'phase_9/audio/bgm/encntr_suit_mml.ogg',
+        TheBrrrgh : 'phase_9/audio/bgm/encntr_suit_tb.ogg',
+    }
+    
     def __init__(self, hood, parentFSMState, doneEvent):
         StateData.StateData.__init__(self, doneEvent)
         self.hood = hood
@@ -56,7 +64,7 @@ class TownLoader(StateData.StateData):
         self.canonicalBranchZone = ZoneUtil.getCanonicalBranchZone(zoneId)
         self.music = base.loadMusic(self.musicFile)
         self.activityMusic = base.loadMusic(self.activityMusicFile)
-        self.battleMusic = base.loadMusic('phase_3.5/audio/bgm/encntr_general_bg.ogg')
+        self.battleMusic = base.loadMusic(self.zone2music.get(ZoneUtil.getHoodId(zoneId), 'phase_3.5/audio/bgm/encntr_general_bg.ogg'))
         self.townBattle = TownBattle.TownBattle(self.townBattleDoneEvent)
         self.townBattle.load()
 
