@@ -158,13 +158,11 @@ class DNAStorage:
                     endPointPos = edge.getEndPoint().getPos()
                     startPointPos = startPoint.getPos()
                     diffPos = endPointPos - startPointPos
-                    if diffPos[0] and diffPos[1]:
+                    if edge.getEndPoint().getPointType() != DNASuitPoint.pointTypeMap['STREET_POINT']:
                         continue
                     break
             startIndex = edge.getEndPoint().getIndex()
             point = self.getSuitPointWithIndex(startIndex)
-            if point.getPointType() != DNASuitPoint.pointTypeMap['STREET_POINT']:
-                continue
             points.append(point)
             if (startIndex == endPoint.getIndex()) or reachedEnd:
                 reachedEnd = True
