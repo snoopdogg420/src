@@ -42,6 +42,8 @@ def init():
      'chatNormalButton': base.localAvatar.chatMgr.normalButton,
      'chatScButton': base.localAvatar.chatMgr.scButton,
      'arrows': BlinkingArrows.BlinkingArrows()})
+  
+    readFile('../RetroResources/phase_3/etc/QuestScripts.txt')
 
 
 def clear():
@@ -49,9 +51,13 @@ def clear():
 
 
 def readFile(filename):
+    print 'reading file %s'%(filename)
     global curId
     scriptFile = StreamReader(vfs.openReadFile(filename, 1), 1)
-    gen = tokenize.generate_tokens(scriptFile.readline)
+    def readline():
+        return scriptFile.readline().strip()
+    gen = tokenize.generate_tokens(readline)
+    print gen
     line = getLineOfTokens(gen)
     while line is not None:
         if line == []:
@@ -60,6 +66,7 @@ def readFile(filename):
         if line[0] == 'ID':
             parseId(line)
         elif curId is None:
+            print 'every script must begin with an id'
             notify.error('Every script must begin with an ID')
         else:
             lineDict[curId].append(line)
@@ -90,6 +97,7 @@ def getLineOfTokens(gen):
         elif token[0] == tokenize.NAME:
             tokens.append(token[1])
         else:
+            print 'ignored token type: %s on line: %s'%(tokenize.tok_name[token[0]], token[2][0])
             notify.warning('Ignored token type: %s on line: %s' % (tokenize.tok_name[token[0]], token[2][0]))
         token = gen.next()
 
@@ -99,8 +107,10 @@ def getLineOfTokens(gen):
 def parseId(line):
     global curId
     curId = line[1]
+    print 'setting current scriptId to: %s' % curId
     notify.debug('Setting current scriptId to: %s' % curId)
     if questDefined(curId):
+        print 'already defined scriptId: %s' % curId
         notify.error('Already defined scriptId: %s' % curId)
     else:
         lineDict[curId] = []
@@ -967,7 +977,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         toonHeadFrame = self.toonHeads.get(toonId)
         if not toonHeadFrame:
             toonHeadFrame = ToonHeadFrame.ToonHeadFrame(toon)
-            toonHeadFrame.tag1Node.setActive(1)
+            toonHeadFrame.tag1Node
             toonHeadFrame.hide()
             self.toonHeads[toonId] = toonHeadFrame
             self.setVar('%sToonHead' % toonName, toonHeadFrame)

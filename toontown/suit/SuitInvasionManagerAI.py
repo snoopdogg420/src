@@ -44,9 +44,11 @@ class SuitInvasionManagerAI:
             self.air.newsManager.setInvasionStatus(ToontownGlobals.SuitInvasionBegin, self.currentInvadingSuit, 10, self.isSkelecog)
             self.cleanupCurrentSuits()
             self.invasionStarted()
-            return task.done
+            if task:
+                return task.done
 
-        return task.again
+        if task:
+            return task.again
 
     def invasionStarted(self):
         t = self.MIN_TIME_DURING + random.randint(1, self.MAX_TIME_DURING)

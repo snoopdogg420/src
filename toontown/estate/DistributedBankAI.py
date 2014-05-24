@@ -14,19 +14,21 @@ class DistributedBankAI(DistributedFurnitureItemAI):
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
         
-        if avId == self.ownerId:
-            self.sendBankMovie(avId)
-        else:
-            self.sendNotOwnerMovie(avId)
+        if not self.busy:
+            if avId == self.ownerId:
+                self.sendBankMovie(avId)
+            else:
+                self.sendNotOwnerMovie(avId)
                 
-        self.acceptOnce(self.air.getAvatarExitEvent(avId), self.__handleUnexpectedExit, extraArgs=[avId])
+            self.acceptOnce(self.air.getAvatarExitEvent(avId),
+                            self.__handleUnexpectedExit)
 
     def freeAvatar(self):
         self.sendExitMovie()
         self.sendClearMovie()
 
     def setMovie(self, mode, avId):
-        self.sendUpdateToAvatarId(avId, 'setMovie', args=[mode,
+        self.sendUpdate('setMovie', args=[mode,
             avId, ClockDelta.globalClockDelta.getRealNetworkTime()])
         
     def sendBankMovie(self, avId):
@@ -48,10 +50,10 @@ class DistributedBankAI(DistributedFurnitureItemAI):
         if not av:
             return
         
-        av.b_setBankMoney(av.getBankMoney() + amount)
-        av.b_setMoney(av.getMoney() - amount)
+        av.b_setBankMoney(min(av.getBankMoney() + amount, av.getMaxBankMoney()))
+        av.b_setMoney(max(av.getMoney() - amount, 0))
         self.freeAvatar()
     
-    def __handleUnexpectedExit(self, avId):
+    def __handleUnexpectedExit(self):
         self.busy = 0
-
+        print 'hi this is unexpected.'

@@ -7,10 +7,12 @@ from toontown.toonbase import ToontownGlobals
 from DistributedFurnitureItemAI import DistributedFurnitureItemAI
 from DistributedBankAI import DistributedBankAI
 from DistributedClosetAI import DistributedClosetAI
+from DistributedPhoneAI import DistributedPhoneAI
 
 furnitureId2Do = {
     500: DistributedClosetAI,
-    1300: DistributedBankAI
+    1300: DistributedBankAI,
+    1399: DistributedPhoneAI
 }
 
 class FurnitureError(Exception):
@@ -254,9 +256,17 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
 
         item.posHpr = (x, y, z, h, p, r)
 
-        do = DistributedFurnitureItemAI(self.air, self, item)
-        do.generateWithRequired(self.zoneId)
-        self.items.append(do)
+        
+        if item.furnitureType in furnitureId2Do:
+            do = furnitureId2Do[item.furnitureType](self.air, self, item, self.ownerId)
+            if self.isGenerated():
+                do.generateWithRequired(self.zoneId)
+            self.items.append(do)
+        else:
+            do = DistributedFurnitureItemAI(self.air, self, item)
+            if self.isGenerated():
+                do.generateWithRequired(self.zoneId)
+            self.items.append(do)
 
         return (ToontownGlobals.FM_MovedItem, do.doId)
 

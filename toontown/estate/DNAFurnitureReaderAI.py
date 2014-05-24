@@ -23,7 +23,6 @@ DNA2Furniture = {
     'rug': 1000,
     'rugA': 1010,
     'rugB': 1020,
-    'cabinetYwood': 1110,
     'bookcase': 1120,
     'bookcase_low': 1130,
     'ending_table': 1200,
@@ -70,6 +69,10 @@ class DNAFurnitureReaderAI:
 
             self.itemList.append(CatalogFurnitureItem(itemId,
                                                       posHpr=(x, y, z, h, 0, 0)))
+        
+        #Add a phone to the itemList
+        self.itemList.append(CatalogFurnitureItem(1399,
+                                                  posHpr=(0, 0, 0, 0, 0, 0)))
 
     def getList(self):
         if not self.itemList:

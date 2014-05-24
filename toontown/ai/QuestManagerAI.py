@@ -4,7 +4,7 @@ from direct.distributed.MsgTypes import *
 from direct.distributed.PyDatagram import PyDatagram
 from otp.ai.MagicWordGlobal import *
 from toontown.quest import Quests
-
+from toontown.hood import ZoneUtil
 
 class QuestManagerAI:
     def __init__(self, air):
@@ -224,34 +224,48 @@ class QuestManagerAI:
 
     def recoverItems(self, toon, suitsKilled, taskZoneId):
         print 'QuestManager: %s (AvId: %s) is recovering Items'%(toon.getName(), toon.doId)
+        #taskZoneId
 
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
         recoveredItems = []
         unrecoveredItems = []
+        
+        taskZoneId = ZoneUtil.getBranchZone(taskZoneId)
+        print 'QuestManager: %s (AvId: %s) Task zone Id %s'%(toon.getName(), toon.doId, taskZoneId)
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if isinstance(questClass, Quests.CogQuest):
-                for suit in suitsKilled:
-                    if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
-                        questDesc[4] += 1
-            elif isinstance(questClass, Quests.RecoverItemQuest):
-                if questClass.getHolder() == Quests.Any:
+            if not questClass.getCompletionStatus(toon, questDesc):
+                if isinstance(questClass, Quests.CogQuest):
                     for suit in suitsKilled:
-                        if questClass.doesCogCount(toon.doId, suit, taskZoneId, [toon.doId]):
-                            minchance = questClass.getPercentChance()
-                            import random
-                            chance = random.randint(minchance - 40, 100)
-
-                            if chance <= minchance:
-                                questDesc[4] += 1
-                                recoveredItems.append(questClass.getItem())
-                            else:
-                                unrecoveredItems.append(questClass.getItem())
+                        if questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']):
+                            print 'QuestManager: %s (AvId: %s) cog counted.'%(toon.getName(), toon.doId)
+                            questDesc[4] += 1
+                elif isinstance(questClass, Quests.RecoverItemQuest):
+                    print 'QuestManager: %s (AvId: %s) has a recover item quest.'%(toon.getName(), toon.doId)
+                    if questClass.getHolder() == Quests.Any:
+                        print 'QuestManager: %s (AvId: %s) item is being held by a cog.'%(toon.getName(), toon.doId)
+                        for suit in suitsKilled:
+                            print 'QuestManager: %s (AvId: %s) location match: %s'%(toon.getName(), toon.doId, questClass.isLocationMatch(taskZoneId))
+                            print 'QuestManager: %s (AvId: %s) suit match: %s'%(toon.getName(), toon.doId, questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']))
+                            print 'QuestManager: %s (AvId: %s) checking cog %s.'%(toon.getName(), toon.doId, suit)
+                            if questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']):
+                                print 'QuestManager: %s (AvId: %s) cog counted.'%(toon.getName(), toon.doId)
+                                minchance = questClass.getPercentChance()
+                                import random
+                                chance = random.randint(minchance - 40, 100)
+                                print 'minchance: %s, chance: %s'%(minchance, chance)
+    
+                                if chance <= minchance:
+                                    questDesc[4] += 1
+                                    print 'Got item!'
+                                    recoveredItems.append(questClass.getItem())
+                                else:
+                                    unrecoveredItems.append(questClass.getItem())
 
             questList.append(questDesc)
 

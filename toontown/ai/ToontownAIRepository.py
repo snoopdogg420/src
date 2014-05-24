@@ -11,6 +11,7 @@ from toontown.ai.FishManagerAI import  FishManagerAI
 from toontown.ai.HolidayManagerAI import HolidayManagerAI
 from toontown.ai.NewsManagerAI import NewsManagerAI
 from toontown.ai.QuestManagerAI import QuestManagerAI
+from toontown.catalog.CatalogManagerAI import CatalogManagerAI
 from toontown.ai.AchievementsManagerAI import AchievementsManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 from toontown.coghq import CountryClubManagerAI
@@ -52,7 +53,6 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.districtName = districtName
 
         self.notify.setInfo(True)  # Our AI repository should always log info.
-
         self.hoods = []
         self.cogHeadquarters = []
         self.dnaStoreMap = {}
@@ -100,6 +100,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         if self.wantHousing:
             self.estateManager = EstateManagerAI(self)
             self.estateManager.generateWithRequired(2)
+            self.catalogManager = CatalogManagerAI(self)
+            self.catalogManager.generateWithRequired(2)
         if self.wantPets:
             self.petMgr = PetManagerAI(self)
         if self.wantParties:
