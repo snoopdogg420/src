@@ -155,12 +155,13 @@ class DNAStorage:
             edges = self.suitEdges[startPointIndex]
             for edge in edges:
                 startPoint = edge.getEndPoint()
-                if startPoint.getPointType() == DNASuitPoint.pointTypeMap['STREET_POINT']:
-                    break
+                startPointType = startPoint.getPointType()
+                if startPointType != DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
+                    if startPointType != DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+                        break
             else:
-                continue
-            if startPoint not in points:
-                points.append(startPoint)
+                raise DNAError('Could not find DNASuitPath.')
+            points.append(startPoint)
         path = DNASuitPath()
         for point in points:
             path.addPoint(point)

@@ -4540,10 +4540,7 @@ def maxToon(missingTrack=None):
 
     # First, unlock the invoker's Gag tracks:
     gagTracks = [1, 1, 1, 1, 1, 1, 1]
-    if missingTrack is None:
-        invoker.b_setTrackAccess(gagTracks)
-        invoker.b_setMaxCarry(80)
-    else:
+    if missingTrack is not None:
         try:
             index = ('toonup', 'trap', 'lure', 'sound', 'throw',
                      'squirt', 'drop').index(missingTrack)
@@ -4552,8 +4549,8 @@ def maxToon(missingTrack=None):
         if index in (4, 5):
             return 'You are required to have Throw and Squirt.'
         gagTracks[index] = 0
-        invoker.b_setTrackAccess(gagTracks)
-        invoker.b_setMaxCarry(80)
+    invoker.b_setTrackAccess(gagTracks)
+    invoker.b_setMaxCarry(80)
 
     # Next, max out their experience for the tracks they have:
     experience = Experience.Experience(invoker.getExperience(), invoker)

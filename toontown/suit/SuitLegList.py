@@ -1,3 +1,4 @@
+from toontown.dna.DNAParser import DNASuitPoint
 from toontown.suit import SuitTimings
 from toontown.toonbase import ToontownGlobals
 
@@ -98,7 +99,10 @@ class SuitLegList:
         self.fromSuitBuilding = fromSuitBuilding
         self.toSuitBuilding = toSuitBuilding
         self.toToonBuilding = toToonBuilding
+
         self.legs = []
+
+        # First, add the initial SuitLeg. This will always be of type TFromSky:
         startPoint = self.path.getPoint(0)
         startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
         zoneId = startEdge.getZoneId()
@@ -106,17 +110,23 @@ class SuitLegList:
             self.getStartTime(0), zoneId, -1, startPoint, startPoint,
             SuitLeg.TFromSky)
         self.legs.append(startLeg)
-        for i in xrange(self.path.getNumPoints()):
-            if not i < (self.path.getNumPoints() - 1):
-                continue
+
+        # Next, connect each of the points in our path through SuitLegs:
+        for i in xrange(1, self.path.getNumPoints() - 1):
             pointA = self.path.getPoint(i)
             pointB = self.path.getPoint(i + 1)
             zoneId = self.dnaStore.getSuitEdgeZone(
                 pointA.getIndex(), pointB.getIndex())
+            landmarkBuildingIndex = pointA.getLandmarkBuildingIndex()
+            if landmarkBuildingIndex == -1:
+                landmarkBuildingIndex = pointB.getLandmarkBuildingIndex()
             leg = SuitLeg(
-                self.getStartTime(i), zoneId, -1, pointA, pointB,
-                SuitLeg.TWalk)
+                self.getStartTime(i), zoneId, landmarkBuildingIndex,
+                pointA, pointB,
+                self.getSuitLegType(pointA, pointB))
             self.legs.append(leg)
+
+        # Finally, add the final SuitLeg. This will always be of type TToSky:
         endIndex = self.path.getNumPoints() - 1
         endPoint = self.path.getPoint(endIndex)
         endEdge = self.dnaStore.suitEdges[endPoint.getIndex()][0]
@@ -125,6 +135,24 @@ class SuitLegList:
             self.getStartTime(endIndex), zoneId, -1, endPoint, endPoint,
             SuitLeg.TToSky)
         self.legs.append(endLeg)
+
+    def getSuitLegType(self, pointTypeA, pointTypeB):
+        if pointTypeA == DNASuitPoint.pointTypeMap['STREET_POINT']:
+            if pointTypeB == DNASuitPoint.pointTypeMap['STREET_POINT']:
+                return SuitLeg.TWalk
+            if pointTypeB == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
+                return SuitLeg.TToToonBuilding
+            if pointTypeB == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+                return SuitLeg.TToSuitBuilding
+            if pointTypeB == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
+                return SuitLeg.TToCogHQ
+        if pointTypeA == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+            return SuitLeg.TFromSuitBuilding
+        if pointTypeA == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
+            return SuitLeg.TFromCogHQ
+        if pointTypeA == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
+            return SuitLeg.TFromCogHQ
+        return SuitLeg.TWalk
 
     def getNumLegs(self):
         return len(self.legs)
@@ -151,7 +179,7 @@ class SuitLegList:
         return self.legs[index].getPointB()
 
     def getStartTime(self, index):
-        if index < (self.getNumLegs() - 1):
+        if index < self.getNumLegs():
             return self.legs[index].getStartTime()
         startTime = 0.0
         for legIndex in xrange(self.getNumLegs()):
