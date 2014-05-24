@@ -46,8 +46,7 @@ def init():
     if __debug__:
         readFile('../RetroResources/phase_3/etc/QuestScripts.txt')
     else:
-        readFile('/resources/phase_3/etc/QuestScripts.txt')
-
+        readFile(vfs.openReadFile('phase_3/etc/QuestScripts.txt', 1))
 
 def clear():
     globalVarDict.clear()
