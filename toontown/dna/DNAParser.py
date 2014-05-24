@@ -158,8 +158,9 @@ class DNAStorage:
                 if startPoint.getPointType() == DNASuitPoint.pointTypeMap['STREET_POINT']:
                     break
             else:
-                raise DNAError('Could not find DNASuitPath.')
-            points.append(startPoint)
+                continue
+            if startPoint not in points:
+                points.append(startPoint)
         path = DNASuitPath()
         for point in points:
             path.addPoint(point)

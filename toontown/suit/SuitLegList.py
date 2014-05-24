@@ -107,7 +107,7 @@ class SuitLegList:
             SuitLeg.TFromSky)
         self.legs.append(startLeg)
         for i in xrange(self.path.getNumPoints()):
-            if not 0 < i < (self.path.getNumPoints() - 1):
+            if not i < (self.path.getNumPoints() - 1):
                 continue
             pointA = self.path.getPoint(i)
             pointB = self.path.getPoint(i + 1)
