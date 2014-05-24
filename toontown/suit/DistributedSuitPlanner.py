@@ -1,7 +1,10 @@
-from pandac.PandaModules import *
-from direct.distributed import DistributedObject
 import SuitPlannerBase
+from direct.distributed import DistributedObject
+from otp.ai.MagicWordGlobal import *
+from pandac.PandaModules import *
+from toontown.dna.DNAParser import DNASuitPoint
 from toontown.toonbase import ToontownGlobals
+
 
 class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBase.SuitPlannerBase):
 
@@ -9,12 +12,9 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
         DistributedObject.DistributedObject.__init__(self, cr)
         SuitPlannerBase.SuitPlannerBase.__init__(self)
         self.suitList = []
-        self.buildingList = [0,
-         0,
-         0,
-         0]
+        self.buildingList = [0, 0, 0, 0]
         self.pathViz = None
-        return
+        self.debugText = {}
 
     def generate(self):
         self.notify.info('DistributedSuitPlanner %d: generating' % self.getDoId())
@@ -26,7 +26,6 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
         self.hidePaths()
         DistributedObject.DistributedObject.disable(self)
         base.cr.currSuitPlanner = None
-        return
 
     def d_suitListQuery(self):
         self.sendUpdate('suitListQuery')
@@ -46,7 +45,6 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
         if self.pathViz:
             self.pathViz.detachNode()
             self.pathViz = None
-        return
 
     def showPaths(self):
         self.hidePaths()
@@ -56,16 +54,13 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
         points = self.frontdoorPointList + self.sidedoorPointList + self.cogHQDoorPointList + self.streetPointList
         while len(points) > 0:
             self.__doShowPoints(vizNode, lines, None, points)
-
         cnode = CollisionNode('battleCells')
         cnode.setCollideMask(BitMask32.allOff())
         for zoneId, cellPos in self.battlePosDict.items():
-            cnode.addSolid(CollisionSphere(cellPos, 9))
+            cnode.addSolid(CollisionSphere(LPoint3f(cellPos), 9))
             text = '%s' % zoneId
             self.__makePathVizText(text, cellPos[0], cellPos[1], cellPos[2] + 9, (1, 1, 1, 1))
-
         self.pathViz.attachNewNode(cnode).show()
-        return
 
     def __doShowPoints(self, vizNode, lines, p, points):
         if p == None:
@@ -81,13 +76,22 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
             del points[pi]
         text = '%s' % p.getIndex()
         pos = p.getPos()
-        if p.getPointType() == DNASuitPoint.FRONTDOORPOINT:
+        if p.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
             color = (1, 0, 0, 1)
-        elif p.getPointType() == DNASuitPoint.SIDEDOORPOINT:
+        elif p.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
             color = (0, 0, 1, 1)
         else:
             color = (0, 1, 0, 1)
-        self.__makePathVizText(text, pos[0], pos[1], pos[2], color)
+        self.__makePathVizText(text, pos[0], pos[1], pos[2], color, i=p.getIndex())
+        cs = CollisionSphere(LPoint3f(pos), 3)
+        cs.setTangible(0)
+        triggerName = 'suitPoint-' + str(p.getIndex())
+        cn = CollisionNode(triggerName)
+        cn.addSolid(cs)
+        cn.setIntoCollideMask(ToontownGlobals.WallBitmask)
+        base.accept('enter' + triggerName, self.__showEdges, [p.getIndex()])
+        base.accept('exit' + triggerName, self.__hideEdges, [p.getIndex()])
+        self.pathViz.attachNewNode(cn)
         adjacent = self.dnaStore.getAdjacentPoints(p)
         numPoints = adjacent.getNumPoints()
         for i in xrange(numPoints):
@@ -110,9 +114,7 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
             lines.create(vizNode, 0)
             self.__doShowPoints(vizNode, lines, q, points)
 
-        return
-
-    def __makePathVizText(self, text, x, y, z, color):
+    def __makePathVizText(self, text, x, y, z, color, i=-1):
         if not hasattr(self, 'debugTextNode'):
             self.debugTextNode = TextNode('debugTextNode')
             self.debugTextNode.setAlign(TextNode.ACenter)
@@ -124,3 +126,54 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
         np.setScale(1.0)
         np.setBillboardPointEye(2)
         np.node().setAttrib(TransparencyAttrib.make(TransparencyAttrib.MDual), 2)
+        if i >= 0:
+            self.debugText[i] = np
+
+    def __showEdges(self, i, collisionEntry):
+        highlightedPoints = [i]
+        if i in self.dnaStore.suitEdges:
+            edges = self.dnaStore.suitEdges[i]
+            for edge in edges:
+                endPoint = edge.getEndPoint()
+                highlightedPoints.append(endPoint.getIndex())
+        for i in highlightedPoints:
+            p = self.dnaStore.getSuitPointWithIndex(i)
+            pos = p.getPos()
+            self.debugText[i].removeNode()
+            self.__makePathVizText(str(p.getIndex()), pos[0], pos[1], pos[2], (0.95, 1, 0, 1), i=p.getIndex())
+
+    def __hideEdges(self, i, collisionEntry):
+        highlightedPoints = [i]
+        if i in self.dnaStore.suitEdges:
+            edges = self.dnaStore.suitEdges[i]
+            for edge in edges:
+                endPoint = edge.getEndPoint()
+                highlightedPoints.append(endPoint.getIndex())
+        for i in highlightedPoints:
+            p = self.dnaStore.getSuitPointWithIndex(i)
+            pos = p.getPos()
+            self.debugText[i].removeNode()
+            if p.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
+                color = (1, 0, 0, 1)
+            elif p.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+                color = (0, 0, 1, 1)
+            else:
+                color = (0, 1, 0, 1)
+            self.__makePathVizText(str(p.getIndex()), pos[0], pos[1], pos[2], color, i=p.getIndex())
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def suitPaths():
+    response = "Couldn't toggle suit path visualization."
+    for do in base.cr.doId2do.values():
+        if not isinstance(do, DistributedSuitPlanner):
+            continue
+        if getattr(do, '_showPaths', False):
+            do.hidePaths()
+            do._showPaths = False
+            response = 'Suit paths are not being visualized.'
+        else:
+            do.showPaths()
+            do._showPaths = True
+            response = 'Suit paths are being visualized.'
+    return response
