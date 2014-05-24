@@ -145,34 +145,21 @@ class DNAStorage:
 
     def getSuitPath(self, startPoint, endPoint, minPathLen=40, maxPathLen=300):
         points = [startPoint]
-        startIndex = startPoint.getIndex()
-        reachedEnd = False
-        while True:
-            if startIndex not in self.suitEdges:
-                raise DNAError("Could not find path.")
-            edges = self.suitEdges[startIndex]
-            if len(edges) == 1:
-                edge = edges[0]
-            else:
-                for edge in edges:
-                    endPointPos = edge.getEndPoint().getPos()
-                    startPointPos = startPoint.getPos()
-                    diffPos = endPointPos - startPointPos
-                    if diffPos[0] and diffPos[1]:
-                        continue
+        while len(points) < maxPathLen:
+            startPointIndex = startPoint.getIndex()
+            if startPointIndex == endPoint.getIndex():
+                if len(points) >= minPathLen:
                     break
-            startIndex = edge.getEndPoint().getIndex()
-            point = self.getSuitPointWithIndex(startIndex)
-            if point.getPointType() != DNASuitPoint.pointTypeMap['STREET_POINT']:
-                continue
-            points.append(point)
-            if (startIndex == endPoint.getIndex()) or reachedEnd:
-                reachedEnd = True
-                if len(points) < minPathLen:
-                    continue
-                break
-            if len(points) == maxPathLen:
-                break
+            if startPointIndex not in self.suitEdges:
+                raise DNAError('Could not find DNASuitPath.')
+            edges = self.suitEdges[startPointIndex]
+            for edge in edges:
+                startPoint = edge.getEndPoint()
+                if startPoint.getPointType() == DNASuitPoint.pointTypeMap['STREET_POINT']:
+                    break
+            else:
+                raise DNAError('Could not find DNASuitPath.')
+            points.append(startPoint)
         path = DNASuitPath()
         for point in points:
             path.addPoint(point)
