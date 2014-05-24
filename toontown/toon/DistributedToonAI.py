@@ -4542,8 +4542,7 @@ def maxToon(missingTrack=None):
     gagTracks = [1, 1, 1, 1, 1, 1, 1]
     if missingTrack is None:
         invoker.b_setTrackAccess(gagTracks)
-        # Compensation for the extra Gag track:
-        invoker.b_setMaxCarry(100)
+        invoker.b_setMaxCarry(80)
     else:
         try:
             index = ('toonup', 'trap', 'lure', 'sound', 'throw',
