@@ -221,10 +221,28 @@ class QuestManagerAI:
             return questClass.getItem()
         else:
             return -1
+        
+    def toonUsedPhone(self, avId):
+        toon = self.air.doId2do.get(avId)
+        if not toon:
+            return
+        
+        flattenedQuests = toon.getQuests()
+        questList = [] #unflattened
+
+        for i in xrange(0, len(flattenedQuests), 5):
+            questDesc = flattenedQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[0])
+            
+            if isinstance(questClass, Quests.PhoneQuest):
+                questDesc[4] += 1
+            
+            questList.append(questDesc)
+        
+        toon.b_setQuests(questList)
 
     def recoverItems(self, toon, suitsKilled, taskZoneId):
         print 'QuestManager: %s (AvId: %s) is recovering Items'%(toon.getName(), toon.doId)
-        #taskZoneId
 
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened

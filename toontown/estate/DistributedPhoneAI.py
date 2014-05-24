@@ -33,6 +33,7 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
         if not self.busy:
             print 'av enter phone %s'%(avId)
             self.sendEnterMovie(avId)
+            self.air.questManager.toonUsedPhone(avId)
             self.busy = avId
         else:
             self.freeAvatar(avId)
@@ -63,15 +64,15 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
     def sendClearMovie(self):
         self.setMovie(PHONE_MOVIE_CLEAR, self.busy)
 
-    def requestPurchaseMessage(self, todo0, todo1, todo2):
+    def requestPurchaseMessage(self, context, blob, optional):
         pass
 
-    def requestPurchaseResponse(self, todo0, todo1):
+    def requestPurchaseResponse(self, context, retcode):
+        self.sendUpdate('requestPurchaseResponse', args=[context, retcode])
+
+    def requestGiftPurchaseMessage(self, context, target, blob, optional):
         pass
 
-    def requestGiftPurchaseMessage(self, todo0, todo1, todo2, todo3):
-        pass
-
-    def requestGiftPurchaseResponse(self, todo0, todo1):
-        pass
+    def requestGiftPurchaseResponse(self, context, retcode):
+        self.sendUpdate('requestGiftPurchaseResponse', args=[context, retcode])
 
