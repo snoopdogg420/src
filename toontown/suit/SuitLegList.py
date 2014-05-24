@@ -112,9 +112,9 @@ class SuitLegList:
         self.legs.append(startLeg)
 
         # Next, connect each of the points in our path through SuitLegs:
-        for i in xrange(1, self.path.getNumPoints() - 1):
-            pointA = self.path.getPoint(i)
-            pointB = self.path.getPoint(i + 1)
+        for i in xrange(1, self.path.getNumPoints()):
+            pointA = self.path.getPoint(i - 1)
+            pointB = self.path.getPoint(i)
             zoneId = self.dnaStore.getSuitEdgeZone(
                 pointA.getIndex(), pointB.getIndex())
             landmarkBuildingIndex = pointA.getLandmarkBuildingIndex()
