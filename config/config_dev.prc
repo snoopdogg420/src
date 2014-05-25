@@ -26,6 +26,8 @@ server-port 7198
 server-version tti-retro-dev
 server-timezone US/Eastern
 
+ai-sleep 0.01
+
 eventlog-host 127.0.0.1
 
 # DClass files...

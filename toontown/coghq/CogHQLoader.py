@@ -4,7 +4,7 @@ from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.fsm import StateData
 from pandac.PandaModules import *
-from toontown.dna.DNAParser import loadDNAFileAI
+from toontown.dna.DNAParser import loadDNAFileAI, DNAStorage
 from toontown.hood import QuietZoneState
 from toontown.hood import ZoneUtil
 from toontown.suit import Suit
@@ -39,14 +39,15 @@ class CogHQLoader(StateData.StateData):
         self.loadPlaceGeom(zoneId)
 
         # Load the CogHQ DNA file:
+        dnaStore = DNAStorage()
         dnaFileName = self.genDNAFileName(zoneId)
-        loadDNAFileAI(self.hood.dnaStore, dnaFileName)
+        loadDNAFileAI(dnaStore, dnaFileName)
 
         # Make a map of the DNAVisGroups:
         self.zoneVisDict = {}
-        for i in xrange(self.hood.dnaStore.getNumDNAVisGroupsAI()):
-            groupFullName = self.hood.dnaStore.getDNAVisGroupName(i)
-            visGroup = self.hood.dnaStore.getDNAVisGroupAI(i)
+        for i in xrange(dnaStore.getNumDNAVisGroupsAI()):
+            groupFullName = dnaStore.getDNAVisGroupName(i)
+            visGroup = dnaStore.getDNAVisGroupAI(i)
             visZoneId = int(base.cr.hoodMgr.extractGroupName(groupFullName))
             visZoneId = ZoneUtil.getTrueZoneId(visZoneId, zoneId)
             self.zoneVisDict[visZoneId] = [ZoneUtil.getBranchZone(zoneId)]

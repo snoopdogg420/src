@@ -40,6 +40,8 @@ server-port 7198
 server-version SERVER_VERSION
 server-timezone US/Eastern
 
+ai-sleep 0.01
+
 # Safe zones...
 want-safe-zones #t
 want-toontown-central #t
