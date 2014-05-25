@@ -1,6 +1,8 @@
 from pandac.PandaModules import *
+from toontown.hood import Place, ZoneUtil
 from toontown.toon import Toon
-from toontown.hood import Place
+from toontown.toonbase import ToontownGlobals
+
 
 class BattlePlace(Place.Place):
 
@@ -96,3 +98,12 @@ class BattlePlace(Place.Place):
                 base.cr.sendSetZoneMsg(newZoneId, base.cr.playGame.getPlace().loader.zoneVisDict[newZoneId])
                 self.notify.debug('Entering Zone %d' % newZoneId)
             self.zoneId = newZoneId
+
+    def genDNAFileName(self, zoneId):
+        zoneId = ZoneUtil.getCanonicalZoneId(zoneId)
+        hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
+        hood = ToontownGlobals.dnaMap[hoodId]
+        phase = ToontownGlobals.streetPhaseMap[hoodId]
+        if hoodId == zoneId:
+            zoneId = 'sz'
+        return 'phase_%s/dna/%s_%s.dna' % (phase, hood, zoneId)

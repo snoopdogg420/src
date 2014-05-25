@@ -26,13 +26,20 @@ class SellbotHQAI(CogHQAI.CogHQAI):
         CogHQAI.CogHQAI.startup(self)
 
         # Sellbot HQ has not just one, but four lobby doors:
+        self.cogHQDoors = [self.extDoor]
         for i in xrange(3):  # CogHQAI already created one of the doors for us.
-            self.makeCogHQDoor(self.lobbyZoneId, 0, i + 1, self.lobbyFADoorCode)
+            extDoor = self.makeCogHQDoor(self.lobbyZoneId, 0, i + 1, self.lobbyFADoorCode)
+            self.cogHQDoors.append(extDoor)
         self.createFactoryElevators()
         if simbase.config.GetBool('want-boarding-groups', True):
             self.createFactoryBoardingParty()
         if simbase.config.GetBool('want-suit-planners', True):
             self.createSuitPlanners()
+
+        # Our suit planner needs the Cog HQ doors as well:
+        for sp in self.suitPlanners:
+            if sp.zoneId == self.zoneId:
+                sp.cogHQDoors = self.cogHQDoors
 
     def createFactoryElevators(self):
         # We only have two factory elevators: the front, and side elevators.
@@ -56,7 +63,7 @@ class SellbotHQAI(CogHQAI.CogHQAI):
         suitPlanner.initTasks()
         self.suitPlanners.append(suitPlanner)
         self.air.suitPlanners[self.zoneId] = suitPlanner
-        
+
         suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, ToontownGlobals.SellbotFactoryExt)
         suitPlanner.generateWithRequired(ToontownGlobals.SellbotFactoryExt)
         suitPlanner.d_setZoneId(ToontownGlobals.SellbotFactoryExt)

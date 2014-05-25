@@ -1,12 +1,15 @@
 from direct.directnotify import DirectNotifyGlobal
-from toontown.battle import BattlePlace
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs
-from toontown.toonbase import ToontownGlobals
-from toontown.building import Elevator
-from pandac.PandaModules import *
 from otp.nametag import NametagGlobals
+from pandac.PandaModules import *
+from toontown.battle import BattlePlace
+from toontown.building import Elevator
+from toontown.dna.DNAParser import loadDNAFileAI, DNAStorage
+from toontown.hood import ZoneUtil
+from toontown.toonbase import ToontownGlobals
+
 
 class FactoryExterior(BattlePlace.BattlePlace):
     notify = DirectNotifyGlobal.directNotify.newCategory('FactoryExterior')
@@ -59,6 +62,24 @@ class FactoryExterior(BattlePlace.BattlePlace):
 
     def enter(self, requestStatus):
         self.zoneId = requestStatus['zoneId']
+
+        # Load the CogHQ DNA file:
+        dnaStore = DNAStorage()
+        dnaFileName = self.genDNAFileName(self.zoneId)
+        loadDNAFileAI(dnaStore, dnaFileName)
+
+        # Collect all of the vis group zone IDs:
+        self.zoneVisList = []
+        for i in xrange(dnaStore.getNumDNAVisGroupsAI()):
+            groupFullName = dnaStore.getDNAVisGroupName(i)
+            visGroup = dnaStore.getDNAVisGroupAI(i)
+            visZoneId = int(base.cr.hoodMgr.extractGroupName(groupFullName))
+            visZoneId = ZoneUtil.getTrueZoneId(visZoneId, self.zoneId)
+            self.zoneVisList.append(visZoneId)
+
+        # Next, we want interest in all vis groups due to this being a Cog HQ:
+        base.cr.sendSetZoneMsg(self.zoneId, self.zoneVisList)
+
         BattlePlace.BattlePlace.enter(self)
         self.fsm.enterInitialState()
         base.playMusic(self.loader.music, looping=1, volume=0.8)
@@ -72,10 +93,6 @@ class FactoryExterior(BattlePlace.BattlePlace):
         self.tunnelOriginList = base.cr.hoodMgr.addLinkTunnelHooks(self, self.nodeList, self.zoneId)
         how = requestStatus['how']
         self.fsm.request(how, [requestStatus])
-
-        # Next, we want interest in all vis groups. Because this is a Cog HQ,
-        # every vis group has interest in all vis groups. Therefore:
-        base.cr.sendSetZoneMsg(self.zoneId, base.cr.playGame.getPlace().loader.zoneVisDict.values()[0])
 
     def exit(self):
         self._telemLimiter.destroy()

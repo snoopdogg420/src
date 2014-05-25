@@ -4,11 +4,9 @@ from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.fsm import StateData
 from pandac.PandaModules import *
-from toontown.dna.DNAParser import loadDNAFileAI, DNAStorage
 from toontown.hood import QuietZoneState
 from toontown.hood import ZoneUtil
 from toontown.suit import Suit
-from toontown.toonbase import ToontownGlobals
 from toontown.town import TownBattle
 
 
@@ -37,31 +35,6 @@ class CogHQLoader(StateData.StateData):
         self.townBattle.load()
         Suit.loadSuits(3)
         self.loadPlaceGeom(zoneId)
-
-        # Load the CogHQ DNA file:
-        dnaStore = DNAStorage()
-        dnaFileName = self.genDNAFileName(zoneId)
-        loadDNAFileAI(dnaStore, dnaFileName)
-
-        # Make a map of the DNAVisGroups:
-        self.zoneVisDict = {}
-        for i in xrange(dnaStore.getNumDNAVisGroupsAI()):
-            groupFullName = dnaStore.getDNAVisGroupName(i)
-            visGroup = dnaStore.getDNAVisGroupAI(i)
-            visZoneId = int(base.cr.hoodMgr.extractGroupName(groupFullName))
-            visZoneId = ZoneUtil.getTrueZoneId(visZoneId, zoneId)
-            self.zoneVisDict[visZoneId] = [ZoneUtil.getBranchZone(zoneId)]
-            for j in xrange(visGroup.getNumVisibles()):
-                self.zoneVisDict[visZoneId].append(int(visGroup.visibles[j]))
-
-    def genDNAFileName(self, zoneId):
-        zoneId = ZoneUtil.getCanonicalZoneId(zoneId)
-        hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
-        hood = ToontownGlobals.dnaMap[hoodId]
-        phase = ToontownGlobals.streetPhaseMap[hoodId]
-        if hoodId == zoneId:
-            zoneId = 'sz'
-        return 'phase_%s/dna/%s_%s.dna' % (phase, hood, zoneId)
 
     def loadPlaceGeom(self, zoneId):
         pass

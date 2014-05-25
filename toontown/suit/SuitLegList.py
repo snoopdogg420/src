@@ -102,14 +102,14 @@ class SuitLegList:
 
         self.legs = []
 
-        # First, add the initial SuitLeg. This will always be of type TFromSky:
+        # First, add the initial SuitLeg:
         startPoint = self.path.getPoint(0)
         headingPoint = self.path.getPoint(1)
         startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
         zoneId = startEdge.getZoneId()
         startLeg = SuitLeg(
             self.getStartTime(0), zoneId, -1, startPoint, headingPoint,
-            SuitLeg.TFromSky)
+            self.getFirstLegType())
         self.legs.append(startLeg)
 
         # Next, connect each of the points in our path through SuitLegs:
@@ -123,18 +123,17 @@ class SuitLegList:
                 landmarkBuildingIndex = pointB.getLandmarkBuildingIndex()
             leg = SuitLeg(
                 self.getStartTime(i), zoneId, landmarkBuildingIndex,
-                pointA, pointB,
-                self.getSuitLegType(pointA, pointB))
+                pointA, pointB, self.getNextLegType(i - 1))
             self.legs.append(leg)
 
-        # Finally, add the final SuitLeg. This will always be of type TToSky:
+        # Finally, add the final SuitLeg:
         endIndex = self.path.getNumPoints() - 1
         endPoint = self.path.getPoint(endIndex)
         endEdge = self.dnaStore.suitEdges[endPoint.getIndex()][0]
         zoneId = endEdge.getZoneId()
         endLeg = SuitLeg(
             self.getStartTime(endIndex), zoneId, -1, endPoint, endPoint,
-            SuitLeg.TToSky)
+            self.getLastLegType())
         self.legs.append(endLeg)
 
     def getSuitLegType(self, pointTypeA, pointTypeB):
@@ -210,13 +209,18 @@ class SuitLegList:
         return 0
 
     def getFirstLegType(self):
-        return self.getType(0)
+        return SuitLeg.TFromSky
 
     def getNextLegType(self, index):
-        return self.getType(index + 1)
+        pointTypeA = self.path.getPoint(index).getPointType()
+        pointTypeB = self.path.getPoint(index + 1).getPointType()
+        return self.getSuitLegType(pointTypeA, pointTypeB)
 
     def getLastLegType(self):
-        return self.getType(self.getNumLegs() - 1)
+        numPoints = self.path.getNumPoints()
+        pointTypeA = self.path.getPoint(numPoints - 2).getPointType()
+        pointTypeB = self.path.getPoint(numPoints - 1).getPointType()
+        return self.getSuitLegType(pointTypeA, pointTypeB)
 
     def __getitem__(self, key):
         return self.legs[key]

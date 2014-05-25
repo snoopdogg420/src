@@ -96,6 +96,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.suitInvasionManager = SuitInvasionManagerAI(self)
         self.trophyMgr = DistributedTrophyMgrAI(self)
         self.trophyMgr.generateWithRequired(2)
+        self.cogSuitMgr = CogSuitManagerAI.CogSuitManagerAI(self)
+        self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
         if self.wantFishing:
             self.fishManager = FishManagerAI(self)
         if self.wantHousing:
@@ -136,8 +138,6 @@ class ToontownAIRepository(ToontownInternalRepository):
 
     def createCogHeadquarters(self):
         NPCToons.generateZone2NpcDict()
-        self.cogSuitMgr = CogSuitManagerAI.CogSuitManagerAI(self)
-        self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
         if self.config.GetBool('want-sellbot-headquarters', True):
             self.factoryMgr = FactoryManagerAI.FactoryManagerAI(self)
             self.cogHeadquarters.append(SellbotHQAI.SellbotHQAI(self))

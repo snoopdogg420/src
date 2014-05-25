@@ -38,7 +38,7 @@ class CogHQAI:
     def startup(self):
         self.createLobbyManager()
         self.createLobbyElevator()
-        self.makeCogHQDoor(self.lobbyZoneId, 0, 0, self.lobbyFADoorCode)
+        self.extDoor = self.makeCogHQDoor(self.lobbyZoneId, 0, 0, self.lobbyFADoorCode)
         if simbase.config.GetBool('want-boarding-groups', True):
             self.createBoardingParty()
 
@@ -69,6 +69,8 @@ class CogHQAI:
 
         extDoor.generateWithRequired(self.zoneId)
         extDoor.sendUpdate('setDoorIndex', [extDoor.getDoorIndex()])
+
+        return extDoor
 
     def createBoardingParty(self):
         self.boardingParty = DistributedBoardingPartyAI(self.air, [self.lobbyElevator.doId], 8)
