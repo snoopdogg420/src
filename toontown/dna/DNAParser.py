@@ -895,8 +895,12 @@ class DNAFlatBuilding(DNANode):
         node.setScale(scale)
         node.setPosHpr(self.getPos(), self.getHpr())
         numCodes = dnaStorage.getNumCatalogCodes('suit_wall')
+        if numCodes < 1:
+            return
         code = dnaStorage.getCatalogCode('suit_wall', random.randint(0, numCodes - 1))
         wallNode = dnaStorage.findNode(code)
+        if not wallNode:
+            return
         wallNode.copyTo(node, 0)
         if self.getHasDoor():
             doorNodePath = node.find('wall_*')
@@ -920,8 +924,12 @@ class DNAFlatBuilding(DNANode):
         node.setScale(scale)
         node.setPosHpr(self.getPos(), self.getHpr())
         numCodes = dnaStorage.getNumCatalogCodes('cogdo_wall')
+        if numCodes < 1:
+            return
         code = dnaStorage.getCatalogCode('cogdo_wall', random.randint(0, numCodes - 1))
         wallNode = dnaStorage.findNode(code)
+        if not wallNode:
+            return
         wallNode.copyTo(node, 0)
         if self.getHasDoor():
             doorNodePath = node.find('wall_*')
