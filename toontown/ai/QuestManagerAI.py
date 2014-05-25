@@ -74,9 +74,11 @@ class QuestManagerAI:
                 #Avatar is already working for this reward!
                 #Let's change it to a just for fun task.
                 tier = toon.getRewardHistory()[0]
-                rewardId = random.choice(Quests.getOptionalRewardsInTier(tier))
-                task[1] = rewardId
-                print 'new reward id: %s'%(rewardId)
+                rewards = Quests.getOptionalRewardsInTier(tier)
+                if rewards:
+                    rewardId = random.choice(Quests.getOptionalRewardsInTier(tier))
+                    task[1] = rewardId
+                    print 'new reward id: %s'%(rewardId)
         return tasks
 
     def avatarCancelled(self, npc):
@@ -260,7 +262,28 @@ class QuestManagerAI:
             questList.append(questDesc)
         
         toon.b_setQuests(questList)
+        
+    def toonKilledBuilding(self, toon, type, difficulty, floors, zoneId, activeToons):
+        flattenedQuests = toon.getQuests()
+        questList = [] #unflattened
 
+        recoveredItems = []
+        unrecoveredItems = []
+
+        for i in xrange(0, len(flattenedQuests), 5):
+            questDesc = flattenedQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[0])
+            
+            if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
+                if isinstance(questClass, Quests.BuildingQuest):
+                    if questClass.getBuildingTrack() == type:
+                        if questClass.doesBuildingCount(toon, activeToons):
+                            if floors >= questClass.getNumFloors():
+                                questDesc[4] += 1
+            questList.append(questDesc)
+    
+        toon.b_setQuests(questList)
+        
     def recoverItems(self, toon, suitsKilled, taskZoneId):
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
