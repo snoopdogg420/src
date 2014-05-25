@@ -73,6 +73,10 @@ class FactoryExterior(BattlePlace.BattlePlace):
         how = requestStatus['how']
         self.fsm.request(how, [requestStatus])
 
+        # Next, we want interest in all vis groups. Because this is a Cog HQ,
+        # every vis group has interest in all vis groups. Therefore:
+        base.cr.sendSetZoneMsg(self.zoneId, base.cr.playGame.getPlace().loader.zoneVisDict.values()[0])
+
     def exit(self):
         self._telemLimiter.destroy()
         del self._telemLimiter

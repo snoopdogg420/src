@@ -1,13 +1,16 @@
+import CogHQLobby
 from direct.directnotify import DirectNotifyGlobal
-from direct.fsm import StateData
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
-import CogHQLobby
+from direct.fsm import StateData
+from pandac.PandaModules import *
+from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.hood import QuietZoneState
 from toontown.hood import ZoneUtil
-from toontown.town import TownBattle
 from toontown.suit import Suit
-from pandac.PandaModules import *
+from toontown.toonbase import ToontownGlobals
+from toontown.town import TownBattle
+
 
 class CogHQLoader(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('CogHQLoader')
@@ -34,6 +37,30 @@ class CogHQLoader(StateData.StateData):
         self.townBattle.load()
         Suit.loadSuits(3)
         self.loadPlaceGeom(zoneId)
+
+        # Load the CogHQ DNA file:
+        dnaFileName = self.genDNAFileName(zoneId)
+        loadDNAFileAI(self.hood.dnaStore, dnaFileName)
+
+        # Make a map of the DNAVisGroups:
+        self.zoneVisDict = {}
+        for i in xrange(self.hood.dnaStore.getNumDNAVisGroupsAI()):
+            groupFullName = self.hood.dnaStore.getDNAVisGroupName(i)
+            visGroup = self.hood.dnaStore.getDNAVisGroupAI(i)
+            visZoneId = int(base.cr.hoodMgr.extractGroupName(groupFullName))
+            visZoneId = ZoneUtil.getTrueZoneId(visZoneId, zoneId)
+            self.zoneVisDict[visZoneId] = [ZoneUtil.getBranchZone(zoneId)]
+            for j in xrange(visGroup.getNumVisibles()):
+                self.zoneVisDict[visZoneId].append(int(visGroup.visibles[j]))
+
+    def genDNAFileName(self, zoneId):
+        zoneId = ZoneUtil.getCanonicalZoneId(zoneId)
+        hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
+        hood = ToontownGlobals.dnaMap[hoodId]
+        phase = ToontownGlobals.streetPhaseMap[hoodId]
+        if hoodId == zoneId:
+            zoneId = 'sz'
+        return 'phase_%s/dna/%s_%s.dna' % (phase, hood, zoneId)
 
     def loadPlaceGeom(self, zoneId):
         pass

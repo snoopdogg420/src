@@ -86,7 +86,6 @@ class BattlePlace(Place.Place):
             except:
                 self.notify.warning('Invalid floor collision node in street: %s' % newZone.getIntoNode().getName())
                 return
-
         else:
             newZoneId = newZone
         self.doEnterZone(newZoneId)
@@ -94,7 +93,6 @@ class BattlePlace(Place.Place):
     def doEnterZone(self, newZoneId):
         if newZoneId != self.zoneId:
             if newZoneId != None:
-                base.cr.sendSetZoneMsg(newZoneId)
+                base.cr.sendSetZoneMsg(newZoneId, base.cr.playGame.getPlace().loader.zoneVisDict[newZoneId])
                 self.notify.debug('Entering Zone %d' % newZoneId)
             self.zoneId = newZoneId
-        return
