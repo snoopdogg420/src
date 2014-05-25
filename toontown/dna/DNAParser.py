@@ -176,15 +176,15 @@ class DNAStorage:
         return distance / suitWalkSpeed
 
     def getSuitEdgeZone(self, startIndex, endIndex):
-        self.getSuitEdge(startIndex, endIndex).getZoneId()
+        return self.getSuitEdge(startIndex, endIndex).getZoneId()
 
     def getAdjacentPoints(self, point):
         path = DNASuitPath()
-        pointIndex = point.getIndex()
-        if (pointIndex-1 > 0) and (pointIndex-1 in self.suitPointMap):
-            path.addPoint(self.suitPointMap[pointIndex - 1])
-        if pointIndex+1 in self.suitPointMap:
-            path.addPoint(self.suitPointMap[pointIndex + 1])
+        startIndex = point.getIndex()
+        if startIndex not in self.suitEdges:
+            return path
+        for edge in self.suitEdges[startIndex]:
+            path.addPoint(edge.getEndPoint())
         return path
 
     def storeSuitPoint(self, suitPoint):
@@ -241,7 +241,6 @@ class DNAStorage:
         for edge in edges:
             if edge.getEndPoint().getIndex() == endIndex:
                 return edge
-        return self.suitEdges[startIndex][0]  # TODO: Should this be able to occur?
 
     def removeBattleCell(self, cell):
         self.battleCells.remove(cell)
@@ -306,7 +305,7 @@ class DNAStorage:
     def getDoorPosHprFromBlockNumber(self, blockNumber):
         key = str(blockNumber)
         if key in self.blockDoors:
-            return self.blockDoors[str(blockNumber)]
+            return self.blockDoors[key]
 
     def storeBlockDoor(self, blockNumber, door):
         self.blockDoors[str(blockNumber)] = door
@@ -380,11 +379,7 @@ class DNAStorage:
             return self.blockNumbers[index]
 
     def getZoneFromBlockNumber(self, blockNumber):
-        if blockNumber in self.blockZones:
-            return self.blockZones[blockNumber]
-        else:
-            print 'WARNING: No block number: {0}'.format(blockNumber)
-            return 0
+        return self.blockZones[blockNumber]
 
     def storeBlockZone(self, blockNumber, zoneId):
         self.blockZones[blockNumber] = zoneId
@@ -438,11 +433,9 @@ class DNASuitPoint:
         self.landmarkBuildingIndex = landmarkBuildingIndex
 
     def __str__(self):
-        pointTypeStr = ''#bring it into scope
-        for k, v in DNASuitPoint.pointTypeMap.items():
-            if v == self.pointType:
-                pointTypeStr = k
-        return 'DNASuitPoint index: ' + str(self.index) + ', pointType: ' + pointTypeStr + ', pos: ' + str(self.pos)
+        pointTypeStr = DNASuitPoint.ivPointTypeMap[self.getPointType()]
+        return 'DNASuitPoint index: {0}, pointType: {1}, pos: {2}'.format(
+            self.getIndex(), pointTypeStr, self.getPos())
 
     def setIndex(self, index):
         self.index = index
