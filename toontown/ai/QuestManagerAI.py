@@ -276,10 +276,11 @@ class QuestManagerAI:
             
             if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
                 if isinstance(questClass, Quests.BuildingQuest):
-                    if questClass.getBuildingTrack() == type:
-                        if questClass.doesBuildingCount(toon, activeToons):
-                            if floors >= questClass.getNumFloors():
-                                questDesc[4] += 1
+                    if questClass.isLocationMatch(zoneId):
+                        if questClass.getBuildingTrack() == type:
+                            if questClass.doesBuildingCount(toon, activeToons):
+                                if floors >= questClass.getNumFloors():
+                                    questDesc[4] += 1
             questList.append(questDesc)
     
         toon.b_setQuests(questList)
