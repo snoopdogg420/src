@@ -1,16 +1,19 @@
-from pandac.PandaModules import *
-from direct.distributed.ClockDelta import *
-from direct.interval.IntervalGlobal import *
+import DistributedElevator
 from ElevatorConstants import *
 from ElevatorUtils import *
-import DistributedElevator
-from toontown.toonbase import ToontownGlobals
 from direct.directnotify import DirectNotifyGlobal
+from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM
 from direct.fsm import State
+from direct.interval.IntervalGlobal import *
+from otp.nametag.Nametag import Nametag
+from otp.nametag.NametagGroup import NametagGroup
+from pandac.PandaModules import *
 from toontown.hood import ZoneUtil
 from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TeaserPanel
+
 
 class DistributedElevatorExt(DistributedElevator.DistributedElevator):
 
@@ -72,7 +75,7 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
             self.bossLevel = self.bldg.getBossLevel()
             self.setupElevator()
         else:
-            self.notify.warning('setBldgDoId: elevator %d cannot find suitDoorOrigin for bldg %d!' % (self.doId, bldgDoId))
+            self.notify.warning('setBldgDoId: elevator %d cannot find suitDoorOrigin for bldg %d!' % (self.doId, self.bldgDoId))
         return
 
     def setFloor(self, floorNumber):

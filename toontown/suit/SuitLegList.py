@@ -104,14 +104,9 @@ class SuitLegList:
 
         # First, add the initial SuitLeg:
         startPoint = self.path.getPoint(0)
-        if startPoint.getPointType() == DNASuitPoint.pointTypeMap['STREET_POINT']:
-            headingPoint = self.path.getPoint(1)
-            zoneId = self.dnaStore.getSuitEdgeZone(
-                startPoint.getIndex(), headingPoint.getIndex())
-        else:
-            headingPoint = startPoint
-            startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
-            zoneId = startEdge.getZoneId()
+        headingPoint = self.path.getPoint(1)
+        zoneId = self.dnaStore.getSuitEdgeZone(
+            startPoint.getIndex(), headingPoint.getIndex())
         startLeg = SuitLeg(
             self.getStartTime(0), zoneId, -1, startPoint, headingPoint,
             self.getFirstLegType())

@@ -123,7 +123,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
             numFloors = random.randint(minFloors, maxFloors)
         else:
             numFloors = buildingHeight + 1
-            if numFloors < minFloors or numFloors > maxFloors:
+            if (numFloors < minFloors) or (numFloors > maxFloors):
                 numFloors = random.randint(minFloors, maxFloors)
         self.track = suitTrack
         self.difficulty = difficulty
@@ -140,7 +140,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
             numFloors = random.randint(minFloors, maxFloors)
         else:
             numFloors = buildingHeight + 1
-            if numFloors < minFloors or numFloors > maxFloors:
+            if (numFloors < minFloors) or (numFloors > maxFloors):
                 numFloors = random.randint(minFloors, maxFloors)
         self.track = 'c'
         self.difficulty = difficulty
@@ -180,14 +180,13 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def isSuitBuilding(self):
         state = self.fsm.getCurrentState().getName()
-        return state == 'suit' or state == 'becomingSuit' or state == 'clearOutToonInterior'
+        return state in ('suit', 'becomingSuit', 'clearOutToonInterior')
 
     def isCogdo(self):
         state = self.fsm.getCurrentState().getName()
-        return state == 'cogdo' or 'becomingCogdo' or state == 'clearOutToonInteriorForCogdo'
+        return state in ('cogdo', 'becomingCogdo', 'clearOutToonInteriorForCogdo')
 
     def isSuitBlock(self):
-        state = self.fsm.getCurrentState().getName()
         return self.isSuitBuilding() or self.isCogdo()
 
     def isEstablishedSuitBlock(self):
@@ -363,7 +362,6 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def becomingToonTask(self, task):
         self.fsm.request('toon')
-        self.suitPlannerExt.buildingMgr.save()
         return Task.done
 
     def enterToon(self):
@@ -432,7 +430,6 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def becomingSuitTask(self, task):
         self.fsm.request('suit')
-        self.suitPlannerExt.buildingMgr.save()
         return Task.done
 
     def enterSuit(self):
@@ -487,7 +484,6 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def becomingCogdoTask(self, task):
         self.fsm.request('cogdo')
-        self.suitPlannerExt.buildingMgr.save()
         return Task.done
 
     def enterCogdo(self):

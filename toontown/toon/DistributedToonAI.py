@@ -3305,7 +3305,21 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
          self.zoneId))
         return ['success', suitIndex, building.doId]
 
+    def doCogdoTakeOver(self, difficulty, buildingHeight):
+        streetId = ZoneUtil.getBranchZone(self.zoneId)
+        if streetId not in self.air.suitPlanners:
+            self.notify.warning('Street %d is not known.' % streetId)
+            return ['badlocation', difficulty, 0]
+        building = self.findClosestDoor()
+        if building is None:
+            return ['badlocation', difficulty, 0]
+        building.cogdoTakeOver(difficulty, buildingHeight)
+        self.notify.warning('cogdoTakeOver {0}, {1}'.format(difficulty, buildingHeight))
+        return ['success', difficulty, building.doId]
+
     def doCogInvasion(self, suitIndex):
+        # TODO: When a proper invMgr is written, switch back to using
+        #       startInvasion()
         invMgr = self.air.suitInvasionManager
         if invMgr.getInvading():
             returnCode = 'busy'
@@ -3315,7 +3329,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                 return ['badIndex', suitIndex, 0]
             cogType = SuitDNA.suitHeadTypes[suitIndex]
             numCogs = 1000
-            if invMgr.startInvasion(cogType, numCogs, False):
+            if invMgr.summonInvasion(cogType, False):
                 returnCode = 'success'
             else:
                 returnCode = 'fail'
@@ -5277,16 +5291,30 @@ def track(command, track, value=None):
         return 'Set the experience of the {0} track to: {1}!'.format(track, value)
     return 'Invalid command.'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str])
-def suit(command, suitName):
-    if command.lower() == 'spawn':
-        return 'Coming soon.'
-    elif command.lower() == 'building':
-        return 'Coming soon.'
-    elif command.lower() == 'do':
-        return 'Coming soon.'
-    elif command.lower() == 'invasion':
-        return 'Coming soon.'
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
+def suit(command, suitIndex):
+    invoker = spellbook.getInvoker()
+    command = command.lower()
+    if command == 'spawn':
+        returnCode = invoker.doSummonSingleCog(suitIndex)
+        if returnCode[0] == 'success':
+            return 'Successfully spawned suit with index {0}!'.format(suitIndex)
+        return "Couldn't spawn suit with index {0}.".format(suitIndex)
+    elif command == 'building':
+        returnCode = invoker.doBuildingTakeover(suitIndex)
+        if returnCode[0] == 'success':
+            return 'Successfully spawned building with index {0}!'.format(suitIndex)
+        return "Couldn't spawn building with index {0}.".format(suitIndex)
+    elif command == 'do':
+        returnCode = invoker.doCogdoTakeOver(suitIndex, 1)
+        if returnCode[0] == 'success':
+            return 'Successfully spawned Cogdo with difficulty {0}!'.format(suitIndex)
+        return "Couldn't spawn Cogdo with difficulty {0}.".format(suitIndex)
+    elif command == 'invasion':
+        returnCode = invoker.doCogInvasion(suitIndex)
+        if returnCode[0] == 'success':
+            return 'Successfully summoned invasion with index {0}!'.format(suitIndex)
+        return "Couldn't summon invasion with index {0}.".format(suitIndex)
     else:
         return 'Invalid command.'
 

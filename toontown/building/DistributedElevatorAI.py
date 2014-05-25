@@ -64,29 +64,23 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
             if self.seats[i] == None:
                 return i
 
-        return
-
     def findAvatar(self, avId):
         for i in xrange(len(self.seats)):
             if self.seats[i] == avId:
                 return i
-
-        return None
 
     def countFullSeats(self):
         avCounter = 0
         for i in self.seats:
             if i:
                 avCounter += 1
-
         return avCounter
 
     def countOpenSeats(self):
         openSeats = 0
         for i in xrange(len(self.seats)):
-            if self.seats[i] == None:
+            if self.seats[i] is None:
                 openSeats += 1
-
         return openSeats
 
     def rejectingBoardersHandler(self, avId, reason = 0, wantBoardingShow = 0):
@@ -234,9 +228,6 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
         self.accepting = 0
         for seat in self.seats:
             seat = None
-
-        return
-
 
     def exitOpening(self):
         self.accepting = 0

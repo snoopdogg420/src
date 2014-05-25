@@ -111,7 +111,6 @@ def t_newline(t):
 t_newline.__doc__ = r'\n+'
 
 def t_error(t):
-    print 'Illegal character %s' % t.value[0]
     t.lexer.skip(1)
 
 lexer = lex.lex(optimize=0)
@@ -172,7 +171,7 @@ class DNAStorage:
         endPoint = self.suitPointMap.get(endIndex)
         if (not startPoint) or (not endPoint):
             return 0.0
-        distance = (endPoint-startPoint).length()
+        distance = (endPoint.getPos()-startPoint.getPos()).length()
         return distance / suitWalkSpeed
 
     def getSuitEdgeZone(self, startIndex, endIndex):
@@ -194,8 +193,7 @@ class DNAStorage:
         self.suitPointMap[suitPoint.getIndex()] = suitPoint
 
     def getSuitPointAtIndex(self, index):
-        if index < len(self.suitPoints):
-            return self.suitPoints[index]
+        return self.suitPoints[index]
 
     def getSuitPointWithIndex(self, index):
         return self.suitPointMap.get(index)
@@ -204,6 +202,12 @@ class DNAStorage:
         self.suitPoints = []
         self.suitPointMap = {}
         self.suitEdges = {}
+
+    def resetTextures(self):
+        self.textures = {}
+
+    def resetHood(self):
+        self.resetBlockNumbers()
 
     def findDNAGroup(self, node):
         return self.DNAGroups[node]
@@ -220,11 +224,7 @@ class DNAStorage:
         return len(self.DNAVisGroups)
 
     def getDNAVisGroupName(self, i):
-        if i < len(self.DNAVisGroups):
-            return self.DNAVisGroups[i].getName()
-        else:
-            print 'DNAVisGroup ' + str(i) + ' not found, returning empty string'
-            return ''
+        return self.DNAVisGroups[i].getName()
 
     def storeDNAVisGroup(self, group):
         self.DNAVisGroups.append(group)
@@ -289,7 +289,7 @@ class DNAStorage:
 
     def getBlock(self, name):
         block = name[name.find(':')-2:name.find(':')]
-        if block[0] > '9' or block[0] < '0':
+        if not block[0].isdigit():
             block = block[1:]
         return block
 
@@ -298,9 +298,7 @@ class DNAStorage:
             return self.blockBuildingTypes[blockNumber]
 
     def getTitleFromBlockNumber(self, blockNumber):
-        if blockNumber in self.blockTitles:
-            return self.blockTitles[blockNumber]
-        return ''
+        return self.blockTitles[blockNumber]
 
     def getDoorPosHprFromBlockNumber(self, blockNumber):
         key = str(blockNumber)
@@ -341,8 +339,7 @@ class DNAStorage:
         return self.DNAVisGroups[i].getVisibleName(j)
 
     def getDNAVisGroupAI(self, i):
-        if i < len(self.DNAVisGroups):
-            return self.DNAVisGroups[i]
+        return self.DNAVisGroups[i]
 
     def storeCatalogCode(self, category, code):
         if not category in self.catalogCodes:
@@ -350,7 +347,7 @@ class DNAStorage:
         self.catalogCodes[category].append(code)
 
     def getNumCatalogCodes(self, category):
-        if not category in self.catalogCodes:
+        if category not in self.catalogCodes:
             return -1
         return len(self.catalogCodes[category])
 
@@ -360,13 +357,17 @@ class DNAStorage:
     def findTexture(self, name):
         if name in self.textures:
             return self.textures[name]
-        return None
 
     def discoverContinuity(self):
         return 1  # TODO
 
     def resetBlockNumbers(self):
         self.blockNumbers = []
+        self.blockZones = {}
+        self.blockArticles = {}
+        self.blockDoors = {}
+        self.blockTitles = {}
+        self.blockBuildingTypes = {}
 
     def getNumBlockNumbers(self):
         return len(self.blockNumbers)
@@ -375,11 +376,11 @@ class DNAStorage:
         self.blockNumbers.append(blockNumber)
 
     def getBlockNumberAt(self, index):
-        if index < self.getNumBlockNumbers():
-            return self.blockNumbers[index]
+        return self.blockNumbers[index]
 
     def getZoneFromBlockNumber(self, blockNumber):
-        return self.blockZones[blockNumber]
+        if blockNumber in self.blockZones:
+            return self.blockZones[blockNumber]
 
     def storeBlockZone(self, blockNumber, zoneId):
         self.blockZones[blockNumber] = zoneId
@@ -409,8 +410,7 @@ class DNASuitPath:
         self.suitPoints.append(point)
 
     def getPoint(self, pointIndex):
-        if pointIndex < self.getNumPoints():
-            return self.suitPoints[pointIndex]
+        return self.suitPoints[pointIndex]
 
     def reversePath(self):
         self.suitPoints.reverse()
@@ -861,10 +861,12 @@ class DNASignText(DNANode):
     def traverse(self, nodePath, dnaStorage):
         return
 
-class DNAFlatBuilding(DNANode): #TODO: finish me
-    currentWallHeight = 0 #In the asm this is a global, we can refactor it later
+class DNAFlatBuilding(DNANode):
+    currentWallHeight = 0
+
     def __init__(self, name):
         DNANode.__init__(self, name)
+        self.hasDoor = False
 
     def getWidth(self):
         return self.width
@@ -872,8 +874,64 @@ class DNAFlatBuilding(DNANode): #TODO: finish me
     def setWidth(self, width):
         self.width = width
 
-    def getCurrentWallHeight(self): #this is never used in the asm, only exported. probably optimized out?
+    def getCurrentWallHeight(self):
         return DNAFlatBuilding.currentWallHeight
+
+    def setHasDoor(self, hasDoor):
+        self.hasDoor = True
+
+    def getHasDoor(self):
+        return self.hasDoor
+
+    def setupSuitFlatBuilding(self, nodePath, dnaStorage):
+        name = self.getName()
+        if name[:2] != 'tb':
+            return
+        name = 'sb' + name[2:]
+        node = nodePath.attachNewNode(name)
+        scale = self.getScale()
+        scale.setX(self.width)
+        scale.setZ(DNAFlatBuilding.currentWallHeight)
+        node.setScale(scale)
+        node.setPosHpr(self.getPos(), self.getHpr())
+        numCodes = dnaStorage.getNumCatalogCodes('suit_wall')
+        code = dnaStorage.getCatalogCode('suit_wall', random.randint(0, numCodes - 1))
+        wallNode = dnaStorage.findNode(code)
+        wallNode.copyTo(node, 0)
+        if self.getHasDoor():
+            doorNodePath = node.find('wall_*')
+            doorNode = dnaStorage.findNode('suit_door')
+            doorNode.copyTo(doorNodePath, 0)
+            doorNode.setScale(1.0 / self.width, 0, 1.0 / DNAFlatBuilding.currentWallHeight)
+            doorNode.setPosHpr(0.5, 0, 0, 0, 0, 0)
+            doorNodePath.setEffect(DecalEffect.make())
+        node.flattenMedium()
+        node.stash()
+
+    def setupCogdoFlatBuilding(self, nodePath, dnaStorage):
+        name = self.getName()
+        if name[:2] != 'tb':
+            return
+        name = 'cb' + name[2:]
+        node = nodePath.attachNewNode(name)
+        scale = self.getScale()
+        scale.setX(self.width)
+        scale.setZ(DNAFlatBuilding.currentWallHeight)
+        node.setScale(scale)
+        node.setPosHpr(self.getPos(), self.getHpr())
+        numCodes = dnaStorage.getNumCatalogCodes('cogdo_wall')
+        code = dnaStorage.getCatalogCode('cogdo_wall', random.randint(0, numCodes - 1))
+        wallNode = dnaStorage.findNode(code)
+        wallNode.copyTo(node, 0)
+        if self.getHasDoor():
+            doorNodePath = node.find('wall_*')
+            doorNode = dnaStorage.findNode('suit_door')
+            doorNode.copyTo(doorNodePath, 0)
+            doorNode.setScale(1.0 / self.width, 0, 1.0 / DNAFlatBuilding.currentWallHeight)
+            doorNode.setPosHpr(0.5, 0, 0, 0, 0, 0)
+            doorNodePath.setEffect(DecalEffect.make())
+        node.flattenMedium()
+        node.stash()
 
     def traverse(self, nodePath, dnaStorage):
         DNAFlatBuilding.currentWallHeight = 0
@@ -881,7 +939,7 @@ class DNAFlatBuilding(DNANode): #TODO: finish me
         internalNode = node.attachNewNode(self.getName() + '-internal')
         scale = self.getScale()
         scale.setX(self.width)
-        internalNode.setScale(self.getScale())
+        internalNode.setScale(scale)
         node.setPosHpr(self.getPos(), self.getHpr())
         for child in self.children:
             if isinstance(child, DNAWall):
@@ -896,8 +954,8 @@ class DNAFlatBuilding(DNANode): #TODO: finish me
                 raise DNAError('DNAFlatBuilding requires that there is a wall_camera_barrier in storage')
             cameraBarrier = cameraBarrier.copyTo(internalNode, 0)
             cameraBarrier.setScale((1,1,DNAFlatBuilding.currentWallHeight))
-            #self.setupSuitFlatBuilding(nodePath, dnaStorage) #TODO
-            #self.setupCogdoFlatBuilding(nodePath, dnaStorage)
+            self.setupSuitFlatBuilding(nodePath, dnaStorage)
+            self.setupCogdoFlatBuilding(nodePath, dnaStorage)
             internalNode.flattenStrong()
             collisionNode = node.find('**/door_*/+CollisionNode')
             if not collisionNode.isEmpty():
@@ -954,7 +1012,7 @@ class DNAWall(DNANode):
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
-            raise DNAError('DNAWall code ' + self.code + ' not found in DNAStorage')#Should this be a keyerror or something else?
+            raise DNAError('DNAWall code ' + self.code + ' not found in DNAStorage')
         node = node.copyTo(nodePath, 0)
         self.pos.setZ(DNAFlatBuilding.currentWallHeight)
         self.scale.setZ(self.height)
@@ -1142,13 +1200,13 @@ class DNALandmarkBuilding(DNANode):
         self.title = title
 
     def setupSuitBuildingOrigin(self, nodePathA, nodePathB):
-        if self.getName()[0:2] == 'tb' and self.getName()[3].isdigit() and self.getName().find(':') != -1:
+        if (self.getName()[:2] == 'tb') and (self.getName()[3].isdigit()) and (self.getName().find(':') != -1):
             name = self.getName()
             name = 's' + name[1:]
             node = nodePathB.find('**/*suit_building_origin')
             if node.isEmpty():
                 print 'DNALandmarkBuilding ' + name + ' did not find **/*suit_building_origin'
-                node = nodePathA.attachNewNode(self.name)
+                node = nodePathA.attachNewNode(name)
                 node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
             else:
                 node.wrtReparentTo(nodePathA, 0)
@@ -1478,7 +1536,6 @@ class DNALoader:
         self.data = DNAData("loader_data")
 
     def buildGraph(self):
-        '''Traverses the DNAGroup tree and builds a NodePath'''
         self.data.traverse(self.nodePath, self.data.getDnaStorage())
         if self.nodePath.getChild(0).getNumChildren() == 0:
             return None
@@ -1767,6 +1824,7 @@ def p_flatdoordef(p):
     p[0] = DNAFlatDoor('')
     p.parser.parentGroup.add(p[0])
     p[0].setParent(p.parser.parentGroup)
+    p.parser.parentGroup.getParent().setHasDoor(True)
     p.parser.parentGroup = p[0]
 p_flatdoordef.__doc__ = '''flatdoordef : FLAT_DOOR'''
 
@@ -2252,7 +2310,7 @@ def p_node(p):
         search = p[5]
         code = p[4]
         root = p[3]
-        p.parser.dnaStore.storeCatalogCode(root, code)
+    p.parser.dnaStore.storeCatalogCode(root, code)
     if search != '':
         nodePath = p.parser.nodePath.find('**/' + search)
     else:

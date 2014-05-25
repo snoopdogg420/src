@@ -53,6 +53,10 @@ class DistributedBuildingMgrAI:
         for blockNumber, building in self.__buildings.items():
             if isinstance(building, HQBuildingAI.HQBuildingAI):
                 continue
+            if isinstance(building, GagshopBuildingAI.GagshopBuildingAI):
+                continue
+            if isinstance(building, PetshopBuildingAI.PetshopBuildingAI):
+                continue
             if isinstance(building, KartShopBuildingAI.KartShopBuildingAI):
                 continue
             if not building.isSuitBlock():

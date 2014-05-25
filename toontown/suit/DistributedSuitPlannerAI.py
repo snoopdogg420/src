@@ -89,7 +89,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             for currBlock in blocks:
                 bldg = self.buildingMgr.getBuilding(currBlock)
                 bldg.setSuitPlannerExt(self)
-
             for currBlock in animBldgBlocks:
                 bldg = self.buildingMgr.getBuilding(currBlock)
                 bldg.setSuitPlannerExt(self)
