@@ -18,7 +18,7 @@ class SellbotHQExterior(CogHQExterior.CogHQExterior):
         loadDNAFileAI(dnaStore, dnaFileName)
 
         # Collect all of the vis group zone IDs:
-        self.zoneVisDict = []
+        self.zoneVisDict = {}
         for i in xrange(dnaStore.getNumDNAVisGroupsAI()):
             groupFullName = dnaStore.getDNAVisGroupName(i)
             visGroup = dnaStore.getDNAVisGroupAI(i)

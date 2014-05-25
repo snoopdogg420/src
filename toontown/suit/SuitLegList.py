@@ -104,9 +104,14 @@ class SuitLegList:
 
         # First, add the initial SuitLeg:
         startPoint = self.path.getPoint(0)
-        headingPoint = self.path.getPoint(1)
-        startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
-        zoneId = startEdge.getZoneId()
+        if startPoint.getPointType() == DNASuitPoint.pointTypeMap['STREET_POINT']:
+            headingPoint = self.path.getPoint(1)
+            zoneId = self.dnaStore.getSuitEdgeZone(
+                startPoint.getIndex(), headingPoint.getIndex())
+        else:
+            headingPoint = startPoint
+            startEdge = self.dnaStore.suitEdges[startPoint.getIndex()][0]
+            zoneId = startEdge.getZoneId()
         startLeg = SuitLeg(
             self.getStartTime(0), zoneId, -1, startPoint, headingPoint,
             self.getFirstLegType())
@@ -126,7 +131,7 @@ class SuitLegList:
                 pointA, pointB, self.getNextLegType(i - 1))
             self.legs.append(leg)
 
-        # Finally, add the final SuitLeg:
+        # Finally, add the last SuitLeg:
         endIndex = self.path.getNumPoints() - 1
         endPoint = self.path.getPoint(endIndex)
         endEdge = self.dnaStore.suitEdges[endPoint.getIndex()][0]
@@ -144,12 +149,10 @@ class SuitLegList:
                 return SuitLeg.TToToonBuilding
             if pointTypeB == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
                 return SuitLeg.TToSuitBuilding
-            if pointTypeB == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
-                return SuitLeg.TToCogHQ
         if pointTypeA == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
             return SuitLeg.TFromSuitBuilding
         if pointTypeA == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
-            return SuitLeg.TFromCogHQ
+            return SuitLeg.TToCogHQ
         if pointTypeA == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
             return SuitLeg.TFromCogHQ
         return SuitLeg.TWalk
@@ -209,7 +212,13 @@ class SuitLegList:
         return 0
 
     def getFirstLegType(self):
-        return SuitLeg.TFromSky
+        pointTypeA = self.path.getPoint(0).getPointType()
+        if pointTypeA == DNASuitPoint.pointTypeMap['STREET_POINT']:
+            return SuitLeg.TFromSky
+        if pointTypeA == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
+            return SuitLeg.TFromCogHQ
+        pointTypeB = self.path.getPoint(1).getPointType()
+        return self.getSuitLegType(pointTypeA, pointTypeB)
 
     def getNextLegType(self, index):
         pointTypeA = self.path.getPoint(index).getPointType()
@@ -217,10 +226,7 @@ class SuitLegList:
         return self.getSuitLegType(pointTypeA, pointTypeB)
 
     def getLastLegType(self):
-        numPoints = self.path.getNumPoints()
-        pointTypeA = self.path.getPoint(numPoints - 2).getPointType()
-        pointTypeB = self.path.getPoint(numPoints - 1).getPointType()
-        return self.getSuitLegType(pointTypeA, pointTypeB)
+        return SuitLeg.TToSky
 
     def __getitem__(self, key):
         return self.legs[key]

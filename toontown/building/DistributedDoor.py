@@ -152,7 +152,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 self.findDoorNode('doorFrameHoleLeft').hide()
             except:
                 pass
-                
+
     def setTriggerName(self):
         if self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
@@ -161,7 +161,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 doorTrigger.node().setName(self.getTriggerName())
             except:
                 pass
-                
+
     def setTriggerName_wip(self):
         building = self.getBuilding()
         doorTrigger = building.find('**/door_%d/**/door_trigger_%d' % (self.doorIndex, self.block))
@@ -289,7 +289,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         vec = base.localAvatar.getRelativeVector(self.currentDoorNp, self.currentDoorVec)
         netScale = self.currentDoorNp.getNetTransform().getScale()
         yToTest = vec.getY() / netScale[1]
-        #return yToTest < -0.5
         return yToTest
 
     def enterDoor(self):

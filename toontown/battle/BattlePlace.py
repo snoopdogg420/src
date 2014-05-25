@@ -95,7 +95,11 @@ class BattlePlace(Place.Place):
     def doEnterZone(self, newZoneId):
         if newZoneId != self.zoneId:
             if newZoneId != None:
-                base.cr.sendSetZoneMsg(newZoneId, base.cr.playGame.getPlace().loader.zoneVisDict[newZoneId])
+                if hasattr(self, 'zoneVisDict'):
+                    visList = self.zoneVisDict[newZoneId]
+                else:
+                    visList = base.cr.playGame.getPlace().loader.zoneVisDict[newZoneId]
+                base.cr.sendSetZoneMsg(newZoneId, visList)
                 self.notify.debug('Entering Zone %d' % newZoneId)
             self.zoneId = newZoneId
 

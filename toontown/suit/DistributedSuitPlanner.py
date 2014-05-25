@@ -80,6 +80,10 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
             color = (1, 0, 0, 1)
         elif p.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
             color = (0, 0, 1, 1)
+        elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
+            color = (0, 0, 0, 1)
+        elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
+            color = (0.5, 0.5, 0.5, 1)
         else:
             color = (0, 1, 0, 1)
         self.__makePathVizText(text, pos[0], pos[1], pos[2], color, i=p.getIndex())
@@ -157,6 +161,10 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
                 color = (1, 0, 0, 1)
             elif p.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
                 color = (0, 0, 1, 1)
+            elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
+                color = (0, 0, 0, 1)
+            elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
+                color = (0.5, 0.5, 0.5, 1)
             else:
                 color = (0, 1, 0, 1)
             self.__makePathVizText(str(p.getIndex()), pos[0], pos[1], pos[2], color, i=p.getIndex())
