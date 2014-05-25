@@ -1696,6 +1696,10 @@ class RecoverItemQuest(LocationBasedQuest):
 
     def getHeadlineString(self):
         return TTLocalizer.QuestsRecoverItemQuestHeadline
+    
+    def doesCogCount(self, avId, cogDict, zoneId, avList):
+        questCogType = self.getHolder()
+        return (questCogType is Any or questCogType is cogDict[self.getHolderType()]) and avId in cogDict['activeToons'] and self.isLocationMatch(zoneId)        
 
 
 class TrackChoiceQuest(Quest):

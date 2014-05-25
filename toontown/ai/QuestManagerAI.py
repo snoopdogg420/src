@@ -5,6 +5,7 @@ from direct.distributed.PyDatagram import PyDatagram
 from otp.ai.MagicWordGlobal import *
 from toontown.quest import Quests
 from toontown.hood import ZoneUtil
+import random
 
 class QuestManagerAI:
     def __init__(self, air):
@@ -206,7 +207,6 @@ class QuestManagerAI:
                     if isinstance(questClass, Quests.RecoverItemQuest):
                         if questClass.getHolder() == Quests.AnyFish:
                             if not questClass.getCompletionStatus(toon, questDesc) == Quests.COMPLETE:
-                                import random
                                 minChance = questClass.getPercentChance()
                                 chance = random.randint(minChance - 40, 100)
 
@@ -242,8 +242,6 @@ class QuestManagerAI:
         toon.b_setQuests(questList)
 
     def recoverItems(self, toon, suitsKilled, taskZoneId):
-        print 'QuestManager: %s (AvId: %s) is recovering Items'%(toon.getName(), toon.doId)
-
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
@@ -251,7 +249,6 @@ class QuestManagerAI:
         unrecoveredItems = []
         
         taskZoneId = ZoneUtil.getBranchZone(taskZoneId)
-        print 'QuestManager: %s (AvId: %s) Task zone Id %s'%(toon.getName(), toon.doId, taskZoneId)
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
@@ -261,26 +258,17 @@ class QuestManagerAI:
                 if isinstance(questClass, Quests.CogQuest):
                     for suit in suitsKilled:
                         if questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']):
-                            print 'QuestManager: %s (AvId: %s) cog counted.'%(toon.getName(), toon.doId)
                             questDesc[4] += 1
                 elif isinstance(questClass, Quests.RecoverItemQuest):
-                    print 'QuestManager: %s (AvId: %s) has a recover item quest.'%(toon.getName(), toon.doId)
-                    if questClass.getHolder() == Quests.Any:
-                        print 'QuestManager: %s (AvId: %s) item is being held by a cog.'%(toon.getName(), toon.doId)
+                    if questClass.getHolder() != Quests.AnyFish:
                         for suit in suitsKilled:
-                            print 'QuestManager: %s (AvId: %s) location match: %s'%(toon.getName(), toon.doId, questClass.isLocationMatch(taskZoneId))
-                            print 'QuestManager: %s (AvId: %s) suit match: %s'%(toon.getName(), toon.doId, questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']))
-                            print 'QuestManager: %s (AvId: %s) checking cog %s.'%(toon.getName(), toon.doId, suit)
                             if questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']):
-                                print 'QuestManager: %s (AvId: %s) cog counted.'%(toon.getName(), toon.doId)
                                 minchance = questClass.getPercentChance()
                                 import random
                                 chance = random.randint(minchance - 40, 100)
-                                print 'minchance: %s, chance: %s'%(minchance, chance)
     
                                 if chance <= minchance:
                                     questDesc[4] += 1
-                                    print 'Got item!'
                                     recoveredItems.append(questClass.getItem())
                                 else:
                                     unrecoveredItems.append(questClass.getItem())
@@ -299,7 +287,6 @@ class QuestManagerAI:
 
             if isinstance(questClass, Quests.DeliverItemQuest):
                 if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
-                    print '%s has a clothing ticket!'%(toon.doId)
                     return 1
 
         return 0
