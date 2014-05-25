@@ -143,9 +143,6 @@ class Street(BattlePlace.BattlePlace):
         self.tunnelOriginList = base.cr.hoodMgr.addLinkTunnelHooks(self, self.loader.nodeList, self.zoneId)
         self.fsm.request(requestStatus['how'], [requestStatus])
         self.replaceStreetSignTextures()
-        visList = self.loader.visList
-        visList.append(self.zone)
-        base.cr.sendSetZoneMsg(self.zone, visList)
         return
 
     def exit(self, visibilityFlag = 1):
@@ -169,7 +166,7 @@ class Street(BattlePlace.BattlePlace):
     def load(self):
         BattlePlace.BattlePlace.load(self)
         self.parentFSM.getStateNamed('street').addChild(self.fsm)
-        
+
     def unload(self):
         self.parentFSM.getStateNamed('street').removeChild(self.fsm)
         del self.parentFSM
@@ -362,7 +359,7 @@ class Street(BattlePlace.BattlePlace):
                 if newZoneId != None:
                     self.loader.zoneDict[newZoneId].setColor(0, 0, 1, 1, 100)
             if newZoneId != None:
-                base.cr.sendSetZoneMsg(self.zone, self.loader.visList)
+                base.cr.sendSetZoneMsg(newZoneId, base.cr.playGame.getPlace().loader.zoneVisDict[newZoneId])
                 self.notify.debug('Entering Zone %d' % newZoneId)
             self.zoneId = newZoneId
         geom = base.cr.playGame.getPlace().loader.geom
