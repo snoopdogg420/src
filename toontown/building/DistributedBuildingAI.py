@@ -293,7 +293,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
                 self.air.questManager.toonKilledBuilding(toon, self.track, self.difficulty, self.numFloors, self.zoneId, activeToons)
         for i in xrange(0, 4):
             victor = victorList[i]
-            if (victor is None) or (victory not in self.air.doId2do):
+            if (victor is None) or (victor not in self.air.doId2do):
                 victorList[i] = 0
                 continue
             event = self.air.getAvatarExitEvent(victor)
