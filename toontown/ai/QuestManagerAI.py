@@ -57,6 +57,26 @@ class QuestManagerAI:
 
     def avatarQuestChoice(self, toon, npc):
         tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
+        
+        #Does the avatar already have any of these rewardIds?
+        #[QuestId, RewardId, toNPCID]
+        toonQuests = toon.getQuests() #Flattened Quests.
+        rewardList = [] #Unflattened Quests.
+        
+        for i in xrange(0, len(toonQuests), 5):
+            questDesc = toonQuests[i:i + 5]
+            rewardList.append(questDesc[3])
+
+        print 'rewardList: %s'%(rewardList)
+        for task in tasks:
+            print 'checking %s'%(task)
+            if task[1] in rewardList:
+                #Avatar is already working for this reward!
+                #Let's change it to a just for fun task.
+                tier = toon.getRewardHistory()[0]
+                rewardId = random.choice(Quests.getOptionalRewardsInTier(tier))
+                task[1] = rewardId
+                print 'new reward id: %s'%(rewardId)
         return tasks
 
     def avatarCancelled(self, npc):
