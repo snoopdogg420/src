@@ -257,7 +257,7 @@ class QuestManagerAI:
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if not questClass.getCompletionStatus(toon, questDesc):
+            if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
                 if isinstance(questClass, Quests.CogQuest):
                     for suit in suitsKilled:
                         if questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']):
@@ -290,11 +290,7 @@ class QuestManagerAI:
         toon.b_setQuests(questList)
         return (recoveredItems, unrecoveredItems)
 
-    def hasTailorClothingTicket(self, avId, npc):
-        toon = self.air.doId2do.get(avId)
-        if not toon:
-            return
-
+    def hasTailorClothingTicket(self, toon, npc):
         flattenedQuests = toon.getQuests()
 
         for i in xrange(0, len(flattenedQuests), 5):
@@ -302,7 +298,8 @@ class QuestManagerAI:
             questClass = Quests.getQuest(questDesc[0])
 
             if isinstance(questClass, Quests.DeliverItemQuest):
-                if questClass.getItem() == 1000:
+                if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
+                    print '%s has a clothing ticket!'%(toon.doId)
                     return 1
 
         return 0
@@ -313,9 +310,10 @@ class QuestManagerAI:
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[0])
 
             if isinstance(questClass, Quests.DeliverItemQuest):
-                if questClass.getItem() == 1000:
+                if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
                     toon.removeQuest(questDesc[0])
                     break
 
