@@ -268,6 +268,8 @@ class QuestManagerAI:
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
+        zoneId = ZoneUtil.getBranchZone(zoneId)
+
         recoveredItems = []
         unrecoveredItems = []
 
@@ -278,7 +280,7 @@ class QuestManagerAI:
             if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
                 if isinstance(questClass, Quests.BuildingQuest):
                     if questClass.isLocationMatch(zoneId):
-                        if questClass.getBuildingTrack() == type:
+                        if questClass.getBuildingTrack() == type or Quests.Any:
                             if questClass.doesBuildingCount(toon, activeToons):
                                 if floors >= questClass.getNumFloors():
                                     questDesc[4] += 1
