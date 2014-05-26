@@ -298,7 +298,9 @@ class DNAStorage:
             return self.blockBuildingTypes[blockNumber]
 
     def getTitleFromBlockNumber(self, blockNumber):
-        return self.blockTitles[blockNumber]
+        if blockNumber in self.blockTitles:
+            return self.blockTitles[blockNumber]
+        return ''
 
     def getDoorPosHprFromBlockNumber(self, blockNumber):
         key = str(blockNumber)
