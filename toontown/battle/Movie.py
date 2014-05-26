@@ -814,7 +814,8 @@ class Movie(DirectObject.DirectObject):
                 suitId = suits[suitIndex]
                 suit = self.battle.findSuit(suitId)
                 if suit == None:
-                    self.notify.error('suit: %d not in battle!' % suitId)
+                    self.notify.warning('suit: %d not in battle!' % suitId)
+                    return
                 adict = getSuitAttack(suit.getStyleName(), suit.getLevel(), attack)
                 adict['suit'] = suit
                 adict['battle'] = self.battle
