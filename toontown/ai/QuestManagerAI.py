@@ -125,7 +125,7 @@ class QuestManagerAI:
 
             if questId == completeQuestId:
                 toon.removeQuest(questId)
-                toon.toonup(toon.maxHp)
+                toon.toonUp(toon.maxHp)
                 self.giveReward(toon, rewardId)
                 break
         else:
