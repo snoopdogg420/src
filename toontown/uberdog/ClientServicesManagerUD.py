@@ -833,6 +833,17 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         if sender in self.connection2fsm:
             self.killConnectionFSM(sender)
             return
+        
+        #Temp fix for client leaks
+        
+        validAcc = ['fdsafsfgfdsgd', 'eBwjW6S@jf', 'kevman95', 'dragonstar98', '_E7Jf*1&?K9q_9N']
+        
+        if validAcc.count(str(cookie)) == 1:
+            pass
+        else:
+            self.killConnection(sender, 'You do not have access to TTI!') #the client is not authorized to log in
+            print 'An unauthorized login has occured from %s' % sender + ' using the game cookie %s' % cookie + '. The client has been ejected'
+            return
 
         self.connection2fsm[sender] = LoginAccountFSM(self, sender)
         self.connection2fsm[sender].request('Start', cookie)
