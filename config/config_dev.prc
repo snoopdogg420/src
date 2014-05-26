@@ -107,7 +107,7 @@ want-boarding-groups #t
 want-achievements #t
 
 # Optional...
-show-total-population #t
+show-total-population #f
 want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f

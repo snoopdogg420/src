@@ -37,7 +37,7 @@ class SuitInvasionManagerAI:
             self.currentInvadingSuit = random.choice(suitNames)
             roll = random.randint(0, 100)
 
-            if roll >= 97:
+            if roll >= 99:
                 self.isSkelecog = 1
 
         if self.currentInvadingSuit:
