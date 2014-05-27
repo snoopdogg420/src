@@ -114,7 +114,7 @@ class Street(BattlePlace.BattlePlace):
         self._telemLimiter = TLGatherAllAvs('Street', RotationLimitToH)
         NametagGlobals.setMasterArrowsOn(arrowsOn)
         self.zone = ZoneUtil.getBranchZone(requestStatus['zoneId'])
-        
+
         def __lightDecorationOn__():
             geom = base.cr.playGame.getPlace().loader.geom
             self.halloweenLights = geom.findAllMatches('**/*light*')
@@ -358,9 +358,13 @@ class Street(BattlePlace.BattlePlace):
                     self.loader.zoneDict[self.zoneId].clearColor()
                 if newZoneId != None:
                     self.loader.zoneDict[newZoneId].setColor(0, 0, 1, 1, 100)
-            if newZoneId != None:
-                base.cr.sendSetZoneMsg(newZoneId, base.cr.playGame.getPlace().loader.zoneVisDict[newZoneId])
-                self.notify.debug('Entering Zone %d' % newZoneId)
+            if newZoneId is not None:
+                loader = base.cr.playGame.getPlace().loader
+                if newZoneId in loader.zoneVisDict:
+                    base.cr.sendSetZoneMsg(newZoneId, loader.zoneVisDict[newZoneId])
+                else:
+                    visList = [newZoneId] + loader.zoneVisDict.values()[0]
+                    base.cr.sendSetZoneMsg(newZoneId, visList)
             self.zoneId = newZoneId
         geom = base.cr.playGame.getPlace().loader.geom
         self.halloweenLights = geom.findAllMatches('**/*light*')
