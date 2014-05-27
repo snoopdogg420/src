@@ -3,13 +3,14 @@ from direct.task.Task import Task
 from pandac.PandaModules import *
 from DistributedNPCToonBaseAI import *
 from toontown.quest import Quests
+from otp.nametag.NametagConstants import *
 
 class DistributedNPCSpecialQuestGiverAI(DistributedNPCToonBaseAI):
 
-    def __init__(self, air, npcId, questCallback = None, hq = 0):
+    def __init__(self, air, npcId, questCallback = None, hq = 0, tutorial = 0):
         DistributedNPCToonBaseAI.__init__(self, air, npcId, questCallback)
         self.hq = hq
-        self.tutorial = 0
+        self.tutorial = tutorial
         self.pendingAvId = None
         return
 

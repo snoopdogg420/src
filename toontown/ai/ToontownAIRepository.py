@@ -24,6 +24,7 @@ from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.estate.EstateManagerAI import EstateManagerAI
 from toontown.uberdog.DistributedDeliveryManagerAI import DistributedDeliveryManagerAI
 from toontown.catalog.CatalogManagerAI import CatalogManagerAI
+from toontown.tutorial.TutorialManagerAI import TutorialManagerAI
 from toontown.hood import BRHoodAI
 from toontown.hood import BossbotHQAI
 from toontown.hood import CashbotHQAI
@@ -89,6 +90,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.newsManager.generateWithRequired(2)
         self.safeZoneManager = SafeZoneManagerAI(self)
         self.safeZoneManager.generateWithRequired(2)
+        self.tutorialManager = TutorialManagerAI(self)
+        self.tutorialManager.generateWithRequired(2)
         self.friendManager = FriendManagerAI(self)
         self.friendManager.generateWithRequired(2)
         self.questManager = QuestManagerAI(self)

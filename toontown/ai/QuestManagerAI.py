@@ -2,10 +2,13 @@ import shlex
 
 from direct.distributed.MsgTypes import *
 from direct.distributed.PyDatagram import PyDatagram
+from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
 from otp.ai.MagicWordGlobal import *
 from toontown.quest import Quests
 from toontown.hood import ZoneUtil
 import random
+from toontown.toon.NPCToons import NPC_BANKER
+from direct.task.TaskManagerGlobal import taskMgr
 
 class QuestManagerAI:
     def __init__(self, air):
@@ -47,6 +50,13 @@ class QuestManagerAI:
         else:
             if (len(toonQuests) == toonQuestPocketSize*5):
                 npc.rejectAvatar(avId)
+            elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
+                if npc.tutorial:
+                    choices = self.avatarQuestChoice(toon, npc)
+                    quest = choices[0]
+                    messenger.send(npc.uniqueName('talkToTom'))
+                    self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
+                    return
             else:
                 choices = self.avatarQuestChoice(toon, npc)
 
@@ -57,12 +67,12 @@ class QuestManagerAI:
 
     def avatarQuestChoice(self, toon, npc):
         tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
-        
+
         #Does the avatar already have any of these rewardIds?
         #[QuestId, RewardId, toNPCID]
         toonQuests = toon.getQuests() #Flattened Quests.
         rewardList = [] #Unflattened Quests.
-        
+
         for i in xrange(0, len(toonQuests), 5):
             questDesc = toonQuests[i:i + 5]
             rewardList.append(questDesc[3])
@@ -94,6 +104,7 @@ class QuestManagerAI:
 
         toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], Quests.getFinalRewardId(questId))
         npc.assignQuest(avId, questId, rewardId, toNpc)
+        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
         toon = self.air.doId2do.get(avId)
@@ -104,6 +115,7 @@ class QuestManagerAI:
 
         toon.removeQuest(pendingTrackQuest)
         toon.b_setTrackProgress(trackId, 0)
+        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarProgressTier(self, toon):
         currentTier = toon.getRewardHistory()[0]
@@ -112,7 +124,7 @@ class QuestManagerAI:
         if Quests.avatarHasAllRequiredRewards(toon, currentTier):
             if currentTier != Quests.ELDER_TIER:
                 currentTier += 1
-                
+
             toon.b_setRewardHistory(currentTier, [])
 
     def completeQuest(self, toon, completeQuestId):
@@ -132,6 +144,8 @@ class QuestManagerAI:
             #Completing a quest they dont have? :/
             print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
 
+        taskMgr.remove(npc.uniqueName('clearMovie'))
+
     def nextQuest(self, toon, npc, questId):
         nextQuestId = Quests.getNextQuest(questId, npc, toon)
         toonQuests = toon.getQuests() #Flattened Quests.
@@ -148,6 +162,7 @@ class QuestManagerAI:
             questList.append(questDesc)
 
         npc.incompleteQuest(toon.doId, nextQuestId[0], Quests.QUEST, nextQuestId[1])
+        taskMgr.remove(npc.uniqueName('clearMovie'))
         toon.b_setQuests(questList)
 
     def giveReward(self, toon, rewardId):
@@ -244,26 +259,26 @@ class QuestManagerAI:
             return questClass.getItem()
         else:
             return -1
-        
+
     def toonUsedPhone(self, avId):
         toon = self.air.doId2do.get(avId)
         if not toon:
             return
-        
+
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
-            
+
             if isinstance(questClass, Quests.PhoneQuest):
                 questDesc[4] += 1
-            
+
             questList.append(questDesc)
-        
+
         toon.b_setQuests(questList)
-        
+
     def toonKilledBuilding(self, toon, type, difficulty, floors, zoneId, activeToons):
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
@@ -276,7 +291,7 @@ class QuestManagerAI:
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
-            
+
             if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
                 if isinstance(questClass, Quests.BuildingQuest):
                     if questClass.isLocationMatch(zoneId):
@@ -285,16 +300,16 @@ class QuestManagerAI:
                                 if floors >= questClass.getNumFloors():
                                     questDesc[4] += 1
             questList.append(questDesc)
-    
+
         toon.b_setQuests(questList)
-        
+
     def recoverItems(self, toon, suitsKilled, taskZoneId):
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
         recoveredItems = []
         unrecoveredItems = []
-        
+
         taskZoneId = ZoneUtil.getBranchZone(taskZoneId)
 
         for i in xrange(0, len(flattenedQuests), 5):
@@ -313,7 +328,7 @@ class QuestManagerAI:
                                 minchance = questClass.getPercentChance()
                                 import random
                                 chance = random.randint(minchance - 40, 100)
-    
+
                                 if chance <= minchance:
                                     questDesc[4] += 1
                                     recoveredItems.append(questClass.getItem())

@@ -3,6 +3,7 @@ from pandac.PandaModules import *
 from direct.interval.IntervalGlobal import *
 from direct.distributed.ClockDelta import *
 from toontown.toonbase import ToontownGlobals
+from toontown.dna.DNAParser import *
 import ToonInterior
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed import DistributedObject
@@ -18,6 +19,7 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
+        print 'Hello there im a distributedTutorialInteriorAI'
 
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
@@ -39,7 +41,7 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         del self.suitWalkTrack
         self.suit.delete()
         del self.suit
-        self.ignore('enterTutotialInterior')
+        self.ignore('enterTutorialInterior')
         DistributedObject.DistributedObject.disable(self)
 
     def delete(self):
@@ -80,6 +82,7 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
                     newNP.setColorScale(self.randomGenerator.choice(self.colors[category]))
 
     def setup(self):
+        print 'Setting up Toontorial dna! :D'
         self.dnaStore = base.cr.playGame.dnaStore
         self.randomGenerator = random.Random()
         self.randomGenerator.seed(self.zoneId)

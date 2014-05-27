@@ -1,6 +1,5 @@
 import sys
 import os
-import tokenize
 import copy
 from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
@@ -18,12 +17,15 @@ from toontown.toonbase import ToontownBattleGlobals
 from otp.speedchat import SpeedChatGlobals
 from toontown.ai import DistributedBlackCatMgr
 from direct.showbase import PythonUtil
-from direct.interval.IntervalGlobal import *
 from otp.nametag.NametagConstants import *
+import tokenize
+import token
+import re
 notify = DirectNotifyGlobal.directNotify.newCategory('QuestParser')
 lineDict = {}
 globalVarDict = {}
 curId = None
+FLOAT = re.compile(r'[+-]?\d+[.]\d*([e][+-]\d+)?')
 
 def init():
     globalVarDict.update({'render': render,
@@ -46,15 +48,14 @@ def init():
 def clear():
     globalVarDict.clear()
 
-
 def readFile(filename):
-    print 'reading file %s'%(filename)
+    print 'reading file %s' % (filename)
     global curId
     scriptFile = StreamReader(vfs.openReadFile(filename, 1), 1)
     def readline():
-        return scriptFile.readline().strip()
+        return scriptFile.readline().replace('\r', '')
+
     gen = tokenize.generate_tokens(readline)
-    print gen
     line = getLineOfTokens(gen)
     while line is not None:
         if line == []:
@@ -75,7 +76,10 @@ def readFile(filename):
 def getLineOfTokens(gen):
     tokens = []
     nextNeg = 0
-    token = gen.next()
+    try:
+        token = gen.next()
+    except StopIteration:
+        return None
     if token[0] == tokenize.ENDMARKER:
         return None
     while token[0] != tokenize.NEWLINE and token[0] != tokenize.NL:
@@ -84,22 +88,32 @@ def getLineOfTokens(gen):
         elif token[0] == tokenize.OP and token[1] == '-':
             nextNeg = 1
         elif token[0] == tokenize.NUMBER:
+            print '%r'%(token[1])
+            if re.match(FLOAT, token[1]):
+                number = float(token[1])
+            else:
+                number = int(token[1])
             if nextNeg:
-                tokens.append(-float(token[1]))
+                tokens.append(-number)
                 nextNeg = 0
             else:
-                tokens.append(float(token[1]))
+                tokens.append(number)
         elif token[0] == tokenize.STRING:
-            tokens.append(token[1])
+            tokens.append(eval(token[1]))
+            print token[1]
         elif token[0] == tokenize.NAME:
             tokens.append(token[1])
+            print token[1]
         else:
             print 'ignored token type: %s on line: %s'%(tokenize.tok_name[token[0]], token[2][0])
             notify.warning('Ignored token type: %s on line: %s' % (tokenize.tok_name[token[0]], token[2][0]))
-        token = gen.next()
+
+        try:
+            token = gen.next()
+        except StopIteration:
+            break
 
     return tokens
-
 
 def parseId(line):
     global curId
@@ -209,6 +223,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         self.currentEvent = 'start'
         lines = lineDict.get(self.scriptId)
         if lines is None:
+            print lineDict
             notify.error('No movie defined for scriptId: %s' % self.scriptId)
         chapterList = []
         timeoutList = []
@@ -678,7 +693,8 @@ class NPCMoviePlayer(DirectObject.DirectObject):
                 else:
                     dialogueList.append(self.getVar(arg))
             else:
-                notify.error('invalid argument type')
+                pass
+                #notify.error('invalid argument type')
 
         return (quitButton, extraChatFlags, dialogueList)
 

@@ -84,6 +84,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.trophyManager = None
         self.bankManager = None
         self.catalogManager = None
+        self.tutorialManager = None
         self.welcomeValleyManager = None
         self.newsManager = None
         self.streetSign = None
@@ -361,6 +362,14 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.doId2do[avatarId] = localAvatar
         localAvatar.initInterface()
         self.sendGetFriendsListRequest()
+        if hasattr(self, 'skipTutorialRequest'):
+            if self.skipTutorialRequest:
+                print 'requesting skip tutorial'
+                #TUTORIAL SHIT
+                localAvatar.setTutorialAck(1)
+            else:
+                print 'requesting tutorial'
+                localAvatar.setTutorialAck(0)
         self.loginFSM.request('playingGame')
 
     def getAvatarDetails(self, avatar, func, *args):
@@ -385,16 +394,16 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
     def __sendGetAvatarDetails(self, avId):
         #return
-        
+
         self.ttrFriendsManager.d_getAvatarDetails(avId)
-        
+
         return
         datagram = PyDatagram()
         avatar = self.__queryAvatarMap[avId].avatar
         datagram.addUint16(avatar.getRequestID())
         datagram.addUint32(avId)
         self.send(datagram)
-        
+
     def n_handleGetAvatarDetailsResp(self, avId, fields):
         self.notify.info('Query reponse for avId %d' % avId)
         try:
@@ -402,14 +411,14 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         except:
             self.notify.warning('Received unexpected or outdated details for avatar %d.' % avId)
             return
-        
+
         del self.__queryAvatarMap[avId]
         gotData = 0
-        
+
         dclassName = pad.args[0]
         dclass = self.dclassesByName[dclassName]
         #pad.avatar.updateAllRequiredFields(dclass, fields)
-        
+
         # This is a much saner way to load avatar details, and is also
         # dynamic. This means we aren't restricted in what we pass.
         # Due to Python's random ordering of dictionaries, we have to pass
@@ -419,15 +428,15 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
         for currentField in fields:
             getattr(pad.avatar, currentField[0])(currentField[1])
-            
+
         gotData = 1
-        
-        
+
+
         if isinstance(pad.func, types.StringType):
             messenger.send(pad.func, list((gotData, pad.avatar) + pad.args))
         else:
             apply(pad.func, (gotData, pad.avatar) + pad.args)
-            
+
         pad.delayDelete.destroy()
 
     def handleGetAvatarDetailsResp(self, di):

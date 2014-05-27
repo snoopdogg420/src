@@ -1473,14 +1473,19 @@ class OTPClientRepository(ClientRepositoryBase):
         avId = self.handlerArgs['avId']
         if not self.SupportTutorial or base.localAvatar.tutorialAck:
             self.gameFSM.request('playGame', [hoodId, zoneId, avId])
+            return
         elif base.config.GetBool('force-tutorial', 1):
+            self.gameFSM.request('tutorialQuestion', [hoodId, zoneId, avId])
+            return
+        else:
             if hasattr(self, 'skipTutorialRequest') and self.skipTutorialRequest:
-                self.gameFSM.request('playGame', [hoodId, zoneId, avId])
                 self.gameFSM.request('skipTutorialRequest', [hoodId, zoneId, avId])
+                return
             else:
                 self.gameFSM.request('tutorialQuestion', [hoodId, zoneId, avId])
-        else:
-            self.gameFSM.request('playGame', [hoodId, zoneId, avId])
+                return
+
+        self.gameFSM.request('playGame', [hoodId, zoneId, avId])
 
     def handlePlayGame(self, msgType, di):
         if self.notify.getDebug():
@@ -2109,7 +2114,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     del self.deferredGenerates[cycle][i]
                 except:
                     pass
-            
+
         else:
             self._logFailedDisable(doId, ownerView)
 
@@ -2184,7 +2189,7 @@ class OTPClientRepository(ClientRepositoryBase):
         doId = di.getUint32()
 
         ovUpdated = self.__doUpdateOwner(doId, di)
-        
+
         if doId in self.deferredDoIds:
             # This object hasn't really been generated yet.  Sit on
             # the update.
@@ -2207,9 +2212,9 @@ class OTPClientRepository(ClientRepositoryBase):
             # Let the dclass finish the job
             do.dclass.receiveUpdate(do, di)
         elif not ovUpdated:
-            # this next bit is looking for avatar handles so that if you get an update 
-            # for an avatar that isn't in your doId2do table but there is a 
-            # avatar handle for that object then it's messages will be forwarded to that 
+            # this next bit is looking for avatar handles so that if you get an update
+            # for an avatar that isn't in your doId2do table but there is a
+            # avatar handle for that object then it's messages will be forwarded to that
             # object. We are currently using that for whisper echoing
             # if you need a more general perpose system consider registering proxy objects on
             # a dict and adding the avatar handles to that dict when they are created
@@ -2220,7 +2225,7 @@ class OTPClientRepository(ClientRepositoryBase):
                 if handle:
                     dclass = self.dclassesByName[handle.dclassName]
                     dclass.receiveUpdate(handle, di)
-                    
+
                 else:
                     self.notify.warning(
                         "Asked to update non-existent DistObj " + str(doId))
