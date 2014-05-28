@@ -44,6 +44,7 @@ class ToonBase(OTPBase.OTPBase):
         self.resList16x9 = []
         self.resList5x3 = []
         self.resList16x10 = []
+        self.resList3x2 = []
         self.resList4x3  = []
         for res in self.resList:
             if round(float(res[0])/float(res[1]), 2) == round(16.0/9.0, 2):
@@ -54,6 +55,9 @@ class ToonBase(OTPBase.OTPBase):
         for res in self.resList:
             if round(float(res[0])/float(res[1]), 2) == round(16.0/10.0, 2):
                 self.resList16x10.append(res)
+        for res in self.resList:
+            if round(float(res[0])/float(res[1]), 2) == round(3.0/2.0, 2):
+                self.resList3x2.append(res)
         for res in self.resList:
             if round(float(res[0])/float(res[1]), 2) == round(4.0/3.0, 2):
                 self.resList4x3.append(res)
@@ -75,6 +79,8 @@ class ToonBase(OTPBase.OTPBase):
                 res = self.resList5x3[-2]
             elif len(self.resList16x10) > 1:  # We have 16:10 support, use it.
                 res = self.resList16x10[-2]
+            elif len(self.resList3x2) > 1:  # We have 3:2 support, use it.
+                res = self.resList3x2[-2]
             else:  # Otherwise, default to a 4:3 ratio.
                 res = self.resList4x3[1]
             self.settings.set('res', res)
