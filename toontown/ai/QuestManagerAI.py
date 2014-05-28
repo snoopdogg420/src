@@ -50,18 +50,28 @@ class QuestManagerAI:
                     self.completeQuest(toon, questId)
                     self.avatarProgressTier(toon)
 
+                if isinstance(npc, DistributedNPCSpecialQuestGiverAI):
+                    if npc.tutorial and (npc.npcId == 20002):
+                        messenger.send('intHqDoor0-{0}'.format(npc.zoneId), [FADoorCodes.WRONG_DOOR_HQ])
+                        messenger.send('intHqDoor1-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
+                        streetZone = self.air.tutorialManager.currentAllocatedZones[avId][0]
+                        messenger.send('extHqDoor0-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+                        messenger.send('extHqDoor1-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+                        messenger.send('extShopDoor-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+
                 break
         else:
             if (len(toonQuests) == toonQuestPocketSize*5):
                 npc.rejectAvatar(avId)
                 return
             elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
+                choices = self.avatarQuestChoice(toon, npc)
+                quest = choices[0]
+                self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
                 if npc.tutorial:
-                    choices = self.avatarQuestChoice(toon, npc)
-                    quest = choices[0]
-                    messenger.send('intShopDoor-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
-                    self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
-                    return
+                    if npc.npcId == 20000:
+                        messenger.send('intShopDoor-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
+                return
             else:
                 choices = self.avatarQuestChoice(toon, npc)
 

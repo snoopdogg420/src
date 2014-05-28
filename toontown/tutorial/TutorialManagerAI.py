@@ -7,8 +7,8 @@ from toontown.building.DistributedHQInteriorAI import DistributedHQInteriorAI
 from toontown.building.DistributedTutorialInteriorAI import DistributedTutorialInteriorAI
 from toontown.suit import DistributedTutorialSuitAI
 from toontown.suit import SuitDNA
+from toontown.toon import Experience
 from toontown.toon import NPCToons
-from toontown.toon import ToonDNA
 from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
 from toontown.toonbase import ToontownGlobals
 
@@ -25,14 +25,19 @@ class TutorialManagerAI(DistributedObjectAI):
     def requestTutorial(self):
         avId = self.air.getAvatarIdFromSender()
 
-        print 'tutorial request from AvatarId: %s'%(avId)
         zones = self.createTutorial()
-        self.enterTutorial(avId, ToontownGlobals.Tutorial, zones[0], zones[1],
-                           zones[2])
+        self.enterTutorial(
+            avId, ToontownGlobals.Tutorial,
+            zones[0], zones[1], zones[2])
 
     def rejectTutorial(self):
-        #I have no idea what this is for...
-        print 'tutorial reject'
+        avId = self.air.getAvatarIdFromSender()
+
+        av = self.air.doId2do.get(avId)
+        if not av:
+            return
+
+        av.b_setTutorialAck(1)
 
     def requestSkipTutorial(self):
         avId = self.air.getAvatarIdFromSender()
@@ -133,12 +138,34 @@ class TutorialManagerAI(DistributedObjectAI):
         flunky.setupSuitDNA(1, suitType, suitTrack)
         flunky.generateWithRequired(streetZone)
 
+        desc = NPCToons.NPCToonDict.get(20001)
+        npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
+        npc.setTutorial(1)
+
     def allDone(self):
         avId = self.air.getAvatarIdFromSender()
 
-        #Deallocate zones the Avatar took.
-        for zoneId in self.currentAllocatedZones[avId]:
-            self.zoneAllocator.free(zoneId)
+        av = self.air.doId2do.get(avId)
+        if not av:
+            return
+
+        av.b_setTutorialAck(1)
+
+        allocatedZones = self.currentAllocatedZones.get(avId)
+        if not allocatedZones:
+            return
+        streetZone, shopZone, hqZone = allocatedZones
+
+        self.ignore('intShopDoor-{0}'.format(shopZone))
+        self.ignore('extShopDoor-{0}'.format(streetZone))
+        self.ignore('extHqDoor0-{0}'.format(streetZone))
+        self.ignore('extHqDoor1-{0}'.format(streetZone))
+        self.ignore('intHqDoor0-{0}'.format(hqZone))
+        self.ignore('intHqDoor1-{0}'.format(hqZone))
+
+        self.zoneAllocator.free(streetZone)
+        self.zoneAllocator.free(shopZone)
+        self.zoneAllocator.free(hqZone)
 
     def toonArrived(self):
         avId = self.air.getAvatarIdFromSender()
@@ -147,4 +174,30 @@ class TutorialManagerAI(DistributedObjectAI):
         if not av:
             return
 
-        av.b_setTutorialAck(1)
+        av.b_setTutorialAck(0)
+
+        av.b_setHp(15)
+        av.b_setMaxHp(15)
+
+        experience = Experience.Experience(av.getExperience(), av)
+        for i, track in enumerate(av.getTrackAccess()):
+            if track:
+                experience.experience[i] = 0
+        av.b_setExperience(experience.makeNetString())
+
+        av.b_setTrackAccess([0, 0, 0, 0, 1, 1, 0])
+        av.b_setMaxCarry(20)
+
+        inventory = av.inventory
+        inventory.zeroInv(killUber=1)
+        inventory.inventory[4][0] = 1
+        inventory.inventory[5][0] = 1
+        av.b_setInventory(inventory.makeNetString())
+
+        av.b_setMoney(0)
+        av.b_setBankMoney(0)
+
+        av.b_setQuestCarryLimit(1)
+        av.b_setQuests([])
+        av.b_setQuestHistory([])
+        av.b_setRewardHistory(0, [])

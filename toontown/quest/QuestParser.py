@@ -49,7 +49,6 @@ def clear():
     globalVarDict.clear()
 
 def readFile(filename):
-    print 'reading file %s' % (filename)
     global curId
     scriptFile = StreamReader(vfs.openReadFile(filename, 1), 1)
     def readline():
@@ -64,7 +63,6 @@ def readFile(filename):
         if line[0] == 'ID':
             parseId(line)
         elif curId is None:
-            print 'every script must begin with an id'
             notify.error('Every script must begin with an ID')
         else:
             lineDict[curId].append(line)
@@ -88,7 +86,6 @@ def getLineOfTokens(gen):
         elif token[0] == tokenize.OP and token[1] == '-':
             nextNeg = 1
         elif token[0] == tokenize.NUMBER:
-            print '%r'%(token[1])
             if re.match(FLOAT, token[1]):
                 number = float(token[1])
             else:
@@ -100,12 +97,9 @@ def getLineOfTokens(gen):
                 tokens.append(number)
         elif token[0] == tokenize.STRING:
             tokens.append(eval(token[1]))
-            print token[1]
         elif token[0] == tokenize.NAME:
             tokens.append(token[1])
-            print token[1]
         else:
-            print 'ignored token type: %s on line: %s'%(tokenize.tok_name[token[0]], token[2][0])
             notify.warning('Ignored token type: %s on line: %s' % (tokenize.tok_name[token[0]], token[2][0]))
 
         try:
@@ -118,10 +112,8 @@ def getLineOfTokens(gen):
 def parseId(line):
     global curId
     curId = line[1]
-    print 'setting current scriptId to: %s' % curId
     notify.debug('Setting current scriptId to: %s' % curId)
     if questDefined(curId):
-        print 'already defined scriptId: %s' % curId
         notify.error('Already defined scriptId: %s' % curId)
     else:
         lineDict[curId] = []
@@ -223,7 +215,6 @@ class NPCMoviePlayer(DirectObject.DirectObject):
         self.currentEvent = 'start'
         lines = lineDict.get(self.scriptId)
         if lines is None:
-            print lineDict
             notify.error('No movie defined for scriptId: %s' % self.scriptId)
         chapterList = []
         timeoutList = []
