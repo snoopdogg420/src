@@ -1,35 +1,39 @@
-from toontown.toonbase.ToontownBattleGlobals import *
+import copy
+import random
+
 from BattleBase import *
-from direct.interval.IntervalGlobal import *
-from direct.showbase import DirectObject
+import BattleExperience
+import BattleParticles
+import MovieDrop
 import MovieFire
-import MovieSOS
+import MovieHeal
+import MovieLure
 import MovieNPCSOS
 import MoviePetSOS
-import MovieHeal
-import MovieTrap
-import MovieLure
+import MovieSOS
 import MovieSound
-import MovieThrow
 import MovieSquirt
-import MovieDrop
 import MovieSuitAttacks
+import MovieThrow
 import MovieToonVictory
+import MovieTrap
+import MovieUtil
 import PlayByPlayText
-import BattleParticles
-from toontown.distributed import DelayDelete
-import BattleExperience
+import RewardPanel
 from SuitBattleGlobals import *
 from direct.directnotify import DirectNotifyGlobal
-import RewardPanel
-import random
-import MovieUtil
-from toontown.toon import Toon
-from toontown.toonbase import ToontownGlobals
-from toontown.toontowngui import TTDialog
-import copy
-from toontown.toonbase import TTLocalizer
+from direct.interval.IntervalGlobal import *
+from direct.showbase import DirectObject
+from otp.nametag.NametagConstants import *
+from toontown.distributed import DelayDelete
 from toontown.toon import NPCToons
+from toontown.toon import Toon
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.ToontownBattleGlobals import *
+from toontown.toontowngui import TTDialog
+
+
 camPos = Point3(14, 0, 10)
 camHpr = Vec3(89, -30, 0)
 randomBattleTimestamp = base.config.GetBool('random-battle-timestamp', 0)

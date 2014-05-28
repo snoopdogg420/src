@@ -1,14 +1,16 @@
+import random
 import shlex
 
 from direct.distributed.MsgTypes import *
 from direct.distributed.PyDatagram import PyDatagram
-from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
-from otp.ai.MagicWordGlobal import *
-from toontown.quest import Quests
-from toontown.hood import ZoneUtil
-import random
-from toontown.toon.NPCToons import NPC_BANKER
 from direct.task.TaskManagerGlobal import taskMgr
+from otp.ai.MagicWordGlobal import *
+from toontown.building import FADoorCodes
+from toontown.hood import ZoneUtil
+from toontown.quest import Quests
+from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
+from toontown.toon.NPCToons import NPC_BANKER
+
 
 class QuestManagerAI:
     def __init__(self, air):
@@ -54,7 +56,7 @@ class QuestManagerAI:
                 if npc.tutorial:
                     choices = self.avatarQuestChoice(toon, npc)
                     quest = choices[0]
-                    messenger.send(npc.uniqueName('talkToTom'))
+                    messenger.send('intShopDoor-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
                     self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
                     return
             else:

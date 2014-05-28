@@ -1,15 +1,20 @@
+from direct.directnotify.DirectNotifyGlobal import *
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
-from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
 from pandac.PandaModules import *
-
-from toontown.building.DistributedTutorialInteriorAI import DistributedTutorialInteriorAI
-from toontown.building.DistributedDoorAI import DistributedDoorAI
+from toontown.building import DistributedDoorAI
 from toontown.building import DoorTypes, FADoorCodes
+from toontown.building.DistributedHQInteriorAI import DistributedHQInteriorAI
+from toontown.building.DistributedTutorialInteriorAI import DistributedTutorialInteriorAI
+from toontown.suit import DistributedTutorialSuitAI
+from toontown.suit import SuitDNA
 from toontown.toon import NPCToons
+from toontown.toon import ToonDNA
+from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
+from toontown.toonbase import ToontownGlobals
+
 
 class TutorialManagerAI(DistributedObjectAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("TutorialManagerAI")
+    notify = directNotify.newCategory('TutorialManagerAI')
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
@@ -46,42 +51,102 @@ class TutorialManagerAI(DistributedObjectAI):
         shopZone = self.zoneAllocator.allocate()
         hqZone = self.zoneAllocator.allocate()
 
-        self.createShop(shopZone, streetZone)
-        # self.createHQ(hqZone, streetZone)
-        # self.createStreet(streetZone)
+        self.createShop(streetZone, shopZone, hqZone)
+        self.createHQ(streetZone, shopZone, hqZone)
+        self.createStreet(streetZone, shopZone, hqZone)
 
         return (streetZone, shopZone, hqZone)
 
-    def createShop(self, shopZone, streetZone):
+    def createShop(self, streetZone, shopZone, hqZone):
         shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
 
         desc = NPCToons.NPCToonDict.get(20000)
         npc = NPCToons.createNPC(self.air, 20000, desc, shopZone)
         npc.setTutorial(1)
         shopInterior.setTutorialNpcId(npc.doId)
-
         shopInterior.generateWithRequired(shopZone)
 
-        extShopDoor = DistributedDoorAI(self.air, 2, DoorTypes.EXT_STANDARD,
+        extShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.EXT_STANDARD,
                                         lockValue=FADoorCodes.DEFEAT_FLUNKY_TOM)
-        intShopDoor = DistributedDoorAI(self.air, 2, DoorTypes.INT_STANDARD,
+        intShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.INT_STANDARD,
                                         lockValue=FADoorCodes.TALK_TO_TOM)
         extShopDoor.setOtherDoor(intShopDoor)
         intShopDoor.setOtherDoor(extShopDoor)
-        extShopDoor.zoneId = shopZone
-        intShopDoor.zoneId = streetZone
+        extShopDoor.zoneId = streetZone
+        intShopDoor.zoneId = shopZone
         extShopDoor.generateWithRequired(streetZone)
-        intShopDoor.generateWithRequired(shopZone)
         extShopDoor.sendUpdate('setDoorIndex', [extShopDoor.getDoorIndex()])
+        intShopDoor.generateWithRequired(shopZone)
         intShopDoor.sendUpdate('setDoorIndex', [intShopDoor.getDoorIndex()])
 
-        self.accept(npc.uniqueName('talkToTom'), intShopDoor.setDoorLock, [FADoorCodes.UNLOCKED])
+        self.accept('intShopDoor-{0}'.format(shopZone), intShopDoor.setDoorLock)
+        self.accept('extShopDoor-{0}'.format(streetZone), extShopDoor.setDoorLock)
 
-    def createHQ(self, hqZone, streetZone):
-        pass
+    def createHQ(self, streetZone, shopZone, hqZone):
+        interior = DistributedHQInteriorAI(1, self.air, hqZone)
+        interior.generateWithRequired(hqZone)
+        interior.setTutorial(1)
 
-    def createStreet(self, streetZone):
-        pass
+        desc = NPCToons.NPCToonDict.get(20002)
+        canonicalZoneId, name, dnaType, gender, protected, type = desc
+        npc = DistributedNPCSpecialQuestGiverAI(self.air, 20002, hq=1, tutorial=1)
+        npc.setName(name)
+        dna = ToonDNA.ToonDNA()
+        dna.newToonFromProperties(*dnaType)
+        npc.setDNAString(dna.makeNetString())
+        npc.setHp(15)
+        npc.setMaxHp(15)
+        npc.setPositionIndex(0)
+        npc.generateWithRequired(hqZone)
+        if hasattr(npc, 'startAnimState'):
+            npc.d_setAnimState(npc.startAnimState, 1.0)
+        else:
+            npc.d_setAnimState('neutral', 1.0)
+
+        desc = NPCToons.NPCToonDict.get(20002)
+        npc = NPCToons.createNPC(self.air, 20002, desc, hqZone)
+        npc.setTutorial(1)
+
+        door0 = DistributedDoorAI.DistributedDoorAI(
+            self.air, 1, DoorTypes.EXT_HQ, doorIndex=0,
+            lockValue=FADoorCodes.DEFEAT_FLUNKY_HQ)
+        door1 = DistributedDoorAI.DistributedDoorAI(
+            self.air, 1, DoorTypes.EXT_HQ, doorIndex=1,
+            lockValue=FADoorCodes.DEFEAT_FLUNKY_HQ)
+        insideDoor0 = DistributedDoorAI.DistributedDoorAI(
+            self.air, 1, DoorTypes.INT_HQ, doorIndex=0,
+            lockValue=FADoorCodes.TALK_TO_HQ)
+        insideDoor1 = DistributedDoorAI.DistributedDoorAI(
+            self.air, 1, DoorTypes.INT_HQ, doorIndex=1,
+            lockValue=FADoorCodes.TALK_TO_HQ)
+        door0.setOtherDoor(insideDoor0)
+        insideDoor0.setOtherDoor(door0)
+        door1.setOtherDoor(insideDoor1)
+        insideDoor1.setOtherDoor(door1)
+        door0.zoneId = streetZone
+        door1.zoneId = streetZone
+        insideDoor0.zoneId = hqZone
+        insideDoor1.zoneId = hqZone
+        door0.generateWithRequired(streetZone)
+        door1.generateWithRequired(streetZone)
+        door0.sendUpdate('setDoorIndex', [door0.getDoorIndex()])
+        door1.sendUpdate('setDoorIndex', [door1.getDoorIndex()])
+        insideDoor0.generateWithRequired(hqZone)
+        insideDoor1.generateWithRequired(hqZone)
+        insideDoor0.sendUpdate('setDoorIndex', [insideDoor0.getDoorIndex()])
+        insideDoor1.sendUpdate('setDoorIndex', [insideDoor1.getDoorIndex()])
+
+        self.accept('extHqDoor0-{0}'.format(streetZone), door0.setDoorLock)
+        self.accept('extHqDoor1-{0}'.format(streetZone), door1.setDoorLock)
+        self.accept('intHqDoor0-{0}'.format(hqZone), insideDoor0.setDoorLock)
+        self.accept('intHqDoor1-{0}'.format(hqZone), insideDoor1.setDoorLock)
+
+    def createStreet(self, streetZone, shopZone, hqZone):
+        flunky = DistributedTutorialSuitAI.DistributedTutorialSuitAI(self.air)
+        suitType = SuitDNA.getSuitType('f')
+        suitTrack = SuitDNA.getSuitDept('f')
+        flunky.setupSuitDNA(1, suitType, suitTrack)
+        flunky.generateWithRequired(streetZone)
 
     def allDone(self):
         avId = self.air.getAvatarIdFromSender()
@@ -94,5 +159,3 @@ class TutorialManagerAI(DistributedObjectAI):
         avId = self.air.getAvatarIdFromSender()
 
         #Acknowledge the tutorial.
-
-

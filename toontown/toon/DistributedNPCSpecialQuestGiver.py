@@ -1,11 +1,14 @@
-from pandac.PandaModules import *
 from DistributedNPCToonBase import *
-from toontown.quest import QuestParser
+from otp.nametag.NametagConstants import *
+from pandac.PandaModules import *
+from toontown.hood import ZoneUtil
 from toontown.quest import QuestChoiceGui
+from toontown.quest import QuestParser
 from toontown.quest import TrackChoiceGui
 from toontown.toonbase import TTLocalizer
-from toontown.hood import ZoneUtil
 from toontown.toontowngui import TeaserPanel
+
+
 ChoiceTimeout = 20
 
 class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
