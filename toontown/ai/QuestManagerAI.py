@@ -6,6 +6,7 @@ from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecia
 from otp.ai.MagicWordGlobal import *
 from toontown.quest import Quests
 from toontown.hood import ZoneUtil
+from toontown.toonbase import ToontownGlobals
 import random
 from toontown.toon.NPCToons import NPC_BANKER
 from direct.task.TaskManagerGlobal import taskMgr
@@ -337,7 +338,13 @@ class QuestManagerAI:
 
             questList.append(questDesc)
 
+        cogsKilled = toon.getCogCount()
+        for x in suitsKilled:
+            cog = x['type']
+            cogsKilled[ToontownGlobals.suitIndex[cog]] += 1
+        toon.b_setCogCount(cogsKilled)
         toon.b_setQuests(questList)
+
         return (recoveredItems, unrecoveredItems)
 
     def hasTailorClothingTicket(self, toon, npc):
