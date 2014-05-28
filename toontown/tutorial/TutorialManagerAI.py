@@ -88,24 +88,9 @@ class TutorialManagerAI(DistributedObjectAI):
         interior.setTutorial(1)
 
         desc = NPCToons.NPCToonDict.get(20002)
-        canonicalZoneId, name, dnaType, gender, protected, type = desc
-        npc = DistributedNPCSpecialQuestGiverAI(self.air, 20002, hq=1, tutorial=1)
-        npc.setName(name)
-        dna = ToonDNA.ToonDNA()
-        dna.newToonFromProperties(*dnaType)
-        npc.setDNAString(dna.makeNetString())
-        npc.setHp(15)
-        npc.setMaxHp(15)
-        npc.setPositionIndex(0)
-        npc.generateWithRequired(hqZone)
-        if hasattr(npc, 'startAnimState'):
-            npc.d_setAnimState(npc.startAnimState, 1.0)
-        else:
-            npc.d_setAnimState('neutral', 1.0)
-
-        desc = NPCToons.NPCToonDict.get(20002)
         npc = NPCToons.createNPC(self.air, 20002, desc, hqZone)
         npc.setTutorial(1)
+        npc.setHq(1)
 
         door0 = DistributedDoorAI.DistributedDoorAI(
             self.air, 1, DoorTypes.EXT_HQ, doorIndex=0,
@@ -158,4 +143,8 @@ class TutorialManagerAI(DistributedObjectAI):
     def toonArrived(self):
         avId = self.air.getAvatarIdFromSender()
 
-        #Acknowledge the tutorial.
+        av = self.air.doId2do.get(avId)
+        if not av:
+            return
+
+        av.b_setTutorialAck(1)

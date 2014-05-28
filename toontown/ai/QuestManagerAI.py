@@ -54,6 +54,7 @@ class QuestManagerAI:
         else:
             if (len(toonQuests) == toonQuestPocketSize*5):
                 npc.rejectAvatar(avId)
+                return
             elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
                 if npc.tutorial:
                     choices = self.avatarQuestChoice(toon, npc)
@@ -66,8 +67,10 @@ class QuestManagerAI:
 
                 if choices != []:
                     npc.presentQuestChoice(avId, choices)
+                    return
                 else:
                     npc.rejectAvatar(avId)
+                    return
 
     def avatarQuestChoice(self, toon, npc):
         tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
@@ -108,7 +111,6 @@ class QuestManagerAI:
 
         toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], Quests.getFinalRewardId(questId))
         npc.assignQuest(avId, questId, rewardId, toNpc)
-        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
         toon = self.air.doId2do.get(avId)
@@ -119,7 +121,6 @@ class QuestManagerAI:
 
         toon.removeQuest(pendingTrackQuest)
         toon.b_setTrackProgress(trackId, 0)
-        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarProgressTier(self, toon):
         currentTier = toon.getRewardHistory()[0]
@@ -148,8 +149,6 @@ class QuestManagerAI:
             #Completing a quest they dont have? :/
             print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
 
-        taskMgr.remove(npc.uniqueName('clearMovie'))
-
     def nextQuest(self, toon, npc, questId):
         nextQuestId = Quests.getNextQuest(questId, npc, toon)
         toonQuests = toon.getQuests() #Flattened Quests.
@@ -166,7 +165,6 @@ class QuestManagerAI:
             questList.append(questDesc)
 
         npc.incompleteQuest(toon.doId, nextQuestId[0], Quests.QUEST, nextQuestId[1])
-        taskMgr.remove(npc.uniqueName('clearMovie'))
         toon.b_setQuests(questList)
 
     def giveReward(self, toon, rewardId):
