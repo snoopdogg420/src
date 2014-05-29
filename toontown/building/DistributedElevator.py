@@ -488,6 +488,7 @@ class DistributedElevator(DistributedObject.DistributedObject):
             elevator = self.elevatorFSM
             del self.elevatorFSM
             elevator.signalDone(doneStatus)
+            base.camLens.setMinFov(ToontownGlobals.CBElevatorFov/(4./3.))
         return
 
     def getElevatorModel(self):

@@ -67,7 +67,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         DistributedBossCog.DistributedBossCog.announceGenerate(self)
         self.loadEnvironment()
         self.__makeResistanceToon()
-        localAvatar.chatMgr.chatInputSpeedChat.addCEOMenu()
+        base.localAvatar.chatMgr.chatInputSpeedChat.addCEOMenu()
         if OneBossCog != None:
             self.notify.warning('Multiple BossCogs visible.')
         OneBossCog = self
@@ -133,7 +133,7 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         if self.servingTimer:
             self.servingTimer.destroy()
             del self.servingTimer
-        localAvatar.chatMgr.chatInputSpeedChat.removeCEOMenu()
+        base.localAvatar.chatMgr.chatInputSpeedChat.removeCEOMenu()
         if OneBossCog == self:
             OneBossCog = None
         self.promotionMusic.stop()

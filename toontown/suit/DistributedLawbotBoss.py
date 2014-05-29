@@ -137,7 +137,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.loadEnvironment()
         self.__makeWitnessToon()
         self.__loadMopaths()
-        #localAvatar.chatMgr.chatInputSpeedChat.addCJMenu()
+        base.localAvatar.chatMgr.chatInputSpeedChat.addCJMenu()
         if OneBossCog != None:
             self.notify.warning('Multiple BossCogs visible.')
         OneBossCog = self
@@ -171,7 +171,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         if self.bonusTimer:
             self.bonusTimer.destroy()
             del self.bonusTimer
-        localAvatar.chatMgr.chatInputSpeedChat.removeCJMenu()
+        base.localAvatar.chatMgr.chatInputSpeedChat.removeCJMenu()
         if OneBossCog == self:
             OneBossCog = None
         return
