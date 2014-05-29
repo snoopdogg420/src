@@ -162,16 +162,17 @@ class RemoteAccountDB(AccountDB):
         cipherText = token[AES.block_size:]
 
         # Decrypt!
-        cipher = AES.new(secret, mode=AES.MOD_CBC, IV=iv)
+        cipher = AES.new(secret, mode=AES.MODE_CBC, IV=iv)
         try:
-            token = json.loads(cipher.decrypt(cipherText))
-            if ('timestamp' not in token) or (not isinstance('timestamp', int)):
+            token = json.loads(cipher.decrypt(cipherText).replace('\x00', ''))
+            if ('timestamp' not in token) or (not isinstance(token['timestamp'], int)):
                 raise ValueError
-            if ('userid' not in token) or (not isinstance('userid', int)):
+            if ('userid' not in token) or (not isinstance(token['userid'], int)):
                 raise ValueError
-            if ('accesslevel' not in token) or (not isinstance('accesslevel', int)):
+            if ('accesslevel' not in token) or (not isinstance(token['accesslevel'], int)):
                 raise ValueError
-        except ValueError:
+        except ValueError, e:
+            print e
             self.notify.warning('Invalid token.')
             response = {
                 'success': False,
