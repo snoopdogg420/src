@@ -5335,3 +5335,9 @@ def achievements(command, achId):
         return 'Removed Achievement %s'%(achId)
     else:
         return "Unknown Command '%s'"%(command)
+
+@magicWord(category=CATEGORY_ADMINISTRATOR)
+def getZone():
+    invoker = spellbook.getInvoker()
+    zone = invoker.zoneId
+    return 'ZoneID: %s' % (zone)

@@ -2645,3 +2645,8 @@ def globalTeleport():
     invoker.sendUpdate('setTeleportOverride', [1])
     invoker.setTeleportAccess(list(ToontownGlobals.HoodsForTeleportAll))
     return 'Global teleport has been activated.'
+
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+def setZone(zone):
+    base.cr.sendSetZoneMsg(zone, [zone])
+    return 'Set client zoneId to %s' % (zone)
