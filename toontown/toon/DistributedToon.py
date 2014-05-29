@@ -2586,6 +2586,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         searchString = '**/access_level_{0}'.format(gmType)
         self.gmIcon = icons.find(searchString)
         np = NodePath(self.nametag.getNameIcon())
+        if np.isEmpty():
+            return
         self.gmIcon.reparentTo(np)
         self.gmIcon.setScale(0.65)
         self.gmIcon.setZ(2.25)
