@@ -12,3 +12,6 @@ class DistributedBattleTutorialAI(DistributedBattleAI):
             zoneId, finishCallback=finishCallback, maxSuits=maxSuits,
             tutorialFlag=1, levelFlag=0,
             interactivePropTrackBonus=interactivePropTrackBonus)
+
+    def startRewardTimer(self):
+        pass  # We don't want a reward timer in the tutorial.

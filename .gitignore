@@ -16,10 +16,13 @@ nosetests.xml
 # PLY
 parsetab.py
 
-# Buildbot
-buildbot_last-rev.dat
+# Mac directory info
+.DS_Store
+
+# Dedicated server
+start_uberdog_server_remotedb.bat
+start_ai_server_remotedb.bat
 
 # Toontown Infinite Retro
 PPYTHON_PATH
 preferences.gz
-.DS_Store

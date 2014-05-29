@@ -17,8 +17,9 @@ default-model-extension .bam
 audio-library-name p3fmod_audio
 
 # Database...
-accountdb-type local
-accountdb-local-file astron/databases/csm-cookies.db
+account-server-endpoint https://www.toontowninfinite.com/api/
+accountdb-type developer
+account-bridge-filename astron/databases/account-bridge.db
 
 # Server...
 server-force-ssl 0

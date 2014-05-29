@@ -10,10 +10,10 @@ class ClientServicesManager(DistributedObjectGlobal):
     def performLogin(self, doneEvent):
         self.doneEvent = doneEvent
 
-        cookie = self.cr.playToken or 'dev'
+        token = self.cr.playToken or 'dev'
 
-        self.notify.debug('Sending login cookie: ' + cookie)
-        self.sendUpdate('login', [cookie])
+        self.notify.debug('Sending token: ' + token)
+        self.sendUpdate('login', [token])
 
     def acceptLogin(self, timestamp):
         messenger.send(self.doneEvent, [{'mode': 'success', 'timestamp': timestamp}])

@@ -32,6 +32,7 @@ vfs-mount resources/phase_13.mf /
 audio-library-name p3fmod_audio
 
 # Database...
+account-server-endpoint https://www.toontowninfinite.com/api/
 accountdb-type remote
 
 # Server...

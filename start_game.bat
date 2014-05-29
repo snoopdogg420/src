@@ -1,9 +1,7 @@
 @echo off
 
-set /P ttiUsername="Username (DEFAULT: username): " || ^
-set ttiUsername=username
-set ttiPassword=password
-set TTI_PLAYCOOKIE=%ttiUsername%
+set /P ttiUsername="Username: "
+set /P ttiPassword="Password: "
 set /P TTI_GAMESERVER="Client Agent IP (DEFAULT: 108.170.49.170): " || ^
 set TTI_GAMESERVER=108.170.49.170
 
@@ -17,5 +15,5 @@ echo Username: %ttiUsername%
 echo Client Agent IP: %TTI_GAMESERVER%
 echo ===============================
 
-%PPYTHON_PATH% -m toontown.toonbase.ToontownStart
+%PPYTHON_PATH% -m toontown.toonbase.ToontownStartRemote
 pause
