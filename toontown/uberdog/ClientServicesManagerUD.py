@@ -77,7 +77,7 @@ class DeveloperAccountDB(AccountDB):
             response = {
                 'success': True,
                 'userId': username,
-                'accountId': int(self.dbm[username]),
+                'accountId': int(self.dbm[str(username)]),
             }
             callback(response)
             return response
@@ -109,7 +109,7 @@ class LocalAccountDB(AccountDB):
             response = {
                 'success': True,
                 'userId': username,
-                'accountId': int(self.dbm[username]),
+                'accountId': int(self.dbm[str(username)]),
             }
             callback(response)
             return response
@@ -212,7 +212,7 @@ class RemoteAccountDB(AccountDB):
             response = {
                 'success': True,
                 'userId': token['userid'],
-                'accountId': int(anydbm[token['userid']]),
+                'accountId': int(self.dbm[str(token['userid'])]),
                 'accessLevel': int(token['accesslevel'])
             }
             callback(response)
