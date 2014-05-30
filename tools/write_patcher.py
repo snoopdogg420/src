@@ -2,6 +2,7 @@ import xml.etree.ElementTree as ET
 import argparse
 import hashlib
 import os
+import subprocess
 
 
 parser = argparse.ArgumentParser()
@@ -9,6 +10,8 @@ parser.add_argument('--src-dir', default='build',
                     help='The directory of the Toontown Infinite build.')
 parser.add_argument('--dest-dir', default='C:/xampp/htdocs/download',
                     help='The directory in which to store the patcher.')
+parser.add_argument('--client-agent', default='108.170.49.170',
+                    help='The IP address of the Client Agent to connect to.')
 parser.add_argument('includes', nargs='*', default=['GameData.bin'],
                     help='The files to include in the main directory.')
 args = parser.parse_args()
@@ -53,9 +56,36 @@ print 'Writing patcher.xml...'
 # First, add the root:
 patcherRoot = ET.Element('patcher')
 
+# Next, add the Client Agent IP:
+clientagent = ET.SubElement(patcherRoot, 'clientagent')
+clientagent.text = args.client_agent
+
+# If we don't have Git on our path, let's attempt to add it:
+paths = (
+    '{0}\\Git\\bin'.format(os.environ['ProgramFiles']),
+    '{0}\\Git\\cmd'.format(os.environ['ProgramFiles'])
+)
+for path in paths:
+    if path not in os.environ['PATH']:
+        os.environ['PATH'] += ';' + path
+
+# Add the git revision:
+revision = ET.SubElement(patcherRoot, 'revision')
+revision.text = subprocess.Popen(
+    ['git', 'rev-parse', 'HEAD'],
+    stdout=subprocess.PIPE,
+    cwd=args.src_dir).stdout.read().strip()[:7]
+
+# Add the most recent commit message:
+revision = ET.SubElement(patcherRoot, 'message')
+revision.text = subprocess.Popen(
+    ['git', 'log', '-1', '--pretty=%B'],
+    stdout=subprocess.PIPE,
+    cwd=args.src_dir).stdout.read().strip()
+
 # Next, add the root directory:
 root = ET.SubElement(patcherRoot, 'directory')
-root.set('name', 'resources')
+root.set('name', '')
 
 # Add all of the root files:
 for filename, size, hash in rootFiles:
