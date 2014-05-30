@@ -126,12 +126,11 @@ class SuitPlannerInteriorAI:
         return lvlList
 
     def __setupSuitInfo(self, suit, bldgTrack, suitLevel, suitType):
-        '''suitName, skeleton = simbase.air.suitInvasionManager.getInvadingCog()
+        suitName, skeleton = simbase.air.suitInvasionManager.getInvadingCog()
         if suitName and self.respectInvasions:
             suitType = SuitDNA.getSuitType(suitName)
             bldgTrack = SuitDNA.getSuitDept(suitName)
-            suitLevel = min(max(suitLevel, suitType), suitType + 4)'''
-        skeleton = False
+            suitLevel = min(max(suitLevel, suitType), suitType + 4)
         dna = SuitDNA.SuitDNA()
         dna.newSuitRandom(suitType, bldgTrack)
         suit.dna = dna

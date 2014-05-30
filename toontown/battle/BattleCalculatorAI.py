@@ -180,7 +180,7 @@ class BattleCalculatorAI:
             prevAtkId = self.toonAtkOrder[currAtk - 1]
             prevAttack = self.battle.toonAttacks[prevAtkId]
             prevAtkTrack = self.__getActualTrack(prevAttack)
-            lure = atkTrack == LURE and (not attackAffectsGroup(atkTrack, atkLevel, 
+            lure = atkTrack == LURE and (not attackAffectsGroup(atkTrack, atkLevel,
              attack[TOON_TRACK_COL]) and self.successfulLures.has_key(attack[TOON_TGT_COL]) or attackAffectsGroup(atkTrack, atkLevel, attack[TOON_TRACK_COL]))
             if atkTrack == prevAtkTrack and (attack[TOON_TGT_COL] == prevAttack[TOON_TGT_COL] or lure):
                 if prevAttack[TOON_ACCBONUS_COL] == 1:
