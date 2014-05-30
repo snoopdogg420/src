@@ -101,16 +101,16 @@ resourcesRoot = ET.SubElement(patcherRoot, 'directory')
 resourcesRoot.set('name', 'resources')
 
 # Add all of the resources files:
-for filename, size, hash in resources:
+for filename, size, hash in resourcesFiles:
     _filename = ET.SubElement(resourcesRoot, 'file')
     _filename.set('name', filename)
-    size = ET.SubElement(_filename, 'size')
-    size.text = str(size)
-    hash = ET.SubElement(_filename, 'hash')
-    hash.text = str(hash)
+    _size = ET.SubElement(_filename, 'size')
+    _size.text = str(size)
+    _hash = ET.SubElement(_filename, 'hash')
+    _hash.text = str(hash)
 	
 # Finally, write the product:
 filepath = os.path.join(args.dest_dir, 'patcher.xml')
-ET.ElementTree(root).write(filepath)
+ET.ElementTree(patcherRoot).write(filepath)
 
 print 'Done writing patcher.xml'
