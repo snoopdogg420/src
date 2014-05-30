@@ -362,14 +362,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.doId2do[avatarId] = localAvatar
         localAvatar.initInterface()
         self.sendGetFriendsListRequest()
-        if hasattr(self, 'skipTutorialRequest'):
-            if self.skipTutorialRequest:
-                print 'requesting skip tutorial'
-                #TUTORIAL SHIT
-                localAvatar.setTutorialAck(1)
-            else:
-                print 'requesting tutorial'
-                localAvatar.setTutorialAck(0)
+        localAvatar.setTutorialAck(0)
         self.loginFSM.request('playingGame')
 
     def getAvatarDetails(self, avatar, func, *args):

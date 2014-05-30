@@ -37,14 +37,22 @@ class TutorialManagerAI(DistributedObjectAI):
         if not av:
             return
 
+        self.acceptOnce('generate-%s'%(avId), self.avatarSkipTutorial)
         av.b_setTutorialAck(1)
 
     def requestSkipTutorial(self):
         avId = self.air.getAvatarIdFromSender()
         self.skipTutorialResponse(avId, 1)
 
+        self.acceptOnce('generate-%s'%(avId), self.avatarSkipTutorial)
+
     def skipTutorialResponse(self, avId, allOk):
         self.sendUpdateToAvatarId(avId, 'skipTutorialResponse', [allOk])
+
+    def avatarSkipTutorial(self, av):
+        av.b_setQuests([[110, 1, 1000, 100, 0]])
+        av.b_setQuestHistory([101])
+        av.b_setRewardHistory(1, [])
 
     def enterTutorial(self, avId, branchZone, streetZone, shopZone, hqZone):
         self.currentAllocatedZones[avId] = (streetZone, shopZone, hqZone)
@@ -154,7 +162,9 @@ class TutorialManagerAI(DistributedObjectAI):
         allocatedZones = self.currentAllocatedZones.get(avId)
         if not allocatedZones:
             return
+
         streetZone, shopZone, hqZone = allocatedZones
+        del self.currentAllocatedZones[avId]
 
         self.ignore('intShopDoor-{0}'.format(shopZone))
         self.ignore('extShopDoor-{0}'.format(streetZone))

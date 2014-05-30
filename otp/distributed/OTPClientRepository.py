@@ -1474,7 +1474,7 @@ class OTPClientRepository(ClientRepositoryBase):
         if not self.SupportTutorial or base.localAvatar.tutorialAck:
             self.gameFSM.request('playGame', [hoodId, zoneId, avId])
             return
-        elif base.config.GetBool('force-tutorial', 1):
+        elif base.config.GetBool('force-tutorial', 0):
             self.gameFSM.request('tutorialQuestion', [hoodId, zoneId, avId])
             return
         else:
