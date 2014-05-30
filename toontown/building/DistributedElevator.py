@@ -50,6 +50,7 @@ class DistributedElevator(DistributedObject.DistributedObject):
         self.isSetup = 0
         self.__preSetupState = None
         self.bigElevator = 0
+        self.offsetNp = None
         return
 
     def generate(self):
@@ -120,6 +121,8 @@ class DistributedElevator(DistributedObject.DistributedObject):
         del self.closeSfx
         self.isSetup = 0
         self.fillSlotTrack = None
+        if self.offsetNp is None:
+            return
         self.offsetNP.removeNode()
         if hasattr(base.localAvatar, 'elevatorNotifier'):
             base.localAvatar.elevatorNotifier.cleanup()
