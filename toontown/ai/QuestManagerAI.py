@@ -94,22 +94,14 @@ class QuestManagerAI:
             questDesc = toonQuests[i:i + 5]
             rewardList.append(questDesc[3])
 
-        print 'rewardList: %s'%(rewardList)
         for task in tasks:
-            print 'checking %s'%(task)
             if task[1] in rewardList:
-                #Avatar is already working for this reward!
-                #Let's change it to a just for fun task.
                 tier = toon.getRewardHistory()[0]
                 rewards = Quests.getOptionalRewardsInTier(tier)
                 if rewards:
                     rewardId = random.choice(Quests.getOptionalRewardsInTier(tier))
                     task[1] = rewardId
-                    print 'new reward id: %s'%(rewardId)
         return tasks
-
-    def avatarCancelled(self, npc):
-        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseQuest(self, avId, npc, questId, rewardId, building):
         toon = self.air.doId2do.get(avId)
@@ -131,6 +123,12 @@ class QuestManagerAI:
 
         toon.removeQuest(pendingTrackQuest)
         toon.b_setTrackProgress(trackId, 0)
+
+    def avatarCancelled(self, npcId):
+        npc = self.air.doId2do.get(npcId)
+        if not npc:
+            return
+        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarProgressTier(self, toon):
         currentTier = toon.getRewardHistory()[0]
@@ -188,6 +186,25 @@ class QuestManagerAI:
 
         rewardClass.sendRewardAI(toon)
 
+    def toonRodeTrolleyFirstTime(self, toon):
+        self.toonPlayedMinigame(toon, [])
+
+    def toonPlayedMinigame(self, toon, toons):
+        print 'QuestManager: %s (AvId: %s) played on the trolley.'%(toon.getName(), toon.doId)
+        flattenedQuests = toon.getQuests()
+        questList = [] #unflattened
+
+        for i in xrange(0, len(flattenedQuests), 5):
+            questDesc = flattenedQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[0])
+
+            if isinstance(questClass, Quests.TrolleyQuest):
+                questDesc[4] = 1
+
+            questList.append(questDesc)
+
+        toon.b_setQuests(questList)
+
     def toonMadeFriend(self, avId):
         toon = self.air.doId2do.get(avId)
         if not toon:
@@ -208,8 +225,11 @@ class QuestManagerAI:
 
         toon.b_setQuests(questList)
 
-    def toonDefeatedFactory(self, toon, factoryId, activeVictors):
-        print 'QuestManager: %s (AvId: %s) defeated a factory.'%(toon.getName(), toon.doId)
+    def toonUsedPhone(self, avId):
+        toon = self.air.doId2do.get(avId)
+        if not toon:
+            return
+
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
 
@@ -217,25 +237,8 @@ class QuestManagerAI:
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if isinstance(questClass, Quests.FactoryQuest):
-                if questClass.doesFactoryCount(toon, factoryId, activeVictors):
-                    questDesc[4] += 1
-
-            questList.append(questDesc)
-
-        toon.b_setQuests(questList)
-
-    def toonPlayedMinigame(self, toon, toons):
-        print 'QuestManager: %s (AvId: %s) played on the trolley.'%(toon.getName(), toon.doId)
-        flattenedQuests = toon.getQuests()
-        questList = [] #unflattened
-
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
-
-            if isinstance(questClass, Quests.TrolleyQuest):
-                questDesc[4] = 1
+            if isinstance(questClass, Quests.PhoneQuest):
+                questDesc[4] += 1
 
             questList.append(questDesc)
 
@@ -272,48 +275,31 @@ class QuestManagerAI:
         else:
             return -1
 
-    def toonUsedPhone(self, avId):
-        toon = self.air.doId2do.get(avId)
-        if not toon:
-            return
-
+    def hasTailorClothingTicket(self, toon, npc):
         flattenedQuests = toon.getQuests()
-        questList = [] #unflattened
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if isinstance(questClass, Quests.PhoneQuest):
-                questDesc[4] += 1
+            if isinstance(questClass, Quests.DeliverItemQuest):
+                if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
+                    return 1
 
-            questList.append(questDesc)
+        return 0
 
-        toon.b_setQuests(questList)
-
-    def toonKilledBuilding(self, toon, type, difficulty, floors, zoneId, activeToons):
+    def removeClothingTicket(self, toon, npc):
         flattenedQuests = toon.getQuests()
-        questList = [] #unflattened
-
-        zoneId = ZoneUtil.getBranchZone(zoneId)
-
-        recoveredItems = []
-        unrecoveredItems = []
+        questList = []
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
-                if isinstance(questClass, Quests.BuildingQuest):
-                    if questClass.isLocationMatch(zoneId):
-                        if questClass.getBuildingTrack() == type or Quests.Any:
-                            if questClass.doesBuildingCount(toon, activeToons):
-                                if floors >= questClass.getNumFloors():
-                                    questDesc[4] += 1
-            questList.append(questDesc)
-
-        toon.b_setQuests(questList)
+            if isinstance(questClass, Quests.DeliverItemQuest):
+                if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
+                    toon.removeQuest(questDesc[0])
+                    break
 
     def recoverItems(self, toon, suitsKilled, taskZoneId):
         flattenedQuests = toon.getQuests()
@@ -358,31 +344,46 @@ class QuestManagerAI:
 
         return (recoveredItems, unrecoveredItems)
 
-    def hasTailorClothingTicket(self, toon, npc):
+    def toonKilledBuilding(self, toon, type, difficulty, floors, zoneId, activeToons):
         flattenedQuests = toon.getQuests()
+        questList = [] #unflattened
+
+        zoneId = ZoneUtil.getBranchZone(zoneId)
+
+        recoveredItems = []
+        unrecoveredItems = []
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if isinstance(questClass, Quests.DeliverItemQuest):
-                if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
-                    return 1
+            if questClass.getCompletionStatus(toon, questDesc) == Quests.INCOMPLETE:
+                if isinstance(questClass, Quests.BuildingQuest):
+                    if questClass.isLocationMatch(zoneId):
+                        if questClass.getBuildingTrack() == type or Quests.Any:
+                            if questClass.doesBuildingCount(toon, activeToons):
+                                if floors >= questClass.getNumFloors():
+                                    questDesc[4] += 1
+            questList.append(questDesc)
 
-        return 0
+        toon.b_setQuests(questList)
 
-    def removeClothingTicket(self, toon, npc):
+    def toonDefeatedFactory(self, toon, factoryId, activeVictors):
+        print 'QuestManager: %s (AvId: %s) defeated a factory.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
-        questList = []
+        questList = [] #unflattened
 
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
 
-            if isinstance(questClass, Quests.DeliverItemQuest):
-                if questClass.getCompletionStatus(toon, questDesc, npc) == Quests.COMPLETE:
-                    toon.removeQuest(questDesc[0])
-                    break
+            if isinstance(questClass, Quests.FactoryQuest):
+                if questClass.doesFactoryCount(toon, factoryId, activeVictors):
+                    questDesc[4] += 1
+
+            questList.append(questDesc)
+
+        toon.b_setQuests(questList)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int])
 def quests(command, arg0=0, arg1=0):
