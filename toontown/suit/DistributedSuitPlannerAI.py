@@ -318,9 +318,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         self.zoneChange(newSuit, None, newSuit.zoneId)
         if skelecog:
             newSuit.setSkelecog(skelecog)
-        if v2:
-            newSuit.setSkeleRevives(1)
         newSuit.generateWithRequired(newSuit.zoneId)
+        if v2:
+            newSuit.b_setSkeleRevives(1)
         newSuit.d_setSPDoId(self.doId)
         newSuit.moveToNextLeg(None)
         self.suitList.append(newSuit)

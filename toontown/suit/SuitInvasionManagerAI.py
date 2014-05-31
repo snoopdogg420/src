@@ -31,13 +31,13 @@ class SuitInvasionManagerAI:
             if currentInvadingDept in suitDepts:
                 currentInvadingSuit = getRandomSuitByDept(currentInvadingDept)
             else:
-                currentInvadingSuit = random.choice(suitHeadTypes)
+                currentInvadingSuit = None
 
         return (currentInvadingSuit, self.isSkelecog,
-                self.isWaiter, self.isV2)
+                self.isV2, self.isWaiter)
 
     def newInvasion(self, name='any', dept='any', skelecog=0, v2=0, waiter=0):
-        print 'NEW_INVASION: suit: %s, dept: %s, skelecog: %s, waiter: %s, v2: %s' % (
+        print 'NEW_INVASION: suit: %s, dept: %s, skelecog: %s, v2: %s, waiter: %s' % (
                 name, dept, skelecog, v2, waiter)
         if name == 'any' and dept == 'any':
             if not skelecog and not v2 and not waiter:
@@ -63,10 +63,9 @@ class SuitInvasionManagerAI:
                 currentInvadingSuit = 'f'
             else:
                 #Department invasion
-                print 'DEPARTMENT INVASION'
                 currentInvadingSuit = self.currentInvadingDept
                 departmentInvasion = True
-        elif self.isSkelecog:
+        if self.isSkelecog:
             msgType = ToontownGlobals.SkelecogInvasionBegin
             self.isWaiter = 0
             self.isV2 = 0
@@ -82,7 +81,6 @@ class SuitInvasionManagerAI:
             self.isV2 = 0
             departmentInvasion = False
         elif departmentInvasion:
-            print 'DEPARTMENT INVASION 2'
             msgType = ToontownGlobals.DepartmentInvasionBegin
             self.isSkelecog = 0
             self.isV2 = 0

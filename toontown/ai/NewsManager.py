@@ -11,7 +11,6 @@ import CrashedLeaderBoardDecorator
 from direct.interval.IntervalGlobal import *
 import calendar
 from copy import deepcopy
-from toontown.speedchat import TTSCJellybeanJamMenu
 from toontown.suit import SuitDNA
 decorationHolidays = [ToontownGlobals.WINTER_DECORATIONS,
  ToontownGlobals.WACKY_WINTER_DECORATIONS,
@@ -20,7 +19,6 @@ decorationHolidays = [ToontownGlobals.WINTER_DECORATIONS,
  ToontownGlobals.HALLOWEEN_COSTUMES,
  ToontownGlobals.SPOOKY_COSTUMES,
  ToontownGlobals.CRASHED_LEADERBOARD]
-promotionalSpeedChatHolidays = [ToontownGlobals.ELECTION_PROMOTION]
 
 class NewsManager(DistributedObject.DistributedObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('NewsManager')
@@ -75,8 +73,9 @@ class NewsManager(DistributedObject.DistributedObject):
          cogType,
          numRemaining,
          skeleton))
-        cogName = SuitBattleGlobals.SuitAttributes[cogType]['name']
-        cogNameP = SuitBattleGlobals.SuitAttributes[cogType]['pluralname']
+        if msgType < ToontownGlobals.DepartmentInvasionBegin:
+            cogName = SuitBattleGlobals.SuitAttributes[cogType]['name']
+            cogNameP = SuitBattleGlobals.SuitAttributes[cogType]['pluralname']
         messages = 2
         if skeleton:
             cogName = TTLocalizer.Skeleton
@@ -105,10 +104,22 @@ class NewsManager(DistributedObject.DistributedObject):
         elif msgType == ToontownGlobals.SkelecogInvasionEnd:
             msg1 = TTLocalizer.SkelecogInvasionEnd1
             msg2 = TTLocalizer.SkelecogInvasionEnd2
+        elif msgType == ToontownGlobals.V2InvasionBegin:
+            msg1 = TTLocalizer.V2InvasionBegin1
+            msg2 = TTLocalizer.V2InvasionBegin2
+            msg3 = TTLocalizer.V2InvasionBegin3
+            messages = 3
+        elif msgType == ToontownGlobals.V2InvasionEnd:
+            msg1 = TTLocalizer.V2InvasionEnd1
+            msg2 = TTLocalizer.V2InvasionEnd2
         elif msgType == ToontownGlobals.DepartmentInvasionBegin:
             deptNameP = SuitDNA.getDeptFullnameP(cogType)
             msg1 = TTLocalizer.SuitInvasionBegin1
             msg2 = TTLocalizer.DepartmentInvasionBegin1 % deptNameP
+        elif msgType == ToontownGlobals.DepartmentInvasionEnd:
+            deptName = SuitDNA.getDeptFullname(cogType)
+            msg1 = TTLocalizer.DepartmentInvasionEnd1 % deptName
+            msg2 = TTLocalizer.SuitInvasionEnd2
         else:
             self.notify.warning('setInvasionStatus: invalid msgType: %s' % msgType)
             return
