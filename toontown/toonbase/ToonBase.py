@@ -30,8 +30,8 @@ class ToonBase(OTPBase.OTPBase):
 
     def __init__(self):
         OTPBase.OTPBase.__init__(self)
-        # If we don't have a resolution defined, choose an optimal default
-        # resolution:
+
+        # First, build a list of all possible resolutions:
         self.resList = []
         displayInfo = self.pipe.getDisplayInformation()
         for i in xrange(displayInfo.getTotalDisplayModes()):
@@ -40,52 +40,44 @@ class ToonBase(OTPBase.OTPBase):
             if (width, height) not in self.resList:
                 self.resList.append((width, height))
 
-        # Separate the resolutions:
-        self.resList16x9 = []
-        self.resList5x3 = []
-        self.resList16x10 = []
-        self.resList3x2 = []
-        self.resList4x3  = []
+        # Next, separate the resolutions by their ratio:
+        self.resDict = {}
         for res in self.resList:
-            if round(float(res[0])/float(res[1]), 2) == round(16.0/9.0, 2):
-                self.resList16x9.append(res)
-        for res in self.resList:
-            if round(float(res[0])/float(res[1]), 2) == round(5.0/3.0, 2):
-                self.resList5x3.append(res)
-        for res in self.resList:
-            if round(float(res[0])/float(res[1]), 2) == round(16.0/10.0, 2):
-                self.resList16x10.append(res)
-        for res in self.resList:
-            if round(float(res[0])/float(res[1]), 2) == round(3.0/2.0, 2):
-                self.resList3x2.append(res)
-        for res in self.resList:
-            if round(float(res[0])/float(res[1]), 2) == round(4.0/3.0, 2):
-                self.resList4x3.append(res)
+            width = float(res[0])
+            height = float(res[1])
+            ratio = round(width / height, 2)
+            self.resDict.setdefault(ratio, []).append(res)
 
-        # Next, if we are fullscreen, or we don't have a resolution defined in
-        # our preferences, choose the best resolution and reload the graphics
-        # pipe:
+        # Get the native width, height and ratio:
+        self.nativeWidth = displayInfo.getMaximumWindowWidth()
+        self.nativeHeight = displayInfo.getMaximumWindowHeight()
+        self.nativeRatio = round(float(self.nativeWidth) / float(self.nativeHeight), 2)
+
+        # Finally, choose the best resolution if we're either fullscreen, or
+        # don't have one defined in our preferences:
         fullscreen = self.settings.get('fullscreen', False)
         if ('res' not in self.settings.all()) or fullscreen:
-            # It appears that with every aspect ratio, besides 4:3, the second
-            # largest resolution looks best. With 4:3, we use the second
-            # smallest so that the window doesn't go outside the user's
-            # perspective. If we only have one resolution in any of these
-            # resolution lists, we must assume that this is the user's native
-            # screen resolution.
-            if len(self.resList16x9) > 1:  # We have 16:9 support, use it.
-                res = self.resList16x9[-2]
-            elif len(self.resList5x3) > 1:  # We have 5:3 support, use it.
-                res = self.resList5x3[-2]
-            elif len(self.resList16x10) > 1:  # We have 16:10 support, use it.
-                res = self.resList16x10[-2]
-            elif len(self.resList3x2) > 1:  # We have 3:2 support, use it.
-                res = self.resList3x2[-2]
-            else:  # Otherwise, default to a 4:3 ratio.
-                res = self.resList4x3[1]
-            self.settings.set('res', res)
+            if fullscreen:
 
-            # Now, reload the graphics pipe:
+                # If we're fullscreen, we want to fit the entire screen:
+                res = (self.nativeWidth, self.nativeHeight)
+
+            elif len(self.resDict[self.nativeRatio]) > 1:
+
+                # We have resolutions that match our native ratio and fit it! Let's
+                # use one:
+                res = self.resDict[self.nativeRatio][0]
+
+            else:
+
+                # Okay, we don't have any resolutions that match our screen's
+                # resolutions and fit it (besides the native ratio itself, of
+                # course). Let's just use the second largest ratio:
+                ratios = sorted(self.resDict.keys(), reverse=False)
+                nativeIndex = ratios.index(self.nativeRatio)
+                res = ratios[nativeIndex + 1][0]
+
+            # Reload the graphics pipe:
             properties = WindowProperties()
 
             # If we're in fullscreen mode, we'll want to fit to the screen:
