@@ -12,6 +12,7 @@ from direct.interval.IntervalGlobal import *
 import calendar
 from copy import deepcopy
 from toontown.speedchat import TTSCJellybeanJamMenu
+from toontown.suit import SuitDNA
 decorationHolidays = [ToontownGlobals.WINTER_DECORATIONS,
  ToontownGlobals.WACKY_WINTER_DECORATIONS,
  ToontownGlobals.HALLOWEEN_PROPS,
@@ -33,10 +34,10 @@ class NewsManager(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.population = 0
         self.invading = 0
-        
+
         forcedHolidayDecorations = base.config.GetString('force-holiday-decorations', '')
         self.decorationHolidayIds = []
-        
+
         if forcedHolidayDecorations != '':
             forcedHolidayDecorations = forcedHolidayDecorations.split(',')
             for HID in forcedHolidayDecorations:
@@ -44,7 +45,7 @@ class NewsManager(DistributedObject.DistributedObject):
                     self.decorationHolidayIds.append(decorationHolidays[int(HID)])
                 except:
                     print 'holidayId value error: "%s"... skipping' %HID
-                    
+
         self.holidayDecorator = None
         self.holidayIdList = []
         base.cr.newsManager = self
@@ -76,6 +77,7 @@ class NewsManager(DistributedObject.DistributedObject):
          skeleton))
         cogName = SuitBattleGlobals.SuitAttributes[cogType]['name']
         cogNameP = SuitBattleGlobals.SuitAttributes[cogType]['pluralname']
+        messages = 2
         if skeleton:
             cogName = TTLocalizer.Skeleton
             cogNameP = TTLocalizer.SkeletonP
@@ -95,6 +97,18 @@ class NewsManager(DistributedObject.DistributedObject):
             msg1 = TTLocalizer.SuitInvasionBulletin1
             msg2 = TTLocalizer.SuitInvasionBulletin2 % cogNameP
             self.invading = 1
+        elif msgType == ToontownGlobals.SkelecogInvasionBegin:
+            msg1 = TTLocalizer.SkelecogInvasionBegin1
+            msg2 = TTLocalizer.SkelecogInvasionBegin2
+            msg3 = TTLocalizer.SkelecogInvasionBegin3
+            messages = 3
+        elif msgType == ToontownGlobals.SkelecogInvasionEnd:
+            msg1 = TTLocalizer.SkelecogInvasionEnd1
+            msg2 = TTLocalizer.SkelecogInvasionEnd2
+        elif msgType == ToontownGlobals.DepartmentInvasionBegin:
+            deptNameP = SuitDNA.getDeptFullnameP(cogType)
+            msg1 = TTLocalizer.SuitInvasionBegin1
+            msg2 = TTLocalizer.DepartmentInvasionBegin1 % deptNameP
         else:
             self.notify.warning('setInvasionStatus: invalid msgType: %s' % msgType)
             return
@@ -103,7 +117,15 @@ class NewsManager(DistributedObject.DistributedObject):
         else:
             mult = 1
         base.localAvatar.inventory.setInvasionCreditMultiplier(mult)
-        Sequence(Wait(1.0), Func(base.localAvatar.setSystemMessage, 0, msg1), Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg2), name='newsManagerWait', autoPause=1).start()
+        if messages == 2:
+            Sequence(Wait(1.0), Func(base.localAvatar.setSystemMessage, 0, msg1),
+                     Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg2),
+                     name='newsManagerWait', autoPause=1).start()
+        elif messages == 3:
+            Sequence(Wait(1.0), Func(base.localAvatar.setSystemMessage, 0, msg1),
+                     Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg2),
+                     Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg3),
+                     name='newsManagerWait', autoPause=1).start()
 
     def getInvading(self):
         return self.invading

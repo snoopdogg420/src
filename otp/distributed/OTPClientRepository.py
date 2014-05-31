@@ -1471,14 +1471,16 @@ class OTPClientRepository(ClientRepositoryBase):
         hoodId = self.handlerArgs['hoodId']
         zoneId = self.handlerArgs['zoneId']
         avId = self.handlerArgs['avId']
+
         if not self.SupportTutorial or base.localAvatar.tutorialAck:
             self.gameFSM.request('playGame', [hoodId, zoneId, avId])
             return
-        elif base.config.GetBool('force-tutorial', 0):
+        if base.config.GetBool('force-tutorial', 0):
             self.gameFSM.request('tutorialQuestion', [hoodId, zoneId, avId])
             return
         else:
             if hasattr(self, 'skipTutorialRequest') and self.skipTutorialRequest:
+                del self.skipTutorialRequest
                 self.gameFSM.request('skipTutorialRequest', [hoodId, zoneId, avId])
                 return
             else:

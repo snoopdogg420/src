@@ -160,9 +160,9 @@ AchievementsDict = (FriendAchievement(),
                     CEOAchievement(neededLaff=1, solo=True))
 
 type2AchievementIds = {FriendAchievement: [0, 1, 2],
-                       TrolleyAchievement: [4],
-                       EstateAchievement: [5],
-                       VPAchievement: [6, 7, 8, 9]}
+                       TrolleyAchievement: [3],
+                       EstateAchievement: [4],
+                       VPAchievement: [5, 6, 7, 8]}
 
 def getAchievementsOfType(type):
     return type2AchievementIds.get(type)

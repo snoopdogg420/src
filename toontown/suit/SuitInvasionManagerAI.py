@@ -1,7 +1,7 @@
-from toontown.suit.SuitDNA import suitHeadTypes as suitNames
-from toontown.toonbase import ToontownGlobals
-import random
+from toontown.toonbase import ToontownGlobals, TTLocalizerEnglish
 from otp.ai.MagicWordGlobal import *
+from toontown.suit.SuitDNA import *
+import random
 import shlex
 
 class SuitInvasionManagerAI:
@@ -13,36 +13,113 @@ class SuitInvasionManagerAI:
     def __init__(self, air):
         self.air = air
         self.currentInvadingSuit = None
-        self.isSkelecog = 0
+        self.currentInvadingDept = None
         self.invasionStatus = False
-        self.startInvading()
+        self.isSkelecog = 0
+        self.isWaiter = 0
+        self.isV2 = 0
+        # self.startInvading()
 
     def getInvading(self):
         return self.invasionStatus
 
     def getInvadingCog(self):
-        return (self.currentInvadingSuit, self.isSkelecog)
+        currentInvadingSuit = self.currentInvadingSuit
+        currentInvadingDept = self.currentInvadingDept
 
-    def newInvasion(self, task=None, name=None, skelecog=0):
-        if name:
-            self.currentInvadingSuit = name
-            self.isSkelecog = skelecog
-        elif self.currentInvadingSuit == None:
-            self.currentInvadingSuit = random.choice(suitNames)
-            roll = random.randint(0, 100)
-            if roll >= 99:
-                self.isSkelecog = 1
-        if self.currentInvadingSuit:
-            self.invasionStatus = True
-            if self.isSkelecog is None:
-                self.isSkelecog = 0
-            self.air.newsManager.setInvasionStatus(ToontownGlobals.SuitInvasionBegin, self.currentInvadingSuit, 10, self.isSkelecog)
-            self.cleanupCurrentSuits()
-            self.invasionStarted()
-            if task:
-                return task.done
-        if task:
-            return task.again
+        if currentInvadingSuit == 'any':
+            if currentInvadingDept in suitDepts:
+                currentInvadingSuit = getRandomSuitByDept(currentInvadingDept)
+            else:
+                currentInvadingSuit = random.choice(suitHeadTypes)
+
+        return (currentInvadingSuit, self.isSkelecog,
+                self.isWaiter, self.isV2)
+
+    def newInvasion(self, name='any', dept='any', skelecog=0, v2=0, waiter=0):
+        print 'NEW_INVASION: suit: %s, dept: %s, skelecog: %s, waiter: %s, v2: %s' % (
+                name, dept, skelecog, v2, waiter)
+        if name == 'any' and dept == 'any':
+            if not skelecog and not v2 and not waiter:
+                return 'Pointless invasion.'
+        self.currentInvadingSuit = name
+        self.currentInvadingDept = dept
+        self.invasionStatus = True
+        self.isSkelecog = skelecog
+        self.isWaiter = waiter
+        self.isV2 = v2
+
+        self.cleanupCurrentSuits()
+        self.alertPlayersOfInvasion()
+        self.invasionStarted()
+
+        return 'Started invasion.'
+
+    def alertPlayersOfInvasion(self):
+        currentInvadingSuit = self.currentInvadingSuit
+        departmentInvasion = False
+        if currentInvadingSuit == 'any':
+            if self.currentInvadingDept == 'any':
+                currentInvadingSuit = 'f'
+            else:
+                #Department invasion
+                print 'DEPARTMENT INVASION'
+                currentInvadingSuit = self.currentInvadingDept
+                departmentInvasion = True
+        elif self.isSkelecog:
+            msgType = ToontownGlobals.SkelecogInvasionBegin
+            self.isWaiter = 0
+            self.isV2 = 0
+            departmentInvasion = False
+        elif self.isV2:
+            msgType = ToontownGlobals.V2InvasionBegin
+            self.isSkelecog = 0
+            self.isWaiter = 0
+            departmentInvasion = False
+        elif self.isWaiter:
+            msgType = ToontownGlobals.WaiterInvasionBegin
+            self.isSkelecog = 0
+            self.isV2 = 0
+            departmentInvasion = False
+        elif departmentInvasion:
+            print 'DEPARTMENT INVASION 2'
+            msgType = ToontownGlobals.DepartmentInvasionBegin
+            self.isSkelecog = 0
+            self.isV2 = 0
+            self.isWaiter = 0
+        else:
+            msgType = ToontownGlobals.SuitInvasionBegin
+            self.isSkelecog = 0
+            self.isV2 = 0
+            self.isWaiter = 0
+        self.air.newsManager.setInvasionStatus(msgType, currentInvadingSuit,
+                                               1000, self.isSkelecog)
+
+    def alertPlayersInvasionEnded(self):
+        currentInvadingSuit = self.currentInvadingSuit
+        departmentInvasion = False
+        if currentInvadingSuit == 'any':
+            if self.currentInvadingDept == 'any':
+                currentInvadingSuit = 'f'
+            else:
+                #Department invasion
+                currentInvadingSuit = self.currentInvadingDept
+                departmentInvasion = True
+        if self.isSkelecog:
+            msgType = ToontownGlobals.SkelecogInvasionEnd
+            departmentInvasion = False
+        elif self.isV2:
+            msgType = ToontownGlobals.V2InvasionEnd
+            departmentInvasion = False
+        elif self.isWaiter:
+            msgType = ToontownGlobals.WaiterInvasionEnd
+            departmentInvasion = False
+        elif departmentInvasion:
+            msgType = ToontownGlobals.DepartmentInvasionEnd
+        else:
+            msgType = ToontownGlobals.SuitInvasionEnd
+        self.air.newsManager.setInvasionStatus(msgType, currentInvadingSuit,
+                                               1000, self.isSkelecog)
 
     def invasionStarted(self):
         t = self.MIN_TIME_DURING + random.randint(1, self.MAX_TIME_DURING)
@@ -51,26 +128,23 @@ class SuitInvasionManagerAI:
         taskMgr.doMethodLater(t*60, self.cleanupInvasion, 'suitInvasionManager-cleanup')
 
     def startInvading(self):
+        #Used for randomly spawning cog invasions. - No longer used.
         t = self.MIN_TIME_INBETWEEN + random.randint(1, self.MAX_TIME_INBETWEEN)
         if t > self.MAX_TIME_INBETWEEN:
             t = self.MAX_TIME_INBETWEEN
         taskMgr.doMethodLater(t*60, self.newInvasion, 'suitInvasionManager-invasion')
 
-    def summonInvasion(self, name, skelecog):
-        if name in suitNames:
-            if self.currentInvadingSuit:
-                self.cleanupInvasion()
-                self.cleanupTasks()
-            self.newInvasion(task=None, name=name, skelecog=skelecog)
-
     def cleanupInvasion(self, task=None):
         self.invasionStatus = False
-        self.air.newsManager.setInvasionStatus(ToontownGlobals.SuitInvasionEnd, self.currentInvadingSuit, 10, self.isSkelecog)
+        self.alertPlayersInvasionEnded()
         self.currentInvadingSuit = None
+        self.currentInvadingDept = None
         self.isSkelecog = 0
+        self.isWaiter = 0
+        self.isV2 = 0
         self.cleanupCurrentSuits()
+
         if task:
-            self.startInvading()
             return task.done
 
     def cleanupCurrentSuits(self):
@@ -78,26 +152,4 @@ class SuitInvasionManagerAI:
             self.air.suitPlanners.get(suitPlanner).flySuits()
 
     def cleanupTasks(self):
-        taskMgr.remove('suitInvasionManager-invasion')
         taskMgr.remove('suitInvasionManager-cleanup')
-
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
-def invasion(command, name='f', skelecog=0):
-    command = command.lower()
-    target = spellbook.getTarget()
-
-    if command == 'summon':
-        simbase.air.suitInvasionManager.summonInvasion(name, skelecog)
-        if skelecog:
-            name = 'Skelecog'
-        return 'Summoning %s.'%(name)
-    elif command == 'end':
-        if simbase.air.suitInvasionManager.getInvading():
-            simbase.air.suitInvasionManager.cleanupInvasion()
-            simbase.air.suitInvasionManager.cleanupTasks()
-            simbase.air.suitInvasionManager.startInvading()
-            return 'Ended invasion.'
-        else:
-            return 'There is no invasion to end.'
-    else:
-        return "Unknown command '%s'."%(command)

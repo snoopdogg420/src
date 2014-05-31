@@ -53,6 +53,7 @@ class TutorialManagerAI(DistributedObjectAI):
         av.b_setQuests([[110, 1, 1000, 100, 0]])
         av.b_setQuestHistory([101])
         av.b_setRewardHistory(1, [])
+        av.b_setTutorialAck(1)
 
     def enterTutorial(self, avId, branchZone, streetZone, shopZone, hqZone):
         self.currentAllocatedZones[avId] = (streetZone, shopZone, hqZone)

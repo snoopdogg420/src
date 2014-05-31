@@ -3317,23 +3317,26 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.notify.warning('cogdoTakeOver {0}, {1}'.format(difficulty, buildingHeight))
         return ['success', difficulty, building.doId]
 
-    def doCogInvasion(self, suitIndex):
-        # TODO: When a proper invMgr is written, switch back to using
-        #       startInvasion()
+    def doCogInvasion(self, cogDept, cogType, isSkelecog, isV2, isWaiter):
         invMgr = self.air.suitInvasionManager
+        returnCode = ''
         if invMgr.getInvading():
-            returnCode = 'busy'
+            returnCode = 'There is already an invasion!'
         else:
-            if suitIndex >= len(SuitDNA.suitHeadTypes):
-                self.notify.warning('Bad suit index: %s' % suitIndex)
-                return ['badIndex', suitIndex, 0]
-            cogType = SuitDNA.suitHeadTypes[suitIndex]
-            numCogs = 1000
-            if invMgr.summonInvasion(cogType, False):
-                returnCode = 'success'
+            if cogDept >= 0 and cogDept < len(SuitDNA.suitDepts):
+                department = SuitDNA.suitDepts[cogDept]
+                suitsInDept = SuitDNA.getSuitsInDept(cogDept)
+                if cogType >= 0 and cogType < len(suitsInDept):
+                    cogName = suitsInDept[cogType]
+                else:
+                    cogName = 'any'
             else:
-                returnCode = 'fail'
-        return [returnCode, suitIndex, 0]
+                department = 'any'
+                cogName = 'any'
+
+            returnCode = invMgr.newInvasion(cogName, department, isSkelecog,
+                                            isV2, isWaiter)
+        return returnCode
 
     def b_setCogSummonsEarned(self, cogSummonsEarned):
         self.d_setCogSummonsEarned(cogSummonsEarned)
@@ -5291,12 +5294,12 @@ def track(command, track, value=None):
         return 'Set the experience of the {0} track to: {1}!'.format(track, value)
     return 'Invalid command.'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
-def suit(command, suitIndex):
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int, int, int, int])
+def suit(command, suitIndex, cogType=0, isSkelecog=0, isV2=0, isWaiter=0):
     invoker = spellbook.getInvoker()
     command = command.lower()
     if command == 'spawn':
-        returnCode = invoker.doSummonSingleCog(suitIndex)
+        returnCode = invoker.doSummonSingleCog(int(suitIndex))
         if returnCode[0] == 'success':
             return 'Successfully spawned suit with index {0}!'.format(suitIndex)
         return "Couldn't spawn suit with index {0}.".format(suitIndex)
@@ -5311,10 +5314,13 @@ def suit(command, suitIndex):
             return 'Successfully spawned Cogdo with difficulty {0}!'.format(suitIndex)
         return "Couldn't spawn Cogdo with difficulty {0}.".format(suitIndex)
     elif command == 'invasion':
-        returnCode = invoker.doCogInvasion(suitIndex)
-        if returnCode[0] == 'success':
-            return 'Successfully summoned invasion with index {0}!'.format(suitIndex)
-        return "Couldn't summon invasion with index {0}.".format(suitIndex)
+        returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog, isV2, isWaiter)
+        return returnCode
+    elif command == 'invasionend':
+        returnCode = 'Ending Invasion..'
+        simbase.air.suitInvasionManager.cleanupTasks()
+        simbase.air.suitInvasionManager.cleanupInvasion()
+        return returnCode
     else:
         return 'Invalid command.'
 
