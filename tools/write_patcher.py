@@ -12,6 +12,8 @@ parser.add_argument('--dest-dir', default='C:/xampp/htdocs/download',
                     help='The directory in which to store the patcher.')
 parser.add_argument('--client-agent', default='108.170.49.170',
                     help='The IP address of the Client Agent to connect to.')
+parser.add_argument('--launcher-version', default='1.0.0.0',
+                    help='The current version of the Toontown Infinite launcher.')
 parser.add_argument('includes', nargs='*', default=['GameData.bin'],
                     help='The files to include in the main directory.')
 args = parser.parse_args()
@@ -56,7 +58,11 @@ print 'Writing patcher.xml...'
 # First, add the root:
 patcherRoot = ET.Element('patcher')
 
-# Next, add the Client Agent IP:
+# Next, add the Toontown Infinite launcher version:
+launcherversion = ET.SubElement(patcherRoot, 'launcherversion')
+launcherversion.text = args.launcher_version
+
+# Then add the Client Agent IP:
 clientagent = ET.SubElement(patcherRoot, 'clientagent')
 clientagent.text = args.client_agent
 
