@@ -121,7 +121,7 @@ class DistributedElevator(DistributedObject.DistributedObject):
         del self.closeSfx
         self.isSetup = 0
         self.fillSlotTrack = None
-        if self.offsetNp is None:
+        if not self.offsetNp:
             return
         self.offsetNP.removeNode()
         if hasattr(base.localAvatar, 'elevatorNotifier'):

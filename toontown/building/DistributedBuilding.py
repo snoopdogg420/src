@@ -385,7 +385,7 @@ class DistributedBuilding(DistributedObject.DistributedObject):
         sideBldgNodes = self.getNodePaths()
         nodePath = hidden.find(self.getSbSearchString())
         newNP = self.setupSuitBuilding(nodePath)
-        if self.leftDoor is None:
+        if not self.leftDoor:
             return
         closeDoors(self.leftDoor, self.rightDoor)
         newNP.stash()
