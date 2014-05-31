@@ -380,16 +380,12 @@ class ToontownChatManager(ChatManager.ChatManager):
             self.fsm.request('speedChat')
 
     def __whisperButtonPressed(self, avatarName, avatarId, playerId):
+        print 'Whisper button was pressed'
         messenger.send('wakeup')
-        playerInfo = None
         if playerId:
             playerInfo = base.cr.playerFriendsManager.getFriendInfo(playerId)
-        if playerInfo:
-            if playerInfo.understandableYesNo:
-                self.fsm.request('whisperChatPlayer', [avatarName, playerId])
-                return
         if avatarId:
-            self.fsm.request('whisperChat', [avatarName, avatarId])
+            self.enterWhisperChat(avatarName, avatarId)
         return
 
     def enterNormalChat(self):
@@ -403,16 +399,15 @@ class ToontownChatManager(ChatManager.ChatManager):
         result = ChatManager.ChatManager.enterWhisperChatPlayer(self, avatarName, playerId)
         self.chatInputNormal.setPos(self.whisperPos)
         if result == None:
+            print 'failed!'
             self.notify.warning('something went wrong in enterWhisperChatPlayer, falling back to main menu')
             self.fsm.request('mainMenu')
         return
 
     def enterWhisperChat(self, avatarName, avatarId):
         result = ChatManager.ChatManager.enterWhisperChat(self, avatarName, avatarId)
-        self.chatInputNormal.setPos(self.whisperPos)
-        if result == None:
-            self.notify.warning('something went wrong in enterWhisperChat, falling back to main menu')
-            self.fsm.request('mainMenu')
+        #self.chatInputNormal.setPos(0.238, 0, -0.267)
+        self.fsm.request('mainMenu')
         return
 
     def enterNoSecretChatAtAllAndNoWhitelist(self):
