@@ -56,19 +56,12 @@ class DistributedNPCToonAI(DistributedNPCToonBaseAI):
             if not av:
                 self.notify.warning('chooseQuest: av not present: %s' % avId)
                 return
-            if av.getGameAccess() != ToontownGlobals.AccessFull:
-                simbase.air.writeServerEvent('suspicious', avId, 'NPCToonAI.chooseQuest: non-paid player choosing task beyond velvet rope')
-                self.sendTimeoutMovie(None)
-                if self.FourthGagVelvetRopeBan:
-                    av.ban('fourth gag track velvet rope hacking')
-                return
         for quest in self.pendingQuests:
             if questId == quest[0]:
                 self.pendingAvId = None
                 self.pendingQuests = None
                 self.air.questManager.avatarChoseQuest(avId, self, *quest)
                 return
-
         self.notify.warning('chooseQuest: avatar: %s chose a quest not offered: %s' % (avId, questId))
         self.pendingAvId = None
         self.pendingQuests = None

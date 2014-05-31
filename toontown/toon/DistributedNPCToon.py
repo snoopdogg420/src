@@ -49,31 +49,11 @@ class DistributedNPCToon(DistributedNPCToonBase):
             self.trackChoiceGui = None
         return
 
-    def allowedToTalk(self):
-        if base.cr.isPaid():
-            return True
-        place = base.cr.playGame.getPlace()
-        myHoodId = ZoneUtil.getCanonicalHoodId(place.zoneId)
-        if hasattr(place, 'id'):
-            myHoodId = place.id
-        if myHoodId in (ToontownGlobals.ToontownCentral,
-         ToontownGlobals.MyEstate,
-         ToontownGlobals.GoofySpeedway,
-         ToontownGlobals.Tutorial):
-            return True
-        return False
-
     def handleCollisionSphereEnter(self, collEntry):
-        if self.allowedToTalk():
-            base.cr.playGame.getPlace().fsm.request('quest', [self])
-            self.sendUpdate('avatarEnter', [])
-            self.nametag3d.setDepthTest(0)
-            self.nametag3d.setBin('fixed', 0)
-        else:
-            place = base.cr.playGame.getPlace()
-            if place:
-                place.fsm.request('stopped')
-            self.dialog = TeaserPanel.TeaserPanel(pageName='quests', doneFunc=self.handleOkTeaser)
+        base.cr.playGame.getPlace().fsm.request('quest', [self])
+        self.sendUpdate('avatarEnter', [])
+        self.nametag3d.setDepthTest(0)
+        self.nametag3d.setBin('fixed', 0)
 
     def handleOkTeaser(self):
         self.dialog.destroy()
