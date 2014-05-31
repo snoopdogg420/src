@@ -29,9 +29,7 @@ class DistributedBankerBobNPCAI(DistributedNPCToonBaseAI):
         avId = self.air.getAvatarIdFromSender()
         self.notify.debug('avatar enter ' + str(avId))
         self.busy = avId
-        self.air.questManager.requestInteract(avId, self)
         self.acceptOnce(self.air.getAvatarExitEvent(avId), self.__handleUnexpectedExit, extraArgs=[avId])
-        taskMgr.doMethodLater(20, self.sendTimeoutMovie, self.uniqueName('clearMovie'))
         DistributedNPCToonBaseAI.avatarEnter(self)
 
     def chooseQuest(self, questId):
