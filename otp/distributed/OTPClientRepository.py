@@ -50,29 +50,13 @@ class OTPClientRepository(ClientRepositoryBase):
 
     def __init__(self, serverVersion, launcher = None, playGame = None):
         ClientRepositoryBase.__init__(self)
-
-
-
         self.handler = None
-
         self.launcher = launcher
-
         base.launcher = launcher
-
-
-
         self.__currentAvId = 0
-
-
         self.productName = config.GetString('product-name', 'DisneyOnline-US')
-
-
         self.createAvatarClass = None
-
-
         self.systemMessageSfx = None
-
-
         reg_deployment = ''
         if self.productName == 'DisneyOnline-US':
             if self.launcher:
@@ -1480,7 +1464,7 @@ class OTPClientRepository(ClientRepositoryBase):
             return
         else:
             if hasattr(self, 'skipTutorialRequest') and self.skipTutorialRequest:
-                del self.skipTutorialRequest
+                self.skipTutorialRequest = None
                 self.gameFSM.request('skipTutorialRequest', [hoodId, zoneId, avId])
                 return
             else:
