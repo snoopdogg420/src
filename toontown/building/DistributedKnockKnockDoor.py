@@ -66,22 +66,6 @@ class DistributedKnockKnockDoor(DistributedAnimatedProp.DistributedAnimatedProp)
         joke = KnockKnockJokes[self.propId % len(KnockKnockJokes)]
         place = base.cr.playGame.getPlace()
         doorName = TTLocalizer.DoorNametag
-        if place:
-            zone = place.getZoneId()
-            branch = ZoneUtil.getBranchZone(zone)
-            if branch == ToontownGlobals.SillyStreet:
-                if self.propId in KnockKnockContestJokes[ToontownGlobals.SillyStreet].keys():
-                    joke = KnockKnockContestJokes[ToontownGlobals.SillyStreet][self.propId]
-                    doorName = KnockKnockDoorNames[self.propId]
-            elif branch == ToontownGlobals.LoopyLane:
-                if self.propId in KnockKnockContestJokes[ToontownGlobals.LoopyLane].keys():
-                    joke = KnockKnockContestJokes[ToontownGlobals.LoopyLane][self.propId]
-            elif branch == ToontownGlobals.PunchlinePlace:
-                if self.propId == 1:
-                    joke = KnockKnockContestJokes[ToontownGlobals.PunchlinePlace]
-            elif branch == ToontownGlobals.PolarPlace:
-                if self.propId in KnockKnockContestJokes[ToontownGlobals.PolarPlace].keys():
-                    joke = KnockKnockContestJokes[ToontownGlobals.PolarPlace][self.propId]
         self.nametag = None
         self.nametagNP = None
         doorNP = render.find('**/KnockKnockDoorSphere_' + str(self.propId) + ';+s')
