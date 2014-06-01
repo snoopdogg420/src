@@ -12,6 +12,8 @@ parser.add_argument('--dest-dir', default='C:/xampp/htdocs/download',
                     help='The directory in which to store the patcher.')
 parser.add_argument('--client-agent', default='108.170.49.170',
                     help='The IP address of the Client Agent to connect to.')
+parser.add_argument('--account-server', default='toontowninfinite.com',
+                    help='The address of the Toontown Infinite account server.')
 parser.add_argument('--launcher-version', default='1.0.0.0',
                     help='The current version of the Toontown Infinite launcher.')
 parser.add_argument('includes', nargs='*', default=['GameData.bin'],
@@ -61,6 +63,10 @@ patcherRoot = ET.Element('patcher')
 # Next, add the Toontown Infinite launcher version:
 launcherversion = ET.SubElement(patcherRoot, 'launcherversion')
 launcherversion.text = args.launcher_version
+
+# Then add the account server address:
+accountserver = ET.SubElement(patcherRoot, 'accountserver')
+accountserver.text = args.account_server
 
 # Then add the Client Agent IP:
 clientagent = ET.SubElement(patcherRoot, 'clientagent')
