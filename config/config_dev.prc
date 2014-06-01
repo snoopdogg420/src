@@ -27,7 +27,15 @@ server-port 7198
 server-version tti-retro-dev
 server-timezone US/Eastern
 
+# Various attempts at lag fixing.
+hardware-animated-vertices #t
+preload-avatars #t
+sync-video #f
+smooth-lag 0.4
 ai-sleep 0.01
+
+# Coverage
+want-pstats 0
 
 eventlog-host 127.0.0.1
 

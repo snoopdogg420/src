@@ -162,83 +162,89 @@ Phase6AnimList = (('headdown-putt', 'headdown-putt'),
 Phase9AnimList = (('push', 'push'),)
 Phase10AnimList = (('leverReach', 'leverReach'), ('leverPull', 'leverPull'), ('leverNeutral', 'leverNeutral'))
 Phase12AnimList = ()
-if not base.config.GetBool('want-new-anims', 1):
-    LegDict = {'s': '/models/char/dogSS_Shorts-legs-',
-     'm': '/models/char/dogMM_Shorts-legs-',
-     'l': '/models/char/dogLL_Shorts-legs-'}
-    TorsoDict = {'s': '/models/char/dogSS_Naked-torso-',
-     'm': '/models/char/dogMM_Naked-torso-',
-     'l': '/models/char/dogLL_Naked-torso-',
-     'ss': '/models/char/dogSS_Shorts-torso-',
-     'ms': '/models/char/dogMM_Shorts-torso-',
-     'ls': '/models/char/dogLL_Shorts-torso-',
-     'sd': '/models/char/dogSS_Skirt-torso-',
-     'md': '/models/char/dogMM_Skirt-torso-',
-     'ld': '/models/char/dogLL_Skirt-torso-'}
-else:
-    LegDict = {'s': '/models/char/tt_a_chr_dgs_shorts_legs_',
-     'm': '/models/char/tt_a_chr_dgm_shorts_legs_',
-     'l': '/models/char/tt_a_chr_dgl_shorts_legs_'}
-    TorsoDict = {'s': '/models/char/dogSS_Naked-torso-',
-     'm': '/models/char/dogMM_Naked-torso-',
-     'l': '/models/char/dogLL_Naked-torso-',
-     'ss': '/models/char/tt_a_chr_dgs_shorts_torso_',
-     'ms': '/models/char/tt_a_chr_dgm_shorts_torso_',
-     'ls': '/models/char/tt_a_chr_dgl_shorts_torso_',
-     'sd': '/models/char/tt_a_chr_dgs_skirt_torso_',
-     'md': '/models/char/tt_a_chr_dgm_skirt_torso_',
-     'ld': '/models/char/tt_a_chr_dgl_skirt_torso_'}
+LegDict = {'s': '/models/char/tt_a_chr_dgs_shorts_legs_',
+           'm': '/models/char/tt_a_chr_dgm_shorts_legs_',
+           'l': '/models/char/tt_a_chr_dgl_shorts_legs_'}
+TorsoDict = {
+    'ss': '/models/char/tt_a_chr_dgs_shorts_torso_',
+    'ms': '/models/char/tt_a_chr_dgm_shorts_torso_',
+    'ls': '/models/char/tt_a_chr_dgl_shorts_torso_',
+    'sd': '/models/char/tt_a_chr_dgs_skirt_torso_',
+    'md': '/models/char/tt_a_chr_dgm_skirt_torso_',
+    'ld': '/models/char/tt_a_chr_dgl_skirt_torso_'}
+#list of models for suits to preload.
+suitList = ['phase_3.5/models/char/suitA-mod',
+            'phase_3.5/models/char/suitB-mod',
+            'phase_3.5/models/char/suitC-mod',
+            'phase_4/models/char/suitA-heads',
+            'phase_4/models/char/suitB-heads',
+            'phase_3.5/models/char/suitC-heads',
+            'phase_4/models/char/suitA-head-textures',
+            'phase_4/models/char/suitB-head-textures',
+            'phase_3.5/models/char/suitC-head-textures',
+            'phase_4/models/char/suitA-walk',
+            'phase_4/models/char/suitB-walk',
+            'phase_3.5/models/char/suitC-walk']
 
 def loadModels():
     global Preloaded
     preloadAvatars = base.config.GetBool('preload-avatars', 0)
     if preloadAvatars:
+        if not Preloaded:
+            print 'Preloading avatars...'
+            def loadTex(path):
+                tex = loader.loadTexture(path)
+                tex.setMinfilter(Texture.FTLinearMipmapLinear)
+                tex.setMagfilter(Texture.FTLinear)
+                Preloaded.append(tex)
 
-        def loadTex(path):
-            tex = loader.loadTexture(path)
-            tex.setMinfilter(Texture.FTLinearMipmapLinear)
-            tex.setMagfilter(Texture.FTLinear)
-            Preloaded.append(tex)
+            for shirt in ToonDNA.Shirts:
+                loadTex(shirt)
 
-        for shirt in ToonDNA.Shirts:
-            loadTex(shirt)
+            for sleeve in ToonDNA.Sleeves:
+                loadTex(sleeve)
 
-        for sleeve in ToonDNA.Sleeves:
-            loadTex(sleeve)
+            for short in ToonDNA.BoyShorts:
+                loadTex(short)
 
-        for short in ToonDNA.BoyShorts:
-            loadTex(short)
+            for bottom in ToonDNA.GirlBottoms:
+                loadTex(bottom[0])
 
-        for bottom in ToonDNA.GirlBottoms:
-            loadTex(bottom[0])
-
-        for key in LegDict.keys():
-            fileRoot = LegDict[key]
-            model = loader.loadModelNode('phase_3' + fileRoot + '1000')
-            Preloaded.append(model)
-            model = loader.loadModelNode('phase_3' + fileRoot + '500')
-            Preloaded.append(model)
-            model = loader.loadModelNode('phase_3' + fileRoot + '250')
-            Preloaded.append(model)
-
-        for key in TorsoDict.keys():
-            fileRoot = TorsoDict[key]
-            model = loader.loadModelNode('phase_3' + fileRoot + '1000')
-            Preloaded.append(model)
-            if len(key) > 1:
+            for key in LegDict.keys():
+                fileRoot = LegDict[key]
+                model = loader.loadModelNode('phase_3' + fileRoot + '1000')
+                Preloaded.append(model)
                 model = loader.loadModelNode('phase_3' + fileRoot + '500')
                 Preloaded.append(model)
                 model = loader.loadModelNode('phase_3' + fileRoot + '250')
                 Preloaded.append(model)
 
-        for key in HeadDict.keys():
-            fileRoot = HeadDict[key]
-            model = loader.loadModelNode('phase_3' + fileRoot + '1000')
-            Preloaded.append(model)
-            model = loader.loadModelNode('phase_3' + fileRoot + '500')
-            Preloaded.append(model)
-            model = loader.loadModelNode('phase_3' + fileRoot + '250')
-            Preloaded.append(model)
+            for key in TorsoDict.keys():
+                fileRoot = TorsoDict[key]
+                model = loader.loadModelNode('phase_3' + fileRoot + '1000')
+                Preloaded.append(model)
+                if len(key) > 1:
+                    model = loader.loadModelNode('phase_3' + fileRoot + '500')
+                    Preloaded.append(model)
+                    model = loader.loadModelNode('phase_3' + fileRoot + '250')
+                    Preloaded.append(model)
+
+            for key in HeadDict.keys():
+                fileRoot = HeadDict[key]
+                model = loader.loadModelNode('phase_3' + fileRoot + '1000')
+                Preloaded.append(model)
+                model = loader.loadModelNode('phase_3' + fileRoot + '500')
+                Preloaded.append(model)
+                model = loader.loadModelNode('phase_3' + fileRoot + '250')
+                Preloaded.append(model)
+
+            for modelToLoad in suitList:
+                model = loader.loadModelNode(modelToLoad)
+                Preloaded.append(model)
+
+            print 'Done preloading avatars.'
+        else:
+            print 'Already preloaded avatars..'
 
 
 def loadBasicAnims():

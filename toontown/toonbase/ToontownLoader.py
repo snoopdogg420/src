@@ -70,6 +70,7 @@ class ToontownLoader(Loader.Loader):
 
     def loadModel(self, *args, **kw):
         ret = Loader.Loader.loadModel(self, *args, **kw)
+        ret.prepareScene(base.win.getGsg())
         self.tick()
         return ret
 
