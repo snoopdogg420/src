@@ -2,8 +2,8 @@
 
 set /P ttiUsername="Username: "
 set /P ttiPassword="Password: "
-set /P TTI_GAMESERVER="Client Agent IP (DEFAULT: 108.170.49.170): " || ^
-set TTI_GAMESERVER=108.170.49.170
+set /P TTI_GAMESERVER="Client Agent IP (DEFAULT: 192.99.21.164): " || ^
+set TTI_GAMESERVER=192.99.21.164
 
 rem Read the contents of PPYTHON_PATH into %PPYTHON_PATH%:
 set /P PPYTHON_PATH=<PPYTHON_PATH
