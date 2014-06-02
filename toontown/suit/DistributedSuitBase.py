@@ -188,7 +188,10 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
         groundF = 28
         dur = self.getDuration('landing')
         fr = self.getFrameRate('landing')
-        animTimeInAir = groundF / fr
+        if fr:
+            animTimeInAir = groundF / fr
+        else:
+            animTimeInAir = groundF
         impactLength = dur - animTimeInAir
         timeTillLanding = SuitTimings.fromSky - impactLength
         waitTime = timeTillLanding - animTimeInAir
