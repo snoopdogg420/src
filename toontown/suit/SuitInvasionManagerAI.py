@@ -41,7 +41,7 @@ class SuitInvasionManagerAI:
                 name, dept, skelecog, v2, waiter)
         if name == 'any' and dept == 'any':
             if not skelecog and not v2 and not waiter:
-                return 'Pointless invasion.'
+                return False
         self.currentInvadingSuit = name
         self.currentInvadingDept = dept
         self.invasionStatus = True
@@ -53,7 +53,7 @@ class SuitInvasionManagerAI:
         self.alertPlayersOfInvasion()
         self.invasionStarted()
 
-        return 'Started invasion.'
+        return True
 
     def alertPlayersOfInvasion(self):
         currentInvadingSuit = self.currentInvadingSuit

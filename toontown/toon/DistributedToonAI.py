@@ -3252,7 +3252,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         elif type == 'building':
             returnCode = self.doBuildingTakeover(suitIndex)
         elif type == 'invasion':
-            returnCode = self.doCogInvasion(suitIndex)
+            cogDept = suitIndex / len(SuitDNA.suitDepts)
+            cogType = suitIndex % SuitDNA.suitsPerDept
+            returnCode = self.doCogInvasion(cogDept, cogType, 0, 0, 0)
         if returnCode:
             if returnCode[0] == 'success':
                 self.air.writeServerEvent('cogSummoned', self.doId, '%s|%s|%s' % (type, suitIndex, self.zoneId))
@@ -3320,23 +3322,27 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def doCogInvasion(self, cogDept, cogType, isSkelecog, isV2, isWaiter):
         invMgr = self.air.suitInvasionManager
         returnCode = ''
+        suitIndex = 0
         if invMgr.getInvading():
-            returnCode = 'There is already an invasion!'
+            returnCode = 'busy'
         else:
             if cogDept >= 0 and cogDept < len(SuitDNA.suitDepts):
                 department = SuitDNA.suitDepts[cogDept]
                 suitsInDept = SuitDNA.getSuitsInDept(cogDept)
                 if cogType >= 0 and cogType < len(suitsInDept):
                     cogName = suitsInDept[cogType]
+                    suitIndex = SuitDNA.suitHeadTypes.index(cogName)
                 else:
                     cogName = 'any'
             else:
                 department = 'any'
                 cogName = 'any'
 
-            returnCode = invMgr.newInvasion(cogName, department, isSkelecog,
-                                            isV2, isWaiter)
-        return returnCode
+            if invMgr.newInvasion(cogName, department, isSkelecog, isV2, isWaiter):
+                returnCode = 'success'
+            else:
+                returnCode = 'fail'
+        return [returnCode, suitIndex, 0]
 
     def b_setCogSummonsEarned(self, cogSummonsEarned):
         self.d_setCogSummonsEarned(cogSummonsEarned)
