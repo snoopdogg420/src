@@ -139,9 +139,9 @@ class DistributedBuildingMgrAI:
                 building.updateSavedBy(backup.get('savedBy'))
                 building.becameSuitTime = backup.get('becameSuitTime', time.mktime(time.gmtime()))
                 if (state == 'suit') and simbase.air.wantCogbuildings:
-                    building.setState('suit')
+                    building.fsm.forceTransition('suit')
                 elif (state == 'cogdo') and simbase.air.wantCogdominiums:
-                    building.setState('cogdo')
+                    building.fsm.forceTransition('cogdo')
         self.__buildings[blockNumber] = building
         return building
 
