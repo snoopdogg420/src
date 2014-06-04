@@ -128,7 +128,6 @@ class DistributedBuildingMgrAI:
         building = DistributedBuildingAI.DistributedBuildingAI(
             self.air, blockNumber, self.branchId, self.trophyMgr)
         building.generateWithRequired(self.branchId)
-        building.setState('toon')
         if backup is not None:
             state = backup.get('state', 'toon')
             if ((state == 'suit') and simbase.air.wantCogbuildings) or (
@@ -139,9 +138,15 @@ class DistributedBuildingMgrAI:
                 building.updateSavedBy(backup.get('savedBy'))
                 building.becameSuitTime = backup.get('becameSuitTime', time.mktime(time.gmtime()))
                 if (state == 'suit') and simbase.air.wantCogbuildings:
-                    building.fsm.forceTransition('suit')
+                    building.setState('suit')
                 elif (state == 'cogdo') and simbase.air.wantCogdominiums:
-                    building.fsm.forceTransition('cogdo')
+                    building.setState('cogdo')
+                else:
+                    building.setState('toon')
+            else:
+                building.setState('toon')
+        else:
+            building.setState('toon')
         self.__buildings[blockNumber] = building
         return building
 
