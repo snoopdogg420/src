@@ -1,6 +1,11 @@
 from ElevatorConstants import *
 from toontown.toonbase import ToontownGlobals
 
+
+try:
+    config = base.config
+except:
+    config = simbase.config
 SuitBuildingInfo = (((1, 1),
   (1, 3),
   (4, 4),
@@ -160,27 +165,44 @@ CLEAR_OUT_TOON_BLDG_TIME = 4
 TO_SUIT_BLDG_TIME = 8
 
 buildingMinMax = {
-ToontownGlobals.SillyStreet: [0, 3],
-ToontownGlobals.LoopyLane: [0, 3],
-ToontownGlobals.PunchlinePlace: [0, 3],
-ToontownGlobals.BarnacleBoulevard: [1, 5],
-ToontownGlobals.SeaweedStreet: [1, 5],
-ToontownGlobals.LighthouseLane: [1, 5],
-ToontownGlobals.ElmStreet: [2, 5],
-ToontownGlobals.MapleStreet: [2, 5],
-ToontownGlobals.OakStreet: [2, 5],
-ToontownGlobals.AltoAvenue: [3, 6],
-ToontownGlobals.BaritoneBoulevard: [3, 6],
-ToontownGlobals.TenorTerrace: [3, 6],
-ToontownGlobals.WalrusWay: [4, 7],
-ToontownGlobals.SleetStreet: [4, 7],
-ToontownGlobals.PolarPlace: [4, 7],
-ToontownGlobals.LullabyLane: [5, 8],
-ToontownGlobals.PajamaPlace: [5, 8],
-11000: [0, 0],
-11200: [0, 0],
-12000: [0, 0],
-13000: [0, 0]
+    ToontownGlobals.SillyStreet: (config.GetInt('silly-street-building-min', 0),
+                                  config.GetInt('silly-street-building-max', 3)),
+    ToontownGlobals.LoopyLane: (config.GetInt('loopy-lane-building-min', 0),
+                                config.GetInt('loopy-lane-building-max', 3)),
+    ToontownGlobals.PunchlinePlace: (config.GetInt('punchline-place-building-min', 0),
+                                     config.GetInt('punchline-place-building-max', 3)),
+    ToontownGlobals.BarnacleBoulevard: (config.GetInt('barnacle-boulevard-building-min', 1),
+                                        config.GetInt('barnacle-boulevard-building-max', 5)),
+    ToontownGlobals.SeaweedStreet: (config.GetInt('seaweed-street-building-min', 1),
+                                    config.GetInt('seaweed-street-building-max', 5)),
+    ToontownGlobals.LighthouseLane: (config.GetInt('silly-street-building-min', 1),
+                                     config.GetInt('silly-street-building-max', 5)),
+    ToontownGlobals.ElmStreet: (config.GetInt('silly-street-building-min', 2),
+                                config.GetInt('silly-street-building-max', 6)),
+    ToontownGlobals.MapleStreet: (config.GetInt('silly-street-building-min', 2),
+                                  config.GetInt('silly-street-building-max', 6)),
+    ToontownGlobals.OakStreet: (config.GetInt('silly-street-building-min', 2),
+                                config.GetInt('silly-street-building-max', 6)),
+    ToontownGlobals.AltoAvenue: (config.GetInt('silly-street-building-min', 3),
+                                 config.GetInt('silly-street-building-max', 7)),
+    ToontownGlobals.BaritoneBoulevard: (config.GetInt('silly-street-building-min', 3),
+                                        config.GetInt('silly-street-building-max', 7)),
+    ToontownGlobals.TenorTerrace: (config.GetInt('silly-street-building-min', 3),
+                                   config.GetInt('silly-street-building-max', 7)),
+    ToontownGlobals.WalrusWay: (config.GetInt('silly-street-building-min', 5),
+                                config.GetInt('silly-street-building-max', 10)),
+    ToontownGlobals.SleetStreet: (config.GetInt('silly-street-building-min', 5),
+                                  config.GetInt('silly-street-building-max', 10)),
+    ToontownGlobals.PolarPlace: (config.GetInt('silly-street-building-min', 5),
+                                 config.GetInt('silly-street-building-max', 10)),
+    ToontownGlobals.LullabyLane: (config.GetInt('silly-street-building-min', 6),
+                                  config.GetInt('silly-street-building-max', 12)),
+    ToontownGlobals.PajamaPlace: (config.GetInt('silly-street-building-min', 6),
+                                  config.GetInt('silly-street-building-max', 12)),
+    ToontownGlobals.SellbotHQ: (0, 0),
+    ToontownGlobals.SellbotFactoryExt: (0, 0),
+    ToontownGlobals.CashbotHQ: (0, 0),
+    ToontownGlobals.LawbotHQ: (0, 0)
 }
 
 blockBlackList = {
