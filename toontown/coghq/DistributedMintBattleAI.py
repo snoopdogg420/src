@@ -31,7 +31,7 @@ class DistributedMintBattleAI(DistributedLevelBattleAI.DistributedLevelBattleAI)
         amount = ToontownGlobals.MintCogBuckRewards[self.level.mintId]
         index = ToontownGlobals.cogHQZoneId2deptIndex(self.level.mintId)
         extraMerits[index] = amount
-        '''for toon in toons:
+        for toon in toons:
             recovered, notRecovered = self.air.questManager.recoverItems(toon, self.suitsKilled, self.getTaskZoneId())
             self.toonItems[toon.doId][0].extend(recovered)
             self.toonItems[toon.doId][1].extend(notRecovered)
@@ -39,7 +39,7 @@ class DistributedMintBattleAI(DistributedLevelBattleAI.DistributedLevelBattleAI)
             if toon.doId in self.helpfulToons:
                 self.toonMerits[toon.doId] = addListsByValue(self.toonMerits[toon.doId], meritArray)
             else:
-                self.notify.debug('toon %d not helpful list, skipping merits' % toon.doId)'''
+                self.notify.debug('toon %d not helpful list, skipping merits' % toon.doId)
 
     def enterMintReward(self):
         self.joinableFsm.request('Unjoinable')

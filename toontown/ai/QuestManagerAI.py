@@ -368,6 +368,7 @@ class QuestManagerAI:
 
         toon.b_setQuests(questList)
 
+
     def toonDefeatedFactory(self, toon, factoryId, activeVictors):
         print 'QuestManager: %s (AvId: %s) defeated a factory.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
@@ -379,6 +380,24 @@ class QuestManagerAI:
 
             if isinstance(questClass, Quests.FactoryQuest):
                 if questClass.doesFactoryCount(toon, factoryId, activeVictors):
+                    questDesc[4] += 1
+
+            questList.append(questDesc)
+
+        toon.b_setQuests(questList)
+
+
+    def toonDefeatedMint(self, toon, mintId, activeVictors):
+        print 'QuestManager: %s (AvId: %s) defeated a mint.'%(toon.getName(), toon.doId)
+        flattenedQuests = toon.getQuests()
+        questList = [] #unflattened
+
+        for i in xrange(0, len(flattenedQuests), 5):
+            questDesc = flattenedQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[0])
+
+            if isinstance(questClass, Quests.MintQuest):
+                if questClass.doesMintCount(toon, mintId, activeVictors):
                     questDesc[4] += 1
 
             questList.append(questDesc)
