@@ -1,4 +1,6 @@
 from ElevatorConstants import *
+from toontown.toonbase import ToontownGlobals
+
 SuitBuildingInfo = (((1, 1),
   (1, 3),
   (4, 4),
@@ -156,3 +158,47 @@ TO_TOON_BLDG_TIME = 8
 VICTORY_SEQUENCE_TIME = VICTORY_RUN_TIME + TO_TOON_BLDG_TIME
 CLEAR_OUT_TOON_BLDG_TIME = 4
 TO_SUIT_BLDG_TIME = 8
+
+buildingMinMax = {
+ToontownGlobals.SillyStreet: [0, 3],
+ToontownGlobals.LoopyLane: [0, 3],
+ToontownGlobals.PunchlinePlace: [0, 3],
+ToontownGlobals.BarnacleBoulevard: [1, 5],
+ToontownGlobals.SeaweedStreet: [1, 5],
+ToontownGlobals.LighthouseLane: [1, 5],
+ToontownGlobals.ElmStreet: [2, 5],
+ToontownGlobals.MapleStreet: [2, 5],
+ToontownGlobals.OakStreet: [2, 5],
+ToontownGlobals.AltoAvenue: [3, 6],
+ToontownGlobals.BaritoneBoulevard: [3, 6],
+ToontownGlobals.TenorTerrace: [3, 6],
+ToontownGlobals.WalrusWay: [4, 7],
+ToontownGlobals.SleetStreet: [4, 7],
+ToontownGlobals.PolarPlace: [4, 7],
+ToontownGlobals.LullabyLane: [5, 8],
+ToontownGlobals.PajamaPlace: [5, 8],
+11000: [0, 0],
+11200: [0, 0],
+12000: [0, 0],
+13000: [0, 0]
+}
+
+blockBlackList = {
+ToontownGlobals.SillyStreet: [],
+ToontownGlobals.LoopyLane: [],
+ToontownGlobals.PunchlinePlace: [],
+ToontownGlobals.BarnacleBoulevard: [],
+ToontownGlobals.SeaweedStreet: [],
+ToontownGlobals.LighthouseLane: [],
+ToontownGlobals.ElmStreet: [],
+ToontownGlobals.MapleStreet: [],
+ToontownGlobals.OakStreet: [],
+ToontownGlobals.AltoAvenue: [],
+ToontownGlobals.BaritoneBoulevard: [],
+ToontownGlobals.TenorTerrace: [],
+ToontownGlobals.WalrusWay: [],
+ToontownGlobals.SleetStreet: [],
+ToontownGlobals.PolarPlace: [],
+ToontownGlobals.LullabyLane: [],
+ToontownGlobals.PajamaPlace: []
+}
