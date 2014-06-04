@@ -337,7 +337,13 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if not self.buildingMgr:
             return False
         numSuitBuildings = len(self.buildingMgr.getSuitBlocks())
-        numNeeded = self.targetNumSuitBuildings - numSuitBuildings
+        if int(random.random() * 100) < self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_BWEIGHT]:
+            bmax = SuitBuildingGlobals.buildingMinMax[self.zoneId][1]
+            if ZoneUtil.isWelcomeValley(self.zoneId):
+                bmax = 0
+            numNeeded = bmax - numSuitBuildings
+        else:
+            numNeeded = self.targetNumSuitBuildings - numSuitBuildings
         return numNeeded
 
     def newSuitShouldAttemptTakeover(self):
@@ -517,16 +523,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                             if age > oldestAge:
                                 oldest = building
                                 oldestAge = age
-
-
-                    building.elevator.fsm.getCurrentState().getName() == 'waitEmpty'
                 if oldestAge > timeout:
                     self.notify.info('Street %d has %d buildings; reclaiming %0.2f-hour-old building.' % (self.zoneId, len(suitBuildings), oldestAge / 3600.0))
-                    oldest.b_setVictorList([
-                        0,
-                        0,
-                        0,
-                        0])
+                    oldest.b_setVictorList([0, 0, 0, 0])
                     oldest.updateSavedBy(None)
                     oldest.toonTakeOver()
         self.__waitForNextUpkeep()
@@ -571,6 +570,32 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if (self.targetNumSuitBuildings > bmin) and (current <= self.targetNumSuitBuildings):
             self.targetNumSuitBuildings -= 1
             self.assignSuitBuildings(1)
+
+    def createInitialSuitBuildings(self):
+        if self.buildingMgr is None:
+            return
+
+        # If we aren't at our minimum number of buildings, let's spawn some!
+        suitBlockCount = len(self.buildingMgr.getSuitBlocks())
+        if suitBlockCount < self.targetNumSuitBuildings:
+            for _ in xrange(self.targetNumSuitBuildings - suitBlockCount):
+                blockNumber = random.choice(self.buildingMgr.getToonBlocks())
+                building = self.buildingMgr.getBuilding(blockNumber)
+                if building is None:
+                    continue
+                suitName = self.air.suitInvasionManager.getInvadingCog()[0]
+                if suitName is None:
+                    suitName = self.defaultSuitName
+                suitType = None
+                suitTrack = None
+                if suitName is not None:
+                    suitType = SuitDNA.getSuitType(suitName)
+                    suitTrack = SuitDNA.getSuitDept(suitName)
+                (suitLevel, suitType, suitTrack) = self.pickLevelTypeAndTrack(None, suitType, suitTrack)
+                building.suitTakeOver(suitTrack, suitLevel, None)
+
+        # Save the building manager's state:
+        self.buildingMgr.save()
 
     def assignInitialSuitBuildings(self):
         totalBuildings = 0
@@ -777,6 +802,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
 
 
     def initTasks(self):
+        if self.air.wantCogbuildings:
+            self.createInitialSuitBuildings()
         self.__waitForNextUpkeep()
         self.__waitForNextAdjust()
 
