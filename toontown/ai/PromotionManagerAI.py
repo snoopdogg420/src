@@ -20,6 +20,6 @@ class PromotionManagerAI:
             if completedSuits[deptIndex]:
                 cogMerits[deptIndex] += (suit['level']/2) * multiplier
         if completedSuits[deptIndex]:
-            cogMerits += extraMerits
+            cogMerits[deptIndex] += extraMerits
         toon.b_setCogMerits(cogMerits)
         return cogMerits
