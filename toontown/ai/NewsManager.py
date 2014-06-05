@@ -100,6 +100,7 @@ class NewsManager(DistributedObject.DistributedObject):
             msg1 = TTLocalizer.SkelecogInvasionBegin1
             msg2 = TTLocalizer.SkelecogInvasionBegin2
             msg3 = TTLocalizer.SkelecogInvasionBegin3
+            self.invading = 1
             messages = 3
         elif msgType == ToontownGlobals.SkelecogInvasionEnd:
             msg1 = TTLocalizer.SkelecogInvasionEnd1
@@ -107,6 +108,7 @@ class NewsManager(DistributedObject.DistributedObject):
         elif msgType == ToontownGlobals.WaiterInvasionBegin:
             msg1 = TTLocalizer.WaiterInvasionBegin1
             msg2 = TTLocalizer.WaiterInvasionBegin2
+            self.invading = 1
         elif msgType == ToontownGlobals.WaiterInvasionEnd:
             msg1 = TTLocalizer.WaiterInvasionEnd1
             msg2 = TTLocalizer.WaiterInvasionEnd2
@@ -114,6 +116,7 @@ class NewsManager(DistributedObject.DistributedObject):
             msg1 = TTLocalizer.V2InvasionBegin1
             msg2 = TTLocalizer.V2InvasionBegin2
             msg3 = TTLocalizer.V2InvasionBegin3
+            self.invading = 1
             messages = 3
         elif msgType == ToontownGlobals.V2InvasionEnd:
             msg1 = TTLocalizer.V2InvasionEnd1
@@ -123,11 +126,13 @@ class NewsManager(DistributedObject.DistributedObject):
                 deptNameP = SuitDNA.getDeptFullnameP(cogType)
             msg1 = TTLocalizer.SuitInvasionBegin1
             msg2 = TTLocalizer.DepartmentInvasionBegin1 % deptNameP
+            self.invading = 1
         elif msgType == ToontownGlobals.DepartmentInvasionEnd:
             if cogType in SuitDNA.suitDepts:
                 deptName = SuitDNA.getDeptFullname(cogType)
             msg1 = TTLocalizer.DepartmentInvasionEnd1 % deptName
             msg2 = TTLocalizer.SuitInvasionEnd2
+            self.invading = 1
         else:
             self.notify.warning('setInvasionStatus: invalid msgType: %s' % msgType)
             return
