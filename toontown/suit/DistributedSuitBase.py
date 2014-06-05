@@ -359,6 +359,11 @@ class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBa
         if flag:
             Suit.Suit.makeSkeleton(self)
 
+    def setWaiter(self, flag):
+        SuitBase.SuitBase.setWaiter(self, flag)
+        if flag:
+            Suit.Suit.makeWaiter(self)
+
     def showHpText(self, number, bonus = 0, scale = 1, attackTrack = -1):
         if self.HpTextEnabled and not self.ghostMode:
             if number != 0:
