@@ -110,9 +110,13 @@ class QuestManagerAI:
 
         fromNpc = Quests.getQuestFromNpcId(questId)
         toNpc = Quests.getQuestToNpcId(questId)
+        realRewardId = Quests.transformReward(rewardId, toon)
 
-        toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], Quests.getFinalRewardId(questId))
+        toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], realRewardId,
+                        recordHistory = 0)
         npc.assignQuest(avId, questId, rewardId, toNpc)
+
+        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
         toon = self.air.doId2do.get(avId)
@@ -181,7 +185,7 @@ class QuestManagerAI:
         tier = toon.getRewardHistory()[0]
         rewardList = toon.getRewardHistory()[1]
 
-        rewardList.append(rewardId)
+        rewardList.append(Quests.transformReward(rewardId, toon))
         toon.b_setRewardHistory(tier, rewardList)
 
         rewardClass.sendRewardAI(toon)
