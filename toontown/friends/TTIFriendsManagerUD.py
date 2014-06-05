@@ -4,8 +4,8 @@ from direct.task import Task
 from direct.directnotify.DirectNotifyGlobal import directNotify
 import functools
 
-class TTRFriendsManagerUD(DistributedObjectGlobalUD):
-    notify = directNotify.newCategory('TTRFriendsManagerUD')
+class TTIFriendsManagerUD(DistributedObjectGlobalUD):
+    notify = directNotify.newCategory('TTIFriendsManagerUD')
 
     def announceGenerate(self):
         DistributedObjectGlobalUD.announceGenerate(self)
@@ -165,11 +165,11 @@ class TTRFriendsManagerUD(DistributedObjectGlobalUD):
                 return
             inventory = fields['setInventory'][0]
             trackAccess = fields['setTrackAccess'][0]
-            trophies = 0 # fields['setTrophyScore'][0] is not db
+            trophies = 0 #fields['setTrophyScore'][0]
             hp = fields['setHp'][0]
             maxHp = fields['setMaxHp'][0]
             defaultShard = fields['setDefaultShard'][0]
-            lastHood = 2000 if fields['setLastHood'][0] in [10000, 11000, 12000, 13000] else fields['setLastHood'][0]
+            lastHood = fields['setLastHood'][0]
             dnaString =  fields['setDNAString'][0]
             experience = fields['setExperience'][0]
             trackBonusLevel = fields['setTrackBonusLevel'][0]
