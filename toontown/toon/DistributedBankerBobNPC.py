@@ -30,7 +30,6 @@ class DistributedBankerBobNPC(DistributedNPCToonBase):
         self.nametag3d.setBin('fixed', 0)
 
     def finishMovie(self, av, isLocalToon, elapsedTime):
-        self.cleanupMovie()
         av.startLookAround()
         self.startLookAround()
         self.detectAvatars()
@@ -43,10 +42,7 @@ class DistributedBankerBobNPC(DistributedNPCToonBase):
             self.nametag3d.clearDepthTest()
             self.nametag3d.clearBin()
 
-    def endInteraction(self):
-        self.cleanupMovie()
-        self.freeAvatar()
-        self.setPageNumber(0, -1)
+    def exitInteraction(self):
         self.clearChat()
         self.startLookAround()
         self.detectAvatars()
@@ -55,3 +51,6 @@ class DistributedBankerBobNPC(DistributedNPCToonBase):
             base.localAvatar.posCamera(0, 0)
             base.cr.playGame.getPlace().setState('walk')
         self.setChatAbsolute('Don\'t spend them all at once now.', CFSpeech | CFTimeout)
+        
+    def cleanupMovie(self):
+        print 'Cleaning a movie..?'
