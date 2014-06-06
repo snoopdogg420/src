@@ -250,7 +250,7 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
             taskMgr.remove(self.taskName('move'))
             taskMgr.doMethodLater(delay, self.moveToNextLeg, self.taskName('move'))
         else:
-            if self.attemptingTakeover:
+            if simbase.config.GetBool('want-cogbuildings', True):
                 self.startTakeOver()
             self.requestRemoval()
         return Task.done
@@ -347,6 +347,8 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
         if not self.SUIT_BUILDINGS:
             return
         blockNumber = self.buildingDestination
+        if self.sp.buildingMgr is None:
+            return
         if not self.sp.buildingMgr.isSuitBlock(blockNumber):
             if NPCToons.isZoneProtected(self.sp.buildingMgr.getBuilding(blockNumber).getExteriorAndInteriorZoneId()[1]):
                 return
