@@ -66,10 +66,6 @@ class QuestManagerAI:
             elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
                 choices = self.avatarQuestChoice(toon, npc)
                 quest = choices[0]
-                print 'choices: %s' % (choices)
-                print 'questChoice: %s' % (quest)
-                print '0: %s' % (quest[0])
-                print '1: %s' % (quest[1])
                 self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
                 if npc.tutorial:
                     if npc.npcId == 20000:
