@@ -66,23 +66,26 @@ class FactoryExterior(BattlePlace.BattlePlace):
         # Load the CogHQ DNA file:
         dnaStore = DNAStorage()
         dnaFileName = self.genDNAFileName(self.zoneId)
-        loadDNAFileAI(dnaStore, dnaFileName)
 
-        # Collect all of the vis group zone IDs:
-        self.zoneVisDict = {}
-        for i in xrange(dnaStore.getNumDNAVisGroupsAI()):
-            groupFullName = dnaStore.getDNAVisGroupName(i)
-            visGroup = dnaStore.getDNAVisGroupAI(i)
-            visZoneId = int(base.cr.hoodMgr.extractGroupName(groupFullName))
-            visZoneId = ZoneUtil.getTrueZoneId(visZoneId, self.zoneId)
-            visibles = []
-            for i in xrange(visGroup.getNumVisibles()):
-                visibles.append(int(visGroup.visibles[i]))
-            visibles.append(ZoneUtil.getBranchZone(visZoneId))
-            self.zoneVisDict[visZoneId] = visibles
+        if not dnaFileName.endswith('13200.dna'):
 
-        # Next, we want interest in all vis groups due to this being a Cog HQ:
-        base.cr.sendSetZoneMsg(self.zoneId, self.zoneVisDict.values()[0])
+            loadDNAFileAI(dnaStore, dnaFileName)
+
+            # Collect all of the vis group zone IDs:
+            self.zoneVisDict = {}
+            for i in xrange(dnaStore.getNumDNAVisGroupsAI()):
+                groupFullName = dnaStore.getDNAVisGroupName(i)
+                visGroup = dnaStore.getDNAVisGroupAI(i)
+                visZoneId = int(base.cr.hoodMgr.extractGroupName(groupFullName))
+                visZoneId = ZoneUtil.getTrueZoneId(visZoneId, self.zoneId)
+                visibles = []
+                for i in xrange(visGroup.getNumVisibles()):
+                    visibles.append(int(visGroup.visibles[i]))
+                visibles.append(ZoneUtil.getBranchZone(visZoneId))
+                self.zoneVisDict[visZoneId] = visibles
+
+            # Next, we want interest in all vis groups due to this being a Cog HQ:
+            base.cr.sendSetZoneMsg(self.zoneId, self.zoneVisDict.values()[0])
 
         BattlePlace.BattlePlace.enter(self)
         self.fsm.enterInitialState()
