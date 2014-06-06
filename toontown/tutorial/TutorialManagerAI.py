@@ -12,7 +12,6 @@ from toontown.toon import NPCToons
 from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
 from toontown.toonbase import ToontownGlobals
 
-
 class TutorialManagerAI(DistributedObjectAI):
     notify = directNotify.newCategory('TutorialManagerAI')
 
@@ -150,6 +149,8 @@ class TutorialManagerAI(DistributedObjectAI):
         desc = NPCToons.NPCToonDict.get(20001)
         npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
         npc.setTutorial(1)
+        npc.d_setPos(207.4, 18.81, -0.475)
+        npc.d_setHpr(90.0, 0, 0)
 
     def allDone(self):
         avId = self.air.getAvatarIdFromSender()
