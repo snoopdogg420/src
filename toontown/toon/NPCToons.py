@@ -211,14 +211,15 @@ def createLocalNPC(npcId):
     npc.animFSM.request('neutral')
     return npc
 
-#Some buildings dont have npcs so we need to put their zoneIds in a different place
-badBlocks = [2606, 2602, 2708, 2705, 2704, 2701, 2803, 2804, 2809, 2805,
-             5607, 1707, 5609, 3605, 3703]
+# Some buildings don't have NPCs, so we need to store their zone IDs here:
+badBlocks = [
+    2606, 2602, 2708, 2705, 2704, 2701, 2803, 2804, 2809, 2805, 5607, 1707,
+    5609, 3605, 3703
+]
 
 def isZoneProtected(zoneId):
     if zoneId in badBlocks:
         return 1
-    npcs = []
     npcIdList = zone2NpcDict.get(zoneId, [])
     for npcId in npcIdList:
         npcDesc = NPCToonDict.get(npcId)

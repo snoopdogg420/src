@@ -204,23 +204,3 @@ buildingMinMax = {
     ToontownGlobals.CashbotHQ: (0, 0),
     ToontownGlobals.LawbotHQ: (0, 0)
 }
-
-blockBlackList = {
-ToontownGlobals.SillyStreet: [],
-ToontownGlobals.LoopyLane: [],
-ToontownGlobals.PunchlinePlace: [],
-ToontownGlobals.BarnacleBoulevard: [],
-ToontownGlobals.SeaweedStreet: [],
-ToontownGlobals.LighthouseLane: [],
-ToontownGlobals.ElmStreet: [],
-ToontownGlobals.MapleStreet: [],
-ToontownGlobals.OakStreet: [],
-ToontownGlobals.AltoAvenue: [],
-ToontownGlobals.BaritoneBoulevard: [],
-ToontownGlobals.TenorTerrace: [],
-ToontownGlobals.WalrusWay: [],
-ToontownGlobals.SleetStreet: [],
-ToontownGlobals.PolarPlace: [],
-ToontownGlobals.LullabyLane: [],
-ToontownGlobals.PajamaPlace: []
-}
