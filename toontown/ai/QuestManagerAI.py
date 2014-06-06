@@ -175,18 +175,13 @@ class QuestManagerAI:
         rewardClass.sendRewardAI(toon)
 
         #Add it to reward history.
-        finalRewardId = Quests.findFinalRewardId(questId)
-        if not isinstance(finalRewardId, int):
-            finalRewardId = finalRewardId[0]
-        realRewardId = Quests.transformReward(finalRewardId, toon)
+        realRewardId = Quests.transformReward(rewardId, toon)
         tier, rewardList = toon.getRewardHistory()
 
-        if finalRewardId > 1:
-            rewardList.append(finalRewardId)
-            if realRewardId != finalRewardId:
-                rewardList.append(realRewardId)
-        else:
-            rewardList.append(rewardId)
+        rewardList.append(rewardId)
+        if realRewardId != rewardId:
+            rewardList.append(realRewardId)
+
         toon.b_setRewardHistory(tier, rewardList)
 
     def avatarProgressTier(self, toon):
