@@ -6,6 +6,7 @@ import string
 from otp.otpbase import OTPLocalizer
 from otp.otpbase import OTPGlobals
 from otp.uberdog import RejectCode
+from otp.nametag import NametagGlobals
 globalFriendSecret = None
 AccountSecret = 0
 AvatarSecret = 1
@@ -394,7 +395,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
                 self.notify.warning('No FriendManager available.')
                 self.exit()
                 return
-            base.cr.friendManager.up_requestSecret()
+            base.cr.ttrFriendsManager.d_requestSecret()
             self.accept('requestSecretResponse', self.__gotAvatarSecret)
         else:
             if base.cr.needParentPasswordForSecretChat():
@@ -462,7 +463,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
                 secret = secret[3:]
                 self.notify.info('### use TT secret')
                 self.accept('submitSecretResponse', self.__enteredSecret)
-                base.cr.friendManager.up_submitSecret(secret)
+                base.cr.ttrFriendsManager.d_submitSecret(secret)
             else:
                 self.accept(OTPGlobals.PlayerFriendUpdateEvent, self.__useAccountSecret)
                 self.accept(OTPGlobals.PlayerFriendRejectUseSecretEvent, self.__rejectUseAccountSecret)

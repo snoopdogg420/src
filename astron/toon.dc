@@ -3356,6 +3356,13 @@ dclass TTIFriendsManager : DistributedObjectGlobal {
   whisperSCEmoteTo(uint32 toId, uint16 emoteId) clsend;
   setWhisperSCEmoteFrom(uint32 fromId, uint16 emoteId);
 
+  requestSecret() clsend;
+  requestSecretResponse(int8 status, string secret);
+
+  submitSecret(string(0-256) secret) clsend;
+  submitSecretResponse(int8 status, int32 avId);
+
+
   sendTalkWhisper(uint32 toId, string message) clsend;
   receiveTalkWhisper(uint32 fromId, string message);
 

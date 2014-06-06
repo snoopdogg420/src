@@ -128,6 +128,10 @@ want-dev #f
 want-tailor-jellybeans #f
 want-instant-parties #t
 
+# True Friends
+parent-password-set #t
+allow-secret-chat #t
+
 # Temporary...
 cog-thief-ortho 1
 want-old-fireworks #t

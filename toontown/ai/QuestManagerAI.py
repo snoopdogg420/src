@@ -344,6 +344,7 @@ class QuestManagerAI:
             cog = x['type']
             cogsKilled[ToontownGlobals.suitIndex[cog]] += 1
         toon.b_setCogCount(cogsKilled)
+
         toon.b_setQuests(questList)
 
         return (recoveredItems, unrecoveredItems)
