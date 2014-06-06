@@ -48,7 +48,6 @@ class QuestManagerAI:
                 else:
                     npc.completeQuest(avId, questId, rewardId)
                     self.completeQuest(toon, questId)
-                    self.avatarProgressTier(toon)
 
                 if isinstance(npc, DistributedNPCSpecialQuestGiverAI):
                     if npc.tutorial and (npc.npcId == 20002):
@@ -110,12 +109,11 @@ class QuestManagerAI:
 
         fromNpc = Quests.getQuestFromNpcId(questId)
         toNpc = Quests.getQuestToNpcId(questId)
-        realRewardId = Quests.transformReward(rewardId, toon)
+        realRewardId = Quests.findFinalRewardId(rewardId)[0]
 
         toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], realRewardId,
                         recordHistory = 0)
         npc.assignQuest(avId, questId, rewardId, toNpc)
-
         taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
@@ -124,7 +122,7 @@ class QuestManagerAI:
             return
 
         npc.completeQuest(avId, pendingTrackQuest, Quests.getRewardIdFromTrackId(trackId))
-
+        self.completeQuest(toon, pendingTrackQuest)
         toon.removeQuest(pendingTrackQuest)
         toon.b_setTrackProgress(trackId, 0)
 
@@ -133,33 +131,6 @@ class QuestManagerAI:
         if not npc:
             return
         taskMgr.remove(npc.uniqueName('clearMovie'))
-
-    def avatarProgressTier(self, toon):
-        currentTier = toon.getRewardHistory()[0]
-        currentHistory = toon.getRewardHistory()[1]
-
-        if Quests.avatarHasAllRequiredRewards(toon, currentTier):
-            if currentTier != Quests.ELDER_TIER:
-                currentTier += 1
-
-            toon.b_setRewardHistory(currentTier, [])
-
-    def completeQuest(self, toon, completeQuestId):
-        toonQuests = toon.getQuests()
-
-        for i in xrange(0, len(toonQuests), 5):
-            questDesc = toonQuests[i:i + 5]
-            questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
-            questClass = Quests.getQuest(questId)
-
-            if questId == completeQuestId:
-                toon.removeQuest(questId)
-                toon.toonUp(toon.maxHp)
-                self.giveReward(toon, rewardId)
-                break
-        else:
-            #Completing a quest they dont have? :/
-            print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
 
     def nextQuest(self, toon, npc, questId):
         nextQuestId = Quests.getNextQuest(questId, npc, toon)
@@ -179,16 +150,46 @@ class QuestManagerAI:
         npc.incompleteQuest(toon.doId, nextQuestId[0], Quests.QUEST, nextQuestId[1])
         toon.b_setQuests(questList)
 
-    def giveReward(self, toon, rewardId):
+    def completeQuest(self, toon, completeQuestId):
+        toonQuests = toon.getQuests()
+
+        for i in xrange(0, len(toonQuests), 5):
+            questDesc = toonQuests[i:i + 5]
+            questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
+            questClass = Quests.getQuest(questId)
+
+            if questId == completeQuestId:
+                toon.removeQuest(questId)
+                toon.toonUp(toon.maxHp)
+                self.giveReward(toon, questId, rewardId)
+                break
+        else:
+            #Completing a quest they dont have? :/
+            print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
+
+    def giveReward(self, toon, questId, rewardId):
+        #Actual reward giving.
         rewardClass = Quests.getReward(rewardId)
+        rewardClass.sendRewardAI(toon)
 
-        tier = toon.getRewardHistory()[0]
-        rewardList = toon.getRewardHistory()[1]
+        #Add it to reward history.
+        finalRewardId = Quests.findFinalRewardId(questId)[0]
+        realRewardId = Quests.transformReward(finalRewardId, toon)
+        tier, rewardList = toon.getRewardHistory()
 
-        rewardList.append(Quests.transformReward(rewardId, toon))
+        rewardList.append(finalRewardId)
+        if realRewardId != finalRewardId:
+            rewardList.append(realRewardId)
         toon.b_setRewardHistory(tier, rewardList)
 
-        rewardClass.sendRewardAI(toon)
+    def avatarProgressTier(self, toon):
+        currentTier = toon.getRewardHistory()[0]
+
+        if Quests.avatarHasAllRequiredRewards(toon, currentTier):
+            if currentTier != Quests.ELDER_TIER:
+                currentTier += 1
+
+            toon.b_setRewardHistory(currentTier, [])
 
     def toonRodeTrolleyFirstTime(self, toon):
         self.toonPlayedMinigame(toon, [])
