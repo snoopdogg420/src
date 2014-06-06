@@ -583,6 +583,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 building = self.buildingMgr.getBuilding(blockNumber)
                 if building is None:
                     continue
+                if NPCToons.isZoneProtected(building.getExteriorAndInteriorZoneId()[1]):
+                    continue
                 suitName = self.air.suitInvasionManager.getInvadingCog()[0]
                 if suitName is None:
                     suitName = self.defaultSuitName
