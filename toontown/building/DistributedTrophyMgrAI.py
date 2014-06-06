@@ -11,8 +11,9 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
 
-        self.leaderInfo = [[], [], []]
-        self.trophyScores = {}
+        backup = self.load()
+        self.leaderInfo = backup[0]
+        self.trophyScores = backup[1]
 
     def requestTrophyScore(self):
         avId = self.air.getAvatarIdFromSender()
@@ -74,3 +75,9 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
         if avId in self.trophyScores:
             trophyScore = self.trophyScores[avId] - numFloors
             self.updateTrophyScore(avId, trophyScore)
+
+    def save(self):
+        simbase.backups.save('trophy-mgr', (simbase.air.districtId,), (self.leaderInfo, self.trophyScores))
+
+    def load(self):
+        return simbase.backups.load('trophy-mgr', (simbase.air.districtId,), default=([[], [], []], {}))

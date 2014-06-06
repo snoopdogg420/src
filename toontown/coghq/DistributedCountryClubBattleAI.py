@@ -25,7 +25,7 @@ class DistributedCountryClubBattleAI(DistributedLevelBattleAI.DistributedLevelBa
         return self.level.countryClubId
 
     def handleToonsWon(self, toons):
-        extraMerits = [ 0, 0, 0, 0]
+        extraMerits = [0, 0, 0, 0]
         amount = ToontownGlobals.CountryClubCogBuckRewards[self.level.countryClubId]
         index = ToontownGlobals.cogHQZoneId2deptIndex(self.level.countryClubId)
         extraMerits[index] = amount

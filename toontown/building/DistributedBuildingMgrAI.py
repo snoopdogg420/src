@@ -108,12 +108,13 @@ class DistributedBuildingMgrAI:
                 animBldgBlocks)
 
     def findAllLandmarkBuildings(self):
+        backups = simbase.backups.load('blockinfo', (self.air.districtId, self.branchId), default={})
         (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks,
          animBldgBlocks) = self.getDNABlockLists()
         for blockNumber in blocks:
-            self.newBuilding(blockNumber)
+            self.newBuilding(blockNumber, backup=backups.get(blockNumber, None))
         for blockNumber in animBldgBlocks:
-            self.newAnimBuilding(blockNumber)
+            self.newAnimBuilding(blockNumber, backup=backups.get(blockNumber, None))
         for blockNumber in hqBlocks:
             self.newHQBuilding(blockNumber)
         for blockNumber in gagshopBlocks:
@@ -123,16 +124,34 @@ class DistributedBuildingMgrAI:
         for block in kartshopBlocks:
             self.newKartShopBuilding(block)
 
-    def newBuilding(self, blockNumber):
+    def newBuilding(self, blockNumber, backup=None):
         building = DistributedBuildingAI.DistributedBuildingAI(
             self.air, blockNumber, self.branchId, self.trophyMgr)
         building.generateWithRequired(self.branchId)
-        building.setState('toon')
+        if backup is not None:
+            state = backup.get('state', 'toon')
+            if ((state == 'suit') and simbase.air.wantCogbuildings) or (
+                (state == 'cogdo') and simbase.air.wantCogdominiums):
+                building.track = backup.get('track', 'c')
+                building.difficulty = backup.get('difficulty', 1)
+                building.numFloors = backup.get('numFloors', 1)
+                building.updateSavedBy(backup.get('savedBy'))
+                building.becameSuitTime = backup.get('becameSuitTime', time.mktime(time.gmtime()))
+                if (state == 'suit') and simbase.air.wantCogbuildings:
+                    building.setState('suit')
+                elif (state == 'cogdo') and simbase.air.wantCogdominiums:
+                    building.setState('cogdo')
+                else:
+                    building.setState('toon')
+            else:
+                building.setState('toon')
+        else:
+            building.setState('toon')
         self.__buildings[blockNumber] = building
         return building
 
-    def newAnimBuilding(self, blockNumber):
-        return  # TODO
+    def newAnimBuilding(self, blockNumber, backup=None):
+        return self.newBuilding(blockNumber, backup=backup)
 
     def newHQBuilding(self, blockNumber):
         dnaStore = self.air.dnaStoreMap[self.canonicalBranchId]
@@ -173,3 +192,19 @@ class DistributedBuildingMgrAI:
             self.air, exteriorZoneId, interiorZoneId, blockNumber)
         self.__buildings[blockNumber] = building
         return building
+
+    def save(self):
+        buildings = {}
+        for blockNumber in self.getSuitBlocks():
+            building = self.getBuilding(blockNumber)
+            backup = {
+                'state': building.fsm.getCurrentState().getName(),
+                'block': building.block,
+                'track': building.track,
+                'difficulty': building.difficulty,
+                'numFloors': building.numFloors,
+                'savedBy': building.savedBy,
+                'becameSuitTime': building.becameSuitTime
+            }
+            buildings[blockNumber] = backup
+        simbase.backups.save('blockinfo', (self.air.districtId, self.branchId), buildings)
