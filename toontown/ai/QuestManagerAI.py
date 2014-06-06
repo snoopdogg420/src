@@ -66,6 +66,10 @@ class QuestManagerAI:
             elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
                 choices = self.avatarQuestChoice(toon, npc)
                 quest = choices[0]
+                print 'choices: %s' % (choices)
+                print 'questChoice: %s' % (quest)
+                print '0: %s' % (quest[0])
+                print '1: %s' % (quest[1])
                 self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
                 if npc.tutorial:
                     if npc.npcId == 20000:
@@ -109,9 +113,7 @@ class QuestManagerAI:
 
         fromNpc = Quests.getQuestFromNpcId(questId)
         toNpc = Quests.getQuestToNpcId(questId)
-        realRewardId = Quests.findFinalRewardId(rewardId)[0]
-
-        toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], realRewardId,
+        toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], 0,
                         recordHistory = 0)
         npc.assignQuest(avId, questId, rewardId, toNpc)
         taskMgr.remove(npc.uniqueName('clearMovie'))
@@ -173,7 +175,9 @@ class QuestManagerAI:
         rewardClass.sendRewardAI(toon)
 
         #Add it to reward history.
-        finalRewardId = Quests.findFinalRewardId(questId)[0]
+        finalRewardId = Quests.findFinalRewardId(questId)
+        if not isinstance(finalRewardId, int):
+            finalRewardId = finalRewardId[0]
         realRewardId = Quests.transformReward(finalRewardId, toon)
         tier, rewardList = toon.getRewardHistory()
 
