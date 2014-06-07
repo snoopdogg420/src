@@ -39,6 +39,7 @@ class QuestManagerAI:
 
             if completeStatus == Quests.COMPLETE:
                 print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
+                toon.toonUp(toon.maxHp)
 
                 if isinstance(questClass, Quests.TrackChoiceQuest):
                     npc.presentTrackChoice(avId, questId, questClass.getChoices())
@@ -158,7 +159,6 @@ class QuestManagerAI:
 
             if questId == completeQuestId:
                 toon.removeQuest(questId)
-                toon.toonUp(toon.maxHp)
                 self.giveReward(toon, questId, rewardId)
                 break
         else:
