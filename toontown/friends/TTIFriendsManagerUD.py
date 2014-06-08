@@ -30,7 +30,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 return
             newList = []
             friendsList = fields['setFriendsList'][0]
-            for i in range(len(friendsList)):
+            for i in xrange(len(friendsList)):
                 if friendsList[i][0] == t2:
                     continue
                 newList.append(friendsList[i])
@@ -243,7 +243,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         avId = self.air.getAvatarIdFromSender()
         allowed = string.lowercase + string.digits
         secret = ''
-        for i in range(6):
+        for i in xrange(6):
             secret += random.choice(allowed)
             if i == 2:
                 secret += ' '

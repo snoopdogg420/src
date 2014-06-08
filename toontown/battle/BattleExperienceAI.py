@@ -10,7 +10,6 @@ def getSkillGained(toonSkillPtsGained, toonId, track):
         exp = expList[track]
     return int(exp + 0.5)
 
-
 def getBattleExperience(numToons, activeToons, toonExp, toonSkillPtsGained, toonOrigQuests, toonItems, toonOrigMerits, toonMerits, toonParts, suitsKilled, helpfulToonsList = None):
     if helpfulToonsList == None:
         BattleExperienceAINotify.warning('=============\nERROR ERROR helpfulToons=None in assignRewards , tell Red')
@@ -181,5 +180,14 @@ def assignRewards(activeToons, toonSkillPtsGained, suitsKilled, zoneId, helpfulT
         toon.b_setExperience(toon.experience.makeNetString())
         toon.d_setInventory(toon.inventory.makeNetString())
         toon.b_setAnimState('victory', 1)
-        simbase.air.cogPageManager.toonKilledCogs(toon, suitsKilled, zoneId)
+
+        if simbase.air.config.GetBool('battle-passing-no-credit', True):
+            if helpfulToons and toon.doId in helpfulToons:
+                simbase.air.questManager.toonKilledCogs(toon, suitsKilled, zoneId, activeToonList)
+                simbase.air.cogPageManager.toonKilledCogs(toon, suitsKilled, zoneId)
+            else:
+                BattleExperienceAINotify.debug('toon=%d unhelpful not getting killed cog quest credit' % toon.doId)
+        else:
+            simbase.air.questManager.toonKilledCogs(toon, suitsKilled, zoneId, activeToonList)
+            simbase.air.cogPageManager.toonKilledCogs(toon, suitsKilled, zoneId)
     return

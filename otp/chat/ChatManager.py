@@ -308,9 +308,11 @@ class ChatManager(DirectObject.DirectObject):
             self.disablewhisperButton()
         if online:
             self.whisperScButton['state'] = 'normal'
+            self.whisperButton['state'] = 'normal'
             self.changeFrameText(OTPLocalizer.ChatManagerWhisperToName % chatName)
         else:
             self.whisperScButton['state'] = 'inactive'
+            self.whisperButton['state'] = 'inactive'
             self.changeFrameText(OTPLocalizer.ChatManagerWhisperOffline % chatName)
         self.whisperFrame.show()
         self.refreshWhisperFrame()
@@ -323,9 +325,6 @@ class ChatManager(DirectObject.DirectObject):
                 if self.wantBackgroundFocus:
                     self.chatInputNormal.chatEntry['backgroundFocus'] = 1
                 self.acceptOnce('enterNormalChat', self.fsm.request, ['whisperChat', [avatarName, avatarId]])
-        if base.cr.config.GetBool('force-typed-whisper-enabled', 0):
-            self.whisperButton['state'] = 'normal'
-            self.enablewhisperButton()
         return
 
     def disablewhisperButton(self):

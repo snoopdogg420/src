@@ -4538,7 +4538,7 @@ def hp(hp):
     target = spellbook.getTarget()
     maxHp = target.getMaxHp()
     if not -1 <= hp <= maxHp:
-        return 'HP must be in range (-1-{0}).'.format(maxHp)
+        return 'HP must be in xrange (-1-{0}).'.format(maxHp)
     target.b_setHp(hp)
     return "Set {0}'s HP to {1}!".format(target.getName(), hp)
 
@@ -4548,7 +4548,7 @@ def maxHp(maxHp):
     Modify the target's max HP.
     """
     if not 15 <= maxHp <= ToontownGlobals.MaxHpLimit:
-        return 'HP must be in range (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
+        return 'HP must be in xrange (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
     target = spellbook.getTarget()
     target.b_setMaxHp(maxHp)
     target.toonUp(maxHp - target.getHp())
@@ -4656,7 +4656,7 @@ def sos(count, name):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 100:
-        return 'Your SOS count must be in range (0-100).'
+        return 'Your SOS count must be in xrange (0-100).'
     for npcId, npcName in TTLocalizer.NPCToonNames.items():
         if name.lower() == npcName.lower():
             if npcId not in NPCToons.npcFriends:
@@ -4687,7 +4687,7 @@ def fires(count):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 255:
-        return 'Your fire count must be in range (0-255).'
+        return 'Your fire count must be in xrange (0-255).'
     invoker.b_setPinkSlips(count)
     return 'You were given {0} fires.'.format(count)
 
@@ -4697,7 +4697,7 @@ def maxMoney(maxMoney):
     Modifies the target's max money value.
     """
     if not 40 <= maxMoney <= 250:
-        return 'Max money value must be in range (40-250).'
+        return 'Max money value must be in xrange (40-250).'
     target = spellbook.getTarget()
     spellbook.getTarget().b_setMaxMoney(maxMoney)
     return "Set {0}'s max money value to {1}!".format(target.getName(), maxMoney)
@@ -4710,7 +4710,7 @@ def money(money):
     target = spellbook.getTarget()
     maxBankMoney = target.getMaxBankMoney()
     if not 0 <= money <= maxBankMoney:
-        return 'Money value must be in range (0-{0}).'.format(maxBankMoney)
+        return 'Money value must be in xrange (0-{0}).'.format(maxBankMoney)
     target.b_setMoney(money)
     return "Set {0}'s money value to {1}!".format(target.getName(), money)
 
@@ -4723,7 +4723,7 @@ def bank(command, value):
     target = spellbook.getTarget()
     if command == 'max':
         if not 1000 <= value <= 12000:
-            return 'Max bank value must be in range (1000-12000).'
+            return 'Max bank value must be in xrange (1000-12000).'
         target.b_setMaxBankMoney(value)
         return "Set {0}'s max bank money value to {1}!".format(target.getName(), value)
     elif command == 'transfer':
@@ -4759,7 +4759,7 @@ def fishingRod(rod):
     Modify the target's fishing rod value.
     """
     if not 0 <= rod <= 4:
-        return 'Rod value must be in range (0-4).'
+        return 'Rod value must be in xrange (0-4).'
     target = spellbook.getTarget()
     target.b_setFishingRod(rod)
     return "Set {0}'s fishing rod to {1}!".format(target.getName(), rod)
@@ -4770,7 +4770,7 @@ def maxFishTank(maxFishTank):
     Modify the target's max fish tank value.
     """
     if not 20 <= maxFishTank <= 99:
-        return 'Max fish tank value must be in range (20-99).'
+        return 'Max fish tank value must be in xrange (20-99).'
     target = spellbook.getTarget()
     target.b_setMaxFishTank(maxFishTank)
     return "Set {0}'s max fish tank value to {1}!".format(target.getName(), maxFishTank)
@@ -4943,7 +4943,7 @@ def tickets(tickets):
     Set the target's racing tickets value.
     """
     if not 0 <= tickets <= 99999:
-        return 'Racing tickets value must be in range (0-99999).'
+        return 'Racing tickets value must be in xrange (0-99999).'
     target = spellbook.getTarget()
     target.b_setTickets(tickets)
     return "Set {0}'s tickets to {1}!".format(target.getName(), tickets)
@@ -5246,7 +5246,7 @@ def givePies(pieType, numPies=0):
     if pieType == 6:
         return 'Invalid pie type!'
     if not 0 <= pieType <= 7:
-        return 'Pie type must be in range (0-7).'
+        return 'Pie type must be in xrange (0-7).'
     if not -1 <= numPies <= 99:
         return 'Pie count out of range (-1-99).'
     target.b_setPieType(pieType)
@@ -5293,7 +5293,7 @@ def track(command, track, value=None):
         if value is None:
             return 'You must provide an experience value.'
         if not 0 <= value <= Experience.MaxSkill:
-            return 'Experience value not in range (0-{0}).'.format(Experience.MaxSkill)
+            return 'Experience value not in xrange (0-{0}).'.format(Experience.MaxSkill)
         experience = Experience.Experience(invoker.getExperience(), invoker)
         experience.experience[index] = value
         invoker.b_setExperience(experience.makeNetString())
