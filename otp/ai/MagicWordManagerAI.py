@@ -9,8 +9,12 @@ class MagicWordManagerAI(DistributedObjectAI):
 
     def sendMagicWord(self, word, targetId):
         invokerId = self.air.getAvatarIdFromSender()
-
         invoker = self.air.doId2do.get(invokerId)
+
+        if not 'DistributedToonAI' in str(self.air.doId2do.get(targetId)):
+            self.sendUpdateToAvatarId(invokerId, 'sendMagicWordResponse', ['Target is not a toon object!'])
+            return
+            
         if not invoker:
             self.sendUpdateToAvatarId(invokerId, 'sendMagicWordResponse', ['missing invoker'])
             return
