@@ -20,7 +20,7 @@ if accountDBType == 'remote':
 
 # Sometimes we'll want to force a specific access level, such as on the
 # developer server:
-forceAccessLevel = simbase.config.GetInt('account-server-access-level', 0)
+minAccessLevel = simbase.config.GetInt('account-server-min-access-level', 0)
 
 
 def judgeName(name):
@@ -70,7 +70,7 @@ class DeveloperAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': forceAccessLevel or 600
+                'accessLevel': min(600, minAccessLevel)
             }
             callback(response)
             return response
@@ -102,7 +102,7 @@ class LocalAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': forceAccessLevel or (700 if not self.dbm else 100)
+                'accessLevel': min((700 if not self.dbm else 100), minAccessLevel)
             }
             callback(response)
             return response
@@ -205,7 +205,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': 0,
-                'accessLevel': forceAccessLevel or int(token['accesslevel'])
+                'accessLevel': min(int(token['accesslevel']), minAccessLevel)
             }
             callback(response)
             return response
@@ -217,7 +217,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': int(self.dbm[str(token['userid'])]),
-                'accessLevel': forceAccessLevel or int(token['accesslevel'])
+                'accessLevel': min(int(token['accesslevel']), minAccessLevel)
             }
             callback(response)
             return response
