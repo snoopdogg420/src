@@ -70,7 +70,7 @@ class DeveloperAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': min(600, minAccessLevel)
+                'accessLevel': max(600, minAccessLevel)
             }
             callback(response)
             return response
@@ -102,7 +102,7 @@ class LocalAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': min((700 if not self.dbm else 100), minAccessLevel)
+                'accessLevel': max((700 if not self.dbm else 100), minAccessLevel)
             }
             callback(response)
             return response
@@ -205,7 +205,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': 0,
-                'accessLevel': min(int(token['accesslevel']), minAccessLevel)
+                'accessLevel': max(int(token['accesslevel']), minAccessLevel)
             }
             callback(response)
             return response
@@ -217,7 +217,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': int(self.dbm[str(token['userid'])]),
-                'accessLevel': min(int(token['accesslevel']), minAccessLevel)
+                'accessLevel': max(int(token['accesslevel']), minAccessLevel)
             }
             callback(response)
             return response
