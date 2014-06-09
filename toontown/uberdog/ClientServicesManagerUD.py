@@ -113,7 +113,7 @@ class LocalAccountDB(AccountDB):
             response = {
                 'success': True,
                 'userId': username,
-                'accountId': int(self.dbm[str(username)]),
+                'accountId': int(self.dbm[str(username)])
             }
             callback(response)
             return response
@@ -328,7 +328,15 @@ class LoginAccountFSM(OperationFSM):
         self.demand('SetAccount')
 
     def enterSetAccount(self):
-        # First, if there's anybody on the account, kill them for redundant login:
+        # If necessary, update their account information:
+        if self.accessLevel:
+            self.csm.air.dbInterface.updateObject(
+                self.csm.air.dbId,
+                self.accountId,
+                self.csm.air.dclassesByName['AccountUD'],
+                {'ACCESS_LEVEL': self.accessLevel})
+
+        # If there's anybody on the account, kill them for redundant login:
         datagram = PyDatagram()
         datagram.addServerHeader(
             self.csm.GetAccountConnectionChannel(self.accountId),
