@@ -18,6 +18,10 @@ accountDBType = simbase.config.GetString('accountdb-type', 'developer')
 if accountDBType == 'remote':
     from Crypto.Cipher import AES
 
+# Sometimes we'll want to force a specific access level, such as on the
+# developer server:
+forceAccessLevel = simbase.config.GetInt('account-server-access-level', 0)
+
 
 def judgeName(name):
     return False
@@ -66,7 +70,7 @@ class DeveloperAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': 600
+                'accessLevel': forceAccessLevel or 600
             }
             callback(response)
             return response
@@ -98,7 +102,7 @@ class LocalAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': 700 if not self.dbm else 100
+                'accessLevel': forceAccessLevel or (700 if not self.dbm else 100)
             }
             callback(response)
             return response
@@ -201,7 +205,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': 0,
-                'accessLevel': int(token['accesslevel'])
+                'accessLevel': forceAccessLevel or int(token['accesslevel'])
             }
             callback(response)
             return response
@@ -213,7 +217,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': int(self.dbm[str(token['userid'])]),
-                'accessLevel': int(token['accesslevel'])
+                'accessLevel': forceAccessLevel or int(token['accesslevel'])
             }
             callback(response)
             return response
