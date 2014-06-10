@@ -329,12 +329,12 @@ def neglect():
 
 
 @magicWord(category=COMMUNITY_MANAGER, types=[float, float, float, float])
-def backgroundColor(r=-1, g=1, b=1, a=1):
+def backgroundColor(r=None, g=1, b=1, a=1):
     """
     set the background color. Specify no arguments for the default background
     color.
     """
-    if r == -1:
+    if r is None:
         r, g, b, a = OTPGlobals.DefaultBackgroundColor
     base.setBackgroundColor(Vec4(r, g, b, a))
     return 'The background color has been changed.'
