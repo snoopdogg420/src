@@ -2,11 +2,12 @@ import math
 import re
 import time
 
+import OTPGlobals
 import OTPRender
 from direct.showbase.ShowBase import ShowBase
 from otp.ai.MagicWordGlobal import *
 from otp.settings.Settings import Settings
-from pandac.PandaModules import Camera, TPLow, VBase4, ColorWriteAttrib, Filename, getModelPath, NodePath
+from pandac.PandaModules import Camera, TPLow, VBase4, ColorWriteAttrib, Filename, getModelPath, NodePath, Vec4
 
 
 class OTPBase(ShowBase):
@@ -313,6 +314,7 @@ def explorer():
     """
     base.render.explore()
 
+
 @magicWord(category=COMMUNITY_MANAGER)
 def neglect():
     """
@@ -324,3 +326,15 @@ def neglect():
     else:
         base.cr.pullNetworkPlug()
         return 'You are now neglecting network updates.'
+
+
+@magicWord(category=COMMUNITY_MANAGER, types=[int, int, int, int])
+def backgroundColor(r=-1, g=1, b=1, a=1):
+    """
+    set the background color. Specify no arguments for the default background
+    color.
+    """
+    if r == -1:
+        r, g, b, a = OTPGlobals.DefaultBackgroundColor
+    base.setBackgroundColor(Vec4(r, g, b, a))
+    return 'The background color has been changed.'
