@@ -1,38 +1,29 @@
-import random
-
-import DistributedPhysicsWorldAI
-from direct.directnotify import DirectNotifyGlobal
 from direct.distributed import DistributedObjectAI
-from direct.fsm.FSM import FSM
+from direct.directnotify import DirectNotifyGlobal
+from toontown.toonbase import ToontownGlobals
 from pandac.PandaModules import *
+import DistributedPhysicsWorldAI
+from direct.fsm.FSM import FSM
 from toontown.ai.ToonBarrier import *
 from toontown.golf import GolfGlobals
+import random
 from toontown.golf import GolfHoleBase
-from toontown.toonbase import ToontownGlobals
-
 
 class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI, FSM, GolfHoleBase.GolfHoleBase):
-    defaultTransitions = {
-        'Off': [
-            'Cleanup',
-            'WaitTee'],
-        'WaitTee': [
-            'WaitSwing',
-            'Cleanup',
-            'WaitTee',
-            'WaitPlayback'],
-        'WaitSwing': [
-            'WaitPlayback',
-            'Cleanup',
-            'WaitSwing',
-            'WaitTee'],
-        'WaitPlayback': [
-            'WaitSwing',
-            'Cleanup',
-            'WaitTee',
-            'WaitPlayback'],
-        'Cleanup': [
-            'Off'] }
+    defaultTransitions = {'Off': ['Cleanup', 'WaitTee'],
+     'WaitTee': ['WaitSwing',
+                 'Cleanup',
+                 'WaitTee',
+                 'WaitPlayback'],
+     'WaitSwing': ['WaitPlayback',
+                   'Cleanup',
+                   'WaitSwing',
+                   'WaitTee'],
+     'WaitPlayback': ['WaitSwing',
+                      'Cleanup',
+                      'WaitTee',
+                      'WaitPlayback'],
+     'Cleanup': ['Off']}
     id = 0
     notify = directNotify.newCategory('DistributedGolfHoleAI')
 
@@ -44,7 +35,10 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         self.golfCourse = golfCourse
         self.holeId = holeId
         self.avIdList = golfCourse.avIdList[:]
-        self.watched = [0, 0, 0, 0]
+        self.watched = [0,
+         0,
+         0,
+         0]
         self.barrierPlayback = None
         self.trustedPlayerId = None
         self.activeGolferIndex = None
@@ -53,10 +47,13 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         self.teeChosen = {}
         for avId in self.avIdList:
             self.teeChosen[avId] = -1
+
         self.ballPos = {}
         for avId in self.avIdList:
             self.ballPos[avId] = Vec3(0, 0, 0)
+
         self.playStarted = False
+        return
 
     def curGolfBall(self):
         return self.ball
@@ -84,6 +81,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
             self.notify.debug('calling self.barrierPlayback = None')
             self.barrierPlayback = None
         self.activeGolferId = None
+        return
 
     def setZoneId(self, zoneId):
         self.zoneId = zoneId
@@ -102,7 +100,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
     def selectNextGolfer(self):
         self.notify.debug('selectNextGolfer, old golferIndex=%s old golferId=%s' % (self.activeGolferIndex, self.activeGolferId))
         if self.golfCourse.isCurHoleDone():
-            return None
+            return
         if self.activeGolferIndex == None:
             self.activeGolferIndex = 0
             self.activeGolferId = self.golfCourse.getGolferIds()[self.activeGolferIndex]
@@ -110,7 +108,6 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
             self.activeGolferIndex += 1
             if self.activeGolferIndex >= len(self.golfCourse.getGolferIds()):
                 self.activeGolferIndex = 0
-
             self.activeGolferId = self.golfCourse.getGolferIds()[self.activeGolferIndex]
         safety = 0
         while safety < 50 and not self.golfCourse.checkGolferPlaying(self.golfCourse.getGolferIds()[self.activeGolferIndex]):
@@ -120,6 +117,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
                 self.activeGolferIndex = 0
             self.activeGolferId = self.golfCourse.getGolferIds()[self.activeGolferIndex]
             safety += 1
+
         if safety != 50:
             golferId = self.golfCourse.getGolferIds()[self.activeGolferIndex]
             if self.teeChosen[golferId] == -1:
@@ -131,9 +129,13 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         else:
             self.notify.debug('safety')
         self.notify.debug('selectNextGolfer, new golferIndex=%s new golferId=%s' % (self.activeGolferIndex, self.activeGolferId))
+        return
 
     def clearWatched(self):
-        self.watched = [1, 1, 1, 1]
+        self.watched = [1,
+         1,
+         1,
+         1]
         for index in xrange(len(self.golfCourse.getGolferIds())):
             self.watched[index] = 0
 
@@ -154,7 +156,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         if self.barrierPlayback:
             self.barrierPlayback.clear(avId)
 
-    def ballInHole(self, golferId=None):
+    def ballInHole(self, golferId = None):
         self.notify.debug('ballInHole')
         if golferId:
             avId = golferId
@@ -219,8 +221,9 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
                 locator = self.locDict[locatorNum]
                 locatorParent = locator.getParent()
                 locator.getChildren().wrtReparentTo(locatorParent)
-                continue
-            self.locDict[locatorNum].removeNode()
+            else:
+                self.locDict[locatorNum].removeNode()
+
         self.hardSurfaceNodePath.flattenStrong()
 
     def createBall(self):
@@ -235,19 +238,41 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
 
     def postSwing(self, cycleTime, power, x, y, z, dirX, dirY):
         avId = self.air.getAvatarIdFromSender()
-        self.storeAction = [avId, cycleTime, power, x, y, z, dirX, dirY]
+        self.storeAction = [avId,
+         cycleTime,
+         power,
+         x,
+         y,
+         z,
+         dirX,
+         dirY]
         if self.commonHoldData:
             self.doAction()
 
     def postSwingState(self, cycleTime, power, x, y, z, dirX, dirY, curAimTime, commonObjectData):
         self.notify.debug('postSwingState')
         if not self.golfCourse.getStillPlayingAvIds():
-            return None
+            return
         avId = self.air.getAvatarIdFromSender()
-        self.storeAction = [avId, cycleTime, power, x, y, z, dirX, dirY]
+        self.storeAction = [avId,
+         cycleTime,
+         power,
+         x,
+         y,
+         z,
+         dirX,
+         dirY]
         self.commonHoldData = commonObjectData
         self.trustedPlayerId = self.choosePlayerToSimulate()
-        self.sendUpdateToAvatarId(self.trustedPlayerId, 'assignRecordSwing', [avId, cycleTime, power, x, y, z, dirX, dirY, commonObjectData])
+        self.sendUpdateToAvatarId(self.trustedPlayerId, 'assignRecordSwing', [avId,
+         cycleTime,
+         power,
+         x,
+         y,
+         z,
+         dirX,
+         dirY,
+         commonObjectData])
         self.golfCourse.addAimTime(avId, curAimTime)
 
     def choosePlayerToSimulate(self):
@@ -272,22 +297,31 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
             self.golfCourse.incrementScore(avId)
             for id in self.golfCourse.getStillPlayingAvIds():
                 if not id == sentFromId:
-                    self.sendUpdateToAvatarId(id, 'ballMovie2Client', [cycleTime, avId, movie, spinMovie, ballInFrame, ballTouchedHoleFrame, ballFirstTouchedHoleFrame, commonObjectData])
+                    self.sendUpdateToAvatarId(id, 'ballMovie2Client', [cycleTime,
+                     avId,
+                     movie,
+                     spinMovie,
+                     ballInFrame,
+                     ballTouchedHoleFrame,
+                     ballFirstTouchedHoleFrame,
+                     commonObjectData])
+
             if self.state == 'WaitPlayback' or self.state == 'WaitTee':
                 self.notify.warning('ballMovie2AI requesting from %s to WaitPlayback' % self.state)
             self.request('WaitPlayback')
         elif self.trustedPlayerId == None:
-            return None
+            return
         else:
             self.doAction()
         self.trustedPlayerId = None
+        return
 
     def performReadyAction(self):
         avId = self.storeAction[0]
         if self.state == 'WaitPlayback':
             self.notify.debugStateCall(self)
             self.notify.debug('ignoring the postSwing for avId=%d since we are in WaitPlayback' % avId)
-            return None
+            return
         if avId == self.activeGolferId:
             self.golfCourse.incrementScore(self.activeGolferId)
         else:
@@ -301,9 +335,17 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         if self.state == 'WaitPlayback' or self.state == 'WaitTee':
             self.notify.warning('performReadyAction requesting from %s to WaitPlayback' % self.state)
         self.request('WaitPlayback')
-        self.sendUpdate('ballMovie2Client', [self.storeAction[1], avId, self.recording, self.aVRecording, self.ballInHoleFrame, self.ballTouchedHoleFrame, self.ballFirstTouchedHoleFrame, self.commonHoldData])
+        self.sendUpdate('ballMovie2Client', [self.storeAction[1],
+         avId,
+         self.recording,
+         self.aVRecording,
+         self.ballInHoleFrame,
+         self.ballTouchedHoleFrame,
+         self.ballFirstTouchedHoleFrame,
+         self.commonHoldData])
         self.ballPos[avId] = newPos
         self.trustedPlayerId = None
+        return
 
     def postResult(self, cycleTime, avId, recording, aVRecording, ballInHoleFrame, ballTouchedHoleFrame, ballFirstTouchedHoleFrame):
         pass
@@ -352,6 +394,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
             if length <= GolfGlobals.DistanceToBeInHole:
                 retval = True
                 break
+
         return retval
 
     def exitWaitPlayback(self):
@@ -359,6 +402,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         if hasattr(self, 'barrierPlayback') and self.barrierPlayback:
             self.barrierPlayback.cleanup()
             self.barrierPlayback = None
+        return
 
     def enterCleanup(self):
         pass
@@ -366,7 +410,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
     def exitCleanup(self):
         pass
 
-    def handlePlaybackTimeout(self, task=None):
+    def handlePlaybackTimeout(self, task = None):
         self.notify.debug('handlePlaybackTimeout')
         self.handleWaitPlaybackDone()
 
@@ -377,10 +421,11 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         self.notify.warning('avId %d dropped, self.state=%s' % (avId, self.state))
         if self.barrierPlayback:
             self.barrierPlayback.clear(avId)
-        elif avId == self.trustedPlayerId:
-            self.doAction()
-        if avId == self.activeGolferId and not self.golfCourse.haveAllGolfersExited():
-            self.selectNextGolfer()
+        else:
+            if avId == self.trustedPlayerId:
+                self.doAction()
+            if avId == self.activeGolferId and not self.golfCourse.haveAllGolfersExited():
+                self.selectNextGolfer()
 
     def setAvatarTee(self, chosenTee):
         golferId = self.air.getAvatarIdFromSender()
@@ -391,7 +436,19 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         self.request('WaitSwing')
 
     def setBox(self, pos0, pos1, pos2, quat0, quat1, quat2, quat3, anV0, anV1, anV2, lnV0, lnV1, lnV2):
-        self.sendUpdate('sendBox', [ pos0, pos1, pos2, quat0, quat1, quat2, quat3, anV0, anV1, anV2, lnV0, lnV1, lnV2])
+        self.sendUpdate('sendBox', [pos0,
+         pos1,
+         pos2,
+         quat0,
+         quat1,
+         quat2,
+         quat3,
+         anV0,
+         anV1,
+         anV2,
+         lnV0,
+         lnV1,
+         lnV2])
 
     def parseLocators(self, objectCollection, optional = 0):
         if optional and objectCollection.getNumPaths():
@@ -403,6 +460,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
                         if searchStr in object.getName():
                             self.fillLocator(objectCollection, objIndex)
                             break
+
         else:
             for index in xrange(objectCollection.getNumPaths()):
                 self.fillLocator(objectCollection, index)
@@ -414,27 +472,27 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
         sizeX = None
         sizeY = None
         move = None
+        type = None
         for subString in pathArray:
             if subString[:1] == 'X':
                 dataString = subString[1:]
                 dataString = dataString.replace('p', '.')
                 sizeX = float(dataString)
-                continue
-            if subString[:1] == 'Y':
+            elif subString[:1] == 'Y':
                 dataString = subString[1:]
                 dataString = dataString.replace('p', '.')
                 sizeY = float(dataString)
-                continue
-            if subString[:1] == 'd':
+            elif subString[:1] == 'd':
                 dataString = subString[1:]
                 dataString = dataString.replace('p', '.')
                 move = float(dataString)
-                continue
-            if subString == 'mover':
-                continue
-            if subString == 'windmillLocator':
-                continue
+            elif subString == 'mover':
+                type = 4
+            elif subString == 'windmillLocator':
+                type = 3
+
         if type == 4 and move and sizeX and sizeY:
             self.createCommonObject(4, path.getPos(), path.getHpr(), sizeX, sizeY, move)
         elif type == 3:
             self.createCommonObject(3, path.getPos(), path.getHpr())
+        return
