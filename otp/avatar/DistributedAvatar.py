@@ -265,6 +265,15 @@ def warp():
     target.setPosHpr(invoker.getPos(), invoker.getHpr())
 
 
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str])
+def loop(anim):
+    """
+    animate the target using animation [anim] on the entire actor.
+    """
+    target = spellbook.getTarget()
+    target.loop(anim)
+
+
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str, int, str])
 def pose(anim, frame, part=None):
     """
