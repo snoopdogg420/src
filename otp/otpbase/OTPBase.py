@@ -328,7 +328,7 @@ def neglect():
         return 'You are now neglecting network updates.'
 
 
-@magicWord(category=COMMUNITY_MANAGER, types=[int, int, int, int])
+@magicWord(category=COMMUNITY_MANAGER, types=[float, float, float, float])
 def backgroundColor(r=-1, g=1, b=1, a=1):
     """
     set the background color. Specify no arguments for the default background
