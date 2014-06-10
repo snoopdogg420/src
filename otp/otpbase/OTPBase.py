@@ -315,7 +315,7 @@ def explorer():
     base.render.explore()
 
 
-@magicWord(category=COMMUNITY_MANAGER)
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def neglect():
     """
     toggle the neglection of network updates on the invoker's client.
@@ -328,7 +328,7 @@ def neglect():
         return 'You are now neglecting network updates.'
 
 
-@magicWord(category=COMMUNITY_MANAGER, types=[float, float, float, float])
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[float, float, float, float])
 def backgroundColor(r=None, g=1, b=1, a=1):
     """
     set the background color. Specify no arguments for the default background

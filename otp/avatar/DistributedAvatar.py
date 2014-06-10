@@ -285,10 +285,11 @@ def pose(anim, frame, part=None):
 
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str, int, int, str])
-def pingpong(anim, start, end, part=None):
+def pingpong(anim, start=None, end=None, part=None):
     """
-    animate the target by bouncing back and forth between frames [start] and
-    [end] of animation [anim] on the entire actor, or optional <part>.
+    animate the target by bouncing back and forth between the start and end, or
+    the optional frames <start>, and [end] of animation [anim] on the entire
+    actor, or optional <part> of the actor.
     """
     target = spellbook.getTarget()
-    target.pingpong(anim, start, end, partName=part)
+    target.pingpong(anim, partName=part, fromFrame=start, toFrame=end)
