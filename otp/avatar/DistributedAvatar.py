@@ -263,4 +263,13 @@ def warp():
     if invoker.doId == target.doId:
         return "You can't warp yourself!"
     target.setPosHpr(invoker.getPos(), invoker.getHpr())
-    return 'The target has been warped to your current position, and rotation.'
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str, int, str])
+def pose(anim, frame, part=None):
+    """
+    freeze the target on frame [frame] of animation [anim] on the entire actor,
+    or optional [part] of the actor.
+    """
+    target = spellbook.getTarget()
+    target.pose(anim, frame, partName=part)
