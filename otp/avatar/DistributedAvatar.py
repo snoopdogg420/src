@@ -8,6 +8,7 @@ from otp.ai.MagicWordGlobal import *
 from otp.nametag.Nametag import Nametag
 from otp.otpbase import OTPGlobals
 from pandac.PandaModules import *
+from toontown.battle.BattleProps import globalPropPool
 
 
 class DistributedAvatar(DistributedActor, Avatar):
@@ -293,3 +294,35 @@ def pingpong(anim, start=None, end=None, part=None):
     """
     target = spellbook.getTarget()
     target.pingpong(anim, partName=part, fromFrame=start, toFrame=end)
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str])
+def rightHand(prop=None):
+    """
+    parents the optional <prop> to the target's right hand node.
+    """
+    target = spellbook.getTarget()
+    rightHand = target.find('**/rightHand')
+    if prop is None:
+        for child in rightHand.getChildren():
+            child.removeNode()
+    else:
+        for child in rightHand.getChildren():
+            child.removeNode()
+        requestedProp = globalPropPool.getProp(prop)
+        requestedProp.reparentTo(rightHand)
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str])
+def leftHand(prop=None):
+    """
+    parents the optional <prop> to the target's left hand node.
+    """
+    target = spellbook.getTarget()
+    leftHand = target.find('**/leftHand')
+    if prop is None:
+        for child in leftHand.getChildren():
+            child.removeNode()
+    else:
+        for child in leftHand.getChildren():
+            child.removeNode()
+        requestedProp = globalPropPool.getProp(prop)
+        requestedProp.reparentTo(leftHand)
