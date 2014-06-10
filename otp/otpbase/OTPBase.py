@@ -316,7 +316,7 @@ def explorer():
 @magicWord(category=COMMUNITY_MANAGER)
 def neglect():
     """
-    Toggles the neglection of network updates on the invoker's client.
+    toggle the neglection of network updates on the invoker's client.
     """
     if base.cr.networkPlugPulled():
         base.cr.restoreNetworkPlug()

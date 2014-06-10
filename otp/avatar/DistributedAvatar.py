@@ -1,20 +1,14 @@
-import time
-import string
-from pandac.PandaModules import *
-from otp.nametag.Nametag import Nametag
-from direct.distributed import DistributedNode
+from Avatar import Avatar
 from direct.actor.DistributedActor import DistributedActor
-from direct.task import Task
+from direct.distributed import DistributedNode
 from direct.interval.IntervalGlobal import *
 from direct.showbase import PythonUtil
+from direct.task import Task
+from otp.ai.MagicWordGlobal import *
+from otp.nametag.Nametag import Nametag
 from otp.otpbase import OTPGlobals
-from otp.otpbase import OTPLocalizer
-from otp.speedchat import SCDecoders
-from otp.chat import ChatGarbler
-from otp.chat import ChatManager
-import random
-from Avatar import Avatar
-import AvatarDNA
+from pandac.PandaModules import *
+
 
 class DistributedAvatar(DistributedActor, Avatar):
     HpTextGenerator = TextNode('HpTextGenerator')
@@ -257,3 +251,16 @@ class DistributedAvatar(DistributedActor, Avatar):
 
     def getDialogueArray(self):
         return None
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def warp():
+    """
+    warp the target to the invoker's current position, and rotation.
+    """
+    invoker = spellbook.getInvoker()
+    target = spellbook.getTarget()
+    if invoker.doId == target.doId:
+        return "You can't warp yourself!"
+    target.setPosHpr(invoker.getPos(), invoker.getHpr())
+    return 'The target has been warped to your current position, and rotation.'
