@@ -2638,6 +2638,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.achievements = achievements
         messenger.send(localAvatar.uniqueName('achievementsChange'))
 
+
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
     """
@@ -2649,6 +2650,9 @@ def globalTeleport():
     return 'Global teleport has been activated.'
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
-def setZone(zone):
-    base.cr.sendSetZoneMsg(zone, [zone])
-    return 'Set client zoneId to %s' % (zone)
+def zone(zoneId):
+    """
+    Changes the invoker's zone ID.
+    """
+    base.cr.sendSetZoneMsg(zoneId, [zoneId])
+    return 'You have been moved to zone {0}.'.format(zoneId)

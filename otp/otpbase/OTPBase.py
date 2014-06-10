@@ -312,3 +312,15 @@ def explorer():
     Toggle the scene graph explorer.
     """
     base.render.explore()
+
+@magicWord(category=COMMUNITY_MANAGER)
+def neglect():
+    """
+    Toggles the neglection of network updates on the invoker's client.
+    """
+    if base.cr.networkPlugPulled():
+        base.cr.restoreNetworkPlug()
+        return 'You are no longer neglecting network updates.'
+    else:
+        base.cr.pullNetworkPlug()
+        return 'You are now neglecting network updates.'
