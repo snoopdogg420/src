@@ -84,7 +84,6 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
         return
 
     def delete(self):
-        print 'GOLF COURSE DELETE'
         self.ignore('clientCleanup')
         if self.scoreBoard:
             self.scoreBoard.delete()
