@@ -256,7 +256,6 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
         pass
 
     def enterCleanup(self):
-        print 'GOLF COURSE CLEANUP'
         base.localAvatar.stopSleepWatch()
         for action in self.cleanupActions:
             action()
