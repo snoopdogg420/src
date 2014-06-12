@@ -71,14 +71,14 @@ class TutorialManagerAI(DistributedObjectAI):
         return (streetZone, shopZone, hqZone)
 
     def createShop(self, streetZone, shopZone, hqZone):
-        shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
-
         desc = NPCToons.NPCToonDict.get(20000)
         npc = NPCToons.createNPC(self.air, 20000, desc, shopZone)
         npc.setTutorial(1)
-        shopInterior.setTutorialNpcId(npc.doId)
-        shopInterior.generateWithRequired(shopZone)
+        if npc:
+            self.createInterior(streetZone, shopZone, hqZone, npc)
 
+
+    def createInterior(self, streetZone, shopZone, hqZone, npc):
         extShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.EXT_STANDARD,
                                         lockValue=FADoorCodes.DEFEAT_FLUNKY_TOM)
         intShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.INT_STANDARD,
@@ -94,6 +94,10 @@ class TutorialManagerAI(DistributedObjectAI):
 
         self.accept('intShopDoor-{0}'.format(shopZone), intShopDoor.setDoorLock)
         self.accept('extShopDoor-{0}'.format(streetZone), extShopDoor.setDoorLock)
+
+        shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
+        shopInterior.setTutorialNpcId(npc.doId)
+        shopInterior.generateWithRequired(shopZone)
 
     def createHQ(self, streetZone, shopZone, hqZone):
         interior = DistributedHQInteriorAI(1, self.air, hqZone)
@@ -146,8 +150,8 @@ class TutorialManagerAI(DistributedObjectAI):
         flunky.setupSuitDNA(1, suitType, suitTrack)
         flunky.generateWithRequired(streetZone)
 
-        desc = NPCToons.NPCToonDict.get(20001)
-        npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
+        desc = NPCToons.NPCToonDict.get(20000)
+        npc = NPCToons.createNPC(self.air, 20000, desc, streetZone)
         npc.setTutorial(1)
         npc.d_setPos(207.4, 18.81, -0.475)
         npc.d_setHpr(90.0, 0, 0)

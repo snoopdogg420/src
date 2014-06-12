@@ -163,4 +163,15 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def setTutorialNpcId(self, npcId):
         self.npcId = npcId
-        self.npc = self.cr.doId2do[npcId]
+        if not self.cr.doId2do.get(npcId):
+            import thread
+            thread.start_new_thread(self.look4npc, () )
+        else:
+            self.npc = self.cr.doId2do[npcId]
+            
+    def look4npc(self):
+        while True:
+            try:
+                self.npc = self.cr.doId2do[npcId]
+            except:
+                pass
