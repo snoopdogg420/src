@@ -1,6 +1,6 @@
 C++ Style Guidelines
 ====================
-For C++ programming, we use the [Oct 8, 2013 - Astron C++ Style Guide](https://github.com/Astron/Astron/blob/6a974ce247a364fdcd11d440db1cad0f1c2f6ba2/doc/style-guide/cxx-style.md "Oct 8, 2013 - Astron C++ Style Guide")
+For C++ programming, we use the [Oct 8, 2013 - Astron C++ Style Guide](https://github.com/Astron/Astron/blob/6a974ce247a364fdcd11d440db1cad0f1c2f6ba2/doc/style-guide/cxx-style.md "Oct 8, 2013 - Astron C++ Style Guide").
 - - -
 ## Whitespace ##
 Tabs shall be used to indent, spaces shall be used to align.

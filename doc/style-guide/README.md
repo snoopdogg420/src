@@ -5,3 +5,4 @@ Code and documentation in the master and release branches of Toontown Infinite p
 - - -
 
 * [Python style guidelines](python-style.md)
+* [C++ style guidelines](cxx-style.md)
