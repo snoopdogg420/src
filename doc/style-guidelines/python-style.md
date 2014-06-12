@@ -1,7 +1,7 @@
 Python Style Guidelines
 =======================
 For Python programming, we use a slightly modified version of the standard [PEP-8 Style Guide for Python Code](http://legacy.python.org/dev/peps/pep-0008 "PEP-8 Style Guide for Python Code"). Read below for our modifications.
-
+- - -
 ## Code lay-out ##
 ### Indentation ###
 The closing brace/bracket/parenthesis on multi-line constructs may either be directly at the end, as in:
