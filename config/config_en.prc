@@ -1,5 +1,5 @@
 # Window options...
-window-title Toontown Infinite - Retro
+window-title Toontown Infinite
 win-origin -1 -1
 
 # Filenames/filepaths...

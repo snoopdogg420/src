@@ -1,5 +1,5 @@
 # Window options...
-window-title Toontown Infinite - Retro
+window-title Toontown Infinite
 win-origin -1 -1
 
 # Filenames/filepaths...
@@ -24,7 +24,7 @@ account-bridge-filename astron/databases/account-bridge.db
 # Server...
 server-force-ssl 0
 server-port 7198
-server-version tti-retro-dev
+server-version infinite-dev
 server-timezone US/Eastern
 
 eventlog-host 127.0.0.1
