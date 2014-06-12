@@ -5,12 +5,15 @@ For Python programming, we use a slightly modified version of the standard [PEP-
 ## Code lay-out ##
 ### Indentation ###
 The closing brace/bracket/parenthesis on multi-line constructs may either be directly at the end, as in:
+
     my_list = [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
         16, 17, 18, 19, 20]
     result = some_function_that_takes_arguments(
         'a', 'b', 'c', 'd', 'e', 'f')
+        
 or it may be by itself on the next line:
+
     my_list = [
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
         16, 17, 18, 19, 20
