@@ -19,10 +19,6 @@ parsetab.py
 # Mac directory info
 .DS_Store
 
-# Dedicated server
-start_uberdog_server_remotedb.bat
-start_ai_server_remotedb.bat
-
-# Toontown Infinite Retro
+# Toontown Infinite
 PPYTHON_PATH
 preferences.gz
