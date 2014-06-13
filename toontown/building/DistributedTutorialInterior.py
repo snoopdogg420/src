@@ -126,12 +126,11 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         del self.dnaStore
         del self.randomGenerator
         self.interior.flattenMedium()
-        npcOrigin = self.interior.find('**/npc_origin_' + `(self.npc.posIndex)`)
+        npcOrigin = self.interior.find('**/npc_origin_' + `(self.cr.doId2do[self.npcId].posIndex)`)
         if not npcOrigin.isEmpty():
-            self.npc.reparentTo(npcOrigin)
-            self.npc.clearMat()
+            self.cr.doId2do[self.npcId].reparentTo(npcOrigin)
+            self.cr.doId2do[self.npcId].clearMat()
         self.createSuit()
-        self.mickeyMovie = QuestParser.NPCMoviePlayer('tutorial_mickey', base.localAvatar, self.npc)
         place = base.cr.playGame.getPlace()
         if place and hasattr(place, 'fsm') and place.fsm.getCurrentState().getName():
             self.notify.info('Tutorial movie: Place ready.')
@@ -144,7 +143,6 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def playMovie(self):
         self.notify.info('Tutorial movie: Play.')
-        self.mickeyMovie.play()
 
     def createSuit(self):
         self.suit = Suit.Suit()
@@ -163,15 +161,6 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def setTutorialNpcId(self, npcId):
         self.npcId = npcId
-        if not self.cr.doId2do.get(npcId):
-            import thread
-            thread.start_new_thread(self.look4npc, () )
-        else:
-            self.npc = self.cr.doId2do[npcId]
-            
-    def look4npc(self):
-        while True:
-            try:
-                self.npc = self.cr.doId2do[npcId]
-            except:
-                pass
+
+    def getTutorialNpc(self):
+        return self.cr.doId2do[self.npcId]
