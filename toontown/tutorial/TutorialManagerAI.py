@@ -149,8 +149,8 @@ class TutorialManagerAI(DistributedObjectAI):
         flunky.setupSuitDNA(1, suitType, suitTrack)
         flunky.generateWithRequired(streetZone)
 
-        desc = NPCToons.NPCToonDict.get(20000)
-        npc = NPCToons.createNPC(self.air, 20000, desc, streetZone)
+        desc = NPCToons.NPCToonDict.get(20001)
+        npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
         npc.setTutorial(1)
         npc.d_setPos(207.4, 18.81, -0.475)
         npc.d_setHpr(90.0, 0, 0)
