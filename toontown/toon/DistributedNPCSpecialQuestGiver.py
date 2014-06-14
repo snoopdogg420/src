@@ -19,6 +19,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         self.curQuestMovie = None
         self.questChoiceGui = None
         self.trackChoiceGui = None
+        self.cr = cr
         return
 
     def announceGenerate(self):
@@ -30,6 +31,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         else:
             self.notify.warning('announceGenerate: Could not find npc_origin_' + str(self.posIndex))
         DistributedNPCToonBase.announceGenerate(self)
+        self.cr.doId2do[self.doId] = self
         return
 
     def delayDelete(self):

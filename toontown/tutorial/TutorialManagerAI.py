@@ -20,6 +20,11 @@ class TutorialManagerAI(DistributedObjectAI):
         self.zoneAllocator = self.air.zoneAllocator
 
         self.currentAllocatedZones = {}
+        
+        self.shopZone = self.zoneAllocator.allocate()
+        self.desc = NPCToons.NPCToonDict.get(20000)
+        self.npc = NPCToons.createNPC(self.air, 20000, self.desc, self.shopZone)
+        self.npc.setTutorial(1)
 
     def requestTutorial(self):
         avId = self.air.getAvatarIdFromSender()
@@ -60,25 +65,18 @@ class TutorialManagerAI(DistributedObjectAI):
                                   [branchZone, streetZone, shopZone, hqZone])
 
     def createTutorial(self):
+        import thread
         streetZone = self.zoneAllocator.allocate()
-        shopZone = self.zoneAllocator.allocate()
         hqZone = self.zoneAllocator.allocate()
 
-        self.createShop(streetZone, shopZone, hqZone)
-        self.createHQ(streetZone, shopZone, hqZone)
-        self.createStreet(streetZone, shopZone, hqZone)
+        self.createInterior(streetZone, self.shopZone, hqZone, self.npc)
+        self.createHQ(streetZone, self.shopZone, hqZone)
+        self.createStreet(streetZone, self.shopZone, hqZone)
 
-        return (streetZone, shopZone, hqZone)
+        return (streetZone, self.shopZone, hqZone)
 
-    def createShop(self, streetZone, shopZone, hqZone):
-        shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
 
-        desc = NPCToons.NPCToonDict.get(20000)
-        npc = NPCToons.createNPC(self.air, 20000, desc, shopZone)
-        npc.setTutorial(1)
-        shopInterior.setTutorialNpcId(npc.doId)
-        shopInterior.generateWithRequired(shopZone)
-
+    def createInterior(self, streetZone, shopZone, hqZone, npc):
         extShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.EXT_STANDARD,
                                         lockValue=FADoorCodes.DEFEAT_FLUNKY_TOM)
         intShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.INT_STANDARD,
@@ -94,6 +92,11 @@ class TutorialManagerAI(DistributedObjectAI):
 
         self.accept('intShopDoor-{0}'.format(shopZone), intShopDoor.setDoorLock)
         self.accept('extShopDoor-{0}'.format(streetZone), extShopDoor.setDoorLock)
+
+        shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
+        shopInterior.setTutorialNpcId(npc.doId)
+        shopInterior.generateWithRequired(shopZone)
+        print 'Generated the shop'
 
     def createHQ(self, streetZone, shopZone, hqZone):
         interior = DistributedHQInteriorAI(1, self.air, hqZone)
