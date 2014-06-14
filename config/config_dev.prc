@@ -40,8 +40,8 @@ ai-sleep 0.01
 want-pstats 0
 
 # DClass files...
-dc-file astron/toon.dc
-dc-file astron/otp.dc
+dc-file astron/dclass/toon.dc
+dc-file astron/dclass/otp.dc
 
 # Safe zones...
 want-safe-zones #t
