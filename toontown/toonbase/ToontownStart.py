@@ -4,6 +4,19 @@ import __builtin__
 if __debug__:
     loadPrcFile('config/config_dev.prc')
 
+
+# For the Python DClasses, we must override the ClientRepository:
+from direct.distributed import ConnectionRepository
+
+
+class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
+    def readDCFile(self, dcFileNames=None):
+        pass
+
+
+ConnectionRepository.ConnectionRepository = ConnectionRepository_override
+
+
 from otp.settings.Settings import Settings
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
 print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
