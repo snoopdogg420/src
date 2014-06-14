@@ -69,7 +69,6 @@ class TutorialManagerAI(DistributedObjectAI):
         streetZone = self.zoneAllocator.allocate()
         hqZone = self.zoneAllocator.allocate()
 
-        #self.createShopNPC(streetZone, shopZone, hqZone)
         self.createInterior(streetZone, self.shopZone, hqZone, self.npc)
         self.createHQ(streetZone, self.shopZone, hqZone)
         self.createStreet(streetZone, self.shopZone, hqZone)
@@ -97,6 +96,7 @@ class TutorialManagerAI(DistributedObjectAI):
         shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
         shopInterior.setTutorialNpcId(npc.doId)
         shopInterior.generateWithRequired(shopZone)
+        print 'Generated the shop'
 
     def createHQ(self, streetZone, shopZone, hqZone):
         interior = DistributedHQInteriorAI(1, self.air, hqZone)
