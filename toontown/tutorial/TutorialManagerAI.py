@@ -69,7 +69,6 @@ class TutorialManagerAI(DistributedObjectAI):
         streetZone = self.zoneAllocator.allocate()
         hqZone = self.zoneAllocator.allocate()
 
-        #self.createShopNPC(streetZone, shopZone, hqZone)
         self.createInterior(streetZone, self.shopZone, hqZone, self.npc)
         self.createHQ(streetZone, self.shopZone, hqZone)
         self.createStreet(streetZone, self.shopZone, hqZone)
@@ -97,6 +96,7 @@ class TutorialManagerAI(DistributedObjectAI):
         shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
         shopInterior.setTutorialNpcId(npc.doId)
         shopInterior.generateWithRequired(shopZone)
+        print 'Generated the shop'
 
     def createHQ(self, streetZone, shopZone, hqZone):
         interior = DistributedHQInteriorAI(1, self.air, hqZone)
@@ -149,8 +149,8 @@ class TutorialManagerAI(DistributedObjectAI):
         flunky.setupSuitDNA(1, suitType, suitTrack)
         flunky.generateWithRequired(streetZone)
 
-        desc = NPCToons.NPCToonDict.get(20000)
-        npc = NPCToons.createNPC(self.air, 20000, desc, streetZone)
+        desc = NPCToons.NPCToonDict.get(20001)
+        npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
         npc.setTutorial(1)
         npc.d_setPos(207.4, 18.81, -0.475)
         npc.d_setHpr(90.0, 0, 0)

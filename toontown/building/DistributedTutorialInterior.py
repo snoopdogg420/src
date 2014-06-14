@@ -35,8 +35,6 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         del self.street
         self.sky.removeNode()
         del self.sky
-        self.mickeyMovie.cleanup()
-        del self.mickeyMovie
         self.suitWalkTrack.finish()
         del self.suitWalkTrack
         self.suit.delete()
