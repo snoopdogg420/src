@@ -25,4 +25,4 @@ By now, you should have a file named ```GameData.pyd``` in your build directory.
 
 ## Example ##
 
-    infinitecipher --o GameData.bin GameData.pyd
+    infinitecipher -o GameData.bin GameData.pyd
