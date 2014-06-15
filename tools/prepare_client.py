@@ -139,13 +139,17 @@ print 'Using config file: {0}'.format(configFileName)
 
 # Next, we need the (stripped) DC file:
 dcFile = DCFile()
-filepath = os.path.join(args.src_dir, 'astron')
+filepath = os.path.join(args.src_dir, 'astron/dclass')
 for filename in os.listdir(filepath):
     if filename.endswith('.dc'):
         dcFile.read(Filename.fromOsSpecific(os.path.join(filepath, filename)))
 dcStream = StringStream()
 dcFile.write(dcStream, True)
-dcData = dcStream.getData()
+data = dcStream.getData()
+for line in data.split('\n'):
+    if 'import' in line:
+        data = data.replace(line + '\n', '')
+dcData = data[1:]
 
 # Now, collect our timezone info:
 zoneInfo = {}
