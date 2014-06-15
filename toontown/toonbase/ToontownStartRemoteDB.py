@@ -8,7 +8,9 @@ password = os.environ['ttiPassword']
 from pandac.PandaModules import *
 
 
-accountServerEndpoint = ConfigVariableString('account-server-endpoint', 'https://www.toontowninfinite.com/api/').getValue()
+accountServerEndpoint = ConfigVariableString(
+    'account-server-endpoint',
+    'https://www.toontowninfinite.com/api/').getValue()
 
 http = HTTPClient()
 http.setVerifySsl(0)
@@ -27,7 +29,6 @@ response = executeHttpRequest(
     username + password)
 
 
-
 import json
 
 
@@ -35,11 +36,11 @@ try:
     response = json.loads(response)
 except ValueError:
     print 'Invalid username and/or password. Please try again.'
-if not response['success']:
-    print response['reason']
 else:
-    os.environ['TTI_PLAYCOOKIE'] = response['token']
+    if not response['success']:
+        print response['reason']
+    else:
+        os.environ['TTI_PLAYCOOKIE'] = response['token']
 
-
-    # Start the game:
-    import toontown.toonbase.ToontownStart
+        # Start the game:
+        import toontown.toonbase.ToontownStart
