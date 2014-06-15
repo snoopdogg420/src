@@ -5,6 +5,8 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('--panda3d-dir', default='C:/Panda3D-1.9.0',
                     help='The path to the Panda3D build to use for this distribution.')
+parser.add_argument('--build-dir', default='build',
+                    help='The directory of which the build was prepared.')
 parser.add_argument('--main-module', default='infinite.base.ClientStartDist',
                     help='The path to the instantiation module.')
 parser.add_argument('modules', nargs='*', default=['shared', 'infinite'],
@@ -13,7 +15,7 @@ args = parser.parse_args()
 
 print 'Building the client...'
 
-os.chdir('build')
+os.chdir(args.build_dir)
 
 cmd = os.path.join(args.panda3d_dir, 'python/ppython.exe')  # ppython
 cmd += ' -m direct.showutil.pfreeze'  # pfreeze
