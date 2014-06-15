@@ -6,7 +6,7 @@ import collections
 collections.namedtuple = lambda *x: tuple
 
 # This is included in the package by the prepare_client script. It contains the
-# PRC file data, and time zone info:
+# PRC file data, (stripped) DC file, and time zone info:
 import game_data
 
 # Load all of the packaged PRC config page(s):
@@ -25,6 +25,9 @@ for mount in mounts:
     mountFile.makeAbsolute()
     mountPoint = Filename(mountPoint)
     vfs.mount(mountFile, mountPoint, 0)
+
+# Next, let's get the DC stream:
+dcStream = StringStream(game_data.DC)
 
 # We also need timezone stuff:
 class dictloader(object):

@@ -127,7 +127,7 @@ for module in args.modules:
 
 # Let's write game_data.py now. game_data.py is a compile-time generated
 # collection of data that will be used by the game at runtime. It contains the
-# PRC file data, and time zone info.
+# PRC file data, (stripped) DC file, and time zone info.
 
 # First, we need the PRC file data:
 configFileName = 'config_{0}.prc'.format(args.distribution)
@@ -136,6 +136,20 @@ with open(os.path.join(args.src_dir, 'config', configFileName)) as f:
     data = f.read()
     configData.append(data.replace('SERVER_VERSION', serverVersion))
 print 'Using config file: {0}'.format(configFileName)
+
+# Next, we need the (stripped) DC file:
+dcFile = DCFile()
+filepath = os.path.join(args.src_dir, 'astron/dclass')
+for filename in os.listdir(filepath):
+    if filename.endswith('.dc'):
+        dcFile.read(Filename.fromOsSpecific(os.path.join(filepath, filename)))
+dcStream = StringStream()
+dcFile.write(dcStream, True)
+data = dcStream.getData()
+for line in data.split('\n'):
+    if 'import' in line:
+        data = data.replace(line + '\n', '')
+dcData = data[1:]
 
 # Now, collect our timezone info:
 zoneInfo = {}
@@ -146,9 +160,10 @@ for timezone in pytz.all_timezones:
 print 'Writing game_data.py...'
 gameData = '''\
 CONFIG = %r
+DC = %r
 ZONEINFO = %r'''
 with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
-    f.write(gameData % (configData, zoneInfo))
+    f.write(gameData % (configData, dcData, zoneInfo))
 
 
 def getDirectoryMD5Hash(directory):

@@ -6,12 +6,53 @@ if __debug__:
 
 
 # For the Python DClasses, we must override the ClientRepository:
+import types
 from direct.distributed import ConnectionRepository
 
 
 class ConnectionRepository_override(ConnectionRepository.ConnectionRepository):
     def readDCFile(self, dcFileNames=None):
-        pass
+        from otp.distributed import DCClassImports
+        dcFile = self.getDcFile()
+        dcFile.clear()
+        self.dclassesByName = {}
+        self.dclassesByNumber = {}
+        self.hashVal = 0
+        if not __debug__:
+            dcFileNames = [dcStream]
+        if isinstance(dcFileNames, str):
+            dcFileNames = [dcFileNames]
+        if dcFileNames is not None:
+            for dcFileName in dcFileNames:
+                if isinstance(dcFileName, StringStream):
+                    readResult = dcFile.read(dcFileName, 'DC stream')
+                else:
+                    readResult = dcFile.read(dcFileName)
+                if not readResult:
+                    self.notify.error('Could not read DC file.')
+        else:
+            dcFile.readAll()
+        self.hashVal = DCClassImports.hashVal
+        for i in xrange(dcFile.getNumClasses()):
+            dclass = dcFile.getClass(i)
+            number = dclass.getNumber()
+            className = dclass.getName()
+            classDef = DCClassImports.dcImports.get(className)
+            if classDef is None:
+                self.notify.debug('No class definition for {0}.'.format(className))
+            else:
+                if type(classDef) == types.ModuleType:
+                    if not hasattr(classDef, className):
+                        self.notify.warning('Module %s does not define class %s.' % (className, className))
+                        continue
+                    classDef = getattr(classDef, className)
+                if (type(classDef) != types.ClassType) and (type(classDef) != types.TypeType):
+                    self.notify.error('Symbol %s is not a class name.' % className)
+                else:
+                    dclass.setClassDef(classDef)
+            self.dclassesByName[className] = dclass
+            if number >= 0:
+                self.dclassesByNumber[number] = dclass
 
 
 ConnectionRepository.ConnectionRepository = ConnectionRepository_override

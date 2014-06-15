@@ -29,6 +29,10 @@ server-timezone US/Eastern
 
 eventlog-host 127.0.0.1
 
+# DC classes...
+dc-file astron/dclass/toon.dc
+dc-file astron/dclass/otp.dc
+
 # Performance
 hardware-animated-vertices #t
 preload-avatars #t
