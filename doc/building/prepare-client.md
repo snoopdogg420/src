@@ -3,8 +3,8 @@ Client Build Preparation
 The first step in building a distributable Toontown Infinite client is building ```GameData.bin```. ```GameData.bin``` is an encrypted blob of frozen Python code. It contains all of the code necessary to run the game. There are three steps to building this file:
 
 * **Prepare for building**
-* Build the frozen Python module
-* Encrypt the frozen Python module
+* [Build the frozen Python module](build-client.md)
+* [Encrypt the frozen Python module](encrypt-client.md)
 
 This document outlines how to accomplish the first task.
 
