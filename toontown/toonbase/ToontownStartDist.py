@@ -27,7 +27,7 @@ for mount in mounts:
     vfs.mount(mountFile, mountPoint, 0)
 
 # Next, let's get the DC stream:
-dcStream = StringStream(game_data.DC)
+__builtins__.dcStream = StringStream(game_data.DC)
 
 # We also need timezone stuff:
 class dictloader(object):
