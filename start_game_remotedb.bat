@@ -15,5 +15,5 @@ echo Username: %ttiUsername%
 echo Gameserver: %TTI_GAMESERVER%
 echo ===============================
 
-%PPYTHON_PATH% -m toontown.toonbase.ToontownStartRemote
+%PPYTHON_PATH% -m toontown.toonbase.ToontownStartRemoteDB
 pause
