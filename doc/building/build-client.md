@@ -10,7 +10,7 @@ This document outlines how to accomplish the second task.
 
 - - -
 
-After preparing the client using the ```prepare_client.py``` utility, you're all set to build! Simply use the ```build_client.py``` utility. This will create a frozen Python module named ```GameData.pyd```.
+After preparing the client using the ```prepare_client.py``` utility, you're all set to build! Simply use the ```build_client.py``` utility through the _Visual Studio 2008 Command Prompt_. This will create a frozen Python module named ```GameData.pyd```.
 
 ## Usage ##
 
