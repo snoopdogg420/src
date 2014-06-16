@@ -4,5 +4,6 @@ Code and documentation in the master and release branches of Toontown Infinite p
 
 - - -
 
+* [Git style guidelines](git-style.md)
 * [Python style guidelines](python-style.md)
 * [C++ style guidelines](cxx-style.md)

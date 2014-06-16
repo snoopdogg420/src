@@ -31,3 +31,7 @@ or it may be by itself on the next line:
 ## Naming Conventions ##
 ### Variables ###
 Intentionally **unused** variables should be named "**_**". This will make common IDEs and editors ignore it.
+
+## Strings ##
+### Quotations ###
+Use single quotations _(')_ unless there is one inside the string, in which case use double quotations _(")_.

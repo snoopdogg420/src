@@ -1,8 +1,10 @@
 from pandac.PandaModules import *
 import __builtin__
 
+
 if __debug__:
     loadPrcFile('config/config_dev.prc')
+
 
 from otp.settings.Settings import Settings
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
@@ -128,7 +130,6 @@ from ToonBaseGlobal import *
 from direct.showbase.MessengerGlobal import *
 from toontown.distributed import ToontownClientRepository
 cr = ToontownClientRepository.ToontownClientRepository(serverVersion, launcher)
-cr.setDeferInterval(1)
 cr.music = music
 del music
 base.initNametagGlobals()

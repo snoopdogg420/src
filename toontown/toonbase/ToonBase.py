@@ -66,7 +66,7 @@ class ToonBase(OTPBase.OTPBase):
 
                 # We have resolutions that match our native ratio and fit it! Let's
                 # use one:
-                res = self.resDict[self.nativeRatio][0]
+                res = sorted(self.resDict[self.nativeRatio])[0]
 
             else:
 
@@ -75,14 +75,10 @@ class ToonBase(OTPBase.OTPBase):
                 # course). Let's just use the second largest ratio:
                 ratios = sorted(self.resDict.keys(), reverse=False)
                 nativeIndex = ratios.index(self.nativeRatio)
-                res = ratios[nativeIndex + 1][0]
+                res = sorted(ratios[nativeIndex - 1])[0]
 
             # Reload the graphics pipe:
             properties = WindowProperties()
-
-            # If we're in fullscreen mode, we'll want to fit to the screen:
-            if fullscreen:
-                res = self.resList[-1]
 
             properties.setSize(res[0], res[1])
             properties.setFullscreen(fullscreen)

@@ -1,4 +1,4 @@
-# Python / Compiled / Optimized
+# Python / compiled / optimized
 *.py[cod]
 
 # C extensions
@@ -19,6 +19,8 @@ parsetab.py
 # Mac directory info
 .DS_Store
 
-# Toontown Infinite
-PPYTHON_PATH
+# Game preferences
 preferences.gz
+
+# ppython.exe path configuration
+PPYTHON_PATH
