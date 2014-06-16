@@ -1,6 +1,6 @@
 Git Style Guidelines
 ====================
-For Git, we try to follow a general pattern for commit messages and branch naming to make things organized.
+For Git, we try to follow a general pattern for commit messages and branch naming to make things organized and neat.
 - - -
 ## Commit Messages ##
 All commit messages should:
@@ -12,9 +12,9 @@ All commit messages should:
 
 If a description is provided in the commit message, it should be separated from the title by a blank line. If the commit addresses an issue, its issue number should be referenced at the end of the commit message's description.
 
-Whenever possible, commit messages should be prefixed with a group name.
+Whenever possible, commit messages should be prefixed with a group name, followed by a colon and a space.
 
-For example: ```Root: ```, ```ToonBase: ```, ```Tools: ```
+For example: ```Root: ``` or ```ToonBase: ``` or ```Tools: ```
 
 ## Branch Naming ##
 All branch names should:
@@ -27,4 +27,4 @@ All branch names should:
     * enhancement
     * feature
 
-For example: ```feature/parties```, ```bugfix/toontorial```, ```enhancement/fix-memory-leak```
+For example: ```feature/parties``` or ```bugfix/toontorial``` or ```enhancement/fix-memory-leak```
