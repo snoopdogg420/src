@@ -12,6 +12,7 @@ echo ===============================
 echo Starting Toontown Infinite...
 echo ppython: %PPYTHON_PATH%
 echo Username: %ttiUsername%
+echo Password: %ttiPassword%
 echo Gameserver: %TTI_GAMESERVER%
 echo ===============================
 
