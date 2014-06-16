@@ -5277,7 +5277,7 @@ def track(command, track, value=None):
         return 'Invalid Gag track!'
     invoker = spellbook.getInvoker()
     trackAccess = invoker.getTrackAccess()
-    if not trackAccess[index]:
+    if (command.lower() not in ('add',)) and (not trackAccess[index]):
         return "You don't have that track!"
     if command.lower() == 'remove':
         if index in (4, 5):
