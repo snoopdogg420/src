@@ -35,7 +35,7 @@ import json
 try:
     response = json.loads(response)
 except ValueError:
-    print 'Invalid username and/or password. Please try again.'
+    print "Couldn't verify account credentials."
 else:
     if not response['success']:
         print response['reason']
