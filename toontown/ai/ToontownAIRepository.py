@@ -81,6 +81,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.wantTrackClsends = self.config.GetBool('want-track-clsends', False)
         self.wantAchievements = self.config.GetBool('want-achievements', True)
 
+        self.cogSuitMessageSent = False
+
     def createManagers(self):
         self.timeManager = TimeManagerAI(self)
         self.timeManager.generateWithRequired(2)
