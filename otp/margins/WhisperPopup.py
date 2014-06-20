@@ -76,10 +76,7 @@ class WhisperPopup(MarginPopup, ClickablePopup):
 
     def considerUpdateClickRegion(self):
         if self.isDisplayed() and self.active:
-            print self.left, self.right, self.bottom, self.top
-            if hasattr(self, 'testpos'):
-                print self.testpos
-            self.updateClickRegion(self.left, self.right, self.bottom, self.top)
+            self.updateClickRegion(-1, 1, -1, 1)
 
     def setClickable(self, senderName, fromId, isPlayer=0):
         self.active = 1

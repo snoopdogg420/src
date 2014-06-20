@@ -42,6 +42,8 @@ class Nametag(ClickablePopup):
         self.chatString = ''
         self.chatFlags = 0
 
+        self.balloonActive = False
+
     def destroy(self):
         ClickablePopup.destroy(self)
 
@@ -91,6 +93,7 @@ class Nametag(ClickablePopup):
                                    balloonColor=color, wordWrap=self.chatWordWrap,
                                    button=self.getButton())
         balloon.reparentTo(self.innerNP)
+        self.balloonActive = True
 
     def showThought(self):
         self.showBalloon(self.getThoughtBalloon(), self.chatString)
@@ -130,3 +133,4 @@ class Nametag(ClickablePopup):
         panel.setScale(width + self.NAME_PADDING, 1, height + self.NAME_PADDING)
         panel.setColor(self.nameBg)
         panel.setTransparency(self.nameBg[3] < 1.0)
+        self.balloonActive = False
