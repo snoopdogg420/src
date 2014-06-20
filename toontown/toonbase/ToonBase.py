@@ -77,6 +77,9 @@ class ToonBase(OTPBase.OTPBase):
                 nativeIndex = ratios.index(self.nativeRatio)
                 res = sorted(ratios[nativeIndex - 1])[0]
 
+            # Store our result:
+            self.settings.set('res', res)
+
             # Reload the graphics pipe:
             properties = WindowProperties()
 
