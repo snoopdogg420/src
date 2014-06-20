@@ -160,6 +160,12 @@ pajama-place-building-min 6
 pajama-place-building-max 12
 pajama-place-building-chance 100.0
 
+# Cashbot boss...
+want-resistance-toonup #f
+want-resistance-restock #f
+want-resistance-money #t
+want-resistance-dance #f
+
 # Picnic table board games...
 want-game-tables #t
 want-checkers #t

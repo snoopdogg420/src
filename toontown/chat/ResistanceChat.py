@@ -1,8 +1,15 @@
+import random
+
 from direct.interval.IntervalGlobal import *
 from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownBattleGlobals
-import random
+
+
+try:
+    config = base.config
+except:
+    config = simbase.config
 TTBG = ToontownBattleGlobals
 TTL = TTLocalizer
 EFFECT_RADIUS = 30
@@ -10,6 +17,15 @@ RESISTANCE_TOONUP = 0
 RESISTANCE_RESTOCK = 1
 RESISTANCE_MONEY = 2
 RESISTANCE_DANCE = 3
+allowedResistanceMessages = []
+if config.GetBool('want-resistance-toonup', True):
+    allowedResistanceMessages.append(RESISTANCE_TOONUP)
+if config.GetBool('want-resistance-restock'. True):
+    allowedResistanceMessages.append(RESISTANCE_RESTOCK)
+if config.GetBool('want-resistance-money', True):
+    allowedResistanceMessages.append(RESISTANCE_MONEY)
+if config.GetBool('want-resistance-dance', True):
+    allowedResistanceMessages.append(RESISTANCE_DANCE)
 resistanceMenu = [RESISTANCE_TOONUP, RESISTANCE_RESTOCK, RESISTANCE_MONEY, RESISTANCE_DANCE]
 resistanceDict = {RESISTANCE_TOONUP: {'menuName': TTL.ResistanceToonupMenu,
                      'itemText': TTL.ResistanceToonupItem,
@@ -123,7 +139,7 @@ def getItemValue(textId):
 
 
 def getRandomId():
-    menuIndex = random.choice(resistanceMenu)
+    menuIndex = random.choice(allowedResistanceMessages)
     itemIndex = random.choice(getItems(menuIndex))
     return encodeId(menuIndex, itemIndex)
 
