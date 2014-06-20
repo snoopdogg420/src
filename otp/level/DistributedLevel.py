@@ -32,10 +32,10 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         self.titleColor = (1, 1, 1, 1)
         self.titleText = OnscreenText.OnscreenText('', fg=self.titleColor, shadow=(0, 0, 0, 1), font=ToontownGlobals.getSuitFont(), pos=(0, -0.5), scale=0.16, drawOrder=0, mayChange=1)
         self.smallTitleText = OnscreenText.OnscreenText('', fg=self.titleColor, font=ToontownGlobals.getSuitFont(), pos=(0.65, 0.9), scale=0.08, drawOrder=0, mayChange=1, bg=(0.5, 0.5, 0.5, 0.5), align=TextNode.ARight)
+        self.titleSeq = None
         self.zonesEnteredList = []
         self.fColorZones = 0
         self.scenarioIndex = 0
-        return
 
     def generate(self):
         DistributedLevel.notify.debug('generate')
@@ -490,47 +490,45 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
             titleSeq = None
             if self.lastCamZone not in self.zonesEnteredList:
                 self.zonesEnteredList.append(self.lastCamZone)
-                titleSeq = Task.sequence(Task.Task(self.hideSmallTitleTextTask), Task.Task(self.showTitleTextTask), Task.pause(0.1), Task.pause(6.0), self.titleText.lerpColor(Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0), 0.5))
-            smallTitleSeq = Task.sequence(Task.Task(self.hideTitleTextTask), Task.Task(self.showSmallTitleTask))
+                titleSeq = Sequence(Func(self.hideSmallTitleText), Func(self.showTitleText), Wait(6.1), LerpColorInterval(self.titleText, 0.5, Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), startColor=Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0)))
+            smallTitleSeq = Sequence(Func(self.hideTitleText), Func(self.showSmallTitle))
             if titleSeq:
-                seq = Task.sequence(titleSeq, smallTitleSeq)
+                self.titleSeq = Sequence(titleSeq, smallTitleSeq)
             else:
-                seq = smallTitleSeq
-            taskMgr.add(seq, self.uniqueName('titleText'))
+                self.titleSeq = smallTitleSeq
+            self.titleSeq.start()
 
     def showInfoText(self, text = 'hello world'):
         description = text
         if description and description != '':
-            taskMgr.remove(self.uniqueName('titleText'))
+            if self.titleSeq is not None:
+                self.titleSeq.finish()
+                self.titleSeq = None
             self.smallTitleText.setText(description)
             self.titleText.setText(description)
             self.titleText.setColor(Vec4(*self.titleColor))
             self.titleText.setFg(self.titleColor)
             titleSeq = None
-            titleSeq = Task.sequence(Task.Task(self.hideSmallTitleTextTask), Task.Task(self.showTitleTextTask), Task.pause(0.1), Task.pause(3.0), self.titleText.lerpColor(Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0), 0.5))
+            titleSeq = Sequence(Func(self.hideSmallTitleText), Func(self.showTitleText), Wait(3.1), LerpColorInterval(self.titleText, 0.5, Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], self.titleColor[3]), startColor=Vec4(self.titleColor[0], self.titleColor[1], self.titleColor[2], 0.0)))
             if titleSeq:
-                seq = Task.sequence(titleSeq)
-            taskMgr.add(seq, self.uniqueName('titleText'))
+                self.titleSeq = Sequence(titleSeq)
+            self.titleSeq.start()
 
-    def showTitleTextTask(self, task):
+    def showTitleText(self):
         self.titleText.show()
-        return Task.done
 
-    def hideTitleTextTask(self, task):
+    def hideTitleText(self):
         if self.titleText:
             self.titleText.hide()
-        return Task.done
 
-    def showSmallTitleTask(self, task):
+    def showSmallTitle(self):
         if self.titleText:
             self.titleText.hide()
         self.smallTitleText.show()
-        return Task.done
 
-    def hideSmallTitleTextTask(self, task):
+    def hideSmallTitleText(self):
         if self.smallTitleText:
             self.smallTitleText.hide()
-        return Task.done
 
     def startOuch(self, ouchLevel, period = 2):
         self.notify.debug('startOuch %s' % ouchLevel)
