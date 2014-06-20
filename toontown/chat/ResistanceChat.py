@@ -20,7 +20,7 @@ RESISTANCE_DANCE = 3
 allowedResistanceMessages = []
 if config.GetBool('want-resistance-toonup', True):
     allowedResistanceMessages.append(RESISTANCE_TOONUP)
-if config.GetBool('want-resistance-restock'. True):
+if config.GetBool('want-resistance-restock', True):
     allowedResistanceMessages.append(RESISTANCE_RESTOCK)
 if config.GetBool('want-resistance-money', True):
     allowedResistanceMessages.append(RESISTANCE_MONEY)
