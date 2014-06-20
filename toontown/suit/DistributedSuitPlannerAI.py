@@ -337,7 +337,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if not self.buildingMgr:
             return False
         numSuitBuildings = len(self.buildingMgr.getSuitBlocks())
-        if int(random.random() * 100) < self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_BWEIGHT]:
+        if (random.random() * 100) < SuitBuildingGlobals.buildingChance[self.zoneId]:
             bmax = SuitBuildingGlobals.buildingMinMax[self.zoneId][1]
             if ZoneUtil.isWelcomeValley(self.zoneId):
                 bmax = 0
