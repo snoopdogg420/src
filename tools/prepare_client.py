@@ -22,6 +22,10 @@ parser.add_argument('--build-mfs', action='store_true',
                     help='When present, multifiles will be built.')
 parser.add_argument('--resources-dir', default='../resources',
                     help='The directory of the Toontown Infinite resources.')
+parser.add_argument('--include', '-i', action='append',
+                    help='Explicitly include this file in the build.')
+parser.add_argument('--exclude', '-x', action='append',
+                    help='Explicitly exclude this file from the build.')
 parser.add_argument('modules', nargs='*', default=['shared', 'infinite'],
                     help='The Toontown Infinite modules to be included in the build.')
 args = parser.parse_args()
@@ -57,14 +61,6 @@ serverVersion = args.server_ver.replace('REVISION', revision)
 print 'serverVersion = {0}'.format(serverVersion)
 
 # Copy the provided Toontown Infinite modules:
-
-# NonRepeatableRandomSourceUD.py, and NonRepeatableRandomSourceAI.py are
-# required to be included. This is because they are explicitly imported by the
-# DC file:
-includes = ('NonRepeatableRandomSourceUD.py', 'NonRepeatableRandomSourceAI.py')
-
-# This is a list of explicitly excluded files:
-excludes = ('ServiceStart.py')
 
 def minify(f):
     """
@@ -111,14 +107,14 @@ for module in args.modules:
         if not os.path.exists(outputDir):
             os.mkdir(outputDir)
         for filename in files:
-            if filename not in includes:
+            if filename not in args.include:
                 if not filename.endswith('.py'):
                     continue
                 if filename.endswith('UD.py'):
                     continue
                 if filename.endswith('AI.py'):
                     continue
-                if filename in excludes:
+                if filename in args.exclude:
                     continue
             with open(os.path.join(root, filename), 'r') as f:
                 data = minify(f)
