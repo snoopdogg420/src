@@ -17,7 +17,8 @@ Preparing the client for building is quite simple when using the ```prepare_clie
     usage: prepare_client.py [-h] [--distribution DISTRIBUTION]
                              [--build-dir BUILD_DIR] [--src-dir SRC_DIR]
                              [--server-ver SERVER_VER] [--build-mfs]
-                             [--resources-dir RESOURCES_DIR]
+                             [--resources-dir RESOURCES_DIR] [--include INCLUDE]
+                             [--exclude EXCLUDE]
                              [modules [modules ...]]
     
     positional arguments:
@@ -37,9 +38,16 @@ Preparing the client for building is quite simple when using the ```prepare_clie
       --build-mfs           When present, multifiles will be built.
       --resources-dir RESOURCES_DIR
                             The directory of the Toontown Infinite resources.
+      --include INCLUDE, -i INCLUDE
+                            Explicitly include this file in the build.
+      --exclude EXCLUDE, -x EXCLUDE
+                            Explicitly exclude this file from the build.
 
 ## Example ##
 
     ppython -m prepare_client --distribution devdist --build-dir build --src-dir ..
                               --server-ver infinite-REVISION --build-mfs
                               --resources-dir ../resources otp toontown
+                              --include NonRepeatableRandomSourceUD.py
+                              --include NonRepeatableRandomSourceAI.py
+                              --exclude ServiceStart.py
