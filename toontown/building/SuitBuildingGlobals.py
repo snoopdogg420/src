@@ -205,3 +205,27 @@ buildingMinMax = {
     ToontownGlobals.CashbotHQ: (0, 0),
     ToontownGlobals.LawbotHQ: (0, 0)
 }
+
+buildingChance = {
+    ToontownGlobals.SillyStreet: config.GetFloat('silly-street-building-chance', 2.0),
+    ToontownGlobals.LoopyLane: config.GetFloat('loopy-lane-building-chance', 2.0),
+    ToontownGlobals.PunchlinePlace: config.GetFloat('punchline-place-building-chance', 2.0),
+    ToontownGlobals.BarnacleBoulevard: config.GetFloat('barnacle-boulevard-building-chance', 75.0),
+    ToontownGlobals.SeaweedStreet: config.GetFloat('seaweed-street-building-chance', 75.0),
+    ToontownGlobals.LighthouseLane: config.GetFloat('lighthouse-lane-building-chance', 75.0),
+    ToontownGlobals.ElmStreet: config.GetFloat('elm-street-building-chance', 90.0),
+    ToontownGlobals.MapleStreet: config.GetFloat('maple-street-building-chance', 90.0),
+    ToontownGlobals.OakStreet: config.GetFloat('oak-street-building-chance', 90.0),
+    ToontownGlobals.AltoAvenue: config.GetFloat('alto-avenue-building-chance', 95.0),
+    ToontownGlobals.BaritoneBoulevard: config.GetFloat('baritone-boulevard-building-chance', 95.0),
+    ToontownGlobals.TenorTerrace: config.GetFloat('tenor-terrace-building-chance', 95.0),
+    ToontownGlobals.WalrusWay: config.GetFloat('walrus-way-building-chance', 100.0),
+    ToontownGlobals.SleetStreet: config.GetFloat('sleet-street-building-chance', 100.0),
+    ToontownGlobals.PolarPlace: config.GetFloat('polar-place-building-chance', 100.0),
+    ToontownGlobals.LullabyLane: config.GetFloat('lullaby-lane-building-chance', 100.0),
+    ToontownGlobals.PajamaPlace: config.GetFloat('pajama-place-building-chance', 100.0),
+    ToontownGlobals.SellbotHQ: 0.0,
+    ToontownGlobals.SellbotFactoryExt: 0.0,
+    ToontownGlobals.CashbotHQ: 0.0,
+    ToontownGlobals.LawbotHQ: 0.0
+}
