@@ -69,7 +69,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.nerfed = ToontownGlobals.SELLBOT_NERF_HOLIDAY in base.cr.newsManager.getHolidayIdList()
         self.localToonPromoted = True
         self.resetMaxDamage()
-        return
 
     def announceGenerate(self):
         global OneBossCog
@@ -120,10 +119,9 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.loadEnvironment()
         self.__makeCagedToon()
         self.__loadMopaths()
-        if OneBossCog != None:
+        if OneBossCog is not None:
             self.notify.warning('Multiple BossCogs visible.')
         OneBossCog = self
-        return
 
     def disable(self):
         global OneBossCog
@@ -153,7 +151,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
         if OneBossCog == self:
             OneBossCog = None
-        return
 
     def resetMaxDamage(self):
         if self.nerfed:
@@ -186,7 +183,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     def __gotDoobers(self, doobers):
         self.dooberRequest = None
         self.doobers = doobers
-        return
 
     def setBossDamage(self, bossDamage, recoverRate, timestamp):
         recoverStartTime = globalClockDelta.networkToLocalTime(timestamp)
@@ -220,7 +216,10 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.cagedToon.reparentTo(self.cage)
         self.cagedToon.setPosHpr(0, -2, 0, 180, 0, 0)
         self.cagedToon.loop('neutral')
-        touch = CollisionPolygon(Point3(-3.0382, 3.0382, -1), Point3(3.0382, 3.0382, -1), Point3(3.0382, -3.0382, -1), Point3(-3.0382, -3.0382, -1))
+        touch = CollisionPolygon(
+            Point3(-3.0382, 3.0382, -1), Point3(3.0382, 3.0382, -1),
+            Point3(3.0382, -3.0382, -1), Point3(-3.0382, -3.0382, -1))
+        touch.setTangible(False)
         touchNode = CollisionNode('Cage')
         touchNode.setCollideMask(ToontownGlobals.WallBitmask)
         touchNode.addSolid(touch)
@@ -231,7 +230,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             self.cagedToon.removeActive()
             self.cagedToon.delete()
             self.cagedToon = None
-        return
 
     def __walkToonToPromotion(self, toonId, delay, mopath, track, delayDeletes):
         toon = base.cr.doId2do.get(toonId)
@@ -490,13 +488,11 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             self.onscreenMessage.destroy()
             self.onscreenMessage = None
         self.onscreenMessage = DirectLabel(text=text, text_fg=VBase4(1, 1, 1, 1), text_align=TextNode.ACenter, relief=None, pos=(0, 0, 0.35), scale=0.1)
-        return
 
     def __clearOnscreenMessage(self):
         if self.onscreenMessage:
             self.onscreenMessage.destroy()
             self.onscreenMessage = None
-        return
 
     def __showWaitingMessage(self, task):
         self.__showOnscreenMessage(TTLocalizer.BuildingWaitingForVictors)
@@ -507,12 +503,10 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             self.cageShadow.setPos(0, 77.9, 18)
             self.cageShadow.setColorScale(1, 1, 1, 0.6)
         self.cageShadow.reparentTo(render)
-        return
 
     def __removeCageShadow(self):
         if self.cageShadow != None:
             self.cageShadow.detachNode()
-        return
 
     def setCageIndex(self, cageIndex):
         self.cageIndex = cageIndex
@@ -726,7 +720,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         else:
             cageIndex = 0
         self.setCageIndex(cageIndex)
-        return
 
     def exitBattleOne(self):
         DistributedBossCog.DistributedBossCog.exitBattleOne(self)
@@ -826,7 +819,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
             cageIndex = 2
         self.setCageIndex(cageIndex)
         base.playMusic(self.battleTwoMusic, looping=1, volume=0.9)
-        return
 
     def exitBattleTwo(self):
         intervalName = self.uniqueName('cageDrop')
@@ -921,7 +913,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         taskMgr.remove(taskName)
         self.battleThreeMusicTime = self.battleThreeMusic.getTime()
         self.battleThreeMusic.stop()
-        return
 
     def enterNearVictory(self):
         self.cleanupIntervals()
@@ -1212,7 +1203,6 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         if self.strafeInterval:
             self.strafeInterval.finish()
             self.strafeInterval = None
-        return
 
     def doStrafe(self, side, direction):
         gearRoot = self.rotateNode.attachNewNode('gearRoot')
