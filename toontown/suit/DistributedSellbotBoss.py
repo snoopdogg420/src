@@ -219,7 +219,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         touch = CollisionPolygon(
             Point3(-3.0382, 3.0382, -1), Point3(3.0382, 3.0382, -1),
             Point3(3.0382, -3.0382, -1), Point3(-3.0382, -3.0382, -1))
-        touch.setTangible(False)
+        touch.setTangible(0)
         touchNode = CollisionNode('Cage')
         touchNode.setCollideMask(ToontownGlobals.WallBitmask)
         touchNode.addSolid(touch)
