@@ -7,8 +7,8 @@ set /P ttiUsername="Username (DEFAULT: username): " || ^
 set ttiUsername=username
 set ttiPassword=password
 set TTI_PLAYCOOKIE=%ttiUsername%
-set /P TTI_GAMESERVER="Gameserver (DEFAULT: 192.99.21.164): " || ^
-set TTI_GAMESERVER=192.99.21.164
+set /P TTI_GAMESERVER="Gameserver (DEFAULT: 192.99.200.107): " || ^
+set TTI_GAMESERVER=192.99.200.107
 
 echo ===============================
 echo Starting Toontown Infinite...
