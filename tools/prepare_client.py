@@ -133,19 +133,19 @@ with open(os.path.join(args.src_dir, 'config', configFileName)) as f:
     configData.append(data.replace('SERVER_VERSION', serverVersion))
 print 'Using config file: {0}'.format(configFileName)
 
-# Next, we need the (stripped) DC file:
-dcFile = DCFile()
+# Next, we need the DC file:
+dcData = ''
 filepath = os.path.join(args.src_dir, 'astron/dclass')
 for filename in os.listdir(filepath):
     if filename.endswith('.dc'):
-        dcFile.read(Filename.fromOsSpecific(os.path.join(filepath, filename)))
-dcStream = StringStream()
-dcFile.write(dcStream, True)
-data = dcStream.getData()
-for line in data.split('\n'):
-    if 'import' in line:
-        data = data.replace(line + '\n', '')
-dcData = data[1:]
+        fullpath = str(Filename.fromOsSpecific(os.path.join(filepath, filename)))
+        print 'Reading {0}...'.format(fullpath)
+        with open(fullpath, 'r') as f:
+            data = f.read()
+            for line in data.split('\n'):
+                if 'import' in line:
+                    data = data.replace(line + '\n', '')
+            dcData += data
 
 # Now, collect our timezone info:
 zoneInfo = {}
@@ -159,7 +159,7 @@ CONFIG = %r
 DC = %r
 ZONEINFO = %r'''
 with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
-    f.write(gameData % (configData, dcData, zoneInfo))
+    f.write(gameData % (configData, dcData.strip(), zoneInfo))
 
 
 def getDirectoryMD5Hash(directory):
@@ -211,7 +211,7 @@ if args.build_mfs:
         filename = phase + '.mf'
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
-        os.system('multify -c -f {0} {1}'.format(filepath, phase))
+        os.system('multify -c -f "{0}" "{1}"'.format(filepath, phase))
         RESOURCES[phase] = phaseMd5
     with open('local-patcher.ver', 'w') as f:
         f.write('RESOURCES = %r' % RESOURCES)
