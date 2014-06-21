@@ -50,6 +50,22 @@ ai-sleep 0.01
 # Coverage
 want-pstats 0
 
+# Egg ObjectTypes...
+egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }
+egg-object-type-trigger <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend intangible }
+egg-object-type-sphere <Scalar> collide-mask { 0x01 } <Collide> { Sphere descend }
+egg-object-type-trigger-sphere <Scalar> collide-mask { 0x01 } <Collide> { Sphere descend intangible }
+egg-object-type-floor <Scalar> collide-mask { 0x02 } <Collide> { Polyset descend }
+egg-object-type-dupefloor <Scalar> collide-mask { 0x02 } <Collide> { Polyset keep descend }
+egg-object-type-camera-collide <Scalar> collide-mask { 0x04 } <Collide> { Polyset descend }
+egg-object-type-camera-collide-sphere <Scalar> collide-mask { 0x04 } <Collide> { Sphere descend }
+egg-object-type-camera-barrier <Scalar> collide-mask { 0x05 } <Collide> { Polyset descend }
+egg-object-type-camera-barrier-sphere <Scalar> collide-mask { 0x05 } <Collide> { Sphere descend }
+
+# The modelers occasionally put <ObjectType> { model } instead of <Model> { 1 }...
+egg-object-type-model <Model> { 1 }
+egg-object-type-dcs <DCS> { 1 }
+
 # Safe zones...
 want-safe-zones #t
 want-toontown-central #t
@@ -171,6 +187,10 @@ want-checkers #t
 want-chinese-checkers #t
 want-find-four #f
 
+# True friends...
+parent-password-set #t
+allow-secret-chat #t
+
 # Core features...
 want-fishing #t
 want-housing #t
@@ -193,10 +213,6 @@ want-talkative-tyler #f
 want-dev #f
 want-tailor-jellybeans #f
 want-instant-parties #t
-
-# True Friends
-parent-password-set #t
-allow-secret-chat #t
 
 # Temporary...
 cog-thief-ortho 1
