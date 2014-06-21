@@ -47,7 +47,8 @@ Preparing the client for building is quite simple when using the ```prepare_clie
 
     ppython -m prepare_client --distribution devdist --build-dir build --src-dir ..
                               --server-ver infinite-REVISION --build-mfs
-                              --resources-dir ../resources otp toontown
+                              --resources-dir ../resources
                               --include NonRepeatableRandomSourceUD.py
                               --include NonRepeatableRandomSourceAI.py
                               --exclude ServiceStart.py
+                              otp toontown
