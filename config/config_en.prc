@@ -115,7 +115,7 @@ loopy-lane-building-max 3
 loopy-lane-building-chance 2.0
 punchline-place-building-min 0
 punchline-place-building-max 3
-punchline-place-building-change 2.0
+punchline-place-building-chance 2.0
 barnacle-boulevard-building-min 1
 barnacle-boulevard-building-max 5
 barnacle-boulevard-building-chance 75.0
