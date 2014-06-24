@@ -3,7 +3,7 @@ import __builtin__
 
 
 if __debug__:
-    loadPrcFile('config/config_dev.prc')
+    loadPrcFile('config/release/dev.prc')
 
 
 from otp.settings.Settings import Settings

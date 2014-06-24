@@ -16,5 +16,5 @@ echo Password: %ttiPassword%
 echo Gameserver: %TTI_GAMESERVER%
 echo ===============================
 
-%PPYTHON_PATH% -m toontown.toonbase.ToontownStartRemoteDB
+%PPYTHON_PATH% -m toontown.toonbase.ClientStartRemoteDB
 pause
