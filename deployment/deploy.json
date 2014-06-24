@@ -1,0 +1,8 @@
+{
+  "distribution": "test",
+  "branch": "release/test",
+  "resources-branch": "release/test",
+  "version": "1.0.0.0",
+  "version-prefix": "test-v",
+  "config": "release/config_test.prc"
+}
