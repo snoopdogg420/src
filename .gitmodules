@@ -1,0 +1,3 @@
+[submodule "resources"]
+	path = resources
+	url = https://github.com/gr33nmyth/ToontownInfiniteResources.git
