@@ -3,29 +3,15 @@ window-title Toontown Infinite
 win-origin -1 -1
 
 # Filenames/filepaths...
+icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
-icon-filename phase_3/etc/icon.ico
 preferences-filename preferences.gz
 
+model-path resources
 model-cache-models #f
 model-cache-textures #f
 
 default-model-extension .bam
-
-# Virtual file system...
-vfs-mount resources/phase_3.mf /
-vfs-mount resources/phase_3.5.mf /
-vfs-mount resources/phase_4.mf /
-vfs-mount resources/phase_5.mf /
-vfs-mount resources/phase_5.5.mf /
-vfs-mount resources/phase_6.mf /
-vfs-mount resources/phase_7.mf /
-vfs-mount resources/phase_8.mf /
-vfs-mount resources/phase_9.mf /
-vfs-mount resources/phase_10.mf /
-vfs-mount resources/phase_11.mf /
-vfs-mount resources/phase_12.mf /
-vfs-mount resources/phase_13.mf /
 
 # Audio...
 audio-library-name p3fmod_audio
@@ -33,12 +19,18 @@ audio-library-name p3fmod_audio
 # Database...
 account-server-endpoint https://www.toontowninfinite.com/api/
 accountdb-type remote
+account-bridge-filename astron/databases/account-bridge.db
+account-server-min-access-level 100
 
 # Server...
 server-force-ssl 0
 server-port 7198
 server-version SERVER_VERSION
 server-timezone US/Eastern
+
+# DClass files (in reverse order)...
+dc-file astron/dclass/toon.dc
+dc-file astron/dclass/otp.dc
 
 # Performance
 hardware-animated-vertices #t
@@ -194,19 +186,19 @@ allow-secret-chat #t
 # Core features...
 want-fishing #t
 want-housing #t
-want-pets #t
+want-pets #f
 want-karts #t
 want-parties #f
 want-cogdominiums #f
 want-boarding-groups #t
-want-achievements #t
+want-achievements #f
 
 # Optional...
-show-total-population #f
+show-total-population #t
 want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
-want-long-pattern-game #t
+want-long-pattern-game #f
 want-talkative-tyler #f
 
 # Developer options...
@@ -215,5 +207,4 @@ want-tailor-jellybeans #f
 want-instant-parties #t
 
 # Temporary...
-cog-thief-ortho 1
 want-old-fireworks #t

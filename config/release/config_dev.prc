@@ -3,8 +3,8 @@ window-title Toontown Infinite
 win-origin -1 -1
 
 # Filenames/filepaths...
+icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
-icon-filename phase_3/etc/icon.ico
 preferences-filename preferences.gz
 
 model-path resources
@@ -20,6 +20,7 @@ audio-library-name p3fmod_audio
 account-server-endpoint https://www.toontowninfinite.com/api/
 accountdb-type developer
 account-bridge-filename astron/databases/account-bridge.db
+account-server-min-access-level 600
 
 # Server...
 server-force-ssl 0
@@ -29,7 +30,7 @@ server-timezone US/Eastern
 
 eventlog-host 127.0.0.1
 
-# DC classes...
+# DClass files (in reverse order)...
 dc-file astron/dclass/toon.dc
 dc-file astron/dclass/otp.dc
 
@@ -187,19 +188,19 @@ allow-secret-chat #t
 # Core features...
 want-fishing #t
 want-housing #t
-want-pets #t
+want-pets #f
 want-karts #t
 want-parties #f
 want-cogdominiums #f
 want-boarding-groups #t
-want-achievements #t
+want-achievements #f
 
 # Optional...
-show-total-population #f
+show-total-population #t
 want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
-want-long-pattern-game #t
+want-long-pattern-game #f
 want-talkative-tyler #f
 
 # Developer options...
@@ -208,5 +209,4 @@ want-tailor-jellybeans #f
 want-instant-parties #t
 
 # Temporary...
-cog-thief-ortho 1
 want-old-fireworks #t
