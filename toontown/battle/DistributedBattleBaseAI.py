@@ -76,6 +76,7 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         self.numNPCAttacks = 0
         self.npcAttacks = {}
         self.pets = {}
+        self.fireCount = 0
         self.fsm = ClassicFSM.ClassicFSM('DistributedBattleAI', [State.State('FaceOff', self.enterFaceOff, self.exitFaceOff, ['WaitForInput', 'Resume']),
          State.State('WaitForJoin', self.enterWaitForJoin, self.exitWaitForJoin, ['WaitForInput', 'Resume']),
          State.State('WaitForInput', self.enterWaitForInput, self.exitWaitForInput, ['MakeMovie', 'Resume']),
@@ -1050,7 +1051,12 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         elif track == PASS:
             self.toonAttacks[toonId] = getToonAttack(toonId, track=PASS)
         elif track == FIRE:
-            self.toonAttacks[toonId] = getToonAttack(toonId, track=FIRE, target=av)
+            self.setFireCount(self.fireCount + 1)
+            if simbase.air.doId2do[toonId].getPinkSlips() < self.getFireCount() + 1:
+                print 'Avatar does not have enough pink slips!'
+                self.toonAttacks[toonId] = getToonAttack(toonId, track=PASS)
+            else:
+                self.toonAttacks[toonId] = getToonAttack(toonId, track=FIRE, target=av)
         else:
             if not self.validate(toonId, track >= 0 and track <= MAX_TRACK_INDEX, 'requestAttack: invalid track %s' % track):
                 return
@@ -1817,6 +1823,12 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         num = self.serialNum
         self.serialNum += 1
         return num
+        
+    def setFireCount(self, amount):
+        self.fireCount = amount
+        
+    def getFireCount(self):
+        return self.fireCount
 
 @magicWord(category=CATEGORY_ADMINISTRATOR)
 def skipMovie():
