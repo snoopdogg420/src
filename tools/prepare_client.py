@@ -1,8 +1,6 @@
 import argparse
 import hashlib
 import os
-import shutil
-import subprocess
 
 from pandac.PandaModules import *
 import pytz
@@ -10,57 +8,38 @@ import pytz
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--distribution', default='en',
-                    help='The distribution token.')
+                    help='The distribution string.')
 parser.add_argument('--build-dir', default='build',
                     help='The directory in which to store the build files.')
 parser.add_argument('--src-dir', default='..',
                     help='The directory of the Toontown Infinite source code.')
-parser.add_argument('--server-ver', default='tti-REVISION',
-                    help='The server version of this build.\n'
-                         'REVISION tokens will be replaced with the current Git revision string.')
+parser.add_argument('--server-ver', default='infinite-dev',
+                    help='The server version of this build.')
 parser.add_argument('--build-mfs', action='store_true',
-                    help='When present, multifiles will be built.')
+                    help='When present, the resource multifiles will be built.')
 parser.add_argument('--resources-dir', default='../resources',
                     help='The directory of the Toontown Infinite resources.')
+parser.add_argument('--config-dir', default='../config/release',
+                    help='The directory of the Toontown Infinite configuration files.')
 parser.add_argument('--include', '-i', action='append',
                     help='Explicitly include this file in the build.')
 parser.add_argument('--exclude', '-x', action='append',
                     help='Explicitly exclude this file from the build.')
-parser.add_argument('modules', nargs='*', default=['shared', 'infinite'],
+parser.add_argument('--vfs', action='append',
+                    help='Add this file to the virtual file system at runtime.')
+parser.add_argument('modules', nargs='*', default=['otp', 'toontown'],
                     help='The Toontown Infinite modules to be included in the build.')
 args = parser.parse_args()
 
 print 'Preparing the client...'
 
-# Create a clean build directory for us to store our build material:
+# If necessary, create a directory to store the build files in:
 if not os.path.exists(args.build_dir):
     os.mkdir(args.build_dir)
 print 'Build directory = {0}'.format(args.build_dir)
 
-# This next part is only required if the invoker wants to include the Git
-# revision string in their server version:
-revision = ''
-if 'REVISION' in args.server_ver:
-    # If we don't have Git on our path, let's attempt to add it:
-    paths = (
-        '{0}\\Git\\bin'.format(os.environ['ProgramFiles']),
-        '{0}\\Git\\cmd'.format(os.environ['ProgramFiles'])
-    )
-    for path in paths:
-        if path not in os.environ['PATH']:
-            os.environ['PATH'] += ';' + path
-
-    # Now, let's get that revision string:
-    revision = subprocess.Popen(
-        ['git', 'rev-parse', 'HEAD'],
-        stdout=subprocess.PIPE,
-        cwd=args.src_dir).stdout.read().strip()[:7]
-
-# Replace any REVISION tokens in the server version:
-serverVersion = args.server_ver.replace('REVISION', revision)
-print 'serverVersion = {0}'.format(serverVersion)
-
 # Copy the provided Toontown Infinite modules:
+
 
 def minify(f):
     """
@@ -100,6 +79,7 @@ def minify(f):
 
     return data
 
+
 for module in args.modules:
     print 'Writing module...', module
     for root, folders, files in os.walk(os.path.join(args.src_dir, module)):
@@ -126,12 +106,20 @@ for module in args.modules:
 # PRC file data, (stripped) DC file, and time zone info.
 
 # First, we need the PRC file data:
-configFileName = 'config_{0}.prc'.format(args.distribution)
+configFilePath = os.path.join(args.config_dir, '{0}.prc'.format(args.distribution))
+print 'Using configuration file: {0}'.format(configFilePath)
 configData = []
-with open(os.path.join(args.src_dir, 'config', configFileName)) as f:
-    data = f.read()
-    configData.append(data.replace('SERVER_VERSION', serverVersion))
-print 'Using config file: {0}'.format(configFileName)
+with open(configFilePath) as f:
+    data = f.readlines()
+    for i, line in enumerate(data):
+        if 'server-version' in line:
+            data[i] = 'server-version {0}'.format(args.server_ver)
+            print 'serverVersion = {0}'.format(args.server_ver)
+    data += '\n# Virtual file system...\nmodel-path /\n'
+    for filepath in args.vfs:
+        data += 'vfs-mount {0} /\n'.format(filepath)
+    data = '\n'.join(data)
+    configData.append(data)
 
 # Next, we need the DC file:
 dcData = ''

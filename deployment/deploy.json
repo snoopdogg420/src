@@ -4,5 +4,20 @@
   "resources-branch": "release/test",
   "version": "1.0.0.0",
   "version-prefix": "test-v",
-  "config": "release/config_test.prc"
+  "config-dir": "../config/release",
+  "vfs-mounts": [
+    "resources/phase_3.mf",
+    "resources/phase_3.5.mf",
+    "resources/phase_4.mf",
+    "resources/phase_5.mf",
+    "resources/phase_5.5.mf",
+    "resources/phase_6.mf",
+    "resources/phase_7.mf",
+    "resources/phase_8.mf",
+    "resources/phase_9.mf",
+    "resources/phase_10.mf",
+    "resources/phase_11.mf",
+    "resources/phase_12.mf",
+    "resources/phase_13.mf"
+  ]
 }
