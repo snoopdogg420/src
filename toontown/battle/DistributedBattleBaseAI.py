@@ -1050,7 +1050,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         elif track == PASS:
             self.toonAttacks[toonId] = getToonAttack(toonId, track=PASS)
         elif track == FIRE:
-            print 'You are fired!'
             self.toonAttacks[toonId] = getToonAttack(toonId, track=FIRE, target=av)
         else:
             if not self.validate(toonId, track >= 0 and track <= MAX_TRACK_INDEX, 'requestAttack: invalid track %s' % track):
