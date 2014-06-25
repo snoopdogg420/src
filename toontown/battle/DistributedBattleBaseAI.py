@@ -1051,11 +1051,12 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         elif track == PASS:
             self.toonAttacks[toonId] = getToonAttack(toonId, track=PASS)
         elif track == FIRE:
-            self.setFireCount(self.fireCount + 1)
             if simbase.air.doId2do[toonId].getPinkSlips() < self.getFireCount() + 1:
-                print 'Avatar does not have enough pink slips!'
+                #Not allowed to fire, force them to pass >:D
                 self.toonAttacks[toonId] = getToonAttack(toonId, track=PASS)
             else:
+                #Allowed to fire
+                self.setFireCount(self.fireCount + 1)
                 self.toonAttacks[toonId] = getToonAttack(toonId, track=FIRE, target=av)
         else:
             if not self.validate(toonId, track >= 0 and track <= MAX_TRACK_INDEX, 'requestAttack: invalid track %s' % track):
