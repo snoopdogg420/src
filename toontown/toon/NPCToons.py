@@ -175,10 +175,9 @@ def createNpcsInZone(air, zoneId):
     npcs = []
     canonicalZoneId = ZoneUtil.getCanonicalZoneId(zoneId)
     npcIdList = zone2NpcDict.get(canonicalZoneId, [])
-    for x in npcIdList:
-        if npcIdList.count(x) > 1:
-            #Trying to create the same NPC twice...
-            npcIdList.remove(x)
+    for npcId in npcIdList:
+        while npcIdList.count(npcId) > 1:
+            npcIdList.remove(npcId)
     for i in xrange(len(npcIdList)):
         npcId = npcIdList[i]
         npcDesc = NPCToonDict.get(npcId)
