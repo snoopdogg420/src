@@ -175,6 +175,9 @@ def createNpcsInZone(air, zoneId):
     npcs = []
     canonicalZoneId = ZoneUtil.getCanonicalZoneId(zoneId)
     npcIdList = zone2NpcDict.get(canonicalZoneId, [])
+    for npcId in npcIdList:
+        while npcIdList.count(npcId) > 1:
+            npcIdList.remove(npcId)
     for i in xrange(len(npcIdList)):
         npcId = npcIdList[i]
         npcDesc = NPCToonDict.get(npcId)
