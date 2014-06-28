@@ -124,6 +124,7 @@ sys.stdout.flush()
 serverVersion = deployData['version-prefix'] + deployData['version']
 configDir = deployData['config-dir']
 vfsMounts = deployData['vfs-mounts']
+modules = deployData['modules']
 
 print 'Platform:', platform
 print 'Distribution:', distribution
@@ -134,21 +135,23 @@ print 'Configuration directory:', configDir
 print 'Virtual file system ({0}):'.format(len(vfsMounts))
 for vfsMount in vfsMounts:
     print '  {0}'.format(vfsMount)
+print 'Modules ({0}):'.format(len(modules))
+for module in modules:
+    print '  {0}'.format(module)
 
-cmd = ''
-if sys.platform == 'win32':
-    cmd += ppythonPath + ' '
-cmd += ('../tools/prepare_client.py'
-        ' --distribution ' + distribution +
-        ' --build-dir build' +
-        ' --src-dir ..' +
-        ' --server-ver ' + serverVersion +
-        ' --build-mfs' +
-        ' --resources-dir ../resources' +
-        ' --config-dir ' + configDir +
-        ' --include NonRepeatableRandomSourceUD.py' +
-        ' --include NonRepeatableRandomSourceAI.py' +
-        ' --exclude ServiceStart.py')
+cmd = (ppythonPath + ' ../tools/prepare_client.py'
+       ' --distribution ' + distribution +
+       ' --build-dir build' +
+       ' --src-dir src' +
+       ' --server-ver ' + serverVersion +
+       ' --build-mfs' +
+       ' --resources-dir src/resources' +
+       ' --config-dir ' + configDir +
+       ' --include NonRepeatableRandomSourceUD.py' +
+       ' --include NonRepeatableRandomSourceAI.py' +
+       ' --exclude ServiceStart.py')
 for vfsMount in vfsMounts:
     cmd += ' --vfs ' + vfsMount
+for module in modules:
+    cmd += ' ' + module
 os.system(cmd)

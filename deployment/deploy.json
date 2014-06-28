@@ -20,5 +20,6 @@
     "resources/phase_11.mf",
     "resources/phase_12.mf",
     "resources/phase_13.mf"
-  ]
+  ],
+  "modules": ["otp", "toontown"]
 }
