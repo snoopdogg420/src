@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 import xml.etree.ElementTree as ET
 import argparse
 import hashlib
@@ -120,7 +121,7 @@ for filename, size, hash in resourcesFiles:
     _size.text = str(size)
     _hash = ET.SubElement(_filename, 'hash')
     _hash.text = str(hash)
-	
+
 # Finally, write the product:
 filepath = os.path.join(args.dest_dir, 'patcher.xml')
 ET.ElementTree(patcherRoot).write(filepath)

@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 # Cleanse the "../" directory of the following:
 #     - all files with a .pyc extension.
 #     - all "trash files" listed below:
@@ -29,4 +30,3 @@ for root, folders, files in os.walk('.'):
             delete(filepath)
 
 print 'Done.'
-os.system('pause')
