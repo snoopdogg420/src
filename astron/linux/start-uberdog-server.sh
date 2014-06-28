@@ -11,8 +11,8 @@ ASTRON_IP="127.0.0.1:7199"
 EVENTLOGGER_IP="127.0.0.1:7197"
 
 # Get the user input:
-read -p "Base channel (DEFAULT: 401000000): " BASE_CHANNEL
-BASE_CHANNEL=${BASE_CHANNEL:-401000000}
+read -p "Base channel (DEFAULT: 1000000): " BASE_CHANNEL
+BASE_CHANNEL=${BASE_CHANNEL:-1000000}
 
 echo "==============================="
 echo "Starting Toontown Infinite UberDOG server..."
@@ -26,5 +26,4 @@ echo "==============================="
 
 $PPYTHON_PATH -m toontown.uberdog.ServiceStart --base-channel $BASE_CHANNEL \
               --max-channels $MAX_CHANNELS --stateserver $STATESERVER \
-              --astron-ip $ASTRON_IP --eventlogger-ip $EVENTLOGGER_IP \
-              --district-name $DISTRICT_NAME
+              --astron-ip $ASTRON_IP --eventlogger-ip $EVENTLOGGER_IP

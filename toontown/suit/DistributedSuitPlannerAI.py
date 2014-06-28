@@ -129,16 +129,16 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         for p in self.frontdoorPointList:
             blockNumber = p.getLandmarkBuildingIndex()
             if blockNumber < 0:
-                self.notify.warning('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
+                self.notify.debug('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
                 continue
             if blockNumber in self.buildingFrontDoors:
-                self.notify.warning('Multiple front doors for building %s in zone %s' % (blockNumber, self.zoneId))
+                self.notify.debug('Multiple front doors for building %s in zone %s' % (blockNumber, self.zoneId))
                 continue
             self.buildingFrontDoors[blockNumber] = p
         for p in self.sidedoorPointList:
             blockNumber = p.getLandmarkBuildingIndex()
             if blockNumber < 0:
-                self.notify.warning('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
+                self.notify.debug('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
                 continue
             if blockNumber in self.buildingSideDoors:
                 self.buildingSideDoors[blockNumber].append(p)
@@ -149,9 +149,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 continue
             blockNumber = bldg.getBlock()[0]
             if blockNumber not in self.buildingFrontDoors:
-                self.notify.warning('No front door for building %s in zone %s' % (blockNumber, self.zoneId))
+                self.notify.debug('No front door for building %s in zone %s' % (blockNumber, self.zoneId))
             if blockNumber not in self.buildingSideDoors:
-                self.notify.warning('No side door for building %s in zone %s' % (blockNumber, self.zoneId))
+                self.notify.debug('No side door for building %s in zone %s' % (blockNumber, self.zoneId))
 
     def countNumSuitsPerTrack(self, count):
         for suit in self.suitList:
