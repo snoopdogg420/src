@@ -177,3 +177,5 @@ cmd = (ppythonPath + ' ../tools/build_client.py' +
 for module in modules:
     cmd += ' ' + module
 os.system(cmd)
+
+os.system('./infinitecipher GameData.pyd GameData.bin')
