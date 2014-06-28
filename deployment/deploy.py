@@ -11,6 +11,16 @@ import tarfile
 
 print 'Starting the deployment process...'
 
+missingFiles = False
+for f in ('deploy.json', 'infinitecipher.exe'):
+    if sys.platform != 'win32':
+        if f.endswith('.exe'):
+            f = os.path.splitext(f)[0]
+    if f not in os.listdir('.'):
+        print 'WARNING: Missing file: {0}!'.format(f)
+        missingFiles = True
+if missingFiles:
+    sys.exit(1)
 
 print 'Reading deploy configuration...'
 with open('deploy.json', 'r') as f:
@@ -22,7 +32,7 @@ with open('../PPYTHON_PATH', 'r') as f:
 platform = deployData['platform']
 if platform not in ('win32',):  # Supported platforms
     print 'Unsupported platform:', platform
-    sys.exit(1)
+    sys.exit(2)
 
 distribution = deployData['distribution']
 
@@ -36,7 +46,7 @@ branches = subprocess.Popen(
     stdout=subprocess.PIPE).stdout.read().split()
 if branch not in branches:
     print "No local branch named:", branch
-    sys.exit(2)
+    sys.exit(3)
 if os.path.exists('deployment/src'):
     shutil.rmtree('deployment/src')
 os.mkdir('deployment/src')
@@ -85,7 +95,7 @@ branches = subprocess.Popen(
     stdout=subprocess.PIPE).stdout.read().split()
 if resourcesBranch not in branches:
     print "No local resources branch named:", resourcesBranch
-    sys.exit(2)
+    sys.exit(3)
 td = subprocess.Popen(
     ['git', 'archive', resourcesBranch],
     stdout=subprocess.PIPE).stdout.read()
@@ -125,6 +135,8 @@ serverVersion = deployData['version-prefix'] + deployData['version']
 configDir = deployData['config-dir']
 vfsMounts = deployData['vfs-mounts']
 modules = deployData['modules']
+panda3dDir = deployData['panda3d-dir']
+mainModule = deployData['main-module']
 
 print 'Platform:', platform
 print 'Distribution:', distribution
@@ -138,8 +150,10 @@ for vfsMount in vfsMounts:
 print 'Modules ({0}):'.format(len(modules))
 for module in modules:
     print '  {0}'.format(module)
+print 'Panda3D path:', panda3dDir
+print 'Main module:', mainModule
 
-cmd = (ppythonPath + ' ../tools/prepare_client.py'
+cmd = (ppythonPath + ' ../tools/prepare_client.py' +
        ' --distribution ' + distribution +
        ' --build-dir build' +
        ' --src-dir src' +
@@ -152,6 +166,14 @@ cmd = (ppythonPath + ' ../tools/prepare_client.py'
        ' --exclude ServiceStart.py')
 for vfsMount in vfsMounts:
     cmd += ' --vfs ' + vfsMount
+for module in modules:
+    cmd += ' ' + module
+os.system(cmd)
+
+cmd = (ppythonPath + ' ../tools/build_client.py' +
+       ' --panda3d-dir ' + panda3dDir +
+       ' --build-dir build' +
+       ' --main-module ' + mainModule)
 for module in modules:
     cmd += ' ' + module
 os.system(cmd)

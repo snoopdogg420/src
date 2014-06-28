@@ -21,5 +21,7 @@
     "resources/phase_12.mf",
     "resources/phase_13.mf"
   ],
-  "modules": ["otp", "toontown"]
+  "modules": ["otp", "toontown"],
+  "panda3d-dir": "C:/Panda3D-1.9.0",
+  "main-module": "toontown.toonbase.ClientStartDist"
 }
