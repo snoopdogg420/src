@@ -150,6 +150,7 @@ class DistributedBattleBldgAI(DistributedBattleBaseAI.DistributedBattleBaseAI):
         self.timer.startCallback(BUILDING_REWARD_TIMEOUT, self.serverRewardDone)
 
     def exitBuildingReward(self):
+        self.exitResume()
         pass
 
     def enterResume(self):
