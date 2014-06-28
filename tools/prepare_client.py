@@ -1,8 +1,9 @@
-import argparse
+#!/usr/bin/env python2
 import hashlib
 import os
-
 from pandac.PandaModules import *
+
+import argparse
 import pytz
 
 

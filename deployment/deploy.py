@@ -1,21 +1,21 @@
 #!/usr/bin/env python2
+import os
+import sys
+
 import StringIO
 import copy
 import json
-import os
 import shutil
 import subprocess
-import sys
 import tarfile
 
 
 print 'Starting the deployment process...'
 
 missingFiles = False
-for f in ('deploy.json', 'infinitecipher.exe'):
-    if sys.platform != 'win32':
-        if f.endswith('.exe'):
-            f = os.path.splitext(f)[0]
+for f in ('deploy.json', 'infinitecipher'):
+    if sys.platform == 'win32':
+        f += '.exe'
     if f not in os.listdir('.'):
         print 'WARNING: Missing file: {0}!'.format(f)
         missingFiles = True
@@ -26,8 +26,11 @@ print 'Reading deploy configuration...'
 with open('deploy.json', 'r') as f:
     deployData = json.load(f)
 
-with open('../PPYTHON_PATH', 'r') as f:
-    ppythonPath = f.read()
+if sys.platform == 'win32':
+    with open('../PPYTHON_PATH', 'r') as f:
+        pythonPath = f.read()
+else:
+    pythonPath = '/usr/bin/python2'
 
 platform = deployData['platform']
 if platform not in ('win32',):  # Supported platforms
@@ -65,7 +68,7 @@ for (i, ti) in enumerate(members):
     tf.extract(ti, 'deployment/src')
     percentage = int((float(i+1)/len(members)) * 100)
     sys.stdout.write(
-        '\rCollecting source code from branch:' + branch +
+        '\rCollecting source code from branch: ' + branch +
         '... {0}%'.format(percentage))
     sys.stdout.flush()
 directories.sort(key=lambda a: a.name)
@@ -112,7 +115,7 @@ for (i, ti) in enumerate(members):
     tf.extract(ti, 'src/resources')
     percentage = int((float(i+1)/len(members)) * 100)
     sys.stdout.write(
-        '\rCollecting source code from branch:' + resourcesBranch +
+        '\rCollecting source code from branch: ' + resourcesBranch +
         '... {0}%'.format(percentage))
     sys.stdout.flush()
 directories.sort(key=lambda a: a.name)
@@ -135,7 +138,6 @@ serverVersion = deployData['version-prefix'] + deployData['version']
 configDir = deployData['config-dir']
 vfsMounts = deployData['vfs-mounts']
 modules = deployData['modules']
-panda3dDir = deployData['panda3d-dir']
 mainModule = deployData['main-module']
 
 print 'Platform:', platform
@@ -150,10 +152,9 @@ for vfsMount in vfsMounts:
 print 'Modules ({0}):'.format(len(modules))
 for module in modules:
     print '  {0}'.format(module)
-print 'Panda3D path:', panda3dDir
 print 'Main module:', mainModule
 
-cmd = (ppythonPath + ' ../tools/prepare_client.py' +
+cmd = (pythonPath + ' ../tools/prepare_client.py' +
        ' --distribution ' + distribution +
        ' --build-dir build' +
        ' --src-dir src' +
@@ -170,10 +171,14 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
-cmd = (ppythonPath + ' ../tools/build_client.py' +
-       ' --panda3d-dir ' + panda3dDir +
-       ' --build-dir build' +
-       ' --main-module ' + mainModule)
+if sys.platform == 'win32':
+    output = 'GameData.pyd'
+else:
+    output = 'GameData.so'
+cmd = (pythonPath + ' ../tools/build_client.py' +
+       ' --output ' + output +
+       ' --main-module ' + mainModule +
+       ' --build-dir build')
 for module in modules:
     cmd += ' ' + module
 os.system(cmd)
