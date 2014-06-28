@@ -171,7 +171,7 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
-if sys.platform == 'win32':
+if platform == 'win32':
     output = 'GameData.pyd'
 else:
     output = 'GameData.so'
