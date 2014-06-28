@@ -1,9 +1,10 @@
 {
-  "distribution": "test",
-  "branch": "release/test",
-  "resources-branch": "release/test",
-  "version": "1.0.0.0",
-  "version-prefix": "test-v",
+  "platform": "win32",
+  "distribution": "dev",
+  "branch": "master",
+  "resources-branch": "master",
+  "version": "dev",
+  "version-prefix": "infinite-",
   "config-dir": "../config/release",
   "vfs-mounts": [
     "resources/phase_3.mf",
