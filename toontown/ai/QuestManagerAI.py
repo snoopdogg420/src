@@ -38,7 +38,7 @@ class QuestManagerAI:
             if completeStatus == Quests.COMPLETE:
                 print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
                 toon.toonUp(toon.maxHp)
-                elif Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
+                if Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
                     self.nextQuest(toon, npc, questId)
                 else:
                     npc.completeQuest(avId, questId, rewardId)

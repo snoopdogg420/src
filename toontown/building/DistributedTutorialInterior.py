@@ -19,7 +19,6 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
-        print 'Hello there im a distributedTutorialInteriorAI'
 
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
@@ -80,7 +79,6 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
                     newNP.setColorScale(self.randomGenerator.choice(self.colors[category]))
 
     def setup(self):
-        print 'Setting up Toontorial dna! :D'
         self.dnaStore = base.cr.playGame.dnaStore
         self.randomGenerator = random.Random()
         self.randomGenerator.seed(self.zoneId)
