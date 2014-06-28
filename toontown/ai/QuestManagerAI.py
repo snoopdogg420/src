@@ -32,13 +32,13 @@ class QuestManagerAI:
                 completeStatus = questClass.getCompletionStatus(toon, questDesc, npc)
             else:
                 continue
+            if isinstance(questClass, Quests.TrackChoiceQuest):
+                npc.presentTrackChoice(avId, questId, questClass.getChoices())
+                break
             if completeStatus == Quests.COMPLETE:
                 print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
                 toon.toonUp(toon.maxHp)
-                if isinstance(questClass, Quests.TrackChoiceQuest):
-                    npc.presentTrackChoice(avId, questId, questClass.getChoices())
-                    break
-                elif Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
+                if Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
                     self.nextQuest(toon, npc, questId)
                 else:
                     npc.completeQuest(avId, questId, rewardId)

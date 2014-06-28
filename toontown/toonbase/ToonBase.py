@@ -1,29 +1,32 @@
-from otp.otpbase import OTPBase
-from otp.otpbase import OTPLauncherGlobals
-from otp.otpbase import OTPGlobals
-from direct.showbase.PythonUtil import *
-import ToontownGlobals
 from direct.directnotify import DirectNotifyGlobal
-import ToontownLoader
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
+from direct.showbase.PythonUtil import *
 from direct.showbase.Transitions import Transitions
-from pandac.PandaModules import *
-from otp.nametag.ChatBalloon import ChatBalloon
-from otp.nametag import NametagGlobals
-from otp.margins.MarginManager import MarginManager
-import sys
-import os
 import math
-import tempfile
-import shutil
-import atexit
-from toontown.toonbase import ToontownAccess
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownBattleGlobals
-from toontown.launcher import ToontownDownloadWatcher
-from toontown.toontowngui import TTDialog
+import os
+from pandac.PandaModules import *
 from sys import platform
+import sys
+
+import ToontownGlobals
+import ToontownLoader
+import atexit
+import gtk
+from otp.margins.MarginManager import MarginManager
+from otp.nametag import NametagGlobals
+from otp.nametag.ChatBalloon import ChatBalloon
+from otp.otpbase import OTPBase
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLauncherGlobals
+import shutil
+import tempfile
+from toontown.launcher import ToontownDownloadWatcher
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownAccess
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toontowngui import TTDialog
+
 
 class ToonBase(OTPBase.OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonBase')
@@ -49,8 +52,8 @@ class ToonBase(OTPBase.OTPBase):
             self.resDict.setdefault(ratio, []).append(res)
 
         # Get the native width, height and ratio:
-        self.nativeWidth = displayInfo.getMaximumWindowWidth()
-        self.nativeHeight = displayInfo.getMaximumWindowHeight()
+        self.nativeWidth = gtk.gdk.screen_width()
+        self.nativeHeight = gtk.gdk.screen_height()
         self.nativeRatio = round(float(self.nativeWidth) / float(self.nativeHeight), 2)
 
         # Finally, choose the best resolution if we're either fullscreen, or
