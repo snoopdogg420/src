@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 ﻿# This is the "main" module that will start a distribution copy of
 # Toontown Infinite.
 
