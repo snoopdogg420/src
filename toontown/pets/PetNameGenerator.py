@@ -31,7 +31,7 @@ class PetNameGenerator:
                 searchPath.appendDirectory(Filename.fromOsSpecific(os.path.expandvars('toontown/src/configfiles')))
             searchPath.appendDirectory(Filename('.'))
         if __debug__:
-            filename = 'resources/phase_3/etc/'+TTLocalizer.PetNameMaster
+            filename = '../ToontownInfiniteResources/phase_3/etc/'+TTLocalizer.PetNameMaster
         else:
             filename = '/phase_3/etc/'+TTLocalizer.PetNameMaster
         input = open(filename, 'r')
