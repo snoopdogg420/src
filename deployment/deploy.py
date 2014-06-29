@@ -10,6 +10,13 @@ import subprocess
 import tarfile
 
 
+try:
+    import boto
+except ImportError:
+    print 'Missing dependency:', boto
+    print 'It is recommended that you install this using Pip.'
+
+
 print 'Starting the deployment process...'
 
 missingFiles = False
@@ -17,7 +24,7 @@ for f in ('deploy.json', 'infinitecipher'):
     if sys.platform == 'win32':
         f += '.exe'
     if f not in os.listdir('.'):
-        print 'WARNING: Missing file: {0}!'.format(f)
+        print 'Missing file:', f
         missingFiles = True
 if missingFiles:
     sys.exit(1)
@@ -135,6 +142,10 @@ sys.stdout.write('\n')
 sys.stdout.flush()
 
 serverVersion = deployData['version-prefix'] + deployData['version']
+launcherVersion = deployData['launcher-version']
+accountServer = deployData['account-server']
+clientAgent = deployData['client-agent']
+patcherIncludes = deployData['patcher-includes']
 configDir = deployData['config-dir']
 vfsMounts = deployData['vfs-mounts']
 modules = deployData['modules']
@@ -171,7 +182,7 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
-if platform == 'win32':
+if sys.platform == 'win32':
     output = 'GameData.pyd'
 else:
     output = 'GameData.so'
@@ -183,4 +194,22 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
-os.system('./infinitecipher GameData.pyd GameData.bin')
+os.chdir('build')
+os.system('../infinitecipher {0} GameData.bin'.format(output))
+
+os.chdir('..')
+if os.path.exists('dist'):
+    shutil.rmtree('dist')
+os.mkdir('dist')
+
+cmd = (pythonPath + ' ../tools/write_patcher.py' +
+       ' --build-dir build' +
+       ' --dest-dir dist' +
+       ' --output patcher.xml' +
+       ' --launcher-version ' + launcherVersion +
+       ' --account-server ' + accountServer +
+       ' --client-agent ' + clientAgent +
+       ' --server-version ' + serverVersion)
+for include in patcherIncludes:
+    cmd += ' ' + include
+os.system(cmd)

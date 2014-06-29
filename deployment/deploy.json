@@ -5,6 +5,10 @@
   "resources-branch": "master",
   "version": "dev",
   "version-prefix": "infinite-",
+  "launcher-version": "1.0.0.0",
+  "account-server": "toontowninfinite.com",
+  "client-agent": "192.99.200.107",
+  "patcher-includes": ["GameData.bin"],
   "config-dir": "../config/release",
   "vfs-mounts": [
     "resources/phase_3.mf",
