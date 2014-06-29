@@ -12,7 +12,6 @@ import sys
 import ToontownGlobals
 import ToontownLoader
 import atexit
-import gtk
 from otp.margins.MarginManager import MarginManager
 from otp.nametag import NametagGlobals
 from otp.nametag.ChatBalloon import ChatBalloon
@@ -52,9 +51,16 @@ class ToonBase(OTPBase.OTPBase):
             self.resDict.setdefault(ratio, []).append(res)
 
         # Get the native width, height and ratio:
-        self.nativeWidth = gtk.gdk.screen_width()
-        self.nativeHeight = gtk.gdk.screen_height()
-        self.nativeRatio = round(float(self.nativeWidth) / float(self.nativeHeight), 2)
+        if sys.platform == 'win32':  # Use CTypes
+            import ctypes
+            self.nativeWidth = ctypes.windll.user32.GetSystemMetrics(0)
+            self.nativeHeight = ctypes.windll.user32.GetSystemMetrics(1)
+        else:  # Use PyGTK
+            import gtk
+            self.nativeWidth = gtk.gdk.screen_width()
+            self.nativeHeight = gtk.gdk.screen_height()
+        self.nativeRatio = round(
+            float(self.nativeWidth) / float(self.nativeHeight), 2)
 
         # Finally, choose the best resolution if we're either fullscreen, or
         # don't have one defined in our preferences:
