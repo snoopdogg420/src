@@ -1,17 +1,10 @@
-from direct.distributed.MsgTypes import *
-from direct.distributed.PyDatagram import PyDatagram
-from direct.task.TaskManagerGlobal import taskMgr
 from otp.ai.MagicWordGlobal import *
 from toontown.building import FADoorCodes
 from toontown.hood import ZoneUtil
 from toontown.quest import Quests
 from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
-from toontown.toonbase import ToontownGlobals
-from toontown.toon.NPCToons import NPC_BANKER
 import random
 import shlex
-
-
 
 class QuestManagerAI:
     def __init__(self, air):
@@ -75,20 +68,6 @@ class QuestManagerAI:
 
     def avatarQuestChoice(self, toon, npc):
         tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
-        #Does the avatar already have any of these rewardIds?
-        #[QuestId, RewardId, toNPCID]
-        toonQuests = toon.getQuests() #Flattened Quests.
-        rewardList = [] #Unflattened Quests.
-        for i in xrange(0, len(toonQuests), 5):
-            questDesc = toonQuests[i:i + 5]
-            rewardList.append(questDesc[3])
-        for task in tasks:
-            if task[1] in rewardList:
-                tier = toon.getRewardHistory()[0]
-                rewards = Quests.getOptionalRewardsInTier(tier)
-                if rewards:
-                    rewardId = random.choice(Quests.getOptionalRewardsInTier(tier))
-                    task[1] = rewardId
         return tasks
 
     def avatarChoseQuest(self, avId, npc, questId, rewardId, building):
