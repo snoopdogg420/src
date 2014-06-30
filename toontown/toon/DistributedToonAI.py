@@ -4918,7 +4918,7 @@ def ghost():
     """
     invoker = spellbook.getInvoker()
     if invoker.ghostMode == 0:
-        invoker.b_setGhostMode(2)
+        invoker.b_setGhostMode(1)
         return 'Ghost mode is enabled.'
     else:
         invoker.b_setGhostMode(0)
