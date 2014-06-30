@@ -13,8 +13,9 @@ import tarfile
 try:
     import boto
 except ImportError:
-    print 'Missing dependency:', boto
+    print 'Missing dependency: boto'
     print 'It is recommended that you install this using Pip.'
+    sys.exit(1)
 
 
 print 'Starting the deployment process...'
@@ -22,7 +23,8 @@ print 'Starting the deployment process...'
 missingFiles = False
 for f in ('deploy.json', 'infinitecipher'):
     if sys.platform == 'win32':
-        f += '.exe'
+        if not os.path.splitext(f)[1]:
+            f += '.exe'
     if f not in os.listdir('.'):
         print 'Missing file:', f
         missingFiles = True
@@ -35,7 +37,7 @@ with open('deploy.json', 'r') as f:
 
 if sys.platform == 'win32':
     with open('../PPYTHON_PATH', 'r') as f:
-        pythonPath = f.read()
+        pythonPath = f.read().strip()
 else:
     pythonPath = '/usr/bin/python2'
 
@@ -46,10 +48,8 @@ if platform not in ('win32',):  # Supported platforms
 
 distribution = deployData['distribution']
 
-# Create a 'src' directory containing the desired branch's source files:
+# Check if the desired branch exists:
 branch = deployData['branch']
-sys.stdout.write('Collecting source code from branch: ' + branch + '... 0%')
-sys.stdout.flush()
 os.chdir('..')
 branches = subprocess.Popen(
     ['git', 'rev-parse', '--abbrev-ref', '--branches', 'HEAD'],
@@ -57,6 +57,45 @@ branches = subprocess.Popen(
 if branch not in branches:
     print "No local branch named:", branch
     sys.exit(3)
+
+# Check if the desired resources branch exists:
+resourcesBranch = deployData['resources-branch']
+os.chdir('../ToontownInfiniteResources')
+branches = subprocess.Popen(
+    ['git', 'rev-parse', '--abbrev-ref', '--branches', 'HEAD'],
+    stdout=subprocess.PIPE).stdout.read().split()
+if resourcesBranch not in branches:
+    print "No local resources branch named:", resourcesBranch
+    sys.exit(3)
+
+serverVersion = deployData['version-prefix'] + deployData['version']
+launcherVersion = deployData['launcher-version']
+accountServer = deployData['account-server']
+clientAgent = deployData['client-agent']
+patcherIncludes = deployData['patcher-includes']
+configDir = deployData['config-dir']
+vfsMounts = deployData['vfs-mounts']
+modules = deployData['modules']
+mainModule = deployData['main-module']
+
+print 'Platform:', platform
+print 'Distribution:', distribution
+print 'Branch:', branch
+print 'Resources branch:', resourcesBranch
+print 'Server version:', serverVersion
+print 'Configuration directory:', configDir
+print 'Virtual file system ({0}):'.format(len(vfsMounts))
+for vfsMount in vfsMounts:
+    print '  {0}'.format(vfsMount)
+print 'Modules ({0}):'.format(len(modules))
+for module in modules:
+    print '  {0}'.format(module)
+print 'Main module:', mainModule
+
+# Create a 'src' directory containing the desired branch's source files:
+sys.stdout.write('Collecting source code from branch: ' + branch + '... 0%')
+sys.stdout.flush()
+os.chdir('../ToontownInfinite')
 if os.path.exists('deployment/src'):
     shutil.rmtree('deployment/src')
 os.mkdir('deployment/src')
@@ -95,23 +134,16 @@ sys.stdout.write('\n')
 sys.stdout.flush()
 
 # Export the resources from the desired resources branch to 'src/resources':
-resourcesBranch = deployData['resources-branch']
 sys.stdout.write('Collecting resources from branch: ' +
                  resourcesBranch + '... 0%')
 sys.stdout.flush()
-os.chdir('resources')
-branches = subprocess.Popen(
-    ['git', 'rev-parse', '--abbrev-ref', '--branches', 'HEAD'],
-    stdout=subprocess.PIPE).stdout.read().split()
-if resourcesBranch not in branches:
-    print "No local resources branch named:", resourcesBranch
-    sys.exit(3)
+os.chdir('../ToontownInfiniteResources')
 td = subprocess.Popen(
     ['git', 'archive', resourcesBranch],
     stdout=subprocess.PIPE).stdout.read()
 tss = StringIO.StringIO(td)
 tf = tarfile.TarFile(fileobj=tss)
-os.chdir('../deployment')
+os.chdir('../ToontownInfinite/deployment')
 directories = []
 members = tf.getmembers()
 for (i, ti) in enumerate(members):
@@ -140,30 +172,6 @@ for ti in directories:
             tf._dbg(1, 'tarfile: %s' % e)
 sys.stdout.write('\n')
 sys.stdout.flush()
-
-serverVersion = deployData['version-prefix'] + deployData['version']
-launcherVersion = deployData['launcher-version']
-accountServer = deployData['account-server']
-clientAgent = deployData['client-agent']
-patcherIncludes = deployData['patcher-includes']
-configDir = deployData['config-dir']
-vfsMounts = deployData['vfs-mounts']
-modules = deployData['modules']
-mainModule = deployData['main-module']
-
-print 'Platform:', platform
-print 'Distribution:', distribution
-print 'Branch:', branch
-print 'Resources branch:', resourcesBranch
-print 'Server version:', serverVersion
-print 'Configuration directory:', configDir
-print 'Virtual file system ({0}):'.format(len(vfsMounts))
-for vfsMount in vfsMounts:
-    print '  {0}'.format(vfsMount)
-print 'Modules ({0}):'.format(len(modules))
-for module in modules:
-    print '  {0}'.format(module)
-print 'Main module:', mainModule
 
 cmd = (pythonPath + ' ../tools/prepare_client.py' +
        ' --distribution ' + distribution +
@@ -195,7 +203,10 @@ for module in modules:
 os.system(cmd)
 
 os.chdir('build')
-os.system('../infinitecipher {0} GameData.bin'.format(output))
+if sys.platform == 'win32':
+    os.system('..\infinitecipher {0} GameData.bin'.format(output))
+else:
+    os.system('../infinitecipher {0} GameData.bin'.format(output))
 
 os.chdir('..')
 if os.path.exists('dist'):
