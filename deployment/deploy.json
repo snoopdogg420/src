@@ -1,4 +1,8 @@
 {
+  "bucket-name": "infinitedl",
+  "aws-cf-distribution-id": "E1L00DOX82Q1JC",
+  "aws-access-key-id": "",
+  "aws-secret-access-key": "",
   "platform": "win32",
   "distribution": "dev",
   "branch": "master",
