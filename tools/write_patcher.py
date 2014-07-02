@@ -21,6 +21,8 @@ parser.add_argument('--client-agent', default='192.99.200.107',
                     help='The IP address of the Client Agent to connect to.')
 parser.add_argument('--server-version', default='infinite-dev',
                     help='The current version of the Toontown Infinite game.')
+parser.add_argument('--resources-revision', default='',
+                    help='The current revision of the resources repository.')
 parser.add_argument('includes', nargs='*', default=['GameData.bin'],
                     help='The files to include in the main directory.')
 args = parser.parse_args()
@@ -80,6 +82,10 @@ client_agent.text = args.client_agent
 # Next, add the server version:
 server_version = ET.SubElement(patcher, 'server-version')
 server_version.text = args.server_version
+
+# Next, add the resources revision:
+resources_revision = ET.SubElement(patcher, 'resources-revision')
+resources_revision.text = args.resources_revision
 
 # Next, add the root directory:
 root = ET.SubElement(patcher, 'directory')
