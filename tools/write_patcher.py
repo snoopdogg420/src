@@ -1,21 +1,28 @@
-import xml.etree.ElementTree as ET
-import argparse
+#!/usr/bin/env python2
 import hashlib
 import os
-import subprocess
+
+import argparse
+import xml.etree.ElementTree as ET
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--src-dir', default='build',
+parser.add_argument('--build-dir', default='build',
                     help='The directory of the Toontown Infinite build.')
-parser.add_argument('--dest-dir', default='C:/xampp/htdocs/download',
+parser.add_argument('--dest-dir', default='.',
                     help='The directory in which to store the patcher.')
-parser.add_argument('--client-agent', default='108.170.49.170',
-                    help='The IP address of the Client Agent to connect to.')
+parser.add_argument('--output', default='patcher.xml',
+                    help='The name of the output file.')
+parser.add_argument('--launcher-version', default='infinite-dev',
+                    help='The current version of the Toontown Infinite launcher.')
 parser.add_argument('--account-server', default='toontowninfinite.com',
                     help='The address of the Toontown Infinite account server.')
-parser.add_argument('--launcher-version', default='1.0.0.0',
-                    help='The current version of the Toontown Infinite launcher.')
+parser.add_argument('--client-agent', default='192.99.200.107',
+                    help='The IP address of the Client Agent to connect to.')
+parser.add_argument('--server-version', default='infinite-dev',
+                    help='The current version of the Toontown Infinite game.')
+parser.add_argument('--resources-revision', default='',
+                    help='The current revision of the resources repository.')
 parser.add_argument('includes', nargs='*', default=['GameData.bin'],
                     help='The files to include in the main directory.')
 args = parser.parse_args()
@@ -40,12 +47,12 @@ def getFileInfo(filepath):
 
 rootFiles = []
 for include in args.includes:
-    filepath = os.path.join(args.src_dir, include)
+    filepath = os.path.join(args.build_dir, include)
     rootFiles.append(getFileInfo(filepath))
     print 'Including...', include
 
 resourcesFiles = []
-resourcesDir = os.path.join(args.src_dir, 'resources')
+resourcesDir = os.path.join(args.build_dir, 'resources')
 for filename in os.listdir(resourcesDir):
     if not filename.startswith('phase_'):
         continue
@@ -55,48 +62,33 @@ for filename in os.listdir(resourcesDir):
     resourcesFiles.append(getFileInfo(filepath))
     print 'Including...', filename
 
-print 'Writing patcher.xml...'
+print 'Writing {0}...'.format(args.output)
 
-# First, add the root:
-patcherRoot = ET.Element('patcher')
+# First, add the element:
+patcher = ET.Element('patcher')
 
 # Next, add the Toontown Infinite launcher version:
-launcherversion = ET.SubElement(patcherRoot, 'launcherversion')
-launcherversion.text = args.launcher_version
+launcher_version = ET.SubElement(patcher, 'launcher-version')
+launcher_version.text = args.launcher_version
 
 # Then add the account server address:
-accountserver = ET.SubElement(patcherRoot, 'accountserver')
-accountserver.text = args.account_server
+account_server = ET.SubElement(patcher, 'account-server')
+account_server.text = args.account_server
 
 # Then add the Client Agent IP:
-clientagent = ET.SubElement(patcherRoot, 'clientagent')
-clientagent.text = args.client_agent
+client_agent = ET.SubElement(patcher, 'client-agent')
+client_agent.text = args.client_agent
 
-# If we don't have Git on our path, let's attempt to add it:
-paths = (
-    '{0}\\Git\\bin'.format(os.environ['ProgramFiles']),
-    '{0}\\Git\\cmd'.format(os.environ['ProgramFiles'])
-)
-for path in paths:
-    if path not in os.environ['PATH']:
-        os.environ['PATH'] += ';' + path
+# Next, add the server version:
+server_version = ET.SubElement(patcher, 'server-version')
+server_version.text = args.server_version
 
-# Add the git revision:
-revision = ET.SubElement(patcherRoot, 'revision')
-revision.text = subprocess.Popen(
-    ['git', 'rev-parse', 'HEAD'],
-    stdout=subprocess.PIPE,
-    cwd=args.src_dir).stdout.read().strip()[:7]
-
-# Add the most recent commit message:
-revision = ET.SubElement(patcherRoot, 'message')
-revision.text = subprocess.Popen(
-    ['git', 'log', '-1', '--pretty=%B'],
-    stdout=subprocess.PIPE,
-    cwd=args.src_dir).stdout.read().strip()
+# Next, add the resources revision:
+resources_revision = ET.SubElement(patcher, 'resources-revision')
+resources_revision.text = args.resources_revision
 
 # Next, add the root directory:
-root = ET.SubElement(patcherRoot, 'directory')
+root = ET.SubElement(patcher, 'directory')
 root.set('name', '')
 
 # Add all of the root files:
@@ -109,7 +101,7 @@ for filename, size, hash in rootFiles:
     _hash.text = str(hash)
 
 # Next, add the resources directory:
-resourcesRoot = ET.SubElement(patcherRoot, 'directory')
+resourcesRoot = ET.SubElement(patcher, 'directory')
 resourcesRoot.set('name', 'resources')
 
 # Add all of the resources files:
@@ -120,9 +112,9 @@ for filename, size, hash in resourcesFiles:
     _size.text = str(size)
     _hash = ET.SubElement(_filename, 'hash')
     _hash.text = str(hash)
-	
-# Finally, write the product:
-filepath = os.path.join(args.dest_dir, 'patcher.xml')
-ET.ElementTree(patcherRoot).write(filepath)
 
-print 'Done writing patcher.xml'
+# Finally, write the patcher.xml file:
+filepath = os.path.join(args.dest_dir, args.output)
+ET.ElementTree(patcher).write(filepath)
+
+print 'Done writing {0}.'.format(args.output)

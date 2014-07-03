@@ -3,11 +3,11 @@ window-title Toontown Infinite
 win-origin -1 -1
 
 # Filenames/filepaths...
+icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
-icon-filename phase_3/etc/icon.ico
 preferences-filename preferences.gz
 
-model-path ../ToontownInfiniteResources
+model-path resources
 model-cache-models #f
 model-cache-textures #f
 
@@ -18,18 +18,17 @@ audio-library-name p3fmod_audio
 
 # Database...
 account-server-endpoint https://www.toontowninfinite.com/api/
-accountdb-type developer
+accountdb-type remote
 account-bridge-filename astron/databases/account-bridge.db
+account-server-min-access-level 100
 
 # Server...
 server-force-ssl 0
 server-port 7198
-server-version infinite-dev
+server-version SERVER_VERSION
 server-timezone US/Eastern
 
-eventlog-host 127.0.0.1
-
-# DC classes...
+# DClass files (in reverse order)...
 dc-file astron/dclass/toon.dc
 dc-file astron/dclass/otp.dc
 
@@ -62,23 +61,23 @@ egg-object-type-dcs <DCS> { 1 }
 # Safe zones...
 want-safe-zones #t
 want-toontown-central #t
-want-donalds-dock #t
-want-daisys-garden #t
-want-minnies-melodyland #t
-want-the-burrrgh #t
-want-donalds-dreamland #t
-want-goofy-speedway #t
-want-outdoor-zone #t
-want-golf-zone #t
+want-donalds-dock #f
+want-daisys-garden #f
+want-minnies-melodyland #f
+want-the-burrrgh #f
+want-donalds-dreamland #f
+want-goofy-speedway #f
+want-outdoor-zone #f
+want-golf-zone #f
 
 # Cog headquarters...
-want-cog-headquarters #t
-want-sellbot-headquarters #t
-want-cashbot-headquarters #t
-want-lawbot-headquarters #t
-want-bossbot-headquarters #t
+want-cog-headquarters #f
+want-sellbot-headquarters #f
+want-cashbot-headquarters #f
+want-lawbot-headquarters #f
+want-bossbot-headquarters #f
 
-want-treasure-planners #t
+want-treasure-planners #f
 want-suit-planners #t
 want-butterflies #f
 
@@ -94,37 +93,37 @@ want-chip-and-dale #f
 want-goofy #f
 
 # Minigames...
-want-minigames #t
-want-race-game #t
-want-cannon-game #t
-want-tag-game #t
-want-pattern-game #t
-want-ring-game #t
-want-maze-game #t
-want-tug-game #t
-want-catch-game #t
-want-diving-game #t
-want-target-game #t
-want-pairing-game #t
-want-vine-game #t
-want-ice-game #t
-want-thief-game #t
-want-2d-game #t
-want-photo-game #t
+want-minigames #f
+want-race-game #f
+want-cannon-game #f
+want-tag-game #f
+want-pattern-game #f
+want-ring-game #f
+want-maze-game #f
+want-tug-game #f
+want-catch-game #f
+want-diving-game #f
+want-target-game #f
+want-pairing-game #f
+want-vine-game #f
+want-ice-game #f
+want-thief-game #f
+want-2d-game #f
+want-photo-game #f
 want-travel-game #f
 force-minigame 0
 
 # Cog buildings...
 want-cogbuildings #t
-silly-street-building-min 0
-silly-street-building-max 3
-silly-street-building-chance 2.0
-loopy-lane-building-min 0
-loopy-lane-building-max 3
-loopy-lane-building-chance 2.0
-punchline-place-building-min 0
-punchline-place-building-max 3
-punchline-place-building-chance 2.0
+silly-street-building-min 14
+silly-street-building-max 14
+silly-street-building-chance 100.0
+loopy-lane-building-min 14
+loopy-lane-building-max 14
+loopy-lane-building-chance 100.0
+punchline-place-building-min 14
+punchline-place-building-max 14
+punchline-place-building-chance 100.0
 barnacle-boulevard-building-min 1
 barnacle-boulevard-building-max 5
 barnacle-boulevard-building-chance 75.0
@@ -175,9 +174,9 @@ want-resistance-money #t
 want-resistance-dance #f
 
 # Picnic table board games...
-want-game-tables #t
-want-checkers #t
-want-chinese-checkers #t
+want-game-tables #f
+want-checkers #f
+want-chinese-checkers #f
 want-find-four #f
 
 # True friends...
@@ -185,21 +184,21 @@ parent-password-set #t
 allow-secret-chat #t
 
 # Core features...
-want-fishing #t
-want-housing #t
-want-pets #t
-want-karts #t
+want-fishing #f
+want-housing #f
+want-pets #f
+want-karts #f
 want-parties #f
 want-cogdominiums #f
-want-boarding-groups #t
-want-achievements #t
+want-boarding-groups #f
+want-achievements #f
 
 # Optional...
 show-total-population #f
 want-mat-all-tailors #t
 want-news-page #f
 want-news-tab #f
-want-long-pattern-game #t
+want-long-pattern-game #f
 want-talkative-tyler #f
 
 # Developer options...
@@ -208,5 +207,4 @@ want-tailor-jellybeans #f
 want-instant-parties #t
 
 # Temporary...
-cog-thief-ortho 1
 want-old-fireworks #t

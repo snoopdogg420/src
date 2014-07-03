@@ -13,6 +13,11 @@ nosetests.xml
 .project
 .pydevproject
 
+# Deployment
+Release
+Debug
+build
+
 # PLY
 parsetab.py
 

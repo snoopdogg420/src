@@ -84,7 +84,7 @@ class ToonBase(OTPBase.OTPBase):
                 # course). Let's just use the second largest ratio:
                 ratios = sorted(self.resDict.keys(), reverse=False)
                 nativeIndex = ratios.index(self.nativeRatio)
-                res = sorted(ratios[nativeIndex - 1])[0]
+                res = sorted(self.resDict[ratios[nativeIndex - 1]])[0]
 
             # Store our result:
             self.settings.set('res', res)
