@@ -1,7 +1,6 @@
 #!/usr/bin/env python2
 import StringIO
 import copy
-import hashlib
 import json
 import os
 import shutil
@@ -17,72 +16,79 @@ import bz2
 # the user if they are missing one:
 try:
     import boto
-    from boto.s3.key import Key
     from boto.cloudfront import CloudFrontConnection
-except ImportError:
-    print 'Missing dependency: boto'
-    print 'It is recommended that you install this using Pip.'
-    sys.exit(1)
-try:
+    from boto.s3.key import Key
     import requests
-except ImportError:
-    print 'Missing dependency: requests'
+except ImportError, e:
+    print 'Missing dependency:', e.message[16:]
     print 'It is recommended that you install this using Pip.'
     sys.exit(1)
 
 print 'Starting the deployment process...'
 
 # Stop the user if they are missing vital files:
-missingFiles = False
+missingFiles = []
 for filename in ('deploy.json', 'infinitecipher'):
     if sys.platform == 'win32':
-        # On the Windows platform if there is no extension we can infer that
-        # this is an executable file. Therefore, let's append the '.exe'
-        # extension:
+        # On the Windows platform, if there is no extension, we must infer that
+        # this is an executable file. Therefore, let's append '.exe':
         if not os.path.splitext(filename)[1]:
             filename += '.exe'
     if filename not in os.listdir('.'):
-        print 'Missing file:', filename
-        missingFiles = True
+        missingFiles.append(filename)
 if missingFiles:
+    for filename in missingFiles:
+        print 'Missing file:', filename
     sys.exit(1)
 
 print 'Reading deploy configuration...'
 with open('deploy.json', 'r') as f:
     deployData = json.load(f)
 
+# Next, we must choose the correct path to Python for our Panda3D installation:
 if sys.platform == 'win32':
     with open('../PPYTHON_PATH', 'r') as f:
         pythonPath = f.read().strip()
 else:
     pythonPath = '/usr/bin/python2'
 
+# Collect our Amazon Web Services credentials:
 bucketName = deployData['bucket-name']
-awsCfDistributionId = deployData['aws-cf-distribution-id']
-awsAccessKeyId = deployData['aws-access-key-id']
-if not awsAccessKeyId:
-    print 'Missing AWS access key ID.'
+distributionId = deployData['distribution-id']
+if not distributionId:
+    print 'Missing distribution ID.'
     sys.exit(1)
-awsSecretAccessKey = deployData['aws-secret-access-key']
-if not awsSecretAccessKey:
-    print 'Missing AWS secret access key.'
+accessKeyId = deployData['access-key-id']
+if not accessKeyId:
+    print 'Missing access key ID.'
+    sys.exit(1)
+accessKey = deployData['access-key']
+if not accessKey:
+    print 'Missing access key.'
     sys.exit(1)
 
+# Ensure that the platform we're building for is supported:
 platform = deployData['platform']
-if platform not in ('win32', 'linux'):  # Supported platforms
+if platform not in ('win32', 'linux', 'darwin'):  # Supported platforms
     print 'Unsupported platform:', platform
     sys.exit(2)
 
+# Ensure that the distribution we're building for is supported:
 distribution = deployData['distribution']
+if distribution not in ('dev', 'test', 'en'):  # Supported distributions
+    print 'Unsupported distribution:', distribution
+    sys.exit(2)
 
-# Check if the desired branch exists:
+deployToken = distribution + '/' + platform
+
+# Ensure the desired source code branch exists:
 branch = deployData['branch']
 os.chdir('..')
 branches = subprocess.Popen(
     ['git', 'rev-parse', '--abbrev-ref', '--branches', 'HEAD'],
     stdout=subprocess.PIPE).stdout.read().split()
 if branch not in branches:
-    print "No local branch named:", branch
+    print "No local source code branch named:", branch
     sys.exit(3)
 
 # Check if the desired resources branch exists:
@@ -95,6 +101,7 @@ if resourcesBranch not in branches:
     print "No local resources branch named:", resourcesBranch
     sys.exit(3)
 
+# We're all set. Let's gather the rest of the deployment configurations:
 serverVersion = deployData['version-prefix'] + deployData['version']
 launcherVersion = deployData['launcher-version']
 accountServer = deployData['account-server']
@@ -105,8 +112,8 @@ vfsMounts = deployData['vfs-mounts']
 modules = deployData['modules']
 mainModule = deployData['main-module']
 
-print 'Platform:', platform
-print 'Distribution:', distribution
+# ...and output them for verbosity:
+print 'Deploy token:', deployToken
 print 'Branch:', branch
 print 'Resources branch:', resourcesBranch
 print 'Server version:', serverVersion
@@ -119,16 +126,15 @@ for module in modules:
     print '  {0}'.format(module)
 print 'Main module:', mainModule
 
-# Create a 'src' directory containing the desired branch's source files:
+# Create a 'src' directory containing the source code from the desired branch:
 sys.stdout.write('Collecting source code from branch: ' + branch + '... 0%')
 sys.stdout.flush()
 os.chdir('../ToontownInfinite')
 if os.path.exists('deployment/src'):
     shutil.rmtree('deployment/src')
 os.mkdir('deployment/src')
-td = subprocess.Popen(
-    ['git', 'archive', branch],
-    stdout=subprocess.PIPE).stdout.read()
+td = subprocess.Popen(['git', 'archive', branch],
+                      stdout=subprocess.PIPE).stdout.read()
 tss = StringIO.StringIO(td)
 tf = tarfile.TarFile(fileobj=tss)
 directories = []
@@ -140,9 +146,8 @@ for (i, ti) in enumerate(members):
         ti.mode = 0o700
     tf.extract(ti, 'deployment/src')
     percentage = int((float(i+1)/len(members)) * 100)
-    sys.stdout.write(
-        '\rCollecting source code from branch: ' + branch +
-        '... {0}%'.format(percentage))
+    sys.stdout.write('\rCollecting source code from branch: ' + branch +
+                     '... ' + str(percentage) + '%')
     sys.stdout.flush()
 directories.sort(key=lambda a: a.name)
 directories.reverse()
@@ -160,14 +165,13 @@ for ti in directories:
 sys.stdout.write('\n')
 sys.stdout.flush()
 
-# Export the resources from the desired resources branch to 'src/resources':
-sys.stdout.write('Collecting resources from branch: ' +
-                 resourcesBranch + '... 0%')
+# Create a 'resources' directory inside the 'src' directory containing all of
+# the resource files from the desired resources branch:
+sys.stdout.write('Collecting resources from branch: ' + resourcesBranch + '... 0%')
 sys.stdout.flush()
 os.chdir('../ToontownInfiniteResources')
-td = subprocess.Popen(
-    ['git', 'archive', resourcesBranch],
-    stdout=subprocess.PIPE).stdout.read()
+td = subprocess.Popen(['git', 'archive', resourcesBranch],
+                      stdout=subprocess.PIPE).stdout.read()
 tss = StringIO.StringIO(td)
 tf = tarfile.TarFile(fileobj=tss)
 os.chdir('../ToontownInfinite/deployment')
@@ -180,9 +184,8 @@ for (i, ti) in enumerate(members):
         ti.mode = 0o700
     tf.extract(ti, 'src/resources')
     percentage = int((float(i+1)/len(members)) * 100)
-    sys.stdout.write(
-        '\rCollecting source code from branch: ' + resourcesBranch +
-        '... {0}%'.format(percentage))
+    sys.stdout.write('\rCollecting resources from branch: ' + resourcesBranch +
+                     '... ' + str(percentage) + '%')
     sys.stdout.flush()
 directories.sort(key=lambda a: a.name)
 directories.reverse()
@@ -200,6 +203,8 @@ for ti in directories:
 sys.stdout.write('\n')
 sys.stdout.flush()
 
+# All of our source code and resources are collected. Now, let's run the
+# prepare_client utility:
 cmd = (pythonPath + ' ../tools/prepare_client.py' +
        ' --distribution ' + distribution +
        ' --build-dir build' +
@@ -217,6 +222,7 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
+# Next, run the build_client utility:
 if sys.platform == 'win32':
     output = 'GameData.pyd'
 else:
@@ -229,28 +235,31 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
+# ...and encrypt the product:
 os.chdir('build')
 if sys.platform == 'win32':
-    os.system('..\infinitecipher {0} GameData.bin'.format(output))
+    os.system('..\\infinitecipher.exe {0} GameData.bin'.format(output))
 else:
     os.system('../infinitecipher {0} GameData.bin'.format(output))
 
+# Create a 'dist' directory that will contain everything that will be uploaded
+# to the CDN:
 os.chdir('..')
 if os.path.exists('dist'):
     shutil.rmtree('dist')
 os.mkdir('dist')
 
-# Next, if a patcher.xml exists for this distribution, let's read it and assess
-# what resources need to be updated. This is necessary because multifile hashes
-# change each time they are compiled:
-request = requests.get('http://cdn.toontowninfinite.com/{0}/{1}/patcher.xml'.format(distribution, platform))
+# Now, if we have deployed a previous version of this distribution before,
+# let's get the last resources revision so that we can choose what phase files
+# need to be updated using 'git diff'. We need to do this because two
+# compilations of the same multifile will never have the same hash:
+updatedFiles = []
+request = requests.get('http://' + bucketName + '.s3.amazonaws.com/' +
+                       deployToken + '/patcher.xml')
 root = ElementTree.fromstring(request.text)
-everything = True
-updated = []
-if root.tag != 'Error':
+if root.tag == 'patcher':  # We have a patcher file
     resourcesRevision = root.find('resources-revision')
-    if resourcesRevision:
-        everything = False
+    if resourcesRevision is not None:
         resourcesRevision = resourcesRevision.text
         os.chdir('../../ToontownInfiniteResources')
         diff = subprocess.Popen(
@@ -259,12 +268,15 @@ if root.tag != 'Error':
         filenames = diff.split('\n')
         for filename in filenames:
             directory = filename.split('/', 1)[0].split('\\', 1)[0]
-            if directory.startswith('phase_') and (directory not in updated):
-                updated.append(directory + '.mf')
+            if directory.startswith('phase_'):
+                phase = 'resources/' + directory + '.mf'
+                if phase not in updatedFiles:
+                    updatedFiles.append(phase)
+        resourcesRevision = subprocess.Popen(
+            ['git', 'rev-parse', resourcesBranch],
+            stdout=subprocess.PIPE).stdout.read()[:7]
         os.chdir('../ToontownInfinite/deployment')
-resourcesRevision = subprocess.Popen(
-    ['git', 'rev-parse', resourcesBranch],
-    stdout=subprocess.PIPE).stdout.read()[:7]
+updatedFiles.extend(patcherIncludes)
 
 cmd = (pythonPath + ' ../tools/write_patcher.py' +
        ' --build-dir build' +
@@ -278,6 +290,40 @@ cmd = (pythonPath + ' ../tools/write_patcher.py' +
 for include in patcherIncludes:
     cmd += ' ' + include
 os.system(cmd)
+
+et = ElementTree.parse('dist/patcher.xml')
+localRoot = et.getroot()
+for directory in localRoot.findall('directory'):
+    directoryName = directory.get('name')
+    # If we haven't pushed a patcher previously, we can assume this is the
+    # first time deploying this distribution. Therefore, let's upload
+    # everything:
+    if root.tag != 'patcher':
+        for child in directory.getchildren():
+            filepath = child.get('name')
+            if directoryName:
+                filepath = directoryName + '/' + filepath
+            if filepath not in updatedFiles:
+                updatedFiles.append(filepath)
+    else:
+        # Otherwise, we'll want to ensure that we don't overwrite certain
+        # files' size/hash, in case they weren't updated:
+        for child in directory.getchildren():
+            filepath = child.get('name')
+            if directoryName:
+                filepath = directoryName + '/' + filepath
+            if filepath not in updatedFiles:
+                for _directory in root.findall('directory'):
+                    if _directory.get('name') != directoryName:
+                        continue
+                    for _child in _directory.getchildren():
+                        if _child.get('name') != child.get('name'):
+                            continue
+                        child.find('size').text = _child.find('size').text
+                        child.find('hash').text = _child.find('hash').text
+                        break
+                    break
+ElementTree.ElementTree(localRoot).write('dist/patcher.xml')
 
 
 def compressFile(filepath):
@@ -294,92 +340,35 @@ def compressFile(filepath):
     f.close()
 
 
-def getFileMD5Hash(filepath):
-    md5 = hashlib.md5()
-    bufferSize = 128 * md5.block_size
-    with open(filepath, 'rb') as f:
-        block = f.read(bufferSize)
-        while block:
-            md5.update(block)
-            block = f.read(bufferSize)
-    return md5.hexdigest()
-
-
-localRoot = ElementTree.parse('dist/patcher.xml').getroot()
-for directory in localRoot.findall('directory'):
-    if directory.get('name') == 'resources':
-        if not everything:
-            for child in directory.getchildren():
-                if child.get('name') not in updated:
-                    size = ''
-                    hash = ''
-                    for _directory in root.findall('directory'):
-                        if _directory.get('name') != 'resources':
-                            continue
-                        for _child in _directory.getchildren():
-                            if _child.get('name') == child.get('name'):
-                                size = child.find('size').text
-                                hash = child.find('hash').text
-                    child.find('size').text = size
-                    child.find('hash').text = hash
-        else:
-            for child in directory.getchildren():
-                updated.append(child.get('name'))
-    else:
-        directoryName = directory.get('name')
-        for child in directory.getchildren():
-            if everything:
-                updated.append(child.get('name'))
-            else:
-                childName = child.get('name')
-                size = 0
-                hash = ''
-                for _directory in root.findall('directory'):
-                    for _child in _directory.getchildren():
-                        if _child.get('name') == childName:
-                            size = int(child.find('size').text)
-                            hash = child.find('hash').text
-                filepath = os.path.join(directoryName, childName)
-                if os.path.getsize(os.path.join('build', filepath)) != size:
-                    updated.append(filepath)
-                elif getFileMD5Hash(os.path.join('build', filepath)) != hash:
-                    updated.append(filepath)
-
 # Compress the updated files:
-for update in updated:
-    print 'Compressing {0}...'.format(update)
-    if update.startswith('phase_'):
-        filepath = os.path.join('build/resources', update)
-    else:
-        filepath = os.path.join('build', update)
-    compressFile(filepath)
+for filepath in updatedFiles:
+    print 'Compressing {0}...'.format(filepath)
+    compressFile(os.path.join('build', filepath))
 
 print 'Uploading files to cdn.toontowninfinite.com...'
-connection = boto.connect_s3(awsAccessKeyId, awsSecretAccessKey)
+connection = boto.connect_s3(accessKeyId, accessKey)
 bucket = connection.get_bucket(bucketName)
 
 invalidations = []
 
 print 'Uploading... patcher.xml'
 key = Key(bucket)
-key.key = '{0}/{1}/patcher.xml'.format(distribution, platform)
+key.key = deployToken + '/patcher.xml'
 invalidations.append(key.key)
 key.set_contents_from_filename('dist/patcher.xml')
 key.make_public()
 
-for update in updated:
-    update = os.path.splitext(update)[0] + '.bz2'
-    print 'Uploading... ' + update
-    if update.startswith('phase_'):
-        update = 'resources/' + update
+for filepath in updatedFiles:
+    filepath = os.path.splitext(filepath)[0] + '.bz2'
+    print 'Uploading... ' + filepath
     key = Key(bucket)
-    key.key = '{0}/{1}/'.format(distribution, platform) + update
+    key.key = deployToken + '/' + filepath
     invalidations.append(key.key)
-    key.set_contents_from_filename('dist/' + update)
+    key.set_contents_from_filename('dist/' + filepath)
     key.make_public()
 
-connection = CloudFrontConnection(awsAccessKeyId, awsSecretAccessKey)
-connection.create_invalidation_request(awsCfDistributionId, invalidations)
+connection = CloudFrontConnection(accessKeyId, accessKey)
+connection.create_invalidation_request(distributionId, invalidations)
 
 print 'Done uploading files.'
 
