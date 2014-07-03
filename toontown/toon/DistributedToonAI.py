@@ -1,62 +1,57 @@
-from otp.ai.AIBaseGlobal import *
-from pandac.PandaModules import *
-from otp.otpbase import OTPGlobals
 from direct.directnotify import DirectNotifyGlobal
-import ToonDNA
-from toontown.suit import SuitDNA
-import InventoryBase
-import Experience
-from otp.avatar import DistributedAvatarAI
-from otp.avatar import DistributedPlayerAI
-from otp.otpbase import OTPLocalizer
 from direct.distributed import DistributedSmoothNodeAI
-from toontown.toonbase import ToontownGlobals
-from toontown.quest import QuestRewardCounter
-from toontown.quest import Quests
-from toontown.achievements import Achievements
-from toontown.toonbase import ToontownBattleGlobals
-from toontown.battle import SuitBattleGlobals
-from direct.task import Task
-from toontown.catalog import CatalogItemList
-from toontown.catalog import CatalogItem
-from direct.showbase import PythonUtil
 from direct.distributed.ClockDelta import *
-from toontown.toonbase.ToontownGlobals import *
-import types
-from toontown.fishing import FishGlobals
-from toontown.fishing import FishCollection
-from toontown.fishing import FishTank
-from NPCToons import npcFriends, isZoneProtected
-from toontown.coghq import CogDisguiseGlobals
+from direct.distributed.MsgTypes import *
+from direct.distributed.PyDatagram import PyDatagram
+from direct.task import Task
+from pandac.PandaModules import *
 import random
 import re
-from toontown.chat import ResistanceChat
-from toontown.racing import RaceGlobals
-from toontown.hood import ZoneUtil
-from toontown.toon import NPCToons
-from toontown.estate import FlowerCollection
-from toontown.estate import FlowerBasket
-from toontown.estate import GardenGlobals
-from toontown.golf import GolfGlobals
-from toontown.parties import PartyGlobals
-from toontown.parties.PartyInfo import PartyInfoAI
-from toontown.parties.InviteInfo import InviteInfoBase
-from toontown.parties.PartyReplyInfo import PartyReplyInfoBase
-from toontown.parties.PartyGlobals import InviteStatus
-from toontown.toonbase import ToontownAccessAI
-from toontown.toonbase import TTLocalizer
-from toontown.catalog import CatalogAccessoryItem
-from toontown.minigame import MinigameCreatorAI
+
+import Experience
+import InventoryBase
 import ModuleListAI
-
-# Magic Word imports
+from NPCToons import npcFriends
+import ToonDNA
+from otp.ai.AIBaseGlobal import *
 from otp.ai.MagicWordGlobal import *
-from direct.distributed.PyDatagram import PyDatagram
-from direct.distributed.MsgTypes import *
-import shlex
-
-# April Toons imports
+from otp.avatar import DistributedAvatarAI
+from otp.avatar import DistributedPlayerAI
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLocalizer
+from toontown.achievements import Achievements
+from toontown.battle import SuitBattleGlobals
+from toontown.catalog import CatalogAccessoryItem
+from toontown.catalog import CatalogItem
+from toontown.catalog import CatalogItemList
+from toontown.chat import ResistanceChat
+from toontown.coghq import CogDisguiseGlobals
+from toontown.estate import FlowerBasket
+from toontown.estate import FlowerCollection
+from toontown.estate import GardenGlobals
+from toontown.fishing import FishCollection
+from toontown.fishing import FishTank
+from toontown.golf import GolfGlobals
+from toontown.hood import ZoneUtil
+from toontown.minigame import MinigameCreatorAI
+from toontown.parties import PartyGlobals
+from toontown.parties.InviteInfo import InviteInfoBase
+from toontown.parties.PartyGlobals import InviteStatus
+from toontown.parties.PartyInfo import PartyInfoAI
+from toontown.parties.PartyReplyInfo import PartyReplyInfoBase
+from toontown.quest import QuestRewardCounter
+from toontown.quest import Quests
+from toontown.racing import RaceGlobals
+from toontown.shtiker import CogPageGlobals
+from toontown.suit import SuitDNA
+from toontown.toon import NPCToons
 from toontown.toonbase import AprilToonsGlobals
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownAccessAI
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.ToontownGlobals import *
+
 
 if simbase.wantPets:
     from toontown.pets import PetLookerAI, PetObserve
@@ -4599,6 +4594,14 @@ def maxToon(missingTrack=None):
     invoker.b_setCogLevels([49] * 4)
     invoker.b_setCogTypes([7, 7, 7, 7])
 
+    # Max their Cog gallery:
+    deptCount = len(SuitDNA.suitDepts)
+    invoker.b_setCogCount(list(CogPageGlobals.COG_QUOTAS[1]) * deptCount)
+    cogStatus = [CogPageGlobals.COG_COMPLETE2] * SuitDNA.suitsPerDept
+    invoker.b_setCogStatus(cogStatus * deptCount)
+    invoker.b_setCogRadar([1, 1, 1, 1])
+    invoker.b_setBuildingRadar([1, 1, 1, 1])
+
     # Max out their racing tickets:
     invoker.b_setTickets(99999)
 
@@ -4918,7 +4921,7 @@ def ghost():
     """
     invoker = spellbook.getInvoker()
     if invoker.ghostMode == 0:
-        invoker.b_setGhostMode(1)
+        invoker.b_setGhostMode(2)
         return 'Ghost mode is enabled.'
     else:
         invoker.b_setGhostMode(0)
