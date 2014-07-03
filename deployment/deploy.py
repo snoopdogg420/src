@@ -257,11 +257,11 @@ updatedFiles = []
 request = requests.get('http://' + bucketName + '.s3.amazonaws.com/' +
                        deployToken + '/patcher.xml')
 root = ElementTree.fromstring(request.text)
+os.chdir('../../ToontownInfiniteResources')
 if root.tag == 'patcher':  # We have a patcher file
     resourcesRevision = root.find('resources-revision')
     if resourcesRevision is not None:
         resourcesRevision = resourcesRevision.text
-        os.chdir('../../ToontownInfiniteResources')
         diff = subprocess.Popen(
             ['git', 'diff', '--name-only', resourcesRevision, resourcesBranch],
             stdout=subprocess.PIPE).stdout.read()
@@ -272,10 +272,10 @@ if root.tag == 'patcher':  # We have a patcher file
                 phase = 'resources/' + directory + '.mf'
                 if phase not in updatedFiles:
                     updatedFiles.append(phase)
-        resourcesRevision = subprocess.Popen(
-            ['git', 'rev-parse', resourcesBranch],
-            stdout=subprocess.PIPE).stdout.read()[:7]
-        os.chdir('../ToontownInfinite/deployment')
+resourcesRevision = subprocess.Popen(
+    ['git', 'rev-parse', resourcesBranch],
+    stdout=subprocess.PIPE).stdout.read()[:7]
+os.chdir('../ToontownInfinite/deployment')
 updatedFiles.extend(patcherIncludes)
 
 cmd = (pythonPath + ' ../tools/write_patcher.py' +
