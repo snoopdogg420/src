@@ -5,10 +5,9 @@ class ChatBalloon:
     TEXT_SHIFT_PROP = 0.08
     NATIVE_WIDTH = 10.0
     MIN_WIDTH = 2.5
-    MIN_HEIGHT = 1.0
-    BUBBLE_PADDING = 0.4
+    BUBBLE_PADDING = 0.3
     BUBBLE_PADDING_PROP = 0.05
-    BUTTON_SCALE = 10
+    BUTTON_SCALE = 6
     BUTTON_SHIFT = (-0.2, 0, 0.6)
 
     def __init__(self, model):
@@ -36,13 +35,6 @@ class ChatBalloon:
         t.node().setTextColor(textColor)
 
         width, height = t.node().getWidth(), t.node().getHeight()
-        if height < self.MIN_HEIGHT:
-            height = self.MIN_HEIGHT
-        bubblePadding = self.BUBBLE_PADDING
-        if width == self.MIN_WIDTH:
-            bubblePadding /= 2
-        else:
-            bubblePadding *= 0.75
 
         # Turn off depth write for the text: The place in the depth buffer is
         # held by the chat bubble anyway, and the text renders after the bubble
@@ -55,22 +47,19 @@ class ChatBalloon:
         # Give the chat bubble a button, if one is requested:
         if button:
             np = button.copyTo(root)
-            np.setPos(t, width - bubblePadding, 0, -height + bubblePadding)
+            np.setPos(t, width, 0, -height)
             np.setPos(np, self.BUTTON_SHIFT)
             np.setScale(self.BUTTON_SCALE)
-            t.setZ(t, bubblePadding * 2)
 
         if width < self.MIN_WIDTH:
             width = self.MIN_WIDTH
-            t.setX(t, width/2)
+            t.setX(t, width/2.0)
             t.node().setAlign(TextNode.ACenter)
 
         # Set the balloon's size:
         width *= 1 + self.BUBBLE_PADDING_PROP
-        width += bubblePadding
+        width += self.BUBBLE_PADDING
         balloon.setSx(width/self.NATIVE_WIDTH)
-        if button:
-            height += bubblePadding * 2
         middle.setSz(height)
         top.setZ(top, height-1)
 
