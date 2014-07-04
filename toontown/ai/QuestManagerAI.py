@@ -28,6 +28,28 @@ class QuestManagerAI:
             if isinstance(questClass, Quests.TrackChoiceQuest):
                 npc.presentTrackChoice(avId, questId, questClass.getChoices())
                 break
+            if isinstance(questClass, Quests.DeliverGagQuest):
+                # Gag delivery quests work a bit differently
+                # since progress can be done bit by bit.
+                questList = []
+                if npc.npcId == toNpcId:
+                    progress = questClass.removeGags(toon)
+
+                    for i in xrange(0, len(toonQuests), 5):
+                        questDesc = toonQuests[i:i + 5]
+
+                        if questDesc[0] == questId:
+                            questDesc[4] += progress
+
+                        questList.append(questDesc)
+
+                    toon.b_setQuests(questList)
+                    if questDesc[4] >= questClass.getNumGags():
+                        npc.completeQuest(avId, questId, rewardId)
+                        self.completeQuest(toon, questId)
+                    else:
+                        npc.rejectAvatar(avId)
+                    return
             if completeStatus == Quests.COMPLETE:
                 toon.toonUp(toon.maxHp)
                 if Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
@@ -119,11 +141,7 @@ class QuestManagerAI:
             if questId == completeQuestId:
                 toon.removeQuest(questId)
                 self.giveReward(toon, questId, rewardId)
-                if isinstance(questClass, Quests.DeliverGagQuest):
-                    questClass.removeGags(toon)
                 break
-        else:
-            pass
 
     def giveReward(self, toon, questId, rewardId):
         #Actual reward giving.

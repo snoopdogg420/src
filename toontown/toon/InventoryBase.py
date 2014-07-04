@@ -134,6 +134,7 @@ class InventoryBase(DirectObject.DirectObject):
         if self.numItem(track, level) > 0:
             self.inventory[track][level] -= 1
             self.calcTotalProps()
+            return 1
         elif self.numItem(track, level) == -1:
             return -1
 

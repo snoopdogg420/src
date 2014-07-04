@@ -1455,9 +1455,13 @@ class DeliverGagQuest(Quest):
     def removeGags(self, av):
         gag = self.getGagType()
         inventory = av.inventory
+        takenGags = 0
         for i in xrange(self.getNumGags()):
-            inventory.useItem(gag[0], gag[1])
+            if inventory.useItem(gag[0], gag[1]):
+                takenGags += 1
+                print 'TOOK A GAG'
         av.b_setInventory(inventory.makeNetString())
+        return takenGags
 
 class DeliverItemQuest(Quest):
     def __init__(self, id, quest):
@@ -3831,16 +3835,12 @@ def chooseBestQuests(tier, currentNpc, av):
     else:
         rewardHistory = av.getRewardHistory()[1]
         toonQuests = av.getQuests() #Flattened Quests.
-        rewardList = [] #Unflattened Quests.
         for i in xrange(0, len(toonQuests), 5):
             questDesc = toonQuests[i:i + 5]
             rewardId = questDesc[3]
 
-            if rewardId == 900:
-                rewardList.append(rewardId)
-                rewardId = transformReward(rewardId, av)
-            rewardList.append(rewardId)
-        rewardHistory.extend(rewardList)
+            rewardHistory.append(rewardId)
+
     seedRandomGen(currentNpc.getNpcId(), av.getDoId(), tier, rewardHistory)
     numChoices = getNumChoices(tier)
     rewards = getNextRewards(numChoices, tier, av)
