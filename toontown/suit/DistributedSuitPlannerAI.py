@@ -273,7 +273,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 startTime = SuitTimings.fromSky
                 continue
         if startPoint == None:
-            print 'DSP failed to create a new suit! REASON: startPoint = None'
             return None
         newSuit = DistributedSuitAI.DistributedSuitAI(simbase.air, self)
         newSuit.startPoint = startPoint
@@ -311,7 +310,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             self.notify.debug("Couldn't get a destination in %d!" % self.zoneId)
             newSuit.doNotDeallocateChannel = None
             newSuit.delete()
-            print 'DSP failed to create a new suit! REASON: gotDestination = None'
             return None
         newSuit.initializePath()
         self.zoneChange(newSuit, None, newSuit.zoneId)
