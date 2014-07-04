@@ -1,18 +1,38 @@
-from direct.gui.DirectGui import *
 from pandac.PandaModules import *
+from direct.gui.DirectGui import *
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
+from toontown.hood import ZoneUtil
 import random
 
 class ToontownLoadingScreen:
 
+    defaultTex = 'phase_3.5/maps/loading/default.jpg'
     zone2picture = {
+        ToontownGlobals.GoofySpeedway : 'phase_3.5/maps/loading/gs.jpg',
         ToontownGlobals.ToontownCentral : 'phase_3.5/maps/loading/ttc.jpg',
+        ToontownGlobals.SillyStreet : 'phase_3.5/maps/loading/ttc_ss.jpg',
+        ToontownGlobals.LoopyLane : 'phase_3.5/maps/loading/ttc_ll.jpg',
+        ToontownGlobals.PunchlinePlace : 'phase_3.5/maps/loading/ttc_pp.jpg',
         ToontownGlobals.DonaldsDock : 'phase_3.5/maps/loading/dd.jpg',
+        ToontownGlobals.BarnacleBoulevard : 'phase_3.5/maps/loading/dd__bb.jpg',
+        ToontownGlobals.SeaweedStreet : 'phase_3.5/maps/loading/dd_ss.jpg',
+        ToontownGlobals.LighthouseLane : 'phase_3.5/maps/loading/dd_ll.jpg',
         ToontownGlobals.DaisyGardens : 'phase_3.5/maps/loading/dg.jpg',
+        ToontownGlobals.ElmStreet : 'phase_3.5/maps/loading/dg_es.jpg',
+        ToontownGlobals.MapleStreet : 'phase_3.5/maps/loading/dg_ms.jpg',
+        ToontownGlobals.OakStreet : 'phase_3.5/maps/loading/dg_os.jpg',
         ToontownGlobals.MinniesMelodyland : 'phase_3.5/maps/loading/mml.jpg',
+        ToontownGlobals.AltoAvenue : 'phase_3.5/maps/loading/mml_aa.jpg',
+        ToontownGlobals.BaritoneBoulevard : 'phase_3.5/maps/loading/mml_bb.jpg',
+        ToontownGlobals.TenorTerrace : 'phase_3.5/maps/loading/mml_tt.jpg',
         ToontownGlobals.TheBrrrgh : 'phase_3.5/maps/loading/tb.jpg',
+        ToontownGlobals.WalrusWay : 'phase_3.5/maps/loading/tb_ww.jpg',
+        ToontownGlobals.SleetStreet : 'phase_3.5/maps/loading/tb_ss.jpg',
+        ToontownGlobals.PolarPlace : 'phase_3.5/maps/loading/tb_pp.jpg',
         ToontownGlobals.DonaldsDreamland : 'phase_3.5/maps/loading/ddl.jpg',
+        ToontownGlobals.LullabyLane : 'phase_3.5/maps/loading/ddl_ll.jpg',
+        ToontownGlobals.PajamaPlace : 'phase_3.5/maps/loading/ddl_pp.jpg',
         ToontownGlobals.SellbotHQ : 'phase_3.5/maps/loading/sbhq.jpg',
         ToontownGlobals.CashbotHQ : 'phase_3.5/maps/loading/cbhq.jpg',
         ToontownGlobals.LawbotHQ : 'phase_3.5/maps/loading/lbhq.jpg',
@@ -49,7 +69,8 @@ class ToontownLoadingScreen:
     def begin(self, range, label, gui, tipCategory, zoneId):
         self.waitBar['range'] = range
         self.title['text'] = label
-        self.background = loader.loadTexture(self.zone2picture.get(zoneId, 'phase_3.5/maps/loading/default.jpg'))
+        loadingScreenTex = self.zone2picture.get(ZoneUtil.getBranchZone(zoneId), self.defaultTex)
+        self.background = loader.loadTexture(loadingScreenTex)
         self.__count = 0
         self.__expectedCount = range
         if gui:
@@ -70,7 +91,8 @@ class ToontownLoadingScreen:
             self.gui.setPos(0, -0.1, 0)
             self.gui.reparentTo(aspect2d, NO_FADE_SORT_INDEX)
             self.gui.setTexture(self.background, 1)
-            self.logo.reparentTo(base.a2dpTopCenter, NO_FADE_SORT_INDEX)  # base.a2dpTopLeft
+            if loadingScreenTex == self.defaultTex:
+                self.logo.reparentTo(base.a2dpTopCenter, NO_FADE_SORT_INDEX)
         else:
             self.title.reparentTo(base.a2dpBottomLeft, NO_FADE_SORT_INDEX)
             self.gui.reparentTo(hidden)
