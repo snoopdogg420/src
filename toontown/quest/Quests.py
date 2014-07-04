@@ -179,7 +179,7 @@ def simulateRecoveryFix(numNeeded, baseChance, list = 0):
 
     print 'Test results: %s tries, %s longest failure chain' % (numTries, greatestFailChain)
     if list:
-        print 'failures for each succes %s' % attemptList
+        print 'failures for each success %s' % attemptList
 
 
 class Quest:
@@ -1459,7 +1459,6 @@ class DeliverGagQuest(Quest):
         for i in xrange(self.getNumGags()):
             if inventory.useItem(gag[0], gag[1]):
                 takenGags += 1
-                print 'TOOK A GAG'
         av.b_setInventory(inventory.makeNetString())
         return takenGags
 
