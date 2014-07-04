@@ -1026,7 +1026,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def d_setClothesTopsList(self, clothesList):
         self.sendUpdate('setClothesTopsList', [clothesList])
-        return None
 
     def setClothesTopsList(self, clothesList):
         self.clothesTopsList = clothesList
@@ -1079,7 +1078,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def d_setClothesBottomsList(self, clothesList):
         self.sendUpdate('setClothesBottomsList', [clothesList])
-        return None
 
     def setClothesBottomsList(self, clothesList):
         self.clothesBottomsList = clothesList
