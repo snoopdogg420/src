@@ -1,9 +1,11 @@
-from direct.directnotify import DirectNotifyGlobal
-from toontown.catalog.CatalogItemList import CatalogItemList
-from toontown.catalog.CatalogFurnitureItem import CatalogFurnitureItem
-from toontown.catalog import CatalogItem
+from direct.directnotify.DirectNotifyGlobal import *
 
-# Mapping of DNA prop codes to furniture ID values. Use None to ignore a code.
+from toontown.catalog import CatalogItem
+from toontown.catalog.CatalogFurnitureItem import CatalogFurnitureItem
+from toontown.catalog.CatalogItemList import CatalogItemList
+
+
+# Mapping of DNA prop codes to furniture ID values. Use None to ignore a code:
 DNA2Furniture = {
     'house_interiorA': None,
     'GardenA': None,
@@ -34,15 +36,15 @@ class DNAFurnitureReaderAI:
     # CatalogItemList representing the furniture in the DNA file. The resulting
     # list is passed to the FurnitureManager in order to initialize a blank
     # house to the default furniture arrangement.
-    notify = DirectNotifyGlobal.directNotify.newCategory("DNAFurnitureReaderAI")
+    notify = directNotify.newCategory('DNAFurnitureReaderAI')
 
     def __init__(self, dnaData):
         self.dnaData = dnaData
         self.itemList = None
 
     def buildList(self):
-        self.itemList = CatalogItemList(store=(CatalogItem.Customization |
-                                               CatalogItem.Location))
+        self.itemList = CatalogItemList(
+            store=(CatalogItem.Customization|CatalogItem.Location))
 
         # Find the interior node:
         for child in self.dnaData.children:
@@ -67,12 +69,12 @@ class DNAFurnitureReaderAI:
             x, y, z = child.getPos()
             h, p, r = child.getHpr()
 
-            self.itemList.append(CatalogFurnitureItem(itemId,
-                                                      posHpr=(x, y, z, h, 0, 0)))
-        
-        #Add a phone to the itemList
-        self.itemList.append(CatalogFurnitureItem(1399,
-                                                  posHpr=(0, 0, 0, 0, 0, 0)))
+            self.itemList.append(
+                CatalogFurnitureItem(itemId, posHpr=(x, y, z, h, p, r)))
+
+        # Add a phone to the itemList:
+        self.itemList.append(
+            CatalogFurnitureItem(1399, posHpr=(-11, 2, 0, 0, 0, 0)))
 
     def getList(self):
         if not self.itemList:
