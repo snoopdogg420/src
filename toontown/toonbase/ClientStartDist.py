@@ -42,4 +42,4 @@ import pytz
 pytz.__loader__ = dictloader(game_data.ZONEINFO)
 
 # Finally, start the game:
-import toontown.toonbase.ToontownStart
+import toontown.toonbase.ClientStart

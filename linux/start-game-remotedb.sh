@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 cd ..
 
 # Get the user input:
 read -p "Username: " ttiUsername
 read -s -p "Password: " ttiPassword
+echo
 read -p "Gameserver (DEFAULT: 192.99.200.107): " TTI_GAMESERVER
 TTI_GAMESERVER=${TTI_GAMESERVER:-"192.99.200.107"}
 

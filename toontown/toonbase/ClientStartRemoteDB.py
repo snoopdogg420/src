@@ -1,13 +1,12 @@
 #!/usr/bin/env python2
+import json
 import os
+from pandac.PandaModules import *
 
 
 username = os.environ['ttiUsername']
 password = os.environ['ttiPassword']
 distribution = ConfigVariableString('distribution', 'dev').getValue()
-
-
-from pandac.PandaModules import *
 
 
 accountServerEndpoint = ConfigVariableString(
@@ -31,7 +30,6 @@ response = executeHttpRequest(
     username + password + distribution)
 
 
-import json
 
 
 try:
@@ -45,4 +43,4 @@ else:
         os.environ['TTI_PLAYCOOKIE'] = response['token']
 
         # Start the game:
-        import toontown.toonbase.ToontownStart
+        import toontown.toonbase.ClientStart
