@@ -4,6 +4,7 @@ import os
 
 username = os.environ['ttiUsername']
 password = os.environ['ttiPassword']
+distribution = ConfigVariableString('distribution', 'dev').getValue()
 
 
 from pandac.PandaModules import *
@@ -11,7 +12,7 @@ from pandac.PandaModules import *
 
 accountServerEndpoint = ConfigVariableString(
     'account-server-endpoint',
-    'https://www.toontowninfinite.com/api/').getValue()
+    'https://toontowninfinite.com/api/').getValue()
 
 http = HTTPClient()
 http.setVerifySsl(0)
@@ -26,8 +27,8 @@ def executeHttpRequest(url, message):
 
 
 response = executeHttpRequest(
-    'login?n={0}&p={1}'.format(username, password),
-    username + password)
+    'login?n={0}&p={1}&dist={2}'.format(username, password, distribution),
+    username + password + distribution)
 
 
 import json

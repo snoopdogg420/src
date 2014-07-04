@@ -17,7 +17,7 @@ default-model-extension .bam
 audio-library-name p3fmod_audio
 
 # Database...
-account-server-endpoint https://www.toontowninfinite.com/api/
+account-server-endpoint https://toontowninfinite.com/api/
 accountdb-type developer
 account-bridge-filename astron/databases/account-bridge.db
 account-server-min-access-level 600
