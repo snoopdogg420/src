@@ -1,16 +1,20 @@
-from otp.otpbase import OTPGlobals
+from direct.directnotify import DirectNotifyGlobal
+from direct.showbase import PythonUtil
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import ToontownGlobals
+from toontown.toonbase import TTLocalizer
 from toontown.battle import SuitBattleGlobals
 from toontown.coghq import CogDisguiseGlobals
-import random
 from toontown.toon import NPCToons
-import copy, string
 from toontown.hood import ZoneUtil
-from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import TTLocalizer
-from direct.showbase import PythonUtil
-import time, types, random
+from otp.otpbase import OTPGlobals
+import random
+import copy
+import string
+import time
+import types
+import random
+
 notify = DirectNotifyGlobal.directNotify.newCategory('Quests')
 ItemDict = TTLocalizer.QuestsItemDict
 CompleteString = TTLocalizer.QuestsCompleteString
@@ -1442,6 +1446,12 @@ class DeliverGagQuest(Quest):
     def getHeadlineString(self):
         return TTLocalizer.QuestsDeliverGagQuestHeadline
 
+    def removeGags(self, av):
+        gag = self.getGagType()
+        inventory = av.inventory
+        for i in xrange(self.getNumGags()):
+            inventory.useItem(gag[0], gag[1])
+        av.b_setInventory(inventory.makeNetString())
 
 class DeliverItemQuest(Quest):
     def __init__(self, id, quest):
@@ -1989,7 +1999,6 @@ def getQuestFromNpcId(id):
 
 def getQuestToNpcId(id):
     return QuestDict.get(id)[QuestDictToNpcIndex]
-
 
 def getQuestDialog(id):
     return QuestDict.get(id)[QuestDictDialogIndex]

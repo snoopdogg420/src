@@ -29,7 +29,6 @@ class QuestManagerAI:
                 npc.presentTrackChoice(avId, questId, questClass.getChoices())
                 break
             if completeStatus == Quests.COMPLETE:
-                print 'QuestManager: %s (AvId: %s) Completed QuestId: %s'%(toon.getName(), toon.doId, questId)
                 toon.toonUp(toon.maxHp)
                 if Quests.getNextQuest(questId, npc, toon)[0] != Quests.NA:
                     self.nextQuest(toon, npc, questId)
@@ -67,18 +66,19 @@ class QuestManagerAI:
                     return
 
     def avatarQuestChoice(self, toon, npc):
-        tasks = Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
-        return tasks
+        return Quests.chooseBestQuests(toon.getRewardTier(), npc, toon)
 
-    def avatarChoseQuest(self, avId, npc, questId, rewardId, building):
+    def avatarChoseQuest(self, avId, npc, questId, rewardId, toNpcId):
         toon = self.air.doId2do.get(avId)
         if not toon:
             return
-        fromNpc = Quests.getQuestFromNpcId(questId)
-        toNpc = Quests.getQuestToNpcId(questId)
-        toon.addQuest([questId, fromNpc, toNpc, rewardId, 0], 0,
-                        recordHistory = 0)
-        npc.assignQuest(avId, questId, rewardId, toNpc)
+        fromNpcId = npc.getDoId()
+        if toNpcId == 0:
+            toNpcId = Quests.getQuestToNpcId(questId)
+        toon.addQuest([questId, fromNpcId, toNpcId, rewardId, 0],
+                      Quests.Quest2RemainingStepsDict[questId] == 1,
+                      recordHistory = 0)
+        npc.assignQuest(avId, questId, rewardId, toNpcId)
         taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
@@ -119,10 +119,11 @@ class QuestManagerAI:
             if questId == completeQuestId:
                 toon.removeQuest(questId)
                 self.giveReward(toon, questId, rewardId)
+                if isinstance(questClass, Quests.DeliverGagQuest):
+                    questClass.removeGags(toon)
                 break
         else:
-            #Completing a quest they dont have? :/
-            print 'QuestManager: Toon %s tried to complete a quest they don\'t have!'%(toon.doId)
+            pass
 
     def giveReward(self, toon, questId, rewardId):
         #Actual reward giving.
@@ -147,7 +148,6 @@ class QuestManagerAI:
         self.toonPlayedMinigame(toon, [])
 
     def toonPlayedMinigame(self, toon, toons):
-        print 'QuestManager: %s (AvId: %s) played on the trolley.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
         for i in xrange(0, len(flattenedQuests), 5):
@@ -162,7 +162,6 @@ class QuestManagerAI:
         toon = self.air.doId2do.get(avId)
         if not toon:
             return
-        print 'QuestManager: %s (AvId: %s) made a friend.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
         for i in xrange(0, len(flattenedQuests), 5):
@@ -188,7 +187,6 @@ class QuestManagerAI:
         toon.b_setQuests(questList)
 
     def toonCaughtFishingItem(self, toon):
-        print 'QuestManager: %s (AvId: %s) Caught quest Item while fishing.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
         hasPickedQuest = 0
@@ -283,7 +281,6 @@ class QuestManagerAI:
         toon.b_setQuests(questList)
 
     def toonDefeatedFactory(self, toon, factoryId, activeVictors):
-        print 'QuestManager: %s (AvId: %s) defeated a factory.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
         for i in xrange(0, len(flattenedQuests), 5):
@@ -296,7 +293,6 @@ class QuestManagerAI:
         toon.b_setQuests(questList)
 
     def toonDefeatedMint(self, toon, mintId, activeVictors):
-        print 'QuestManager: %s (AvId: %s) defeated a mint.'%(toon.getName(), toon.doId)
         flattenedQuests = toon.getQuests()
         questList = [] #unflattened
         for i in xrange(0, len(flattenedQuests), 5):
