@@ -249,10 +249,10 @@ class QuestManagerAI:
                     if questClass.getHolder() != Quests.AnyFish:
                         for suit in suitsKilled:
                             if questClass.doesCogCount(toon.doId, suit, taskZoneId, suit['activeToons']):
-                                minchance = questClass.getPercentChance()
-                                import random
-                                chance = random.randint(minchance - 40, 100)
-                                if chance <= minchance:
+                                baseChance = questClass.getPercentChance()
+                                amountRemaining = questClass.getNumItems() - questDesc[4]
+                                chance = Quests.calcRecoverChance(amountRemaining, baseChance)
+                                if chance >= baseChance:
                                     questDesc[4] += 1
                                     recoveredItems.append(questClass.getItem())
                                 else:
