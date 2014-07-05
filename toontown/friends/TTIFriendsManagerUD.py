@@ -184,7 +184,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     # much client very trust
 
-    # The TTRFM Uberdog acts as a 'gateway' between two friends
+    # The TTIFM Uberdog acts as a 'gateway' between two friends
     # when they cannot directly send updates to one another, for
     # example when they are on different shards. We do this because
     # Astron does not currently support a few things that we need.

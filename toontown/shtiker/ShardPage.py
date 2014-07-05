@@ -25,7 +25,8 @@ class ShardPage(ShtikerPage.ShtikerPage):
         self.textDisabledColor = Vec4(0.4, 0.8, 0.4, 1)
         self.ShardInfoUpdateInterval = 5.0
         self.lowPop, self.midPop, self.highPop = base.getShardPopLimits()
-        self.showPop = config.GetBool('show-total-population', 0)
+        self.showPop = config.GetBool('show-population', 0)
+        self.showTotalPop = config.GetBool('show-total-population', 0)
         self.noTeleport = config.GetBool('shard-page-disable', 0)
         return
 
@@ -38,7 +39,7 @@ class ShardPage(ShtikerPage.ShtikerPage):
         shardPop_ycoord = helpText_ycoord - 0.523
         totalPop_ycoord = shardPop_ycoord - 0.26
         self.totalPopulationText = DirectLabel(parent=self, relief=None, text=TTLocalizer.ShardPagePopulationTotal % 1, text_scale=main_text_scale, text_wordwrap=8, textMayChange=1, text_align=TextNode.ACenter, pos=(0.38, 0, totalPop_ycoord))
-        if self.showPop:
+        if self.showTotalPop:
             self.totalPopulationText.show()
         else:
             self.totalPopulationText.hide()

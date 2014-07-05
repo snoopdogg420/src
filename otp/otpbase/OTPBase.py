@@ -9,7 +9,6 @@ from otp.ai.MagicWordGlobal import *
 from otp.settings.Settings import Settings
 from pandac.PandaModules import Camera, TPLow, VBase4, ColorWriteAttrib, Filename, getModelPath, NodePath, Vec4
 
-
 class OTPBase(ShowBase):
 
     def __init__(self, windowType = None):
@@ -179,7 +178,7 @@ class OTPBase(ShowBase):
         return task.cont
 
     def getShardPopLimits(self):
-        return (300, 600, 1200)
+        return (100, 200, -1)
 
     def setLocationCode(self, locationCode):
         if locationCode != self.locationCode:

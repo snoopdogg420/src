@@ -196,6 +196,7 @@ want-boarding-groups #f
 want-achievements #f
 
 # Optional...
+show-population #f
 show-total-population #t
 want-mat-all-tailors #t
 want-news-page #f
