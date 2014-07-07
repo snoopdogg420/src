@@ -169,6 +169,9 @@ pajama-place-building-min 6
 pajama-place-building-max 12
 pajama-place-building-chance 100.0
 
+# Economy...
+want-personal-bank #f
+
 # Cashbot boss...
 want-resistance-toonup #f
 want-resistance-restock #f
