@@ -286,13 +286,14 @@ class LoginAccountFSM(OperationFSM):
 
     def enterCreateAccount(self):
         self.account = {
-            'ACCOUNT_AV_SET': [0]*6,
+            'ACCOUNT_AV_SET': [0] * 6,
             'ESTATE_ID': 0,
             'ACCOUNT_AV_SET_DEL': [],
             'CREATED': time.ctime(time.mktime(time.gmtime())),
             'LAST_LOGIN': time.ctime(time.mktime(time.gmtime())),
             'ACCOUNT_ID': str(self.userId),
-            'ACCESS_LEVEL': self.accessLevel
+            'ACCESS_LEVEL': self.accessLevel,
+            'MONEY': 0
         }
         self.csm.air.dbInterface.createObject(
             self.csm.air.dbId,
