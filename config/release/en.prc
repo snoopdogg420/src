@@ -28,10 +28,6 @@ server-port 7198
 server-version SERVER_VERSION
 server-timezone US/Eastern
 
-# DClass files (in reverse order)...
-dc-file astron/dclass/toon.dc
-dc-file astron/dclass/otp.dc
-
 # Performance
 hardware-animated-vertices #t
 preload-avatars #t
