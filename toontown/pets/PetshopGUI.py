@@ -201,6 +201,7 @@ class PetshopGUI(DirectObject):
             if fishValue == 0:
                 self.sellFishButton['state'] = DGG.DISABLED
             self.adoptPetButton = DirectButton(parent=self, relief=None, image=adoptImageList, geom=pawLogoAdoptImageList, scale=(modelScale, modelScale, modelScale), text=TTLocalizer.PetshopAdoptAPet, text_scale=textScale, text_pos=(0, 12.5), text0_fg=text0Color, text1_fg=text1Color, text2_fg=text2Color, text3_fg=text3Color, pressEffect=False, command=lambda : messenger.send(doneEvent, [2]))
+            self.adoptPetButton['state'] = DGG.DISABLED # Disable the adopt a pet button.
             self.returnPetButton = DirectButton(parent=self, relief=None, image=returnImageList, geom=pawLogoReturnImageList, image3_color=disabledImageColor, scale=(modelScale, modelScale, modelScale), text=TTLocalizer.PetshopReturnPet, text_scale=textScale, text_pos=(-0.6, 9.2), text0_fg=text2Color, text1_fg=text2Color, text2_fg=text0Color, text3_fg=text3Color, pressEffect=False, command=lambda : messenger.send(doneEvent, [3]))
             if not base.localAvatar.hasPet():
                 self.returnPetButton['state'] = DGG.DISABLED
