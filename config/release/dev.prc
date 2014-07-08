@@ -3,7 +3,7 @@ window-title Toontown Infinite
 win-origin -1 -1
 
 # Filenames/filepaths...
-icon-filename icon.ico
+icon-filename phase_3/etc/icon.ico
 cursor-filename phase_3/etc/toonmono.cur
 preferences-filename preferences.gz
 
