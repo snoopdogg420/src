@@ -71,7 +71,7 @@ class QuestManagerAI:
                 return
             elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
                 #Tutorial
-                choices = self.avatarQuestChoice(toon, npc)
+                choices = self.avatarQuestChoice(av, npc)
                 quest = choices[0]
                 self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
                 if npc.tutorial:
@@ -80,7 +80,7 @@ class QuestManagerAI:
                 return
             else:
                 #Present quest choices.
-                choices = self.avatarQuestChoice(toon, npc)
+                choices = self.avatarQuestChoice(av, npc)
                 if choices != []:
                     npc.presentQuestChoice(avId, choices)
                     return
@@ -119,7 +119,7 @@ class QuestManagerAI:
         taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def nextQuest(self, av, npc, questId):
-        nextQuestId = Quests.getNextQuest(questId, npc, toon)
+        nextQuestId = Quests.getNextQuest(questId, npc, av)
         avQuests = av.getQuests() #Flattened Quests.
         questList = [] #Unflattened Quests.
         for i in xrange(0, len(avQuests), 5):
@@ -216,7 +216,7 @@ class QuestManagerAI:
                 if not hasPickedQuest:
                     if isinstance(questClass, Quests.RecoverItemQuest):
                         if questClass.getHolder() == Quests.AnyFish:
-                            if not questClass.getCompletionStatus(toon, questDesc) == Quests.COMPLETE:
+                            if not questClass.getCompletionStatus(av, questDesc) == Quests.COMPLETE:
                                 minChance = questClass.getPercentChance()
                                 chance = random.randint(minChance - 40, 100)
                                 if chance <= minChance:
@@ -247,7 +247,7 @@ class QuestManagerAI:
             questClass = Quests.getQuest(questDesc[0])
             if isinstance(questClass, Quests.DeliverItemQuest):
                 if questClass.getCompletionStatus(av, questDesc, npc) == Quests.COMPLETE:
-                    toon.removeQuest(questDesc[0])
+                    av.removeQuest(questDesc[0])
                     break
 
     def recoverItems(self, av, suitsKilled, taskZoneId):
