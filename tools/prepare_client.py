@@ -117,11 +117,12 @@ with open(configFilePath) as f:
         if 'server-version' in line:
             data[i] = 'server-version {0}'.format(args.server_ver)
             print 'serverVersion = {0}'.format(args.server_ver)
-    data += '\n# Virtual file system...\nmodel-path /\n'
+    data.append('\n# Virtual file system...\nmodel-path /\n')
     for filepath in args.vfs:
-        data += 'vfs-mount {0} /\n'.format(filepath)
+        data.append('vfs-mount {0} /\n'.format(filepath))
     data = '\n'.join(data)
     configData.append(data)
+    print configData
 
 # Next, we need the DC file:
 dcData = ''
