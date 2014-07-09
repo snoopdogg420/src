@@ -46,6 +46,7 @@ from toontown.toon import NPCToons
 from toontown.toonbase import ToontownGlobals
 from toontown.uberdog.DistributedPartyManagerAI import DistributedPartyManagerAI
 from toontown.ai.WelcomeValleyManagerAI import WelcomeValleyManagerAI
+from toontown.ai import CogPageManagerAI
 
 class ToontownAIRepository(ToontownInternalRepository):
     def __init__(self, baseChannel, stateServerChannel, districtName):
@@ -80,6 +81,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.wantTrackClsends = self.config.GetBool('want-track-clsends', False)
         self.wantAchievements = self.config.GetBool('want-achievements', True)
 
+        self.cogSuitMessageSent = False
+
     def createManagers(self):
         self.timeManager = TimeManagerAI(self)
         self.timeManager.generateWithRequired(2)
@@ -101,6 +104,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.trophyMgr.generateWithRequired(2)
         self.cogSuitMgr = CogSuitManagerAI.CogSuitManagerAI(self)
         self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
+        self.cogPageManager = CogPageManagerAI.CogPageManagerAI()
         if self.wantFishing:
             self.fishManager = FishManagerAI(self)
         if self.wantHousing:

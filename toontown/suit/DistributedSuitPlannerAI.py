@@ -54,9 +54,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             if not hasattr(self.__class__, 'CogdoPopAdjusted'):
                 self.__class__.CogdoPopAdjusted = True
                 for index in xrange(len(self.SuitHoodInfo)):
-                    hoodInfo = self.SuitHoodInfo[index]
-                    hoodInfo[self.SUIT_HOOD_INFO_BMIN] = int(0.5 + self.CogdoPopFactor * hoodInfo[self.SUIT_HOOD_INFO_BMIN])
-                    hoodInfo[self.SUIT_HOOD_INFO_BMAX] = int(0.5 + self.CogdoPopFactor * hoodInfo[self.SUIT_HOOD_INFO_BMAX])
+                    SuitBuildingGlobals[self.zoneId][0] = int(0.5 + self.CogdoPopFactor * SuitBuildingGlobals[self.zoneId][0])
+                    SuitBuildingGlobals[self.zoneId][1] = int(0.5 + self.CogdoPopFactor * SuitBuildingGlobals[self.zoneId][1])
         self.hoodInfoIdx = -1
         for index in xrange(len(self.SuitHoodInfo)):
             currHoodInfo = self.SuitHoodInfo[index]
@@ -66,7 +65,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         self.baseNumSuits = (
             self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_MIN] +
             self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_MAX]) / 2
-        self.targetNumSuitBuildings = self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_BMIN]
+        self.targetNumSuitBuildings = SuitBuildingGlobals.buildingMinMax[self.zoneId][0]
         if ZoneUtil.isWelcomeValley(self.zoneId):
             self.targetNumSuitBuildings = 0
         self.pendingBuildingTracks = []
@@ -130,16 +129,16 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         for p in self.frontdoorPointList:
             blockNumber = p.getLandmarkBuildingIndex()
             if blockNumber < 0:
-                self.notify.warning('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
+                self.notify.debug('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
                 continue
             if blockNumber in self.buildingFrontDoors:
-                self.notify.warning('Multiple front doors for building %s in zone %s' % (blockNumber, self.zoneId))
+                self.notify.debug('Multiple front doors for building %s in zone %s' % (blockNumber, self.zoneId))
                 continue
             self.buildingFrontDoors[blockNumber] = p
         for p in self.sidedoorPointList:
             blockNumber = p.getLandmarkBuildingIndex()
             if blockNumber < 0:
-                self.notify.warning('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
+                self.notify.debug('No landmark building for (%s) in zone %s' % (str(p), self.zoneId))
                 continue
             if blockNumber in self.buildingSideDoors:
                 self.buildingSideDoors[blockNumber].append(p)
@@ -150,9 +149,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 continue
             blockNumber = bldg.getBlock()[0]
             if blockNumber not in self.buildingFrontDoors:
-                self.notify.warning('No front door for building %s in zone %s' % (blockNumber, self.zoneId))
+                self.notify.debug('No front door for building %s in zone %s' % (blockNumber, self.zoneId))
             if blockNumber not in self.buildingSideDoors:
-                self.notify.warning('No side door for building %s in zone %s' % (blockNumber, self.zoneId))
+                self.notify.debug('No side door for building %s in zone %s' % (blockNumber, self.zoneId))
 
     def countNumSuitsPerTrack(self, count):
         for suit in self.suitList:
@@ -274,7 +273,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 startTime = SuitTimings.fromSky
                 continue
         if startPoint == None:
-            print 'DSP failed to create a new suit! REASON: startPoint = None'
             return None
         newSuit = DistributedSuitAI.DistributedSuitAI(simbase.air, self)
         newSuit.startPoint = startPoint
@@ -312,7 +310,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             self.notify.debug("Couldn't get a destination in %d!" % self.zoneId)
             newSuit.doNotDeallocateChannel = None
             newSuit.delete()
-            print 'DSP failed to create a new suit! REASON: gotDestination = None'
             return None
         newSuit.initializePath()
         self.zoneChange(newSuit, None, newSuit.zoneId)
@@ -336,20 +333,26 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
 
     def countNumNeededBuildings(self):
         if not self.buildingMgr:
-            return 0
+            return False
         numSuitBuildings = len(self.buildingMgr.getSuitBlocks())
-        numNeeded = self.targetNumSuitBuildings - numSuitBuildings
+        if (random.random() * 100) < SuitBuildingGlobals.buildingChance[self.zoneId]:
+            bmax = SuitBuildingGlobals.buildingMinMax[self.zoneId][1]
+            if ZoneUtil.isWelcomeValley(self.zoneId):
+                bmax = 0
+            numNeeded = bmax - numSuitBuildings
+        else:
+            numNeeded = self.targetNumSuitBuildings - numSuitBuildings
         return numNeeded
 
     def newSuitShouldAttemptTakeover(self):
         if not self.SUITS_ENTER_BUILDINGS:
-            return 0
+            return False
         numNeeded = self.countNumNeededBuildings()
         if self.numAttemptingTakeover >= numNeeded:
             self.pendingBuildingTracks = []
-            return 0
+            return False
         self.notify.debug('DSP %s is planning a takeover attempt in zone %s' % (self.getDoId(), self.zoneId))
-        return 1
+        return True
 
     def chooseDestination(self, suit, startTime, toonBlockTakeover=None,
             cogdoTakeover=None, minPathLen=None, maxPathLen=None):
@@ -518,16 +521,9 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                             if age > oldestAge:
                                 oldest = building
                                 oldestAge = age
-
-
-                    building.elevator.fsm.getCurrentState().getName() == 'waitEmpty'
                 if oldestAge > timeout:
                     self.notify.info('Street %d has %d buildings; reclaiming %0.2f-hour-old building.' % (self.zoneId, len(suitBuildings), oldestAge / 3600.0))
-                    oldest.b_setVictorList([
-                        0,
-                        0,
-                        0,
-                        0])
+                    oldest.b_setVictorList([0, 0, 0, 0])
                     oldest.updateSavedBy(None)
                     oldest.toonTakeOver()
         self.__waitForNextUpkeep()
@@ -556,6 +552,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if self.pendingBuildingHeights.count(buildingHeight) > 0:
             self.pendingBuildingHeights.remove(buildingHeight)
         building = self.buildingMgr.getBuilding(blockNumber)
+        if building is None:
+            return
         building.suitTakeOver(suitTrack, difficulty, buildingHeight)
 
     def cogdoTakeOver(self, blockNumber, difficulty, buildingHeight):
@@ -565,11 +563,39 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         building.cogdoTakeOver(difficulty, buildingHeight)
 
     def recycleBuilding(self):
-        bmin = self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_BMIN]
+        bmin = SuitBuildingGlobals.buildingMinMax[self.zoneId][0]
         current = len(self.buildingMgr.getSuitBlocks())
         if (self.targetNumSuitBuildings > bmin) and (current <= self.targetNumSuitBuildings):
             self.targetNumSuitBuildings -= 1
             self.assignSuitBuildings(1)
+
+    def createInitialSuitBuildings(self):
+        if self.buildingMgr is None:
+            return
+
+        # If we aren't at our minimum number of buildings, let's spawn some!
+        suitBlockCount = len(self.buildingMgr.getSuitBlocks())
+        if suitBlockCount < self.targetNumSuitBuildings:
+            for _ in xrange(self.targetNumSuitBuildings - suitBlockCount):
+                blockNumber = random.choice(self.buildingMgr.getToonBlocks())
+                building = self.buildingMgr.getBuilding(blockNumber)
+                if building is None:
+                    continue
+                if NPCToons.isZoneProtected(building.getExteriorAndInteriorZoneId()[1]):
+                    continue
+                suitName = self.air.suitInvasionManager.getInvadingCog()[0]
+                if suitName is None:
+                    suitName = self.defaultSuitName
+                suitType = None
+                suitTrack = None
+                if suitName is not None:
+                    suitType = SuitDNA.getSuitType(suitName)
+                    suitTrack = SuitDNA.getSuitDept(suitName)
+                (suitLevel, suitType, suitTrack) = self.pickLevelTypeAndTrack(None, suitType, suitTrack)
+                building.suitTakeOver(suitTrack, suitLevel, None)
+
+        # Save the building manager's state:
+        self.buildingMgr.save()
 
     def assignInitialSuitBuildings(self):
         totalBuildings = 0
@@ -681,7 +707,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 else:
                     numTarget = 0
                     numTotalBuildings = 0
-                if numTarget >= currHoodInfo[self.SUIT_HOOD_INFO_BMAX] or numTarget >= numTotalBuildings:
+                if numTarget >= SuitBuildingGlobals.buildingMinMax[self.zoneId][1] or numTarget >= numTotalBuildings:
                     self.notify.info('Zone %s has enough buildings.' % zoneId)
                     hoodInfo.remove(currHoodInfo)
                     weight = currHoodInfo[self.SUIT_HOOD_INFO_BWEIGHT]
@@ -730,7 +756,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 else:
                     numTarget = 0
                     numTotalBuildings = 0
-                if numTarget <= currHoodInfo[self.SUIT_HOOD_INFO_BMIN]:
+                if numTarget <= SuitBuildingGlobals.buildingMinMax[self.zoneId][0]:
                     self.notify.info("Zone %s can't remove any more buildings." % zoneId)
                     hoodInfo.remove(currHoodInfo)
                     totalWeight -= currHoodInfo[self.SUIT_HOOD_INFO_BWEIGHT]
@@ -747,7 +773,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             t += weight
             if c < t:
                 return currHoodInfo
-        self.notify.warning('Weighted random choice failed!  Total is %s, chose %s' % (t, c))
+        self.notify.warning('Weighted random choice failed! Total is %s, chose %s' % (t, c))
         return random.choice(hoodInfo)
 
     def chooseStreetWithPreference(self, hoodInfo, buildingTrackIndex, buildingHeight):
@@ -763,7 +789,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             t += dist[i]
             if c < t:
                 return hoodInfo[i]
-        self.notify.warning('Weighted random choice failed!  Total is %s, chose %s' % (t, c))
+        self.notify.warning('Weighted random choice failed! Total is %s, chose %s' % (t, c))
         return random.choice(hoodInfo)
 
     def chooseSuitLevel(self, possibleLevels, buildingHeight):
@@ -776,6 +802,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
 
 
     def initTasks(self):
+        if self.air.wantCogbuildings:
+            self.createInitialSuitBuildings()
         self.__waitForNextUpkeep()
         self.__waitForNextAdjust()
 
@@ -799,7 +827,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             return 0
         if toon:
             if hasattr(toon, 'doId'):
-                print 'Setting toonID ', toonId
                 toon.b_setBattleId(toonId)
         pos = self.battlePosDict[canonicalZoneId]
         interactivePropTrackBonus = -1
@@ -815,7 +842,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         return 1
 
     def __battleFinished(self, zoneId):
-        self.notify.debug('DistSuitPlannerAI:  battle in zone ' + str(zoneId) + ' finished')
+        self.notify.debug('DistSuitPlannerAI: battle in zone ' + str(zoneId) + ' finished')
         currBattleIdx = 0
         while currBattleIdx < len(self.battleList):
             currBattle = self.battleList[currBattleIdx]
@@ -854,26 +881,26 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
 
 
     def postBattleResumeCheck(self, suit):
-        self.notify.debug('DistSuitPlannerAI:postBattleResumeCheck:  suit ' + str(suit.getDoId()) + ' is leaving battle')
+        self.notify.debug('DistSuitPlannerAI:postBattleResumeCheck: suit ' + str(suit.getDoId()) + ' is leaving battle')
         battleIndex = 0
         for currBattle in self.battleList:
             if suit.zoneId == currBattle[0]:
-                self.notify.debug('    battle found' + str(suit.zoneId))
+                self.notify.debug(' battle found' + str(suit.zoneId))
                 for currPath in currBattle[1]:
                     for currPathPtSuit in xrange(suit.currWpt, suit.myPath.getNumPoints()):
                         ptIdx = suit.myPath.getPointIndex(currPathPtSuit)
                         if self.notify.getDebug():
-                            self.notify.debug('    comparing' + str(ptIdx) + 'with' + str(currPath))
+                            self.notify.debug(' comparing' + str(ptIdx) + 'with' + str(currPath))
                         if currPath == ptIdx:
                             if self.notify.getDebug():
-                                self.notify.debug('    match found, telling' + 'suit to fly')
+                                self.notify.debug(' match found, telling' + 'suit to fly')
                             return 0
             battleIndex += 1
         pointList = []
         for currPathPtSuit in xrange(suit.currWpt, suit.myPath.getNumPoints()):
             ptIdx = suit.myPath.getPointIndex(currPathPtSuit)
             if self.notify.getDebug():
-                self.notify.debug('    appending point with index of' + str(ptIdx))
+                self.notify.debug(' appending point with index of' + str(ptIdx))
             pointList.append(ptIdx)
         self.battleList.append([suit.zoneId, pointList])
         return 1

@@ -26,7 +26,7 @@ class DistributedNPCPetclerkAI(DistributedNPCToonBaseAI):
         if self.isBusy():
             self.freeAvatar(avId)
             return
-        self.petSeeds = simbase.air.petMgr.getAvailablePets(3, 2)
+        self.petSeeds = [98, 38, 47, 273, 73]
         numGenders = len(PetDNA.PetGenders)
         self.petSeeds *= numGenders
         self.petSeeds.sort()

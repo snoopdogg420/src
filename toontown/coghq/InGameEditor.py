@@ -25,9 +25,6 @@ class InGameEditor(AppShell):
     frameHeight = 475
     usecommandarea = 1
     usestatusarea = 1
-    contactname = 'Darren Ranalli'
-    contactphone = '(818) 623-3904'
-    contactemail = 'darren.ranalli@disney.com'
     WantUndo = False
 
     def __init__(self, level, doneEvent, requestSaveEvent, saveAsEvent, undoEvent, redoEvent, wireframeEvent, oobeEvent, csEvent, runEvent, texEvent, **kw):

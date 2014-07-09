@@ -9,7 +9,7 @@ class HolidayManagerAI:
         #TODO: this function needs to actually check holidays
 
     def isMoreXpHolidayRunning(self):
-        return True
+        return False
 
     def getXpMultiplier(self):
         return self.xpMultiplier

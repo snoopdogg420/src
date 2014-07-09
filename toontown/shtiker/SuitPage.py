@@ -199,13 +199,11 @@ class SuitPage(ShtikerPage.ShtikerPage):
         for radarButton in self.radarButtons:
             radarButton.building = 0
             radarButton.buildingRadarLabel = None
-
         gui = loader.loadModel('phase_3.5/models/gui/suitpage_gui')
         self.panelModel = gui.find('**/card')
         self.shadowModels = []
         for index in xrange(1, len(SuitDNA.suitHeadTypes) + 1):
             self.shadowModels.append(gui.find('**/shadow' + str(index)))
-
         del gui
         self.makePanels()
         self.radarOn = [0,
@@ -234,7 +232,6 @@ class SuitPage(ShtikerPage.ShtikerPage):
         self.salesRadarButton.destroy()
         for panel in self.panels:
             panel.destroy()
-
         del self.panels
         for shadow in self.shadowModels:
             shadow.removeNode()
@@ -353,7 +350,6 @@ class SuitPage(ShtikerPage.ShtikerPage):
                 self.addCogRadarLabel(panel)
                 self.panels.append(panel)
                 base.panels.append(panel)
-
         return
 
     def addQuotaLabel(self, panel):
@@ -442,7 +438,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
         index = self.panels.index(panel)
         if status == COG_UNSEEN:
             panel['text'] = TTLocalizer.SuitPageMystery
-        if status == COG_BATTLED:
+        elif status == COG_BATTLED:
             suitName = SuitDNA.suitHeadTypes[index]
             suitFullName = SuitBattleGlobals.SuitAttributes[suitName]['name']
             panel['text'] = suitFullName
@@ -460,30 +456,21 @@ class SuitPage(ShtikerPage.ShtikerPage):
                     panel.summonButton.show()
                 else:
                     self.addSummonButton(panel)
-        if status == COG_DEFEATED:
+        elif status == COG_DEFEATED:
             count = str(base.localAvatar.cogCounts[index])
-            quota = str(COG_QUOTAS[0][index % SuitDNA.suitsPerDept])
+            if base.localAvatar.cogs[index] < COG_COMPLETE1:
+                quota = str(COG_QUOTAS[0][index % SuitDNA.suitsPerDept])
+            else:
+                quota = str(COG_QUOTAS[1][index % SuitDNA.suitsPerDept])
             panel.quotaLabel['text'] = TTLocalizer.SuitPageQuota % (count, quota)
-        if status == COG_COMPLETE1:
-            count = str(base.localAvatar.cogCounts[index])
-            quota = str(COG_QUOTAS[1][index % SuitDNA.suitsPerDept])
+        elif status == COG_COMPLETE1:
             panel['image_color'] = PANEL_COLORS_COMPLETE1[index / SuitDNA.suitsPerDept]
-            panel.quotaLabel['text'] = TTLocalizer.SuitPageQuota % (count, quota)
-        if status == COG_COMPLETE2:
-            count = str(base.localAvatar.cogCounts[index])
-            quota = str(COG_QUOTAS[1][index % SuitDNA.suitsPerDept])
+        elif status == COG_COMPLETE2:
             panel['image_color'] = PANEL_COLORS_COMPLETE2[index / SuitDNA.suitsPerDept]
-            panel.quotaLabel['text'] = TTLocalizer.SuitPageQuota % (count, quota)
-        if status == COG_MASTERED:
-            count = str(base.localAvatar.cogCounts[index])
-            quota = str(COG_QUOTAS[1][index % SuitDNA.suitsPerDept])
-            panel['image_color'] = PANEL_COLORS_COMPLETE2[index / SuitDNA.suitsPerDept]
-            panel.quotaLabel['text'] = TTLocalizer.SuitPageQuota % (quota, quota)
 
     def updateAllCogs(self, status):
         for index in xrange(0, len(base.localAvatar.cogs)):
             base.localAvatar.cogs[index] = status
-
         self.updatePage()
 
     def updatePage(self):
@@ -493,22 +480,8 @@ class SuitPage(ShtikerPage.ShtikerPage):
             for type in xrange(0, SuitDNA.suitsPerDept):
                 self.updateCogStatus(dept, type, cogs[index])
                 index += 1
-
         self.updateCogRadarButtons(base.localAvatar.cogRadar)
         self.updateBuildingRadarButtons(base.localAvatar.buildingRadar)
-
-    def getCogStatus(self, cogKills, tier):
-        if cogKills == COG_UNSEEN:
-                return COG_UNSEEN
-        if cogKills <= COG_QUOTAS[0][tier]:
-                return COG_DEFEATED
-        if cogKills >= COG_QUOTAS[0][tier]:
-                if cogKills <= COG_QUOTAS[1][tier]:
-                    return COG_COMPLETE2
-                if cogKills >= COG_QUOTAS[1][tier]:
-                    return COG_MASTERED
-                return COG_COMPLETE1
-        return COG_DEFEATED
 
     def updateCogStatus(self, dept, type, status):
         if dept < 0 or dept > len(SuitDNA.suitDepts):
@@ -519,10 +492,7 @@ class SuitPage(ShtikerPage.ShtikerPage):
             print 'ucs: bad status: ', status
         else:
             self.resetPanel(dept, type)
-            tier = dept * SuitDNA.suitsPerDept + type
-            panel = self.panels[tier]
-            cogKills = base.localAvatar.cogCounts[tier]
-            status = self.getCogStatus(cogKills, type)
+            panel = self.panels[dept * SuitDNA.suitsPerDept + type]
             if status == COG_UNSEEN:
                 self.setPanelStatus(panel, COG_UNSEEN)
             elif status == COG_BATTLED:
@@ -538,10 +508,6 @@ class SuitPage(ShtikerPage.ShtikerPage):
                 self.setPanelStatus(panel, COG_BATTLED)
                 self.setPanelStatus(panel, COG_DEFEATED)
                 self.setPanelStatus(panel, COG_COMPLETE2)
-            elif status == COG_MASTERED:
-                self.setPanelStatus(panel, COG_BATTLED)
-                self.setPanelStatus(panel, COG_DEFEATED)
-                self.setPanelStatus(panel, COG_MASTERED)
 
     def updateCogRadarButtons(self, radars):
         for index in xrange(0, len(radars)):
@@ -556,30 +522,23 @@ class SuitPage(ShtikerPage.ShtikerPage):
             cogList = []
         for panel in panels:
             panel.count = 0
-
         for cog in cogList:
             self.panels[cog].count += 1
-
         for panel in panels:
             panel.cogRadarLabel['text'] = TTLocalizer.SuitPageCogRadar % panel.count
             if self.radarOn[deptNum]:
                 panel.quotaLabel.hide()
-
                 def showLabel(label):
                     label.show()
-
                 taskMgr.doMethodLater(RADAR_DELAY * panels.index(panel), showLabel, 'showCogRadarLater', extraArgs=(panel.cogRadarLabel,))
-
                 def activateButton(s = self, index = deptNum):
                     self.radarButtons[index]['state'] = DGG.NORMAL
                     return Task.done
-
                 if not self.radarButtons[deptNum].building:
                     taskMgr.doMethodLater(RADAR_DELAY * len(panels), activateButton, 'activateButtonLater')
             else:
                 panel.cogRadarLabel.hide()
                 panel.quotaLabel.show()
-
         return
 
     def updateBuildingRadarButtons(self, radars):
@@ -606,7 +565,6 @@ class SuitPage(ShtikerPage.ShtikerPage):
                     button.buildingRadarLabel['text'] = TTLocalizer.SuitPageBuildingRadarS % num
                 else:
                     button.buildingRadarLabel['text'] = TTLocalizer.SuitPageBuildingRadarP % num
-
                 def showLabel(button):
                     button.buildingRadarLabel.show()
                     button['state'] = DGG.NORMAL

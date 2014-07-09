@@ -93,6 +93,7 @@ class DistributedBattleAI(DistributedBattleBaseAI.DistributedBattleBaseAI):
                         self.toonMerits[toonId] = self.air.promotionMgr.recoverMerits(toon, self.suitsKilled, self.zoneId)
                     else:
                         self.notify.debug('toon %d not helpful, skipping merits' % toonId)
+
             self.d_setMembers()
             self.d_setBattleExperience()
             self.b_setState('Reward')

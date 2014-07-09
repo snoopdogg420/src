@@ -18,6 +18,10 @@ accountDBType = simbase.config.GetString('accountdb-type', 'developer')
 if accountDBType == 'remote':
     from Crypto.Cipher import AES
 
+# Sometimes we'll want to force a specific access level, such as on the
+# developer server:
+minAccessLevel = simbase.config.GetInt('account-server-min-access-level', 0)
+
 
 def judgeName(name):
     return False
@@ -66,7 +70,7 @@ class DeveloperAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': 600
+                'accessLevel': max(600, minAccessLevel)
             }
             callback(response)
             return response
@@ -98,7 +102,7 @@ class LocalAccountDB(AccountDB):
                 'success': True,
                 'userId': username,
                 'accountId': 0,
-                'accessLevel': 700 if not self.dbm else 100
+                'accessLevel': max((700 if not self.dbm else 100), minAccessLevel)
             }
             callback(response)
             return response
@@ -109,7 +113,7 @@ class LocalAccountDB(AccountDB):
             response = {
                 'success': True,
                 'userId': username,
-                'accountId': int(self.dbm[str(username)]),
+                'accountId': int(self.dbm[str(username)])
             }
             callback(response)
             return response
@@ -201,7 +205,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': 0,
-                'accessLevel': int(token['accesslevel'])
+                'accessLevel': max(int(token['accesslevel']), minAccessLevel)
             }
             callback(response)
             return response
@@ -213,7 +217,7 @@ class RemoteAccountDB(AccountDB):
                 'success': True,
                 'userId': token['userid'],
                 'accountId': int(self.dbm[str(token['userid'])]),
-                'accessLevel': int(token['accesslevel'])
+                'accessLevel': max(int(token['accesslevel']), minAccessLevel)
             }
             callback(response)
             return response
@@ -324,7 +328,15 @@ class LoginAccountFSM(OperationFSM):
         self.demand('SetAccount')
 
     def enterSetAccount(self):
-        # First, if there's anybody on the account, kill them for redundant login:
+        # If necessary, update their account information:
+        if self.accessLevel:
+            self.csm.air.dbInterface.updateObject(
+                self.csm.air.dbId,
+                self.accountId,
+                self.csm.air.dclassesByName['AccountUD'],
+                {'ACCESS_LEVEL': self.accessLevel})
+
+        # If there's anybody on the account, kill them for redundant login:
         datagram = PyDatagram()
         datagram.addServerHeader(
             self.csm.GetAccountConnectionChannel(self.accountId),
@@ -845,7 +857,7 @@ class LoadAvatarFSM(AvatarOperationFSM):
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
 
-        # Tell TTRFriendsManager somebody is logging in:
+        # Tell TTIFriendsManager somebody is logging in:
         self.csm.air.friendsManager.toonOnline(self.avId, self.avatar)
 
         # Tell the GlobalPartyManager as well:
@@ -866,7 +878,7 @@ class UnloadAvatarFSM(OperationFSM):
     def enterUnloadAvatar(self):
         channel = self.csm.GetAccountConnectionChannel(self.target)
 
-        # Tell TTRFriendsManager somebody is logging off:
+        # Tell TTIFriendsManager somebody is logging off:
         self.csm.air.friendsManager.toonOffline(self.avId)
 
         # Clear off POSTREMOVE:

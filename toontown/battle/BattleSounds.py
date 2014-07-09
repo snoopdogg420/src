@@ -19,10 +19,10 @@ class BattleSounds:
 
     def setupSearchPath(self):
         self.sfxSearchPath = DSearchPath()
-        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_3/audio/sfx'))
-        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_3.5/audio/sfx'))
-        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_4/audio/sfx'))
-        self.sfxSearchPath.appendDirectory(Filename('../RetroResources/phase_5/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../ToontownInfiniteResources/phase_3/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../ToontownInfiniteResources/phase_3.5/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../ToontownInfiniteResources/phase_4/audio/sfx'))
+        self.sfxSearchPath.appendDirectory(Filename('../ToontownInfiniteResources/phase_5/audio/sfx'))
         self.sfxSearchPath.appendDirectory(Filename('/phase_3/audio/sfx'))
         self.sfxSearchPath.appendDirectory(Filename('/phase_3.5/audio/sfx'))
         self.sfxSearchPath.appendDirectory(Filename('/phase_4/audio/sfx'))

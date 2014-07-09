@@ -1,16 +1,20 @@
-from otp.otpbase import OTPGlobals
+from direct.directnotify import DirectNotifyGlobal
+from direct.showbase import PythonUtil
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import ToontownGlobals
+from toontown.toonbase import TTLocalizer
 from toontown.battle import SuitBattleGlobals
 from toontown.coghq import CogDisguiseGlobals
-import random
 from toontown.toon import NPCToons
-import copy, string
 from toontown.hood import ZoneUtil
-from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import TTLocalizer
-from direct.showbase import PythonUtil
-import time, types, random
+from otp.otpbase import OTPGlobals
+import random
+import copy
+import string
+import time
+import types
+import random
+
 notify = DirectNotifyGlobal.directNotify.newCategory('Quests')
 ItemDict = TTLocalizer.QuestsItemDict
 CompleteString = TTLocalizer.QuestsCompleteString
@@ -175,7 +179,7 @@ def simulateRecoveryFix(numNeeded, baseChance, list = 0):
 
     print 'Test results: %s tries, %s longest failure chain' % (numTries, greatestFailChain)
     if list:
-        print 'failures for each succes %s' % attemptList
+        print 'failures for each success %s' % attemptList
 
 
 class Quest:
@@ -1100,6 +1104,12 @@ class BuildingQuest(CogQuest):
     def doesBuildingCount(self, avId, avList):
         return 1
 
+    def doesBuildingTypeCount(self, type):
+        buildingTrack = self.getBuildingTrack()
+        if buildingTrack == Any or buildingTrack == type:
+            return True
+        return False
+
 
 class BuildingNewbieQuest(BuildingQuest, NewbieQuest):
     def __init__(self, id, quest):
@@ -1442,6 +1452,15 @@ class DeliverGagQuest(Quest):
     def getHeadlineString(self):
         return TTLocalizer.QuestsDeliverGagQuestHeadline
 
+    def removeGags(self, av):
+        gag = self.getGagType()
+        inventory = av.inventory
+        takenGags = 0
+        for i in xrange(self.getNumGags()):
+            if inventory.useItem(gag[0], gag[1]):
+                takenGags += 1
+        av.b_setInventory(inventory.makeNetString())
+        return takenGags
 
 class DeliverItemQuest(Quest):
     def __init__(self, id, quest):
@@ -1989,7 +2008,6 @@ def getQuestFromNpcId(id):
 
 def getQuestToNpcId(id):
     return QuestDict.get(id)[QuestDictToNpcIndex]
-
 
 def getQuestDialog(id):
     return QuestDict.get(id)[QuestDictDialogIndex]
@@ -3815,6 +3833,13 @@ def chooseBestQuests(tier, currentNpc, av):
         rewardHistory = map(lambda questDesc: questDesc[3], av.quests)
     else:
         rewardHistory = av.getRewardHistory()[1]
+        toonQuests = av.getQuests() #Flattened Quests.
+        for i in xrange(0, len(toonQuests), 5):
+            questDesc = toonQuests[i:i + 5]
+            rewardId = questDesc[3]
+
+            rewardHistory.append(rewardId)
+
     seedRandomGen(currentNpc.getNpcId(), av.getDoId(), tier, rewardHistory)
     numChoices = getNumChoices(tier)
     rewards = getNextRewards(numChoices, tier, av)

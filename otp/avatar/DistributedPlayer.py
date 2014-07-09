@@ -341,7 +341,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             teleportNotify.debug('sending teleportQuery%s' % ((requesterId, sendToId),))
             self.sendUpdate('teleportQuery', [requesterId], sendToId)
         else:
-            teleportNotify.debug('sending TTRFM teleportQuery%s' % ((requesterId, sendToId),))
+            teleportNotify.debug('sending TTIFM teleportQuery%s' % ((requesterId, sendToId),))
             base.cr.ttrFriendsManager.d_teleportQuery(sendToId)
 
     def teleportQuery(self, requesterId):

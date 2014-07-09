@@ -1,8 +1,10 @@
+import random
+
+from otp.ai.MagicWordGlobal import *
 from toontown.fishing import FishGlobals
 from toontown.fishing.FishBase import FishBase
-import random
-from otp.ai.MagicWordGlobal import *
 from toontown.toonbase import TTLocalizer
+
 
 class FishManagerAI:
     def __init__(self, air):
@@ -106,7 +108,7 @@ def fish(fishName):
         del simbase.air.fishManager.fishRequests[target.doId]
         return "Removed {0}'s fish request.".format(target.getName())
 
-    for genus, species in TTILocalizer.FishSpeciesNames:
+    for genus, species in TTLocalizer.FishSpeciesNames:
         for name in species:
             if fishName.lower() != name.lower():
                 continue

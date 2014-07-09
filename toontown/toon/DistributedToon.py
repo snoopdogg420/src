@@ -2589,8 +2589,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if np.isEmpty():
             return
         self.gmIcon.reparentTo(np)
-        self.gmIcon.setScale(0.65)
-        self.gmIcon.setZ(2.25)
+        self.gmIcon.setScale(1.6)
+        self.gmIcon.setZ(2.05)
         self.setTrophyScore(self.trophyScore)
         self.gmIconInterval = LerpHprInterval(self.gmIcon, 3.0, Point3(0, 0, 0), Point3(-360, 0, 0))
         self.gmIconInterval.loop()
@@ -2638,6 +2638,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.achievements = achievements
         messenger.send(localAvatar.uniqueName('achievementsChange'))
 
+
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
     """
@@ -2649,6 +2650,9 @@ def globalTeleport():
     return 'Global teleport has been activated.'
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
-def setZone(zone):
-    base.cr.sendSetZoneMsg(zone, [zone])
-    return 'Set client zoneId to %s' % (zone)
+def zone(zoneId):
+    """
+    Changes the invoker's zone ID.
+    """
+    base.cr.sendSetZoneMsg(zoneId, [zoneId])
+    return 'You have been moved to zone {0}.'.format(zoneId)

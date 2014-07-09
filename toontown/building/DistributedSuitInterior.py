@@ -376,7 +376,7 @@ class DistributedSuitInterior(DistributedObject.DistributedObject):
          'hoodId': ZoneUtil.getHoodId(self.extZoneId),
          'zoneId': self.extZoneId,
          'shardId': None,
-         'avId': -1,
+         'avId': base.localAvatar.doId,
          'bldgDoId': self.distBldgDoId}
         messenger.send('DSIDoneEvent', [request])
         return

@@ -112,8 +112,7 @@ class DistributedMintRoomAI(DistributedLevelAI.DistributedLevelAI, MintRoomBase.
             self.air.writeServerEvent('mintDefeated', avId, description)
 
         for toon in activeVictors:
-            # simbase.air.questManager.toonDefeatedMint(toon, self.mintId, activeVictors)
-            pass
+            simbase.air.questManager.toonDefeatedMint(toon, self.mintId, activeVictors)
 
     def b_setDefeated(self):
         self.d_setDefeated()

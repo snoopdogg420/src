@@ -652,7 +652,7 @@ class DNANode(DNAGroup):
         DNAGroup.__init__(self, name)
         self.pos = LVector3f()
         self.hpr = LVector3f()
-        self.scale = LVector3f(1,1,1)
+        self.scale = LVector3f(1, 1, 1)
 
     def getPos(self):
         return self.pos
@@ -891,26 +891,27 @@ class DNAFlatBuilding(DNANode):
             return
         name = 'sb' + name[2:]
         node = nodePath.attachNewNode(name)
-        scale = self.getScale()
-        scale.setX(self.width)
-        scale.setZ(DNAFlatBuilding.currentWallHeight)
-        node.setScale(scale)
         node.setPosHpr(self.getPos(), self.getHpr())
         numCodes = dnaStorage.getNumCatalogCodes('suit_wall')
         if numCodes < 1:
             return
-        code = dnaStorage.getCatalogCode('suit_wall', random.randint(0, numCodes - 1))
+        code = dnaStorage.getCatalogCode(
+            'suit_wall', random.randint(0, numCodes - 1))
         wallNode = dnaStorage.findNode(code)
         if not wallNode:
             return
-        wallNode.copyTo(node, 0)
+        wallNode = wallNode.copyTo(node, 0)
+        wallScale = wallNode.getScale()
+        wallScale.setX(self.width)
+        wallScale.setZ(DNAFlatBuilding.currentWallHeight)
+        wallNode.setScale(wallScale)
         if self.getHasDoor():
-            doorNodePath = node.find('wall_*')
+            wallNodePath = node.find('wall_*')
             doorNode = dnaStorage.findNode('suit_door')
-            doorNode.copyTo(doorNodePath, 0)
-            doorNode.setScale(1.0 / self.width, 0, 1.0 / DNAFlatBuilding.currentWallHeight)
+            doorNode = doorNode.copyTo(wallNodePath, 0)
+            doorNode.setScale(NodePath(), (1, 1, 1))
             doorNode.setPosHpr(0.5, 0, 0, 0, 0, 0)
-            doorNodePath.setEffect(DecalEffect.make())
+            wallNodePath.setEffect(DecalEffect.make())
         node.flattenMedium()
         node.stash()
 
@@ -920,26 +921,27 @@ class DNAFlatBuilding(DNANode):
             return
         name = 'cb' + name[2:]
         node = nodePath.attachNewNode(name)
-        scale = self.getScale()
-        scale.setX(self.width)
-        scale.setZ(DNAFlatBuilding.currentWallHeight)
-        node.setScale(scale)
         node.setPosHpr(self.getPos(), self.getHpr())
         numCodes = dnaStorage.getNumCatalogCodes('cogdo_wall')
         if numCodes < 1:
             return
-        code = dnaStorage.getCatalogCode('cogdo_wall', random.randint(0, numCodes - 1))
+        code = dnaStorage.getCatalogCode(
+            'cogdo_wall', random.randint(0, numCodes - 1))
         wallNode = dnaStorage.findNode(code)
         if not wallNode:
             return
-        wallNode.copyTo(node, 0)
+        wallNode = wallNode.copyTo(node, 0)
+        wallScale = wallNode.getScale()
+        wallScale.setX(self.width)
+        wallScale.setZ(DNAFlatBuilding.currentWallHeight)
+        wallNode.setScale(wallScale)
         if self.getHasDoor():
-            doorNodePath = node.find('wall_*')
+            wallNodePath = node.find('wall_*')
             doorNode = dnaStorage.findNode('suit_door')
-            doorNode.copyTo(doorNodePath, 0)
-            doorNode.setScale(1.0 / self.width, 0, 1.0 / DNAFlatBuilding.currentWallHeight)
+            doorNode = doorNode.copyTo(wallNodePath, 0)
+            doorNode.setScale(NodePath(), (1, 1, 1))
             doorNode.setPosHpr(0.5, 0, 0, 0, 0, 0)
-            doorNodePath.setEffect(DecalEffect.make())
+            wallNodePath.setEffect(DecalEffect.make())
         node.flattenMedium()
         node.stash()
 
@@ -963,9 +965,7 @@ class DNAFlatBuilding(DNANode):
             if cameraBarrier is None:
                 raise DNAError('DNAFlatBuilding requires that there is a wall_camera_barrier in storage')
             cameraBarrier = cameraBarrier.copyTo(internalNode, 0)
-            cameraBarrier.setScale((1,1,DNAFlatBuilding.currentWallHeight))
-            self.setupSuitFlatBuilding(nodePath, dnaStorage)
-            self.setupCogdoFlatBuilding(nodePath, dnaStorage)
+            cameraBarrier.setScale((1, 1, DNAFlatBuilding.currentWallHeight))
             internalNode.flattenStrong()
             collisionNode = node.find('**/door_*/+CollisionNode')
             if not collisionNode.isEmpty():
@@ -993,6 +993,8 @@ class DNAFlatBuilding(DNANode):
             holderChild0.setEffect(DecalEffect.make())
             wallHolder.removeNode()
             wallDecal.removeNode()
+            self.setupSuitFlatBuilding(nodePath, dnaStorage)
+            self.setupCogdoFlatBuilding(nodePath, dnaStorage)
 
 class DNAWall(DNANode):
     def __init__(self, name):
@@ -1173,7 +1175,7 @@ class DNALandmarkBuilding(DNANode):
     def __init__(self, name):
         DNANode.__init__(self, name)
         self.code = ''
-        self.wallColor = LVector4f(1,1,1,1)
+        self.wallColor = LVector4f(1, 1, 1, 1)
         self.title = ''
         self.article = ''
         self.buildingType = ''
@@ -1239,7 +1241,7 @@ class DNADoor(DNAGroup):
     def __init__(self, name):
         DNAGroup.__init__(self, name)
         self.code = ''
-        self.color = LVector4f(1,1,1,1)
+        self.color = LVector4f(1, 1, 1, 1)
 
     def setCode(self, code):
         self.code = code
@@ -1306,9 +1308,9 @@ class DNAStreet(DNANode):
         self.streetTexture = ''
         self.sideWalkTexture = ''
         self.curbTexture = ''
-        self.streetColor = LVector4f(1,1,1,1)
-        self.sidewalkColor = LVector4f(1,1,1,1)
-        self.curbColor = LVector4f(1,1,1,1)
+        self.streetColor = LVector4f(1, 1, 1, 1)
+        self.sidewalkColor = LVector4f(1, 1, 1, 1)
+        self.curbColor = LVector4f(1, 1, 1, 1)
         self.setTexCnt = 0
         self.setColCnt = 0
 
@@ -1407,7 +1409,7 @@ class DNASignGraphic(DNANode):
     def __init__(self, name):
         DNANode.__init__(self, name)
         self.code = ''
-        self.color = LVector4f(1,1,1,1)
+        self.color = LVector4f(1, 1, 1, 1)
         self.width = 0
         self.height = 0
         self.bDefaultColor = True
@@ -1453,7 +1455,7 @@ class DNAFlatDoor(DNADoor):
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.getCode())
         node = node.copyTo(nodePath, 0)
-        node.setScale(NodePath(), (1,1,1))
+        node.setScale(NodePath(), (1, 1, 1))
         node.setPosHpr((0.5, 0, 0), (0, 0, 0))
         node.setColor(self.getColor())
         node.getNode(0).setEffect(DecalEffect.make())
@@ -2369,7 +2371,7 @@ def loadDNAFile(dnaStore, filename):
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
     if __debug__:
-        filename = '../RetroResources/' + filename
+        filename = '../ToontownInfiniteResources/' + filename
     else:
         filename = '/' + filename
     dnaloader.getData().read(open(filename, 'r'))
@@ -2382,7 +2384,7 @@ def loadDNAFileAI(dnaStore, filename):
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
     if __debug__:
-        filename = '../RetroResources/' + filename
+        filename = '../ToontownInfiniteResources/' + filename
     else:
         filename = '/' + filename
     dnaloader.getData().read(open(filename, 'r'))

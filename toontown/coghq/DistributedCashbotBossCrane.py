@@ -390,10 +390,13 @@ class DistributedCashbotBossCrane(DistributedObject.DistributedObject, FSM.FSM):
 
     def __enableControlInterface(self):
         gui = loader.loadModel('phase_3.5/models/gui/avatar_panel_gui')
-        self.closeButton = DirectButton(image=(gui.find('**/CloseBtn_UP'),
-         gui.find('**/CloseBtn_DN'),
-         gui.find('**/CloseBtn_Rllvr'),
-         gui.find('**/CloseBtn_UP')), relief=None, scale=2, text=TTLocalizer.CashbotCraneLeave, text_scale=0.04, text_pos=(0, -0.07), text_fg=VBase4(1, 1, 1, 1), pos=(1.05, 0, -0.82), command=self.__exitCrane)
+        self.closeButton = DirectButton(
+            parent=base.a2dBottomRight,
+            image=(gui.find('**/CloseBtn_UP'), gui.find('**/CloseBtn_DN'),
+                   gui.find('**/CloseBtn_Rllvr'), gui.find('**/CloseBtn_UP')),
+            relief=None, scale=2, text=TTLocalizer.CashbotCraneLeave, text_scale=0.04,
+            text_pos=(0, -0.07), text_fg=VBase4(1, 1, 1, 1), pos=(-0.25, 0, 0.175),
+            command=self.__exitCrane)
         self.accept('escape', self.__exitCrane)
         self.accept('control', self.__controlPressed)
         self.accept('control-up', self.__controlReleased)
@@ -464,11 +467,13 @@ class DistributedCashbotBossCrane(DistributedObject.DistributedObject, FSM.FSM):
     def __exitCrane(self):
         if self.closeButton:
             self.closeButton.destroy()
-            self.closeButton = DirectLabel(relief=None, text=TTLocalizer.CashbotCraneLeaving, pos=(1.05, 0, -0.88), text_pos=(0, 0), text_scale=0.06, text_fg=VBase4(1, 1, 1, 1))
+            self.closeButton = DirectLabel(
+                parent=base.a2dBottomRight, relief=None,
+                text=TTLocalizer.CashbotCraneLeaving, pos=(-0.25, 0, 0.125),
+                text_pos=(0, 0), text_scale=0.06, text_fg=VBase4(1, 1, 1, 1))
         self.__cleanupCraneAdvice()
         self.__cleanupMagnetAdvice()
         self.d_requestFree()
-        return
 
     def __incrementChangeSeq(self):
         self.changeSeq = self.changeSeq + 1 & 255

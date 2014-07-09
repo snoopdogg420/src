@@ -564,8 +564,8 @@ class DistributedGolfHole(DistributedPhysicsWorld.DistributedPhysicsWorld, FSM, 
         return self.ballShadowDict[self.currentGolfer]
 
     def cleanupGeom(self):
-        self.targets.removeNode()
-        self.terrainModel.removeNode()
+        self.targets.remove()
+        self.terrainModel.remove()
         self.powerBar.destroy()
 
     def cleanupPowerBar(self):
@@ -1418,13 +1418,10 @@ class DistributedGolfHole(DistributedPhysicsWorld.DistributedPhysicsWorld, FSM, 
             if avId == localAvatar.doId:
                 self.setCamera2Ball()
                 if not self.state == 'ChooseTee':
-                    try:
-                        self.demand('ChooseTee')
-                    except:
-                        self.demand('Aim')
+                    self.request('ChooseTee')
             else:
                 self.setCamera2Ball()
-                self.demand('WatchTee')
+                self.request('WatchTee')
             self.takeOutToon(self.currentGolfer)
 
     def setAvatarTempTee(self, avId, tempTee):

@@ -1,62 +1,57 @@
-from otp.ai.AIBaseGlobal import *
-from pandac.PandaModules import *
-from otp.otpbase import OTPGlobals
 from direct.directnotify import DirectNotifyGlobal
-import ToonDNA
-from toontown.suit import SuitDNA
-import InventoryBase
-import Experience
-from otp.avatar import DistributedAvatarAI
-from otp.avatar import DistributedPlayerAI
-from otp.otpbase import OTPLocalizer
 from direct.distributed import DistributedSmoothNodeAI
-from toontown.toonbase import ToontownGlobals
-from toontown.quest import QuestRewardCounter
-from toontown.quest import Quests
-from toontown.achievements import Achievements
-from toontown.toonbase import ToontownBattleGlobals
-from toontown.battle import SuitBattleGlobals
-from direct.task import Task
-from toontown.catalog import CatalogItemList
-from toontown.catalog import CatalogItem
-from direct.showbase import PythonUtil
 from direct.distributed.ClockDelta import *
-from toontown.toonbase.ToontownGlobals import *
-import types
-from toontown.fishing import FishGlobals
-from toontown.fishing import FishCollection
-from toontown.fishing import FishTank
-from NPCToons import npcFriends, isZoneProtected
-from toontown.coghq import CogDisguiseGlobals
+from direct.distributed.MsgTypes import *
+from direct.distributed.PyDatagram import PyDatagram
+from direct.task import Task
+from pandac.PandaModules import *
 import random
 import re
-from toontown.chat import ResistanceChat
-from toontown.racing import RaceGlobals
-from toontown.hood import ZoneUtil
-from toontown.toon import NPCToons
-from toontown.estate import FlowerCollection
-from toontown.estate import FlowerBasket
-from toontown.estate import GardenGlobals
-from toontown.golf import GolfGlobals
-from toontown.parties import PartyGlobals
-from toontown.parties.PartyInfo import PartyInfoAI
-from toontown.parties.InviteInfo import InviteInfoBase
-from toontown.parties.PartyReplyInfo import PartyReplyInfoBase
-from toontown.parties.PartyGlobals import InviteStatus
-from toontown.toonbase import ToontownAccessAI
-from toontown.toonbase import TTLocalizer
-from toontown.catalog import CatalogAccessoryItem
-from toontown.minigame import MinigameCreatorAI
+
+import Experience
+import InventoryBase
 import ModuleListAI
-
-# Magic Word imports
+from NPCToons import npcFriends
+import ToonDNA
+from otp.ai.AIBaseGlobal import *
 from otp.ai.MagicWordGlobal import *
-from direct.distributed.PyDatagram import PyDatagram
-from direct.distributed.MsgTypes import *
-import shlex
-
-# April Toons imports
+from otp.avatar import DistributedAvatarAI
+from otp.avatar import DistributedPlayerAI
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLocalizer
+from toontown.achievements import Achievements
+from toontown.battle import SuitBattleGlobals
+from toontown.catalog import CatalogAccessoryItem
+from toontown.catalog import CatalogItem
+from toontown.catalog import CatalogItemList
+from toontown.chat import ResistanceChat
+from toontown.coghq import CogDisguiseGlobals
+from toontown.estate import FlowerBasket
+from toontown.estate import FlowerCollection
+from toontown.estate import GardenGlobals
+from toontown.fishing import FishCollection
+from toontown.fishing import FishTank
+from toontown.golf import GolfGlobals
+from toontown.hood import ZoneUtil
+from toontown.minigame import MinigameCreatorAI
+from toontown.parties import PartyGlobals
+from toontown.parties.InviteInfo import InviteInfoBase
+from toontown.parties.PartyGlobals import InviteStatus
+from toontown.parties.PartyInfo import PartyInfoAI
+from toontown.parties.PartyReplyInfo import PartyReplyInfoBase
+from toontown.quest import QuestRewardCounter
+from toontown.quest import Quests
+from toontown.racing import RaceGlobals
+from toontown.shtiker import CogPageGlobals
+from toontown.suit import SuitDNA
+from toontown.toon import NPCToons
 from toontown.toonbase import AprilToonsGlobals
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownAccessAI
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.ToontownGlobals import *
+
 
 if simbase.wantPets:
     from toontown.pets import PetLookerAI, PetObserve
@@ -1031,7 +1026,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def d_setClothesTopsList(self, clothesList):
         self.sendUpdate('setClothesTopsList', [clothesList])
-        return None
 
     def setClothesTopsList(self, clothesList):
         self.clothesTopsList = clothesList
@@ -1084,7 +1078,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def d_setClothesBottomsList(self, clothesList):
         self.sendUpdate('setClothesBottomsList', [clothesList])
-        return None
 
     def setClothesBottomsList(self, clothesList):
         self.clothesBottomsList = clothesList
@@ -4538,7 +4531,7 @@ def hp(hp):
     target = spellbook.getTarget()
     maxHp = target.getMaxHp()
     if not -1 <= hp <= maxHp:
-        return 'HP must be in range (-1-{0}).'.format(maxHp)
+        return 'HP must be in xrange (-1-{0}).'.format(maxHp)
     target.b_setHp(hp)
     return "Set {0}'s HP to {1}!".format(target.getName(), hp)
 
@@ -4548,7 +4541,7 @@ def maxHp(maxHp):
     Modify the target's max HP.
     """
     if not 15 <= maxHp <= ToontownGlobals.MaxHpLimit:
-        return 'HP must be in range (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
+        return 'HP must be in xrange (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
     target = spellbook.getTarget()
     target.b_setMaxHp(maxHp)
     target.toonUp(maxHp - target.getHp())
@@ -4598,6 +4591,14 @@ def maxToon(missingTrack=None):
     )
     invoker.b_setCogLevels([49] * 4)
     invoker.b_setCogTypes([7, 7, 7, 7])
+
+    # Max their Cog gallery:
+    deptCount = len(SuitDNA.suitDepts)
+    invoker.b_setCogCount(list(CogPageGlobals.COG_QUOTAS[1]) * deptCount)
+    cogStatus = [CogPageGlobals.COG_COMPLETE2] * SuitDNA.suitsPerDept
+    invoker.b_setCogStatus(cogStatus * deptCount)
+    invoker.b_setCogRadar([1, 1, 1, 1])
+    invoker.b_setBuildingRadar([1, 1, 1, 1])
 
     # Max out their racing tickets:
     invoker.b_setTickets(99999)
@@ -4656,7 +4657,7 @@ def sos(count, name):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 100:
-        return 'Your SOS count must be in range (0-100).'
+        return 'Your SOS count must be in xrange (0-100).'
     for npcId, npcName in TTLocalizer.NPCToonNames.items():
         if name.lower() == npcName.lower():
             if npcId not in NPCToons.npcFriends:
@@ -4687,7 +4688,7 @@ def fires(count):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 255:
-        return 'Your fire count must be in range (0-255).'
+        return 'Your fire count must be in xrange (0-255).'
     invoker.b_setPinkSlips(count)
     return 'You were given {0} fires.'.format(count)
 
@@ -4697,7 +4698,7 @@ def maxMoney(maxMoney):
     Modifies the target's max money value.
     """
     if not 40 <= maxMoney <= 250:
-        return 'Max money value must be in range (40-250).'
+        return 'Max money value must be in xrange (40-250).'
     target = spellbook.getTarget()
     spellbook.getTarget().b_setMaxMoney(maxMoney)
     return "Set {0}'s max money value to {1}!".format(target.getName(), maxMoney)
@@ -4710,7 +4711,7 @@ def money(money):
     target = spellbook.getTarget()
     maxBankMoney = target.getMaxBankMoney()
     if not 0 <= money <= maxBankMoney:
-        return 'Money value must be in range (0-{0}).'.format(maxBankMoney)
+        return 'Money value must be in xrange (0-{0}).'.format(maxBankMoney)
     target.b_setMoney(money)
     return "Set {0}'s money value to {1}!".format(target.getName(), money)
 
@@ -4723,7 +4724,7 @@ def bank(command, value):
     target = spellbook.getTarget()
     if command == 'max':
         if not 1000 <= value <= 12000:
-            return 'Max bank value must be in range (1000-12000).'
+            return 'Max bank value must be in xrange (1000-12000).'
         target.b_setMaxBankMoney(value)
         return "Set {0}'s max bank money value to {1}!".format(target.getName(), value)
     elif command == 'transfer':
@@ -4759,7 +4760,7 @@ def fishingRod(rod):
     Modify the target's fishing rod value.
     """
     if not 0 <= rod <= 4:
-        return 'Rod value must be in range (0-4).'
+        return 'Rod value must be in xrange (0-4).'
     target = spellbook.getTarget()
     target.b_setFishingRod(rod)
     return "Set {0}'s fishing rod to {1}!".format(target.getName(), rod)
@@ -4770,7 +4771,7 @@ def maxFishTank(maxFishTank):
     Modify the target's max fish tank value.
     """
     if not 20 <= maxFishTank <= 99:
-        return 'Max fish tank value must be in range (20-99).'
+        return 'Max fish tank value must be in xrange (20-99).'
     target = spellbook.getTarget()
     target.b_setMaxFishTank(maxFishTank)
     return "Set {0}'s max fish tank value to {1}!".format(target.getName(), maxFishTank)
@@ -4943,7 +4944,7 @@ def tickets(tickets):
     Set the target's racing tickets value.
     """
     if not 0 <= tickets <= 99999:
-        return 'Racing tickets value must be in range (0-99999).'
+        return 'Racing tickets value must be in xrange (0-99999).'
     target = spellbook.getTarget()
     target.b_setTickets(tickets)
     return "Set {0}'s tickets to {1}!".format(target.getName(), tickets)
@@ -5246,7 +5247,7 @@ def givePies(pieType, numPies=0):
     if pieType == 6:
         return 'Invalid pie type!'
     if not 0 <= pieType <= 7:
-        return 'Pie type must be in range (0-7).'
+        return 'Pie type must be in xrange (0-7).'
     if not -1 <= numPies <= 99:
         return 'Pie count out of range (-1-99).'
     target.b_setPieType(pieType)
@@ -5277,7 +5278,7 @@ def track(command, track, value=None):
         return 'Invalid Gag track!'
     invoker = spellbook.getInvoker()
     trackAccess = invoker.getTrackAccess()
-    if not trackAccess[index]:
+    if (command.lower() not in ('add',)) and (not trackAccess[index]):
         return "You don't have that track!"
     if command.lower() == 'remove':
         if index in (4, 5):
@@ -5293,7 +5294,7 @@ def track(command, track, value=None):
         if value is None:
             return 'You must provide an experience value.'
         if not 0 <= value <= Experience.MaxSkill:
-            return 'Experience value not in range (0-{0}).'.format(Experience.MaxSkill)
+            return 'Experience value not in xrange (0-{0}).'.format(Experience.MaxSkill)
         experience = Experience.Experience(invoker.getExperience(), invoker)
         experience.experience[index] = value
         invoker.b_setExperience(experience.makeNetString())

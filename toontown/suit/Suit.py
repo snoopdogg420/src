@@ -35,7 +35,8 @@ AllSuitsBattle = (('drop-react', 'anvil-drop'),
  ('reach', 'walknreach'),
  ('rake-react', 'rake'),
  ('hypnotized', 'hypnotize'),
- ('soak', 'soak'))
+ ('soak', 'soak'),
+ ('lured', 'lured'))
 SuitsCEOBattle = (('sit', 'sit'),
  ('sit-eat-in', 'sit-eat-in'),
  ('sit-eat-loop', 'sit-eat-loop'),
@@ -1011,6 +1012,3 @@ class Suit(Avatar.Avatar):
             return SkelSuitDialogArray
         else:
             return SuitDialogArray
-# okay decompyling C:\Users\Maverick\Documents\Visual Studio 2010\Projects\Unfreezer\py2\toontown\suit\Suit.pyc 
-# decompiled 1 files: 1 okay, 0 failed, 0 verify failed
-# 2013.08.22 22:25:34 Pacific Daylight Time

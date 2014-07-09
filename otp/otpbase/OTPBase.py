@@ -2,12 +2,12 @@ import math
 import re
 import time
 
+import OTPGlobals
 import OTPRender
 from direct.showbase.ShowBase import ShowBase
 from otp.ai.MagicWordGlobal import *
 from otp.settings.Settings import Settings
-from pandac.PandaModules import Camera, TPLow, VBase4, ColorWriteAttrib, Filename, getModelPath, NodePath
-
+from pandac.PandaModules import Camera, TPLow, VBase4, ColorWriteAttrib, Filename, getModelPath, NodePath, Vec4
 
 class OTPBase(ShowBase):
 
@@ -178,7 +178,7 @@ class OTPBase(ShowBase):
         return task.cont
 
     def getShardPopLimits(self):
-        return (300, 600, 1200)
+        return (100, 200, -1)
 
     def setLocationCode(self, locationCode):
         if locationCode != self.locationCode:
@@ -312,3 +312,28 @@ def explorer():
     Toggle the scene graph explorer.
     """
     base.render.explore()
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def neglect():
+    """
+    toggle the neglection of network updates on the invoker's client.
+    """
+    if base.cr.networkPlugPulled():
+        base.cr.restoreNetworkPlug()
+        return 'You are no longer neglecting network updates.'
+    else:
+        base.cr.pullNetworkPlug()
+        return 'You are now neglecting network updates.'
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[float, float, float, float])
+def backgroundColor(r=None, g=1, b=1, a=1):
+    """
+    set the background color. Specify no arguments for the default background
+    color.
+    """
+    if r is None:
+        r, g, b, a = OTPGlobals.DefaultBackgroundColor
+    base.setBackgroundColor(Vec4(r, g, b, a))
+    return 'The background color has been changed.'

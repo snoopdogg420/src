@@ -52,6 +52,13 @@ class Nametag3d(Nametag):
         # click frame constantly:
         self.updateClickRegion(-1, 1, -1, 1)
 
+        #if self.balloonActive:
+        #    self.rightCorner = max(self.innerNP.find('**/text').node().getWidth() / 2.63, 1)
+        #    self.topEdge = max(self.innerNP.find('**/text').node().getHeight() / 1.3, 1)
+        #    self.updateClickRegion(-0.1, self.rightCorner, 0.2, self.topEdge)
+        #else:
+        #    self.updateClickRegion(-1, 1, -1, 1)
+
     def getSpeechBalloon(self):
         return NametagGlobals.speechBalloon3d
 

@@ -1,8 +1,8 @@
 general:
     eventlogger: 127.0.0.1:7197
     dc_files:
-        - ../otp.dc
-        - ../toon.dc
+        - ../dclass/otp.dc
+        - ../dclass/toon.dc
 
 messagedirector:
     bind: 127.0.0.1:7199
@@ -32,7 +32,7 @@ uberdogs:
       id: 4687
       anonymous: false
 
-    - class: TTRFriendsManager
+    - class: TTIFriendsManager
       id: 4666
       anonymous: false
 
@@ -55,7 +55,7 @@ uberdogs:
 roles:
     - type: clientagent
       bind: 0.0.0.0:7198
-      version: "tti-retro-dev"
+      version: "infinite-dev"
       client:
        relocate: true
        add_interest: enabled

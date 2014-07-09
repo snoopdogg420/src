@@ -63,7 +63,7 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
             flag = NPCToons.PURCHASE_MOVIE_START
         elif self.useJellybeans and self.hasEnoughJbs(av):
             flag = NPCToons.PURCHASE_MOVIE_START
-        elif self.air.questManager.hasTailorClothingTicket(av, self) == 1:
+        elif self.air.questManager.hasTailorClothingTicket(av, self):
             flag = NPCToons.PURCHASE_MOVIE_START
         
         if self.housingEnabled and isClosetAlmostFull(av):
@@ -120,12 +120,15 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
         return Task.done
 
     def completePurchase(self, avId):
+        av = self.air.doId2do[avId]
         self.busy = avId
         self.sendUpdate('setMovie', [NPCToons.PURCHASE_MOVIE_COMPLETE,
          self.npcId,
          avId,
          ClockDelta.globalClockDelta.getRealNetworkTime()])
         self.sendClearMovie(None)
+        if self.air.questManager.hasTailorClothingTicket(av, self):
+            self.air.questManager.removeClothingTicket(av, self)
         return
 
     def setDNA(self, blob, finished, which):

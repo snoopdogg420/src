@@ -44,8 +44,6 @@ class DistributedPhysicsWorldAI(DistributedObjectAI.DistributedObjectAI, Physics
         self.sendUpdate('setCommonObjects', [self.getCommonObjectData()])
 
     def doAction(self):
-        print 'doing Action'
-        print 'before performReadyAction'
         self.performReadyAction()
         self.storeAction = None
         self.commonHoldData = None
@@ -58,7 +56,6 @@ class DistributedPhysicsWorldAI(DistributedObjectAI.DistributedObjectAI, Physics
             self.doAction()
 
     def setupCommonObjects(self):
-        print 'setupCommonObjects'
         print self.commonHoldData
         if not self.commonHoldData:
             return
@@ -68,4 +65,4 @@ class DistributedPhysicsWorldAI(DistributedObjectAI.DistributedObjectAI, Physics
             self.useCommonObjectData(self.commonHoldData, 0)
 
     def performReadyAction(self):
-        print 'Wrong performReadyAction'
+        pass

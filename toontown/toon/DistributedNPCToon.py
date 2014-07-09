@@ -20,6 +20,9 @@ class DistributedNPCToon(DistributedNPCToonBase):
         self.trackChoiceGui = None
         return
 
+    def allowedToTalk(self):
+        return True
+
     def delayDelete(self):
         DistributedNPCToonBase.delayDelete(self)
         if self.curQuestMovie:

@@ -166,7 +166,7 @@ DecorationIds = PythonUtil.Enum(('BalloonAnvil',
  'snowman',
  'snowDoodle',
  'BalloonAnvilValentine'))
-TTRUnreleasedDecor = [DecorationIds.HeartTarget,
+TTIUnreleasedDecor = [DecorationIds.HeartTarget,
  DecorationIds.HeartBanner,
  DecorationIds.FlyingHeart,
  DecorationIds.Hydra,

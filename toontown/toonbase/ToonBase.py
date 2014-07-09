@@ -1,29 +1,31 @@
-from otp.otpbase import OTPBase
-from otp.otpbase import OTPLauncherGlobals
-from otp.otpbase import OTPGlobals
-from direct.showbase.PythonUtil import *
-import ToontownGlobals
 from direct.directnotify import DirectNotifyGlobal
-import ToontownLoader
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
+from direct.showbase.PythonUtil import *
 from direct.showbase.Transitions import Transitions
-from pandac.PandaModules import *
-from otp.nametag.ChatBalloon import ChatBalloon
-from otp.nametag import NametagGlobals
-from otp.margins.MarginManager import MarginManager
-import sys
-import os
 import math
-import tempfile
-import shutil
-import atexit
-from toontown.toonbase import ToontownAccess
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownBattleGlobals
-from toontown.launcher import ToontownDownloadWatcher
-from toontown.toontowngui import TTDialog
+import os
+from pandac.PandaModules import *
 from sys import platform
+import sys
+
+import ToontownGlobals
+import ToontownLoader
+import atexit
+from otp.margins.MarginManager import MarginManager
+from otp.nametag import NametagGlobals
+from otp.nametag.ChatBalloon import ChatBalloon
+from otp.otpbase import OTPBase
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLauncherGlobals
+import shutil
+import tempfile
+from toontown.launcher import ToontownDownloadWatcher
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownAccess
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toontowngui import TTDialog
+
 
 class ToonBase(OTPBase.OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonBase')
@@ -49,9 +51,16 @@ class ToonBase(OTPBase.OTPBase):
             self.resDict.setdefault(ratio, []).append(res)
 
         # Get the native width, height and ratio:
-        self.nativeWidth = displayInfo.getMaximumWindowWidth()
-        self.nativeHeight = displayInfo.getMaximumWindowHeight()
-        self.nativeRatio = round(float(self.nativeWidth) / float(self.nativeHeight), 2)
+        if sys.platform == 'win32':  # Use CTypes
+            import ctypes
+            self.nativeWidth = ctypes.windll.user32.GetSystemMetrics(0)
+            self.nativeHeight = ctypes.windll.user32.GetSystemMetrics(1)
+        else:  # Use PyGTK
+            import gtk
+            self.nativeWidth = gtk.gdk.screen_width()
+            self.nativeHeight = gtk.gdk.screen_height()
+        self.nativeRatio = round(
+            float(self.nativeWidth) / float(self.nativeHeight), 2)
 
         # Finally, choose the best resolution if we're either fullscreen, or
         # don't have one defined in our preferences:
@@ -66,7 +75,7 @@ class ToonBase(OTPBase.OTPBase):
 
                 # We have resolutions that match our native ratio and fit it! Let's
                 # use one:
-                res = self.resDict[self.nativeRatio][0]
+                res = sorted(self.resDict[self.nativeRatio])[0]
 
             else:
 
@@ -75,14 +84,13 @@ class ToonBase(OTPBase.OTPBase):
                 # course). Let's just use the second largest ratio:
                 ratios = sorted(self.resDict.keys(), reverse=False)
                 nativeIndex = ratios.index(self.nativeRatio)
-                res = ratios[nativeIndex + 1][0]
+                res = sorted(self.resDict[ratios[nativeIndex - 1]])[0]
+
+            # Store our result:
+            self.settings.set('res', res)
 
             # Reload the graphics pipe:
             properties = WindowProperties()
-
-            # If we're in fullscreen mode, we'll want to fit to the screen:
-            if fullscreen:
-                res = self.resList[-1]
 
             properties.setSize(res[0], res[1])
             properties.setFullscreen(fullscreen)

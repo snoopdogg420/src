@@ -26,7 +26,7 @@ WaterSprayColor = Point4(0.75, 0.75, 1.0, 0.8)
 def doSquirts(squirts):
     if len(squirts) == 0:
         return (None, None)
-    
+
     suitSquirtsDict = {}
     doneUber = 0
     skip = 0
@@ -50,7 +50,7 @@ def doSquirts(squirts):
                 suitSquirtsDict[suitId] = [squirt]
 
     suitSquirts = suitSquirtsDict.values()
-    
+
     def compFunc(a, b):
         if len(a) > len(b):
             return 1
@@ -576,7 +576,7 @@ def __doFireHose(squirt, delay, fShowStun):
     if hp > 0:
         tracks.append(__getSplashTrack(targetPoint, 0.4, 2.7, battle, splashHold=1.5))
     if hp > 0 or delay <= 0:
-        tracks.append(__getSuitTrack(suit, tContact, tSuitDodges, hp, hpbonus, kbbonus, 'squirt-small-react', died, leftSuits, rightSuits, battle, toon, fShowStun, revived=revived))
+        tracks.append(__getSuitTrack(suit, tContact, tSuitDodges, hp, hpbonus, kbbonus, 'squirt-large-react', died, leftSuits, rightSuits, battle, toon, fShowStun, revived=revived))
     return tracks
 
 

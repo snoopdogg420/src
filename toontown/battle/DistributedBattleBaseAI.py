@@ -19,7 +19,6 @@ import random
 from toontown.toon import NPCToons
 from otp.ai.MagicWordGlobal import *
 
-
 class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleBaseAI')
 
@@ -50,12 +49,12 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         self.toonMerits = {}
         self.toonParts = {}
         self.battleCalc = BattleCalculatorAI(self, tutorialFlag)
-        self.battleCalc.setSkillCreditMultiplier(1)
-        if self.air.holidayManager.isMoreXpHolidayRunning():
-            mult = self.air.holidayManager.getXpMultiplier()
-            self.battleCalc.setSkillCreditMultiplier(mult)
         if self.air.suitInvasionManager.getInvading():
-            self.battleCalc.setSkillCreditMultiplier(2)
+            mult = getInvasionMultiplier()
+            self.battleCalc.setSkillCreditMultiplier(mult)
+        if self.air.holidayManager.isMoreXpHolidayRunning():
+            mult = getMoreXpHolidayMultiplier()
+            self.battleCalc.setSkillCreditMultiplier(mult)
         self.fsm = None
         self.clearAttacks()
         self.ignoreFaceOffDone = 0
@@ -704,8 +703,7 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
                 toon.hpOwnedByBattle = 0
                 toon.d_setHp(toon.hp)
                 toon.d_setInventory(toon.inventory.makeNetString())
-                if hasattr(self.air, 'cogPageManager') and self.air.cogPageManager:
-                    self.air.cogPageManager.toonEncounteredCogs(toon, self.suitsEncountered, self.getTaskZoneId())
+                self.air.cogPageManager.toonEncounteredCogs(toon, self.suitsEncountered, self.getTaskZoneId())
         elif len(self.suits) > 0 and not self.streetBattle:
             self.notify.info('toon %d aborted non-street battle; clearing inventory and hp.' % toonId)
             toon = DistributedToonAI.DistributedToonAI(self.air)
@@ -1820,12 +1818,8 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         self.serialNum += 1
         return num
 
-
 @magicWord(category=CATEGORY_ADMINISTRATOR)
 def skipMovie():
-    """
-    Skip the currently playing battle movie.
-    """
     invoker = spellbook.getInvoker()
     battleId = invoker.getBattleId()
     if not battleId:

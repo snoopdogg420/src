@@ -1,20 +1,23 @@
-from pandac.PandaModules import *
-from direct.distributed.ClockDelta import *
-from direct.task.Task import Task
-from direct.interval.IntervalGlobal import *
-from TrolleyConstants import *
-from direct.gui.DirectGui import *
-from toontown.toonbase import TTLocalizer
 from direct.distributed import DistributedNode
+from direct.distributed.ClockDelta import *
+from direct.distributed.ClockDelta import *
 from direct.distributed.ClockDelta import globalClockDelta
-from ChineseCheckersBoard import ChineseCheckersBoard
 from direct.fsm import ClassicFSM, State
 from direct.fsm import StateData
-from toontown.toonbase.ToontownTimer import ToontownTimer
-from toontown.toonbase import ToontownGlobals
-from direct.distributed.ClockDelta import *
-from otp.otpbase import OTPGlobals
+from direct.gui.DirectGui import *
+from direct.interval.IntervalGlobal import *
 from direct.showbase import PythonUtil
+from direct.task.Task import Task
+from pandac.PandaModules import *
+from random import *
+
+from ChineseCheckersBoard import ChineseCheckersBoard
+from TrolleyConstants import *
+from otp.otpbase import OTPGlobals
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.ToontownTimer import ToontownTimer
+
 
 class DistributedFindFour(DistributedNode.DistributedNode):
 
@@ -605,7 +608,6 @@ class DistributedFindFour(DistributedNode.DistributedNode):
             else:
                 hasfound = False
                 while hasfound == False:
-                    from random import *
                     x = randint(0, 6)
                     if self.board[0][x] == 0:
                         self.d_requestMove(x)

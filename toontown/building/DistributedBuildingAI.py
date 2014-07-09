@@ -362,6 +362,8 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def becomingToonTask(self, task):
         self.fsm.request('toon')
+        self.suitPlannerExt.buildingMgr.save()
+        self.trophyMgr.save()
         return Task.done
 
     def enterToon(self):
@@ -430,6 +432,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def becomingSuitTask(self, task):
         self.fsm.request('suit')
+        self.suitPlannerExt.buildingMgr.save()
         return Task.done
 
     def enterSuit(self):
@@ -484,6 +487,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
 
     def becomingCogdoTask(self, task):
         self.fsm.request('cogdo')
+        self.suitPlannerExt.buildingMgr.save()
         return Task.done
 
     def enterCogdo(self):

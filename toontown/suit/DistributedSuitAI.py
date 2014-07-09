@@ -14,6 +14,7 @@ from toontown.battle import SuitBattleGlobals
 from toontown.building import FADoorCodes
 import DistributedSuitBaseAI
 from toontown.hood import ZoneUtil
+from toontown.toon import NPCToons
 import random
 
 class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
@@ -250,7 +251,7 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
             taskMgr.remove(self.taskName('move'))
             taskMgr.doMethodLater(delay, self.moveToNextLeg, self.taskName('move'))
         else:
-            if self.attemptingTakeover:
+            if simbase.config.GetBool('want-cogbuildings', True):
                 self.startTakeOver()
             self.requestRemoval()
         return Task.done
@@ -347,6 +348,8 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
         if not self.SUIT_BUILDINGS:
             return
         blockNumber = self.buildingDestination
+        if self.sp.buildingMgr is None:
+            return
         if not self.sp.buildingMgr.isSuitBlock(blockNumber):
             self.notify.debug('Suit %s taking over building %s in %s' % (self.getDoId(), blockNumber, self.zoneId))
             difficulty = self.getActualLevel() - 1

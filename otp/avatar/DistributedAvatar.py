@@ -1,20 +1,15 @@
-import time
-import string
-from pandac.PandaModules import *
-from otp.nametag.Nametag import Nametag
-from direct.distributed import DistributedNode
+from Avatar import Avatar
 from direct.actor.DistributedActor import DistributedActor
-from direct.task import Task
+from direct.distributed import DistributedNode
 from direct.interval.IntervalGlobal import *
 from direct.showbase import PythonUtil
+from direct.task import Task
+from otp.ai.MagicWordGlobal import *
+from otp.nametag.Nametag import Nametag
 from otp.otpbase import OTPGlobals
-from otp.otpbase import OTPLocalizer
-from otp.speedchat import SCDecoders
-from otp.chat import ChatGarbler
-from otp.chat import ChatManager
-import random
-from Avatar import Avatar
-import AvatarDNA
+from pandac.PandaModules import *
+from toontown.battle.BattleProps import globalPropPool
+
 
 class DistributedAvatar(DistributedActor, Avatar):
     HpTextGenerator = TextNode('HpTextGenerator')
@@ -257,3 +252,77 @@ class DistributedAvatar(DistributedActor, Avatar):
 
     def getDialogueArray(self):
         return None
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def warp():
+    """
+    warp the target to the invoker's current position, and rotation.
+    """
+    invoker = spellbook.getInvoker()
+    target = spellbook.getTarget()
+    if invoker.doId == target.doId:
+        return "You can't warp yourself!"
+    target.setPosHpr(invoker.getPos(), invoker.getHpr())
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str])
+def loop(anim):
+    """
+    animate the target using animation [anim] on the entire actor.
+    """
+    target = spellbook.getTarget()
+    target.loop(anim)
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str, int, str])
+def pose(anim, frame, part=None):
+    """
+    freeze the target on frame [frame] of animation [anim] on the entire actor,
+    or optional [part] of the actor.
+    """
+    target = spellbook.getTarget()
+    target.pose(anim, frame, partName=part)
+
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str, int, int, str])
+def pingpong(anim, start=None, end=None, part=None):
+    """
+    animate the target by bouncing back and forth between the start and end, or
+    the optional frames <start>, and [end] of animation [anim] on the entire
+    actor, or optional <part> of the actor.
+    """
+    target = spellbook.getTarget()
+    target.pingpong(anim, partName=part, fromFrame=start, toFrame=end)
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str])
+def rightHand(prop=None):
+    """
+    parents the optional <prop> to the target's right hand node.
+    """
+    target = spellbook.getTarget()
+    rightHand = target.find('**/rightHand')
+    if prop is None:
+        for child in rightHand.getChildren():
+            child.removeNode()
+    else:
+        for child in rightHand.getChildren():
+            child.removeNode()
+        requestedProp = globalPropPool.getProp(prop)
+        requestedProp.reparentTo(rightHand)
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[str])
+def leftHand(prop=None):
+    """
+    parents the optional <prop> to the target's left hand node.
+    """
+    target = spellbook.getTarget()
+    leftHand = target.find('**/leftHand')
+    if prop is None:
+        for child in leftHand.getChildren():
+            child.removeNode()
+    else:
+        for child in leftHand.getChildren():
+            child.removeNode()
+        requestedProp = globalPropPool.getProp(prop)
+        requestedProp.reparentTo(leftHand)

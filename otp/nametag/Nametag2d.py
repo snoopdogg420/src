@@ -84,6 +84,9 @@ class Nametag2d(Nametag, MarginPopup):
         if self.avatar is None:
             return # No avatar, can't be done.
 
+        if self.avatar.isEmpty():
+            return
+
         # Get points needed in calculation:
         cam = NametagGlobals.camera or base.cam
         toon = NametagGlobals.toon or cam
