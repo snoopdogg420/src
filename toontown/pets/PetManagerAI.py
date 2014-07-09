@@ -1,10 +1,12 @@
-class PetManagerAI:
+import random
 
+
+class PetManagerAI:
     def __init__(self, air):
         self.air = air
-    
-    def getAvailablePets(self, todo0, todo1):
-        return [34, 5, 2345, 23, 45] #TODO
-        
+
+    def getAvailablePets(self, numPets=5):
+        return random.sample(xrange(256), numPets)
+
     def createNewPetFromSeed(self, avId, petSeeds, nameIndex, gender, safeZoneId):
-        pass #TODO
+        pass # TODO
