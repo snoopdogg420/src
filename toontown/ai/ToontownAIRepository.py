@@ -1,18 +1,21 @@
 from direct.distributed.PyDatagram import *
+from pandac.PandaModules import *
+
 from otp.ai.AIZoneData import AIZoneDataStore
 from otp.ai.MagicWordManagerAI import MagicWordManagerAI
 from otp.ai.TimeManagerAI import TimeManagerAI
 from otp.distributed.OtpDoGlobals import *
 from otp.friends.FriendManagerAI import FriendManagerAI
-from pandac.PandaModules import *
+from toontown.ai import CogPageManagerAI
 from toontown.ai import CogSuitManagerAI
 from toontown.ai import PromotionManagerAI
+from toontown.ai.AchievementsManagerAI import AchievementsManagerAI
 from toontown.ai.FishManagerAI import  FishManagerAI
 from toontown.ai.HolidayManagerAI import HolidayManagerAI
 from toontown.ai.NewsManagerAI import NewsManagerAI
 from toontown.ai.QuestManagerAI import QuestManagerAI
-from toontown.ai.AchievementsManagerAI import AchievementsManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
+from toontown.catalog.CatalogManagerAI import CatalogManagerAI
 from toontown.coghq import CountryClubManagerAI
 from toontown.coghq import FactoryManagerAI
 from toontown.coghq import LawOfficeManagerAI
@@ -22,9 +25,6 @@ from toontown.distributed.ToontownDistrictStatsAI import ToontownDistrictStatsAI
 from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
 from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.estate.EstateManagerAI import EstateManagerAI
-from toontown.uberdog.DistributedDeliveryManagerAI import DistributedDeliveryManagerAI
-from toontown.catalog.CatalogManagerAI import CatalogManagerAI
-from toontown.tutorial.TutorialManagerAI import TutorialManagerAI
 from toontown.hood import BRHoodAI
 from toontown.hood import BossbotHQAI
 from toontown.hood import CashbotHQAI
@@ -44,9 +44,9 @@ from toontown.safezone.SafeZoneManagerAI import SafeZoneManagerAI
 from toontown.suit.SuitInvasionManagerAI import SuitInvasionManagerAI
 from toontown.toon import NPCToons
 from toontown.toonbase import ToontownGlobals
+from toontown.tutorial.TutorialManagerAI import TutorialManagerAI
 from toontown.uberdog.DistributedPartyManagerAI import DistributedPartyManagerAI
-from toontown.ai.WelcomeValleyManagerAI import WelcomeValleyManagerAI
-from toontown.ai import CogPageManagerAI
+
 
 class ToontownAIRepository(ToontownInternalRepository):
     def __init__(self, baseChannel, stateServerChannel, districtName):
