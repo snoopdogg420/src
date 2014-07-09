@@ -2,9 +2,9 @@ from toontown.coghq import CogDisguiseGlobals
 
 suitTrackIndex = {
 's' : 3,
-'c' : 2,
+'m' : 2,
 'l' : 1,
-'b' : 0
+'c' : 0
 }
 
 class CogSuitManagerAI:

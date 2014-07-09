@@ -70,11 +70,11 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         self.cogLevel = DirectLabel(parent=self.frame, relief=None, text='', text_font=ToontownGlobals.getSuitFont(), text_scale=0.09, text_align=TextNode.ACenter, pos=(-0.91, 0, -1.02))
         self.partFrame = DirectFrame(parent=self.frame, relief=None)
         self.parts = []
-        for partNum in xrange(0, NumParts):
+        for partNum in xrange(0, 17):
             self.parts.append(DirectFrame(parent=self.partFrame, relief=None, geom=gui.find('**/robot/' + PartNames[partNum])))
 
         self.holes = []
-        for partNum in xrange(0, NumParts):
+        for partNum in xrange(0, 17):
             self.holes.append(DirectFrame(parent=self.partFrame, relief=None, geom=gui.find('**/robot_hole/' + PartNames[partNum])))
 
         self.cogPartRatio = DirectLabel(parent=self.frame, relief=None, text='', text_font=ToontownGlobals.getSuitFont(), text_scale=0.08, text_align=TextNode.ACenter, pos=(-0.91, 0, -0.82))
@@ -86,6 +86,10 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         self.meterFaceHalf2 = DirectLabel(parent=self.frame, relief=None, geom=meterFaceHalf, color=self.meterColor, pos=(0.455, 0.0, 0.04))
         self.frame.hide()
         self.activeTab = 3
+        self.promoteButton = DirectButton(parent = self.frame, text = 'Promote', scale = .3, command = self.sendPromotionRequest, extraArgs = [3])
+        self.promoteButton.hide()
+        if base.localAvatar.promotionStatus[3] == ToontownGlobals.PendingPromotion:
+            self.promoteButton.show()
         self.updatePage()
         return
 
@@ -161,6 +165,7 @@ class DisguisePage(ShtikerPage.ShtikerPage):
             self.meterFaceHalf2.setR(180 * (progress / 0.5))
 
     def doTab(self, index):
+        self.promoteButton.hide()
         self.activeTab = index
         self.tabs[index].reparentTo(self.pageFrame)
         for i in xrange(len(self.tabs)):
@@ -194,3 +199,11 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         self.updatePartsDisplay(index, numParts, numPartsRequired)
         self.updateMeritBar(index)
         self.cogPartRatio['text'] = '%d/%d' % (CogDisguiseGlobals.getTotalParts(numParts), numPartsRequired)
+        if base.localAvatar.promotionStatus[index] == ToontownGlobals.PendingPromotion:
+            self.promoteButton['extraArgs'] = [index]
+            self.promoteButton.show()
+
+    def sendPromotionRequest(self, dept):
+        base.localAvatar.sendUpdate('requestPromotion', [dept])
+        self.promoteButton.hide()
+        self.updatePage()
