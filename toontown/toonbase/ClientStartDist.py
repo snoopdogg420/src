@@ -2,6 +2,11 @@
 # This is the "main" module that will start a distribution copy of
 # Toontown Infinite.
 
+import sys
+sys.path = ['.']
+# temp patch
+# should be edited in the interpreter (retroinfinite.exe)
+
 # Replace some modules that do exec:
 import collections
 collections.namedtuple = lambda *x: tuple
