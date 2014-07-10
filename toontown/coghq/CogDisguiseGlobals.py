@@ -13,8 +13,8 @@ PartsPerSuitBitmasks = (56411,
  56411,
  56411)
 AllBits = 56411
-MinPartLoss = 2
-MaxPartLoss = 4
+MinPartLoss = 1
+MaxPartLoss = 2
 leftLegUpper = 1
 leftLegLower = 2
 leftLegFoot = 4

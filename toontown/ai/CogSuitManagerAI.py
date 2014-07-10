@@ -20,8 +20,7 @@ class CogSuitManagerAI:
         recoveredParts[suitTrack] = toon.giveGenericCogPart(factoryType, suitTrack)
         return recoveredParts
 
-    def removeParts(self, toon, suitTrack):
+    def removeParts(self, toon, suitDept):
         parts = toon.getCogParts()
-        suitTrack = suitTrackIndex[suitTrack]
-        if CogDisguiseGlobals.isSuitComplete(parts, suitTrack):
-            toon.loseCogParts(suitTrack)
+        if CogDisguiseGlobals.isSuitComplete(parts, suitDept):
+            toon.loseCogParts(suitDept)
