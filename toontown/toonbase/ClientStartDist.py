@@ -32,15 +32,69 @@ for mount in mounts:
 __builtin__.dcStream = StringStream(game_data.DC)
 
 # We also need timezone stuff:
-class dictloader(object):
-    def __init__(self, dict):
-        self.dict = dict
+import sys, new, marshal, zlib, os
 
-    def get_data(self, key):
-        return self.dict.get(key.replace('\\','/'))
+# mount the timezone info as modules
+# so pytz can import them (pytz/__init__.py)
 
-import pytz
-pytz.__loader__ = dictloader(game_data.ZONEINFO)
+mod = sys.modules.setdefault('zoneinfo', new.module('zoneinfo'))
+mod.__file__ = "zoneinfo\\__init__.pyc"
+
+def register_top_attr(modname, mod):
+    base = modname.rsplit('.', 1)[0]
+    top = modname.split('.')[-1]
+    
+    setattr(sys.modules[base], top, mod)
+    
+# mount top locations (zoneinfo/XXXXX)
+locations = set(x.split('/')[1] for x in game_data.ZONEINFO.keys())
+for x in locations:
+    path = 'zoneinfo/' + x
+    fullname = path.replace('/', '.')
+    data = game_data.ZONEINFO.get(path)
+    
+    mod = sys.modules.setdefault(fullname, new.module(fullname))
+    
+    if data:
+        mod.__file__ = os.path.join(path, '__init__.pyc')
+        exec marshal.loads(zlib.decompress(data)) in mod.__dict__
+        
+    else:
+        mod.__file__ = path + '.pyc'
+        
+    register_top_attr(fullname, mod)
+        
+# some modules have 3 levels of depth
+def handle_america_3_levels(name):
+    modname = "zoneinfo.America." + name
+    mod = sys.modules.setdefault(modname, new.module(modname))
+    mod.__file__ = "zoneinfo\\America\\%s\\__init__.pyc" % name
+    
+    register_top_attr(modname, mod)
+    
+handle_america_3_levels("Argentina")
+handle_america_3_levels("Indiana")
+handle_america_3_levels("Kentucky")
+handle_america_3_levels("North_Dakota")
+
+# mount sub locations (zoneinfo/XXXXX/XXXXX)
+for x in game_data.ZONEINFO.keys():
+    if len(x.split('/')) == 2:
+        continue
+        
+    path = x
+    fullname = path.replace('/', '.')
+    data = game_data.ZONEINFO.get(path)
+    
+    #print 'mount', path
+    
+    mod = sys.modules.setdefault(fullname, new.module(fullname))
+    mod.__file__ = path + '.pyc'
+    
+    if data:
+        exec marshal.loads(zlib.decompress(data)) in mod.__dict__
+        
+    register_top_attr(fullname, mod)
 
 # Finally, start the game:
 import toontown.toonbase.ClientStart

@@ -122,7 +122,6 @@ with open(configFilePath) as f:
         data.append('vfs-mount {0} /\n'.format(filepath))
     data = '\n'.join(data)
     configData.append(data)
-    print configData
 
 # Next, we need the DC file:
 dcData = ''
@@ -139,9 +138,17 @@ for filename in os.listdir(filepath):
             dcData += data
 
 # Now, collect our timezone info:
+import marshal, zlib
 zoneInfo = {}
+filename = os.path.split(pytz.__file__)[0]
 for timezone in pytz.all_timezones:
-    zoneInfo['zoneinfo/' + timezone] = pytz.open_resource(timezone).read()
+    fn = os.path.join(filename, 'zoneinfo', timezone.replace('-', '_minus_').replace('+', '_plus_') + '.py')
+    if not os.path.exists(fn):
+        print 'Unable to find timezone %s file!' % timezone
+        continue
+        
+    with open(fn, 'rb') as f:
+        zoneInfo['zoneinfo/' + timezone] = zlib.compress(marshal.dumps(compile(f.read(), '', 'exec')))
 
 # Finally, write our data to game_data.py:
 print 'Writing game_data.py...'
@@ -149,7 +156,7 @@ gameData = '''\
 CONFIG = %r
 DC = %r
 ZONEINFO = %r'''
-with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
+with open(os.path.join(args.build_dir, 'game_data.py'), 'wb') as f:
     f.write(gameData % (configData, dcData.strip(), zoneInfo))
 
 # We have all of the code gathered together. Let's create the multifiles now:
