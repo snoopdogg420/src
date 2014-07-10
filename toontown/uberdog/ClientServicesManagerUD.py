@@ -2,7 +2,13 @@ import base64
 import json
 import time
 
+import hashlib
+import hmac
+
+import urllib2
+
 import anydbm
+from pandac.PandaModules import *
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.distributed.DistributedObjectGlobalUD import DistributedObjectGlobalUD
 from direct.distributed.PyDatagram import *
@@ -22,10 +28,25 @@ if accountDBType == 'remote':
 # developer server:
 minAccessLevel = simbase.config.GetInt('account-server-min-access-level', 0)
 
+accountServerEndpoint = 'https://toontowninfinite.com/api/'
+accountServerSecret = 'hJ0wOp9Vq5vlR3r8'
+
+def executeHttpRequest(url, **extras):
+    spec = accountServerEndpoint + url
+
+    req = urllib2.Request(spec)
+    timestamp = str(int(time.time()))
+    signature = hmac.new(accountServerSecret, timestamp, hashlib.sha256)
+    req.add_header('User-Agent', 'TTI-CSM')
+    req.add_header('X-CSM-Timestamp', timestamp)
+    req.add_header('X-CSM-Signature', signature.hexdigest())
+    for k, v in extras.items():
+        req.add_header('X-CSM-' + k, v)
+    r = urllib2.urlopen(req)
+    return r.read()
 
 def judgeName(name):
-    return False
-
+    return name != 'Rejectnow'
 
 # --- ACCOUNT DATABASES ---
 # These classes make up the available account databases for Toontown Infinite.
@@ -42,6 +63,15 @@ class AccountDB:
         filename = simbase.config.GetString(
             'account-bridge-filename', 'account-bridge.db')
         self.dbm = anydbm.open(filename, 'c')
+
+    def addRequestToDatabase(self, avId, name):
+        return 'Success'
+
+    def checkNameStatus(self, avId):
+        return 'APPROVED'
+
+    def deleteNameRequest(self, avId):
+        return 'Success'
 
     def lookup(self, username, callback):
         pass  # Inheritors should override this.
@@ -121,6 +151,19 @@ class LocalAccountDB(AccountDB):
 
 class RemoteAccountDB(AccountDB):
     notify = directNotify.newCategory('RemoteAccountDB')
+
+    def addRequestToDatabase(self, avId, name):
+        return executeHttpRequest('names/append', ID=avId, Name=name)
+
+    def checkNameStatus(self, avId):
+        spec = accountServerEndpoint + 'names/status/?Id=%s' % avId
+        req = urllib2.Request(spec)
+        req.add_header('User-Agent', 'TTI-CSM')
+        r = urllib2.urlopen(req)
+        return r.read()
+
+    def deleteNameRequest(self, avId):
+        return executeHttpRequest('names/remove', ID=avId)
 
     def lookup(self, token, callback):
         # First, base64 decode the token:
@@ -542,27 +585,36 @@ class GetAvatarsFSM(AvatarOperationFSM):
             index = self.avList.index(avId)
             wishNameState = fields.get('WishNameState', [''])[0]
             name = fields['setName'][0]
+            nameState = 0
+
             if wishNameState == 'OPEN':
                 nameState = 1
             elif wishNameState == 'PENDING':
-                nameState = 2
+                actualNameState = self.csm.accountDB.checkNameStatus(avId)
+                self.csm.air.dbInterface.updateObject(
+                    self.csm.air.dbId,
+                    avId,
+                    self.csm.air.dclassesByName['DistributedToonUD'],
+                    {'WishNameState': [actualNameState]}
+                )
+                if actualNameState == 'PENDING':
+                    nameState = 2
+                if actualNameState == 'APPROVED':
+                    nameState = 3
+                    name = fields['WishName'][0]
+                elif actualNameState == 'REJECTED':
+                    nameState = 4
             elif wishNameState == 'APPROVED':
                 nameState = 3
-                name = fields['WishName'][0]
             elif wishNameState == 'REJECTED':
                 nameState = 4
-            elif wishNameState == '':
-                nameState = 0
-            else:
-                self.csm.notify.warning('Avatar %d is in unknown name state %s.' % (avId, wishNameState))
-                nameState = 0
 
+            print 'nameState: %s' % nameState
             potentialAvs.append([avId, name, fields['setDNAString'][0],
                                  index, nameState])
 
         self.csm.sendUpdateToAccountId(self.target, 'setAvatars', [potentialAvs])
         self.demand('Off')
-
 
 # This inherits from GetAvatarsFSM, because the delete operation ends in a
 # setAvatars message being sent to the client.
@@ -607,6 +659,7 @@ class DeleteAvatarFSM(GetAvatarsFSM):
             {'ACCOUNT_AV_SET': self.account['ACCOUNT_AV_SET'],
              'ACCOUNT_AV_SET_DEL': self.account['ACCOUNT_AV_SET_DEL']},
             self.__handleDelete)
+        self.csm.accountDB.deleteNameRequest(self.avId)
 
     def __handleDelete(self, fields):
         if fields:
@@ -656,6 +709,9 @@ class SetNameTypedFSM(AvatarOperationFSM):
         status = judgeName(self.name)
 
         if self.avId and status:
+            resp = self.csm.accountDB.addRequestToDatabase(self.avId, self.name)
+            if resp != 'Success':
+                status = False
             self.csm.air.dbInterface.updateObject(
                 self.csm.air.dbId,
                 self.avId,
@@ -758,9 +814,11 @@ class AcknowledgeNameFSM(AvatarOperationFSM):
             wishNameState = ''
             name = wishName
             wishName = ''
+            self.csm.accountDB.deleteNameRequest(self.avId)
         elif wishNameState == 'REJECTED':
             wishNameState = 'OPEN'
             wishName = ''
+            self.csm.accountDB.deleteNameRequest(self.avId)
         else:
             self.demand('Kill', "Tried to acknowledge name on an avatar in %s state!" % wishNameState)
             return
