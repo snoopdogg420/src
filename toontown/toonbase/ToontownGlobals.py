@@ -20,7 +20,6 @@ CEOElevatorFov = 59.0
 CBElevatorFov = 42.0
 WantPromotion = 0
 PendingPromotion = 1
-MaxPromotion = 2
 CeilingBitmask = BitMask32(256)
 FloorEventBitmask = BitMask32(16)
 PieBitmask = BitMask32(256)

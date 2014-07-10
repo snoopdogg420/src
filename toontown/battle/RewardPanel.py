@@ -1,23 +1,21 @@
-from pandac.PandaModules import *
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from toontown.toonbase import ToontownBattleGlobals
-import BattleBase
-from direct.directnotify import DirectNotifyGlobal
-import random
-import string
-from toontown.quest import Quests
 import copy
-from toontown.suit import SuitDNA
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
-from toontown.toon import NPCToons
+from direct.directnotify import DirectNotifyGlobal
+from direct.gui.DirectGui import *
+from direct.interval.IntervalGlobal import *
 import math
-from toontown.coghq import CogDisguiseGlobals
-from toontown.shtiker import DisguisePage
+from pandac.PandaModules import *
+import random
+
 import Fanfare
 from otp.otpbase import OTPGlobals
+from toontown.coghq import CogDisguiseGlobals
+from toontown.quest import Quests
+from toontown.shtiker import DisguisePage
+from toontown.suit import SuitDNA
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+
 
 class RewardPanel(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('RewardPanel')
@@ -208,12 +206,14 @@ class RewardPanel(DirectFrame):
                 if totalMerits:
                     meritBar['range'] = totalMerits
                     meritBar['value'] = merits
-                    if promoStatus != ToontownGlobals.MaxPromotion and promoStatus != ToontownGlobals.PendingPromotion:
+                    if promoStatus != ToontownGlobals.PendingPromotion:
                         if merits == totalMerits:
                             meritBar['text'] = TTLocalizer.RewardPanelMeritAlert
                         else:
                             meritBar['text'] = '%s/%s %s' % (merits, totalMerits, TTLocalizer.RewardPanelMeritBarLabels[i])
-                if promoStatus == ToontownGlobals.MaxPromotion:
+                maxSuitType = SuitDNA.suitsPerDept - 1
+                maxSuitLevel = (SuitDNA.levelsPerSuit-1) + maxSuitType
+                if toon.cogLevels[i] == maxSuitLevel:
                     meritBar['range'] = 1
                     meritBar['value'] = 1
                     meritBar['text'] = TTLocalizer.RewardPanelMeritsMaxed
@@ -293,7 +293,7 @@ class RewardPanel(DirectFrame):
             meritBar['range'] = totalMerits
             meritBar['value'] = newValue
             if newValue == totalMerits:
-                if promoStatus != ToontownGlobals.MaxPromotion and promoStatus != ToontownGlobals.PendingPromotion:
+                if promoStatus != ToontownGlobals.PendingPromotion:
                     meritBar['text'] = TTLocalizer.RewardPanelMeritAlert
                     meritBar['barColor'] = (DisguisePage.DeptColors[dept][0],
                                             DisguisePage.DeptColors[dept][1],

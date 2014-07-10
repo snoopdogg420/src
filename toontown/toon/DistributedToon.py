@@ -2662,10 +2662,10 @@ def zone(zoneId):
     return 'You have been moved to zone {0}.'.format(zoneId)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
-def promote(dept):
+def promote(deptIndex):
     """
-    Promotes the invoker.
+    sends a request to promote the invoker's [deptIndex] Cog disguise.
     """
     invoker = spellbook.getInvoker()
-    invoker.sendUpdate('requestPromotion', [dept])
+    invoker.sendUpdate('requestPromotion', [deptIndex])
     return 'Your promotion request has been sent.'
