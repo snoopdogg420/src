@@ -1146,6 +1146,21 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             if sendTotal:
                 self.d_setHp(self.hp)
 
+    def b_setMaxHp(self, maxHp):
+        if (maxHp > ToontownGlobals.MaxHpLimit):
+            self.air.writeServerEvent('suspicious', self.doId, 'Toon tried to go over the HP limit.')
+            self.d_setMaxHp(ToontownGlobals.MaxHpLimit)
+            self.setMaxHp(ToontownGlobals.MaxHpLimit)
+        else:
+            self.d_setMaxHp(maxHp)
+            self.setMaxHp(maxHp)
+
+    def d_setMaxHp(self, maxHp):
+        if (maxHp > ToontownGlobals.MaxHpLimit):
+            self.air.writeServerEvent('suspicious', self.doId, 'Toon tried to go over the HP limit.')
+        else:
+            self.sendUpdate('setMaxHp', [maxHp])
+
     @staticmethod
     def getGoneSadMessageForAvId(avId):
         return 'goneSad-%s' % avId
@@ -4601,7 +4616,7 @@ def maxToon(missingTrack=None):
     invoker.b_setExperience(experience.makeNetString())
 
     # Max out their Laff:
-    invoker.b_setMaxHp(137)
+    invoker.b_setMaxHp(ToontownGlobals.MaxHpLimit)
     invoker.toonUp(invoker.getMaxHp() - invoker.hp)
 
     # Max out their Cog suits:
