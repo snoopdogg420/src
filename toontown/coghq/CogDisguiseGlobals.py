@@ -123,9 +123,9 @@ suitTypes = PythonUtil.Enum(('NoSuit', 'NoMerits', 'FullSuit'))
 
 def makeMeritHierarchy(baseMerits):
     meritHierarchy = []
-    for _ in range(SuitDNA.suitsPerDept):
+    for _ in xrange(SuitDNA.suitsPerDept):
         meritTier = []
-        for _ in range(SuitDNA.levelsPerSuit):
+        for _ in xrange(SuitDNA.levelsPerSuit):
             baseMerits += (baseMerits*25) / 100
             meritTier.append(baseMerits)
         meritHierarchy.append(tuple(meritTier))

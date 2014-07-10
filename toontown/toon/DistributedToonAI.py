@@ -4620,16 +4620,22 @@ def maxToon(missingTrack=None):
     invoker.toonUp(invoker.getMaxHp() - invoker.hp)
 
     # Max out their Cog suits:
-    invoker.b_setCogParts(
-        [
-            CogDisguiseGlobals.PartsPerSuitBitmasks[0],  # Bossbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[1],  # Lawbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[2],  # Cashbot
-            CogDisguiseGlobals.PartsPerSuitBitmasks[3]   # Sellbot
-        ]
-    )
-    invoker.b_setCogLevels([49] * 4)
-    invoker.b_setCogTypes([7, 7, 7, 7])
+    suitDeptCount = len(SuitDNA.suitDepts)
+    cogParts = []
+    for i in xrange(suitDeptCount):
+        cogParts.append(CogDisguiseGlobals.PartsPerSuitBitmasks[i])
+    invoker.b_setCogParts(cogParts)
+    maxSuitType = SuitDNA.suitsPerDept - 1
+    invoker.b_setCogTypes([maxSuitType] * suitDeptCount)
+    maxSuitLevel = (SuitDNA.levelsPerSuit-1) + maxSuitType
+    invoker.b_setCogLevels([maxSuitLevel] * suitDeptCount)
+    cogMerits = []
+    for i in xrange(suitDeptCount):
+        suitIndex = (SuitDNA.suitsPerDept * (i+1)) - 1
+        suitMerits = CogDisguiseGlobals.MeritsPerLevel[suitIndex]
+        cogMerits.append(suitMerits[SuitDNA.levelsPerSuit - 1])
+    invoker.b_setCogMerits(cogMerits)
+    invoker.b_setPromotionStatus([1] * suitDeptCount)
 
     # Max their Cog gallery:
     deptCount = len(SuitDNA.suitDepts)
