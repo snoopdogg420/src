@@ -1,31 +1,36 @@
-from direct.interval.IntervalGlobal import *
-from direct.task.TaskManagerGlobal import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import TTLocalizer
-import DistributedBossCog
-from direct.task.Task import Task
-import DistributedCashbotBossGoon
-import SuitDNA
-from toontown.toon import Toon
-from toontown.toon import ToonDNA
 from direct.fsm import FSM
-from toontown.toonbase import ToontownGlobals
-from otp.otpbase import OTPGlobals
-from toontown.building import ElevatorUtils
-from toontown.building import ElevatorConstants
-from toontown.battle import MovieToonVictory
-from toontown.battle import RewardPanel
-from toontown.distributed import DelayDelete
-from toontown.chat import ResistanceChat
-from toontown.coghq import CogDisguiseGlobals
+from direct.interval.IntervalGlobal import *
+from direct.task.Task import Task
+from direct.task.TaskManagerGlobal import *
+import math
 from pandac.PandaModules import *
 import random
-import math
+
+import DistributedBossCog
+import DistributedCashbotBossGoon
+import SuitDNA
+from otp.nametag import NametagGlobals
 from otp.nametag import NametagGroup
 from otp.nametag.NametagConstants import *
-from otp.nametag import NametagGlobals
+from otp.otpbase import OTPGlobals
+from toontown.battle import MovieToonVictory
+from toontown.battle import RewardPanel
+from toontown.battle import SuitBattleGlobals
+from toontown.building import ElevatorConstants
+from toontown.building import ElevatorUtils
+from toontown.chat import ResistanceChat
+from toontown.coghq import CogDisguiseGlobals
+from toontown.distributed import DelayDelete
+from toontown.toon import Toon
+from toontown.toon import ToonDNA
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
+
 OneBossCog = None
 TTL = TTLocalizer
+
 
 class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCashbotBoss')
@@ -645,9 +650,19 @@ class DistributedCashbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def __talkAboutPromotion(self, speech):
         if self.prevCogSuitLevel < ToontownGlobals.MaxCogSuitLevel:
-            newCogSuitLevel = localAvatar.getCogLevels()[CogDisguiseGlobals.dept2deptIndex(self.style.dept)]
-            if newCogSuitLevel == ToontownGlobals.MaxCogSuitLevel:
-                speech += TTLocalizer.ResistanceToonLastPromotion % (ToontownGlobals.MaxCogSuitLevel + 1)
+            deptIndex = CogDisguiseGlobals.dept2deptIndex(self.style.dept)
+            cogLevels = base.localAvatar.getCogLevels()
+            newCogSuitLevel = cogLevels[deptIndex]
+            cogTypes = base.localAvatar.getCogTypes()
+            maxCogSuitLevel = (SuitDNA.levelsPerSuit-1) + cogTypes[deptIndex]
+            if self.prevCogSuitLevel != maxCogSuitLevel:
+                speech += TTLocalizer.ResistanceToonLevelPromotion
+            if newCogSuitLevel == maxCogSuitLevel:
+                if newCogSuitLevel != ToontownGlobals.MaxCogSuitLevel:
+                    suitIndex = ((cogTypes[deptIndex]+1) * (deptIndex+1)) - 1
+                    cogTypeStr = SuitDNA.suitHeadTypes[suitIndex]
+                    cogName = SuitBattleGlobals.SuitAttributes[cogTypeStr]['name']
+                    speech += TTLocalizer.ResistanceToonSuitPromotion % cogName
         else:
             speech += TTLocalizer.ResistanceToonMaxed % (ToontownGlobals.MaxCogSuitLevel + 1)
         return speech

@@ -155,6 +155,8 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         self.promoteButton.hide()
         if base.localAvatar.promotionStatus[3] == ToontownGlobals.PendingPromotion:
             self.promoteButton.show()
+        if base.localAvatar.cogLevels[3] == ToontownGlobals.MaxCogSuitLevel:
+            self.promoteButton['state'] = DGG.DISABLED
         self.frame.hide()
         self.activeTab = 3
         self.updatePage()
@@ -270,6 +272,10 @@ class DisguisePage(ShtikerPage.ShtikerPage):
         self.cogPartRatio['text'] = '%d/%d' % (CogDisguiseGlobals.getTotalParts(numParts), numPartsRequired)
         if base.localAvatar.promotionStatus[index] == ToontownGlobals.PendingPromotion:
             self.promoteButton['extraArgs'] = [index]
+            if base.localAvatar.cogLevels[index] == ToontownGlobals.MaxCogSuitLevel:
+                self.promoteButton['state'] = DGG.DISABLED
+            else:
+                self.promoteButton['state'] = DGG.NORMAL
             self.promoteButton.show()
 
     def sendPromotionRequest(self, dept):

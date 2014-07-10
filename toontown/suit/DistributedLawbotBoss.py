@@ -1,39 +1,40 @@
-from direct.showbase.ShowBase import *
-from direct.interval.IntervalGlobal import *
-from toontown.battle.BattleProps import *
+from direct.directnotify import DirectNotifyGlobal
+from direct.directutil import Mopath
 from direct.distributed.ClockDelta import *
+from direct.fsm import FSM
+from direct.gui.DirectGui import *
+from direct.interval.IntervalGlobal import *
 from direct.showbase.PythonUtil import Functor
 from direct.showbase.PythonUtil import StackTrace
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from direct.fsm import FSM
-from direct.fsm import ClassicFSM
-from direct.fsm import State
-from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import ToontownBattleGlobals
-import DistributedBossCog
-from toontown.toonbase import TTLocalizer
-import SuitDNA
-from toontown.toon import Toon
-from toontown.battle import BattleBase
-from direct.directutil import Mopath
-from direct.showutil import Rope
-from toontown.distributed import DelayDelete
-from toontown.battle import MovieToonVictory
-from toontown.building import ElevatorUtils
-from toontown.battle import RewardPanel
-from toontown.toon import NPCToons
+from direct.showbase.ShowBase import *
 from direct.task import Task
-import random
 import math
-from toontown.coghq import CogDisguiseGlobals
-from toontown.building import ElevatorConstants
-from toontown.toonbase import ToontownTimer
+from pandac.PandaModules import *
+import random
+
+import DistributedBossCog
+import SuitDNA
+from otp.nametag import NametagGlobals
 from otp.nametag import NametagGroup
 from otp.nametag.NametagConstants import *
-from otp.nametag import NametagGlobals
+from toontown.battle import BattleBase
+from toontown.battle import MovieToonVictory
+from toontown.battle import RewardPanel
+from toontown.battle import SuitBattleGlobals
+from toontown.battle.BattleProps import *
+from toontown.building import ElevatorConstants
+from toontown.building import ElevatorUtils
+from toontown.coghq import CogDisguiseGlobals
+from toontown.distributed import DelayDelete
+from toontown.toon import Toon
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase import ToontownTimer
+
+
 OneBossCog = None
+
 
 class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedLawbotBoss')
@@ -1657,9 +1658,19 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def __talkAboutPromotion(self, speech):
         if self.prevCogSuitLevel < ToontownGlobals.MaxCogSuitLevel:
-            newCogSuitLevel = localAvatar.getCogLevels()[CogDisguiseGlobals.dept2deptIndex(self.style.dept)]
-            if newCogSuitLevel == ToontownGlobals.MaxCogSuitLevel:
-                speech += TTLocalizer.WitnessToonLastPromotion % (ToontownGlobals.MaxCogSuitLevel + 1)
+            deptIndex = CogDisguiseGlobals.dept2deptIndex(self.style.dept)
+            cogLevels = base.localAvatar.getCogLevels()
+            newCogSuitLevel = cogLevels[deptIndex]
+            cogTypes = base.localAvatar.getCogTypes()
+            maxCogSuitLevel = (SuitDNA.levelsPerSuit-1) + cogTypes[deptIndex]
+            if self.prevCogSuitLevel != maxCogSuitLevel:
+                speech += TTLocalizer.WitnessToonLevelPromotion
+            if newCogSuitLevel == maxCogSuitLevel:
+                if newCogSuitLevel != ToontownGlobals.MaxCogSuitLevel:
+                    suitIndex = ((cogTypes[deptIndex]+1) * (deptIndex+1)) - 1
+                    cogTypeStr = SuitDNA.suitHeadTypes[suitIndex]
+                    cogName = SuitBattleGlobals.SuitAttributes[cogTypeStr]['name']
+                    speech += TTLocalizer.WitnessToonSuitPromotion % cogName
         else:
             speech += TTLocalizer.WitnessToonMaxed % (ToontownGlobals.MaxCogSuitLevel + 1)
         return speech
