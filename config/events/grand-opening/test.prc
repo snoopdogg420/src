@@ -28,6 +28,9 @@ server-port 7198
 server-version SERVER_VERSION
 server-timezone US/Eastern
 
+shard-low-pop 150
+shard-mid-pop 300
+
 # Performance
 hardware-animated-vertices #t
 preload-avatars #t

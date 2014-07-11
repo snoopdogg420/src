@@ -97,7 +97,6 @@ from toontown.toon import DistributedNPCToonBase/AI
 from toontown.toon import DistributedNPCToon/AI
 from toontown.toon import DistributedSmartNPC/AI
 from toontown.toon import DistributedSmartNPC/AI
-from toontown.toon import DistributedNPCSnowballGiver/AI
 from toontown.toon import DistributedNPCSpecialQuestGiver/AI
 from toontown.toon import DistributedNPCFlippyInToonHall/AI
 from toontown.toon import DistributedNPCScientist/AI
@@ -523,6 +522,8 @@ dclass DistributedToon : DistributedPlayer {
   setCogTypes(uint8[] = [0 * 4]) required broadcast ownrecv db;
   setCogParts(uint32[] = [0 * 4]) required broadcast ownrecv db;
   setCogMerits(uint16[] = [0 * 4]) required ownrecv db;
+  setPromotionStatus(uint8[] = [0 * 4]) required broadcast ownrecv db;
+  requestPromotion(uint8) ownsend airecv;
   setCogIndex(int8) broadcast ram;
   setDisguisePageFlag(int8) ownrecv;
   setSosPageFlag(int8) ownrecv;
@@ -1814,10 +1815,6 @@ dclass DistributedNPCToon : DistributedNPCToonBase {
   setMovieDone() airecv clsend;
   chooseQuest(uint16) airecv clsend;
   chooseTrack(int8) airecv clsend;
-};
-
-dclass DistributedNPCSnowballGiver : DistributedNPCToonBase {
-  gaveSnowballs(uint32, uint32, uint8) broadcast ram;
 };
 
 dclass DistributedSmartNPC : DistributedNPCToonBase {
