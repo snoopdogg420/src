@@ -12,6 +12,7 @@ from pandac.PandaModules import *
 import time
 from toontown.makeatoon.NameGenerator import NameGenerator
 from toontown.toon.ToonDNA import ToonDNA
+import urllib2
 from toontown.toonbase import TTLocalizer
 
 
@@ -38,16 +39,16 @@ http.setVerifySsl(0)
 def executeHttpRequest(url, **extras):
     timestamp = str(int(time.time()))
     signature = hmac.new(accountServerSecret, timestamp, hashlib.sha256)
-    channel = http.makeChannel(True)
-    channel.sendExtraHeader('User-Agent', 'TTI-CSM')
-    channel.sendExtraHeader('X-CSM-Timestamp', timestamp)
-    channel.sendExtraHeader('X-CSM-Signature', signature.hexdigest())
+    request = urllib2.Request(accountServerEndpoint + url)
+    request.add_header('User-Agent', 'TTI-CSM')
+    request.add_header('X-CSM-Timestamp', timestamp)
+    request.add_header('X-CSM-Signature', signature.hexdigest())
     for k, v in extras.items():
-        channel.sendExtraHeader('X-CSM-' + k, v)
-    spec = DocumentSpec(accountServerEndpoint + url)
-    rf = Ramfile()
-    if channel.getDocument(spec) and channel.downloadToRam(rf):
-        return rf.getData()
+        request.add_header('X-CSM-' + k, v)
+    try:
+        return urllib2.urlopen(request).read()
+    except urllib2.HTTPError:
+        return None
 
 
 blacklist = executeHttpRequest('names/blacklist.json')
@@ -59,7 +60,7 @@ def judgeName(name):
     if blacklist:
         for namePart in name.split(' '):
             namePart = namePart.lower()
-            for banned in blacklist[namePart[0]]:
+            for banned in blacklist.get(namePart[0], []):
                 if banned in namePart:
                     return False
     return True
