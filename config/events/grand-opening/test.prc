@@ -31,10 +31,6 @@ server-timezone US/Eastern
 shard-low-pop 150
 shard-mid-pop 300
 
-# DClass files (in reverse order)...
-dc-file astron/dclass/toon.dc
-dc-file astron/dclass/otp.dc
-
 # Performance
 hardware-animated-vertices #t
 preload-avatars #t
