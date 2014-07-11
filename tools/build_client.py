@@ -24,7 +24,7 @@ cmd = sys.executable + ' -m direct.showutil.pfreeze'
 args.modules.extend(['direct', 'pandac', 'pytz.zoneinfo'])
 for module in args.modules:
     cmd += ' -i {0}.*.*'.format(module)
-cmd += ' -i encodings'
+cmd += ' -i encodings.*'
 cmd += ' -i base64'
 cmd += ' -i site'
 cmd += ' -o ' + args.output
