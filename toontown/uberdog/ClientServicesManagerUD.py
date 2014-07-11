@@ -173,13 +173,13 @@ class RemoteAccountDB(AccountDB):
     notify = directNotify.newCategory('RemoteAccountDB')
 
     def addNameRequest(self, avId, name):
-        return executeHttpRequest('names/append', ID=avId, Name=name)
+        return executeHttpRequest('names/append', ID=str(avId), Name=name)
 
     def getNameStatus(self, avId):
         return executeHttpRequest('names/status/?Id=' + str(avId))
 
     def removeNameRequest(self, avId):
-        return executeHttpRequest('names/remove', ID=avId)
+        return executeHttpRequest('names/remove', ID=str(avId))
 
     def lookup(self, token, callback):
         # First, base64 decode the token:
@@ -205,6 +205,8 @@ class RemoteAccountDB(AccountDB):
             return response
 
         # Next, decrypt the token using AES-128 in CBC mode:
+        accountServerSecret = simbase.config.GetString(
+            'account-server-secret', '6163636f756e7473')
 
         # Ensure that our secret is the correct size:
         if len(accountServerSecret) > AES.block_size:
