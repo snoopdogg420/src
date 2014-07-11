@@ -145,7 +145,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             base.cr.playerFriendsManager.sendSCWhisper(sendToId, msgIndex)
         elif sendToId not in base.cr.doId2do:
             messenger.send('wakeup')
-            base.cr.ttrFriendsManager.d_whisperSCTo(sendToId, msgIndex)
+            base.cr.ttiFriendsManager.d_whisperSCTo(sendToId, msgIndex)
         else:
             messenger.send('wakeup')
             self.sendUpdate('setWhisperSCFrom', [self.doId, msgIndex], sendToId)
@@ -172,7 +172,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             return
         if sendToId not in base.cr.doId2do:
             messenger.send('wakeup')
-            base.cr.ttrFriendsManager.d_whisperSCCustomTo(sendToId, msgIndex)
+            base.cr.ttiFriendsManager.d_whisperSCCustomTo(sendToId, msgIndex)
             return
         messenger.send('wakeup')
         self.sendUpdate('setWhisperSCCustomFrom', [self.doId, msgIndex], sendToId)
@@ -206,7 +206,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             return
         if sendToId not in base.cr.doId2do:
             messenger.send('wakeup')
-            base.cr.ttrFriendsManager.d_whisperSCEmoteTo(sendToId, emoteId)
+            base.cr.ttiFriendsManager.d_whisperSCEmoteTo(sendToId, emoteId)
             return
         messenger.send('wakeup')
         self.sendUpdate('setWhisperSCEmoteFrom', [self.doId, emoteId], sendToId)
@@ -342,7 +342,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             self.sendUpdate('teleportQuery', [requesterId], sendToId)
         else:
             teleportNotify.debug('sending TTIFM teleportQuery%s' % ((requesterId, sendToId),))
-            base.cr.ttrFriendsManager.d_teleportQuery(sendToId)
+            base.cr.ttiFriendsManager.d_teleportQuery(sendToId)
 
     def teleportQuery(self, requesterId):
         teleportNotify.debug('receieved teleportQuery(%s)' % requesterId)

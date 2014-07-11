@@ -323,6 +323,9 @@ class QuestManagerAI:
             questList.append(questDesc)
         av.b_setQuests(questList)
 
+    def toonDefeatedStage(self, av, stageId, activeVictors):
+        pass
+
     def toonKilledCogs(self, av, suitsKilled, zoneId, activeToonList):
         pass
 

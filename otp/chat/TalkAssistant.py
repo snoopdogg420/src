@@ -630,7 +630,7 @@ class TalkAssistant(DirectObject.DirectObject):
         return error
 
     def sendWhisperTalk(self, message, receiverAvId):
-        base.cr.ttrFriendsManager.sendUpdate('sendTalkWhisper', [receiverAvId, message])
+        base.cr.ttiFriendsManager.sendUpdate('sendTalkWhisper', [receiverAvId, message])
 
     def sendAccountTalk(self, message, receiverAccount):
         error = None

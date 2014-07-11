@@ -65,7 +65,6 @@ NPC_PARTYPERSON = 8
 NPC_SPECIALQUESTGIVER = 9
 NPC_FLIPPYTOONHALL = 10
 NPC_SCIENTIST = 11
-NPC_SNOWBALLGIVER = 12
 NPC_SMART = 13
 NPC_BANKER = 14
 CLERK_COUNTDOWN_TIME = 120
@@ -91,7 +90,6 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     import DistributedNPCSpecialQuestGiverAI
     import DistributedNPCFlippyInToonHallAI
     import DistributedNPCScientistAI
-    import DistributedNPCSnowballGiverAI
     import DistributedSmartNPCAI
     import DistributedBankerBobNPCAI
     canonicalZoneId, name, dnaType, gender, protected, type = desc
@@ -119,8 +117,6 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
         npc = DistributedNPCFlippyInToonHallAI.DistributedNPCFlippyInToonHallAI(air, npcId)
     elif type == NPC_SCIENTIST:
         npc = DistributedNPCScientistAI.DistributedNPCScientistAI(air, npcId)
-    elif type == NPC_SNOWBALLGIVER:
-        npc = DistributedNPCSnowballGiverAI.DistributedNPCSnowballGiverAI(air, npcId)
     elif type == NPC_SMART:
         npc = DistributedSmartNPCAI.DistributedSmartNPCAI(air, npcId)
     elif type == NPC_BANKER:

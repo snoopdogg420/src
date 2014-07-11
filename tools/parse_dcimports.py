@@ -32,12 +32,14 @@ from pandac.PandaModules import *
 
 hashVal = %r
 
+
 ''' % dcFile.getHash()
 
 for moduleName, importSymbols in dcImports.items():
     data += 'from %s import %s\n' % (moduleName, ', '.join(importSymbols))
 
 data += '''
+
 dcImports = locals().copy()
 '''
 

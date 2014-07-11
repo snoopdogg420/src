@@ -414,3 +414,20 @@ def skipVP():
     boss.exitIntroduction()
     boss.b_setState('PrepareBattleThree')
     return 'Skipping the first round...'
+
+@magicWord(category=CATEGORY_ADMINISTRATOR)
+def killVP():
+    """
+    Kills the VP.
+    """
+    invoker = spellbook.getInvoker()
+    boss = None
+    for do in simbase.air.doId2do.values():
+        if isinstance(do, DistributedSellbotBossAI):
+            if invoker.doId in do.involvedToons:
+                boss = do
+                break
+    if not boss:
+        return "You aren't in a VP!"
+    boss.b_setState('Victory')
+    return 'Killed VP.'
