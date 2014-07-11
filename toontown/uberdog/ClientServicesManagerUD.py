@@ -31,6 +31,10 @@ accountServerSecret = simbase.config.GetString(
     'account-server-secret', '6163636f756e7473')
 
 
+http = HTTPClient()
+http.setVerifySsl(0)
+
+
 def executeHttpRequest(url, **extras):
     timestamp = str(int(time.time()))
     signature = hmac.new(accountServerSecret, timestamp, hashlib.sha256)
