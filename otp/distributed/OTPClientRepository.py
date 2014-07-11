@@ -439,11 +439,20 @@ class OTPClientRepository(ClientRepositoryBase):
         self.dclassesByName = {}
         self.dclassesByNumber = {}
         self.hashVal = 0
-        if not __debug__:
-            dcFileNames = [__builtins__.dcStream]
-            del __builtins__.dcStream
+        
+        try:
+            dcStream
+            
+        except:
+            pass
+            
+        else:
+            self.notify.info('Detected DC file stream, reading it...')
+            dcFileNames = [dcStream]
+            
         if isinstance(dcFileNames, str):
             dcFileNames = [dcFileNames]
+            
         if dcFileNames is not None:
             for dcFileName in dcFileNames:
                 if isinstance(dcFileName, StringStream):
@@ -454,6 +463,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     self.notify.error('Could not read DC file.')
         else:
             dcFile.readAll()
+            
         self.hashVal = DCClassImports.hashVal
         for i in xrange(dcFile.getNumClasses()):
             dclass = dcFile.getClass(i)
