@@ -24,7 +24,9 @@ class ShardPage(ShtikerPage.ShtikerPage):
         self.textDownColor = Vec4(0.5, 0.9, 1, 1)
         self.textDisabledColor = Vec4(0.4, 0.8, 0.4, 1)
         self.ShardInfoUpdateInterval = 5.0
-        self.lowPop, self.midPop, self.highPop = base.getShardPopLimits()
+        self.lowPop = config.GetInt('shard-low-pop', 150)
+        self.midPop = config.GetInt('shard-mid-pop', 300)
+        self.highPop = -1
         self.showPop = config.GetBool('show-population', 0)
         self.showTotalPop = config.GetBool('show-total-population', 0)
         self.noTeleport = config.GetBool('shard-page-disable', 0)

@@ -30,6 +30,9 @@ server-timezone US/Eastern
 
 eventlog-host 127.0.0.1
 
+shard-low-pop 150
+shard-mid-pop 300
+
 # DClass files (in reverse order)...
 dc-file astron/dclass/toon.dc
 dc-file astron/dclass/otp.dc
