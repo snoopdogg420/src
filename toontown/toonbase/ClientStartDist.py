@@ -45,7 +45,7 @@ import sys, new, marshal, zlib, os
 mod = sys.modules.setdefault('zoneinfo', new.module('zoneinfo'))
 mod.__file__ = "zoneinfo\\__init__.pyc"
 
-def register_top_attr(modname, mod):
+def registerTopAttr(modname, mod):
     base = modname.rsplit('.', 1)[0]
     top = modname.split('.')[-1]
     
@@ -67,20 +67,20 @@ for x in locations:
     else:
         mod.__file__ = path + '.pyc'
         
-    register_top_attr(fullname, mod)
+    registerTopAttr(fullname, mod)
         
 # some modules have 3 levels of depth
-def handle_america_3_levels(name):
+def handleAmerica3Levels(name):
     modname = "zoneinfo.America." + name
     mod = sys.modules.setdefault(modname, new.module(modname))
     mod.__file__ = "zoneinfo\\America\\%s\\__init__.pyc" % name
     
-    register_top_attr(modname, mod)
+    registerTopAttr(modname, mod)
     
-handle_america_3_levels("Argentina")
-handle_america_3_levels("Indiana")
-handle_america_3_levels("Kentucky")
-handle_america_3_levels("North_Dakota")
+handleAmerica3Levels("Argentina")
+handleAmerica3Levels("Indiana")
+handleAmerica3Levels("Kentucky")
+handleAmerica3Levels("North_Dakota")
 
 # mount sub locations (zoneinfo/XXXXX/XXXXX)
 for x in game_data.ZONEINFO.keys():
@@ -99,7 +99,7 @@ for x in game_data.ZONEINFO.keys():
     if data:
         exec marshal.loads(zlib.decompress(data)) in mod.__dict__
         
-    register_top_attr(fullname, mod)
+    registerTopAttr(fullname, mod)
 
 # Finally, start the game:
 import toontown.toonbase.ClientStart

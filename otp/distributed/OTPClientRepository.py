@@ -433,7 +433,7 @@ class OTPClientRepository(ClientRepositoryBase):
         self.chatAgent = self.generateGlobalObject(OtpDoGlobals.OTP_DO_ID_CHAT_MANAGER, 'ChatAgent')
         self.csm = None # To be set by subclass.
 
-    def readDCFile(self, dcFileNames = None):
+    def readDCFile(self, dcFileNames=None):
         dcFile = self.getDcFile()
         dcFile.clear()
         self.dclassesByName = {}
