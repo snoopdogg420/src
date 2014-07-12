@@ -404,7 +404,7 @@ class BattleCalculatorAI:
             if self.traps[currTrap][0] == self.TRAP_CONFLICT:
                 del self.traps[currTrap]
 
-    def __calcToonAtkHp(self, toonId):
+    def calculateRound(self, toonId):
         attack = self.battle.toonAttacks[toonId]
         targetList = self.__createToonTargetList(toonId)
         atkHit, atkAcc = self.__calcToonAtkHit(toonId, targetList)
@@ -1034,7 +1034,7 @@ class BattleCalculatorAI:
                     if currTrack and atkTrack != currTrack:
                         self.__clearLuredSuitsDelayed()
                 currTrack = atkTrack
-                self.__calcToonAtkHp(toonId)
+                self.calculateRound(toonId)
                 attackIdx = self.toonAtkOrder.index(toonId)
                 self.__handleBonus(attackIdx, hp=0)
                 self.__handleBonus(attackIdx, hp=1)
