@@ -629,6 +629,8 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
 
     def exitDoorEnterOpening(self, ts):
         doorFrameHoleLeft = self.findDoorNode('doorFrameHoleLeft')
+        if doorFrameHoleLeft is None:
+            return
         if doorFrameHoleLeft.isEmpty():
             self.notify.warning('enterOpening(): did not find flatDoors')
             return

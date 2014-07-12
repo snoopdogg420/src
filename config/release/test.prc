@@ -184,7 +184,7 @@ allow-secret-chat #t
 
 # Core features...
 want-fishing #t
-want-housing #t
+want-housing #f
 want-pets #f
 want-karts #t
 want-parties #f
@@ -208,3 +208,6 @@ want-instant-parties #t
 
 # Temporary...
 want-old-fireworks #t
+
+# Phone quest...
+want-phone-quest #f

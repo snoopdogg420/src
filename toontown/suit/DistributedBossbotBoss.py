@@ -461,27 +461,28 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.toonFoodStatus[avId] = (beltIndex, foodNum)
         av = base.cr.doId2do.get(avId)
         if av:
-            intervalName = self.uniqueName('loadFoodSoundIval-%d' % avId)
-            seq = SoundInterval(self.pickupFoodSfx, node=av, name=intervalName)
-            oldSeq = self.activeIntervals.get(intervalName)
-            if oldSeq:
-                oldSeq.finish()
-            seq.start()
-            self.activeIntervals[intervalName] = seq
-            foodModel = loader.loadModel('phase_12/models/bossbotHQ/canoffood')
-            foodModel.setName('cogFood')
-            foodModel.setScale(ToontownGlobals.BossbotFoodModelScale)
-            foodModel.reparentTo(av.suit.getRightHand())
-            foodModel.setHpr(52.1961, 180.4983, -4.2882)
-            curAnim = av.suit.getCurrentAnim()
-            self.notify.debug('curAnim=%s' % curAnim)
-            if curAnim in ('walk', 'run'):
-                av.suit.loop('tray-walk')
-            elif curAnim == 'neutral':
-                self.notify.debug('looping tray-netural')
-                av.suit.loop('tray-neutral')
-            else:
-                self.notify.warning("don't know what to do with anim=%s" % curAnim)
+            if hasattr(av, 'suit'):
+                intervalName = self.uniqueName('loadFoodSoundIval-%d' % avId)
+                seq = SoundInterval(self.pickupFoodSfx, node=av, name=intervalName)
+                oldSeq = self.activeIntervals.get(intervalName)
+                if oldSeq:
+                    oldSeq.finish()
+                seq.start()
+                self.activeIntervals[intervalName] = seq
+                foodModel = loader.loadModel('phase_12/models/bossbotHQ/canoffood')
+                foodModel.setName('cogFood')
+                foodModel.setScale(ToontownGlobals.BossbotFoodModelScale)
+                foodModel.reparentTo(av.suit.getRightHand())
+                foodModel.setHpr(52.1961, 180.4983, -4.2882)
+                curAnim = av.suit.getCurrentAnim()
+                self.notify.debug('curAnim=%s' % curAnim)
+                if curAnim in ('walk', 'run'):
+                    av.suit.loop('tray-walk')
+                elif curAnim == 'neutral':
+                    self.notify.debug('looping tray-netural')
+                    av.suit.loop('tray-neutral')
+                else:
+                    self.notify.warning("don't know what to do with anim=%s" % curAnim)
 
     def removeFoodFromToon(self, avId):
         self.toonFoodStatus[avId] = None
