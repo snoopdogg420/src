@@ -214,6 +214,7 @@ want-instant-parties #t
 
 # Temporary...
 want-old-fireworks #t
+force-skip-tutorial #t
 
 # Phone quest...
 want-phone-quest #t
