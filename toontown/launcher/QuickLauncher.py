@@ -63,10 +63,7 @@ class QuickLauncher(LauncherBase):
         self.tutorialCompleteKey = 'TUTORIAL_DONE'
         LauncherBase.__init__(self)
         self.useTTSpecificLogin = config.GetBool('tt-specific-login', 0)
-        if self.useTTSpecificLogin:
-            self.toontownPlayTokenKey = 'LOGIN_TOKEN'
-        else:
-            self.toontownPlayTokenKey = 'PLAYTOKEN'
+        self.toontownPlayTokenKey = 'TTI_PLAYCOOKIE'
         print 'useTTSpecificLogin=%s' % self.useTTSpecificLogin
         self.contentDir = '/'
         self.serverDbFileHash = HashVal()
