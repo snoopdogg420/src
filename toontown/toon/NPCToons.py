@@ -11559,7 +11559,7 @@ NPCToonDict = {20000: (-1,
         0,
         NPC_REGULAR),
 # Trap Cat SOS
-# 1 Stars, Sound SOS, Opera 1 damage. "We are team trap!".
+# 1 Star, Sound SOS, Opera 1 damage. "We are team trap!".
 91918: (-1,
         lnames[91918],
         ('dss',
@@ -11833,12 +11833,12 @@ FOnpcFriends = {9310: (ToontownBattleGlobals.LURE_TRACK,
         2)}
 
 disabledSosCards = ConfigVariableList('disable-sos-card')
-for sos in disabledSosCards:
-    sos = int(sos)
-    if HQnpcFriends.has_key(sos):
-        del HQnpcFriends[sos]
-    if FOnpcFriends.has_key(sos):
-        del FOnpcFriends[sos]
+for npcId in disabledSosCards:
+    npcId = int(npcId)
+    if npcId in HQnpcFriends:
+        del HQnpcFriends[npcId]
+    if npcId in FOnpcFriends:
+        del FOnpcFriends[npcId]
 
 npcFriends = dict(HQnpcFriends)
 npcFriends.update(FOnpcFriends)
