@@ -211,3 +211,7 @@ want-old-fireworks #t
 
 # Phone quest...
 want-phone-quest #f
+
+# SOS cards...
+disable-sos-card 91917
+disable-sos-card 91918
