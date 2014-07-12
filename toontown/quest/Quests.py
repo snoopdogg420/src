@@ -3395,6 +3395,11 @@ QuestDict = {
     10205: (ELDER_TIER, Cont, (DeliverItemQuest, 1000), Any, ToonTailor, 1000, NA, DefaultDialog),
     10206: (ELDER_TIER, Start, (BuildingNewbieQuest, Anywhere, 4, Any, 1, NEWBIE_HP), Any, ToonHQ, NA, 10207, DefaultDialog),
     10207: (ELDER_TIER, Cont, (DeliverItemQuest, 1000), Any, ToonTailor, 1000, NA, DefaultDialog) }
+
+if not config.GetBool('want-phone-quest', 1):
+    QuestDict[150] = (TT_TIER, Cont, (FriendQuest,), Same, ToonHQ, 100, NA, DefaultDialog)
+    QuestDict[175] = (TT_TIER, OBSOLETE, (PhoneQuest,), Same, ToonHQ, 100, NA, TTLocalizer.QuestDialogDict[175])
+
 Tier2QuestsDict = {}
 
 for questId, questDesc in QuestDict.items():

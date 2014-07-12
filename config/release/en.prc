@@ -208,3 +208,6 @@ want-instant-parties #t
 
 # Temporary...
 want-old-fireworks #t
+
+# Phone quest...
+want-phone-quest #t
