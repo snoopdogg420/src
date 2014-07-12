@@ -437,14 +437,7 @@ class ToonBase(OTPBase.OTPBase):
             self.cleanupDownloadWatcher()
         else:
             self.acceptOnce('launcherAllPhasesComplete', self.cleanupDownloadWatcher)
-        gameServer = base.config.GetString('game-server', '')
-        if gameServer:
-            self.notify.info('Using game-server from Configrc: %s ' % gameServer)
-        elif launcherServer:
-            gameServer = launcherServer
-            self.notify.info('Using gameServer from launcher: %s ' % gameServer)
-        else:
-            gameServer = 'localhost'
+        gameServer = os.environ.get('TTI_GAMESERVER', 'localhost')
         serverPort = base.config.GetInt('server-port', 7198)
         serverList = []
         for name in gameServer.split(';'):
