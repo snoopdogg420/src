@@ -242,6 +242,11 @@ if sys.platform == 'win32':
 else:
     os.system('../infinitecipher {0} GameData.bin'.format(output))
 
+# Copy the necessary patcher includes:
+for include in patcherIncludes:
+    if os.path.exists(os.path.join('..', include)):
+        shutil.copyfile(os.path.join('..', include), include)
+
 # Create a 'dist' directory that will contain everything that will be uploaded
 # to the CDN:
 os.chdir('..')
