@@ -197,6 +197,7 @@ want-parties #f
 want-cogdominiums #f
 want-boarding-groups #t
 want-achievements #f
+want-whitelist #f
 
 # Optional...
 show-population #f
