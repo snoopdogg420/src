@@ -12,7 +12,7 @@
   "launcher-version": "1.0.0",
   "account-server": "toontowninfinite.com",
   "client-agent": "192.99.200.107",
-  "patcher-includes": ["GameData.bin"],
+  "patcher-includes": ["GameData.bin", "infinite.exe"],
   "config-dir": "../config/release",
   "vfs-mounts": [
     "resources/phase_3.mf",
