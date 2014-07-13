@@ -24,7 +24,7 @@ account-server-min-access-level 100
 
 # Server...
 server-force-ssl 0
-server-port 7298
+server-port 7198
 server-version SERVER_VERSION
 server-timezone US/Eastern
 
