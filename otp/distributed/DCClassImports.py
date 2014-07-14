@@ -2,7 +2,8 @@
 from pandac.PandaModules import *
 
 
-hashVal = 1948107585
+hashVal = 1986395261
+
 
 from toontown.cogdominium import DistributedCogdoInterior, DistributedCogdoBattleBldg, DistributedCogdoElevatorExt, DistributedCogdoElevatorInt, DistributedCogdoBarrel, DistCogdoGame, DistCogdoLevelGame, DistCogdoBoardroomGame, DistCogdoCraneGame, DistCogdoMazeGame, DistCogdoFlyingGame, DistCogdoCrane, DistCogdoCraneMoneyBag, DistCogdoCraneCog
 from toontown.classicchars import DistributedCCharBase, DistributedMickey, DistributedVampireMickey, DistributedMinnie, DistributedWitchMinnie, DistributedGoofy, DistributedSuperGoofy, DistributedDaisy, DistributedSockHopDaisy, DistributedChip, DistributedPoliceChip, DistributedDale, DistributedJailbirdDale, DistributedGoofySpeedway, DistributedDonald, DistributedFrankenDonald, DistributedDonaldDock, DistributedPluto, DistributedWesternPluto
@@ -60,5 +61,6 @@ from toontown.uberdog.DistributedWhitelistMgr import DistributedWhitelistMgr
 from otp.ai import TimeManager, MagicWordManager
 from otp.avatar import DistributedAvatar, DistributedPlayer, AvatarHandle
 from toontown.battle import DistributedBattleBase, DistributedBattle, DistributedBattleBldg, DistributedBattleFinal, DistributedBattleWaiters, DistributedBattleDiners
+
 
 dcImports = locals().copy()

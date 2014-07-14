@@ -17,8 +17,8 @@ class ClientServicesManager(DistributedObjectGlobal):
         self.notify.debug('Sending token: ' + token)
         digest_maker = hmac.new(key)
         digest_maker.update(token)
-        clientKey = digest_maker = hexdigest()
-        
+        clientKey = digest_maker.hexdigest()
+
         self.sendUpdate('login', [token, clientKey])
 
     def acceptLogin(self, timestamp):

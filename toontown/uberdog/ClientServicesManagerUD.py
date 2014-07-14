@@ -1014,7 +1014,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
 
         # For processing name patterns.
         self.nameGenerator = NameGenerator()
-        
+
         #Temp HMAC key
         self.key = 'cGFzY2FsYW5kY29keWFyZXNvZnVja2luZ2hvdGl0aXNpbnNhbmU='
 
@@ -1076,11 +1076,11 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         self.notify.debug('Received login cookie %r from %d' % (cookie, self.air.getMsgSender()))
 
         sender = self.air.getMsgSender()
-        
+
         # Time to check this login to see if its authentic
         digest_maker = hmac.new(self.key)
         digest_maker.update(cookie)
-        serverKey = digest_maker = hexdigest()
+        serverKey = digest_maker.hexdigest()
         if serverKey == authKey:
             # This login is authentic!
             pass
