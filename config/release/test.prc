@@ -201,6 +201,7 @@ want-news-page #f
 want-news-tab #f
 want-long-pattern-game #f
 want-talkative-tyler #f
+want-yin-yang #t
 
 # Developer options...
 want-dev #f

@@ -58,6 +58,8 @@ if blacklist:
 
 
 def judgeName(name):
+    if not name:
+        return False
     if blacklist:
         for namePart in name.split(' '):
             namePart = namePart.lower()
@@ -627,7 +629,6 @@ class GetAvatarsFSM(AvatarOperationFSM):
             elif wishNameState == 'REJECTED':
                 nameState = 4
 
-            print 'nameState: %s' % nameState
             potentialAvs.append([avId, name, fields['setDNAString'][0],
                                  index, nameState])
 

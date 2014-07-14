@@ -73,10 +73,10 @@ want-the-burrrgh #t
 want-donalds-dreamland #t
 want-goofy-speedway #t
 want-outdoor-zone #t
-want-golf-zone #t
+want-golf-zone #f
 
 # Cog headquarters...
-want-cog-headquarters #t
+want-cog-headquarters #f
 want-sellbot-headquarters #t
 want-cashbot-headquarters #t
 want-lawbot-headquarters #t
@@ -207,6 +207,7 @@ want-news-page #f
 want-news-tab #f
 want-long-pattern-game #f
 want-talkative-tyler #f
+want-yin-yang #t
 
 # Developer options...
 want-dev #f
