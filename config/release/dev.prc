@@ -66,17 +66,17 @@ egg-object-type-dcs <DCS> { 1 }
 # Safe zones...
 want-safe-zones #t
 want-toontown-central #t
-want-donalds-dock #t
-want-daisys-garden #t
-want-minnies-melodyland #t
-want-the-burrrgh #t
-want-donalds-dreamland #t
-want-goofy-speedway #t
-want-outdoor-zone #t
-want-golf-zone #t
+want-donalds-dock #f
+want-daisys-garden #f
+want-minnies-melodyland #f
+want-the-burrrgh #f
+want-donalds-dreamland #f
+want-goofy-speedway #f
+want-outdoor-zone #f
+want-golf-zone #f
 
 # Cog headquarters...
-want-cog-headquarters #t
+want-cog-headquarters #f
 want-sellbot-headquarters #t
 want-cashbot-headquarters #t
 want-lawbot-headquarters #t
@@ -207,6 +207,7 @@ want-news-page #f
 want-news-tab #f
 want-long-pattern-game #f
 want-talkative-tyler #f
+want-yin-yang #t
 
 # Developer options...
 want-dev #f

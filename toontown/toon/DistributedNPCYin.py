@@ -1,0 +1,127 @@
+from DistributedNPCToonBase import *
+from direct.fsm import ClassicFSM, State
+from direct.gui.DirectGui import *
+from direct.task.Task import Task
+from otp.nametag.NametagConstants import *
+from pandac.PandaModules import *
+import time
+from toontown.effects import DustCloud
+from toontown.toonbase import TTLocalizer
+
+
+def getDustCloudIval(toon):
+    dustCloud = DustCloud.DustCloud(fBillboard=0)
+    dustCloud.setBillboardAxis(2.0)
+    dustCloud.setZ(3)
+    dustCloud.setScale(0.4)
+    dustCloud.createTrack()
+    if getattr(toon, 'laffMeter', None):
+        toon.laffMeter.color = toon.style.getBlackColor()
+    seq = Sequence(Wait(0.5), Func(dustCloud.reparentTo, toon), dustCloud.track, Func(dustCloud.destroy))
+    if getattr(toon, 'laffMeter', None):
+        seq.append(Func(toon.laffMeter.adjustFace, toon.hp, toon.maxHp))
+    return seq
+
+
+class DistributedNPCYin(DistributedNPCToonBase):
+    def __init__(self, cr):
+        DistributedNPCToonBase.__init__(self, cr)
+
+        self.pickColorGui = None
+        self.pickColorGuiDoneEvent = 'pickColorGuiDone'
+
+        self.nextCollision = 0
+
+        self.fsm = ClassicFSM.ClassicFSM(
+            'NPCYin',
+            [
+                State.State('off', self.enterOff, self.exitOff, ['pickColor']),
+                State.State('pickColor', self.enterPickColor, self.exitPickColor, ['off'])
+            ], 'off', 'off')
+
+        self.title = None
+        self.yesButton = None
+        self.noButton = None
+
+    def disable(self):
+        self.ignoreAll()
+
+        if self.pickColorGui:
+            self.pickColorGui.destroy()
+            self.pickColorGui = None
+
+        self.nextCollision = 0
+
+        DistributedNPCToonBase.disable(self)
+
+    def initToonState(self):
+        self.setAnimState('neutral', 1.05, None, None)
+        self.setPosHpr(101, 15.5, 4, -245, 0, 0)
+
+    def getCollSphereRadius(self):
+        return 1.0
+
+    def handleCollisionSphereEnter(self, collEntry):
+        self.currentTime = time.time()
+        if self.nextCollision <= self.currentTime:
+            self.fsm.request('pickColor')
+        self.nextCollision = self.currentTime + 2
+
+    def enterOff(self):
+        pass
+
+    def exitOff(self):
+        pass
+
+    def enterPickColor(self):
+        base.cr.playGame.getPlace().setState('stopped')
+        self.setChatAbsolute('', CFSpeech)
+        if base.localAvatar.style.getAnimal() != 'cat':
+            self.setChatAbsolute(TTLocalizer.YinNotCat, CFSpeech|CFTimeout)
+            self.fsm.request('off')
+            base.cr.playGame.getPlace().setState('walk')
+        elif base.localAvatar.style.headColor == 0x1a:
+            self.setChatAbsolute(TTLocalizer.YinAlreadyBlack, CFSpeech|CFTimeout)
+            self.fsm.request('off')
+            base.cr.playGame.getPlace().setState('walk')
+        else:
+            self.popupPickColorGUI()
+
+    def exitPickColor(self):
+        if self.title:
+            self.title.destroy()
+            self.title = None
+        if self.yesButton:
+            self.yesButton.destroy()
+            self.yesButton = None
+        if self.noButton:
+            self.noButton.destroy()
+            self.noButton = None
+
+    def popupPickColorGUI(self):
+        self.setChatAbsolute('', CFSpeech)
+        self.setChatAbsolute(TTLocalizer.YinPickColor, CFSpeech)
+        self.title = DirectLabel(
+            aspect2d, relief=None, text=TTLocalizer.YinTitle,
+            text_pos=(0, 0), text_fg=(1, 0, 0, 1), text_scale=0.09,
+            text_font=ToontownGlobals.getSignFont(),
+            pos=(0, 0, -0.5), text_shadow=(1, 1, 1, 1))
+
+    def doTransformation(self, avId):
+        av = self.cr.doId2do.get(avId)
+        if not av:
+            return
+        if toon.style.getAnimal() != 'cat':
+            return
+        self.dustCloudIval = getDustCloudIval(toon)
+        self.dustCloudIval.start()
+
+    def d_requestTransformation(sef):
+        self.sendUpdate('requestTransformation', [])
+        sellf.fsm.request('off')
+        base.cr.playGame.getPlace().setState('walk')
+
+    def leave(self):
+        self.setChatAbsolute('', CFSpeech)
+        sellf.fsm.request('off')
+        base.cr.playGame.getPlace().setState('walk')

@@ -6980,6 +6980,8 @@ NPCToonNames = {20000: 'Tutorial Tom',
  2018: 'Doctor Surlee',
  2019: 'Doctor Dimm',
  2020: 'Professor Prepostera',
+ 2021: 'Yin',
+ 2022: 'Yang',
  2101: 'Dentist Daniel',
  2102: 'Sheriff Sherry',
  2103: 'Sneezy Kitty',
@@ -9784,3 +9786,13 @@ InteractivePropTrackBonusTerms = {0: 'Super Toon-Up!',
  5: 'Super Squirt!',
  6: ''}
 PlayingCardUnknown = 'Card Name is unknown'
+YinTitle = 'Are you absolutely sure?'
+YinNotCat = 'Sorry, I only make cats black.'
+YinAlreadyBlack = "You're already black!"
+YinPickColor = 'Are you sure you want to be a black cat?'
+YinEnjoy = 'Enjoy! You are now permanently a black cat.'
+YangTitle = 'Are you absolutely sure?'
+YangNotBear = 'Sorry, I only make bears white.'
+YangAlreadyWhite = "You're already white!"
+YangPickColor = 'Are you sure you want to be a polar bear?'
+YangEnjoy = 'Enjoy! You are now permanently a polar bear.'
