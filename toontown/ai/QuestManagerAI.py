@@ -27,27 +27,12 @@ class QuestManagerAI:
                 npc.presentTrackChoice(avId, questId, questClass.getChoices())
                 break
             elif isinstance(questClass, Quests.DeliverGagQuest):
-                # Gag delivery quests work a bit differently
-                # since progress can be done bit by bit.
-                questList = []
                 if npc.npcId == toNpcId:
                     progress = questClass.removeGags(av)
-
-                    for i in xrange(0, len(avQuests), 5):
-                        questDesc = avQuests[i:i + 5]
-
-                        if questDesc[0] == questId:
-                            questDesc[4] += progress
-
-                        questList.append(questDesc)
-
-                    av.b_setQuests(questList)
-                    if questDesc[4] >= questClass.getNumGags():
-                        npc.completeQuest(avId, questId, rewardId)
-                        self.completeQuest(av, questId)
-                    else:
-                        npc.rejectAvatar(avId)
-                    return
+                    questDesc[4] += progress
+                    completeStatus = questClass.getCompletionStatus(av , questDesc, npc)
+                    if completeStatus == 3:
+                        completeStatus = Quests.COMPLETE
             if completeStatus == Quests.COMPLETE:
                 av.toonUp(av.maxHp)
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
