@@ -145,7 +145,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 friendId = friend[0]
                 if friendId in self.onlineToons:
                     self.sendUpdateToAvatarId(friendId, 'friendOffline', [doId])
-            self.onlineToons.remove(doId)
+            if doId in self.onlineToons:
+                self.onlineToons.remove(doId)
         self.air.dbInterface.queryObject(self.air.dbId, doId, handleToon)
 
     def clearList(self, doId):
