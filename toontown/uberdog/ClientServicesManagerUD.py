@@ -628,7 +628,6 @@ class GetAvatarsFSM(AvatarOperationFSM):
             elif wishNameState == 'REJECTED':
                 nameState = 4
 
-            print 'nameState: %s' % nameState
             potentialAvs.append([avId, name, fields['setDNAString'][0],
                                  index, nameState])
 

@@ -16,7 +16,7 @@ def getDustCloudIval(toon):
     dustCloud.setScale(0.4)
     dustCloud.createTrack()
     if getattr(toon, 'laffMeter', None):
-        toon.laffMeter.color = toon.style.getBlackColor()
+        toon.laffMeter.color = toon.style.getWhiteColor()
     seq = Sequence(Wait(0.5), Func(dustCloud.reparentTo, toon), dustCloud.track, Func(dustCloud.destroy))
     if getattr(toon, 'laffMeter', None):
         seq.append(Func(toon.laffMeter.adjustFace, toon.hp, toon.maxHp))
@@ -43,8 +43,42 @@ class DistributedNPCYang(DistributedNPCToonBase):
         self.yesButton = None
         self.noButton = None
 
+        self.buttonModels = loader.loadModel('phase_3.5/models/gui/inventory_gui')
+        self.upButton = self.buttonModels.find('**//InventoryButtonUp')
+        self.downButton = self.buttonModels.find('**/InventoryButtonDown')
+        self.rolloverButton = self.buttonModels.find('**/InventoryButtonRollover')
+
+
     def disable(self):
         self.ignoreAll()
+
+        if self.title:
+            self.title.destroy()
+            self.title = None
+
+        if self.yesButton:
+            self.yesButton.destroy()
+            self.yesButton = None
+
+        if self.noButton:
+            self.noButton.destroy()
+            self.noButton = None
+
+        if self.buttonModels:
+            self.buttonModels.removeNode()
+            self.buttonModels = None
+
+        if self.upButton:
+            self.upButton.removeNode()
+            self.upButton = None
+
+        if self.downButton:
+            self.downButton.removeNode()
+            self.downButton = None
+
+        if self.rolloverButton:
+            self.rolloverButton.removeNode()
+            self.rolloverButton = None
 
         if self.pickColorGui:
             self.pickColorGui.destroy()
@@ -75,6 +109,7 @@ class DistributedNPCYang(DistributedNPCToonBase):
 
     def enterPickColor(self):
         base.cr.playGame.getPlace().setState('stopped')
+        taskMgr.doMethodLater(15, self.leave, 'npcSleepTask-%s' % self.doId)
         self.setChatAbsolute('', CFSpeech)
         if base.localAvatar.style.getAnimal() != 'bear':
             self.setChatAbsolute(TTLocalizer.YangNotBear, CFSpeech|CFTimeout)
@@ -87,7 +122,8 @@ class DistributedNPCYang(DistributedNPCToonBase):
         else:
             self.popupPickColorGUI()
 
-    def exitPickColor(self):
+    def exitPickColor(self, task=None):
+        taskMgr.remove('npcSleepTask-%s' % self.doId)
         if self.title:
             self.title.destroy()
             self.title = None
@@ -98,42 +134,56 @@ class DistributedNPCYang(DistributedNPCToonBase):
             self.noButton.destroy()
             self.noButton = None
 
+        if task is not None:
+            return task.done
+
     def popupPickColorGUI(self):
         self.setChatAbsolute('', CFSpeech)
         self.setChatAbsolute(TTLocalizer.YangPickColor, CFSpeech)
+        base.setCellsAvailable(base.bottomCells, 0)
+
         self.title = DirectLabel(
             aspect2d, relief=None, text=TTLocalizer.YangTitle,
             text_pos=(0, 0), text_fg=(1, 0, 0, 1), text_scale=0.09,
             text_font=ToontownGlobals.getSignFont(),
-            pos=(0, 0, -0.5), text_shadow=(1, 1, 1, 1))
+            pos=(0, 0, -0.55), text_shadow=(1, 1, 1, 1))
         self.yesButton = DirectButton(
             relief=None, text=TTLocalizer.lYes,
             text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23),
             text_scale=0.8, image=(self.upButton, self.downButton, self.rolloverButton),
-            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11), pos=(-0.15, 0, -0.75), scale=0.15,
+            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11), pos=(-0.275, 0, -0.75), scale=0.15,
             command=lambda self=self: self.d_requestTransformation())
         self.noButton = DirectButton(
             relief=None, text=TTLocalizer.lNo,
             text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23),
             text_scale=0.8, image=(self.upButton, self.downButton, self.rolloverButton),
-            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11), pos=(0.15, 0, -0.75), scale=0.15,
+            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11), pos=(0.275, 0, -0.75), scale=0.15,
             command=lambda self=self: self.leave())
 
     def doTransformation(self, avId):
         av = self.cr.doId2do.get(avId)
         if not av:
             return
-        if toon.style.getAnimal() != 'bear':
+        if av.style.getAnimal() != 'bear':
             return
-        self.dustCloudIval = getDustCloudIval(toon)
+        self.dustCloudIval = getDustCloudIval(av)
         self.dustCloudIval.start()
 
-    def d_requestTransformation(sef):
+        self.setChatAbsolute('', CFSpeech)
+        self.setChatAbsolute(TTLocalizer.YangEnjoy, CFSpeech|CFTimeout)
+        base.setCellsAvailable(base.bottomCells, 1)
+
+    def d_requestTransformation(self):
         self.sendUpdate('requestTransformation', [])
-        sellf.fsm.request('off')
+        self.fsm.request('off')
         base.cr.playGame.getPlace().setState('walk')
 
-    def leave(self):
+    def leave(self, task=None):
         self.setChatAbsolute('', CFSpeech)
-        sellf.fsm.request('off')
+        self.setChatAbsolute(TTLocalizer.YangGoodbye, CFSpeech|CFTimeout)
+        self.fsm.request('off')
         base.cr.playGame.getPlace().setState('walk')
+        base.setCellsAvailable(base.bottomCells, 1)
+
+        if task is not None:
+            return task.done
