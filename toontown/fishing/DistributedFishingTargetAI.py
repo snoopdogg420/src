@@ -44,7 +44,7 @@ class DistributedFishingTargetAI(DistributedNodeAI):
         return [0, self.angle, self.targetRadius, self.time, globalClockDelta.getRealNetworkTime()]
 
     def updateState(self):
-        if not self.pond in self.air.doId2do:
+        if not self.pondId in self.air.doId2do:
             return
         self.b_setPosHpr(self.targetRadius * math.cos(self.angle) + self.centerPoint[0], self.targetRadius * math.sin(self.angle) + self.centerPoint[1], self.centerPoint[2], 0, 0, 0)
         self.angle = random.randrange(359)
