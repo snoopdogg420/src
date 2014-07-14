@@ -235,6 +235,10 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
+# Compress the PYD file with UPX:
+cmd = '../tools/upx.exe -6 -k build/{0}'.format(output)
+os.system(cmd)
+
 # ...and encrypt the product:
 os.chdir('build')
 if sys.platform == 'win32':
