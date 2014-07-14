@@ -14,6 +14,7 @@ from toontown.makeatoon.NameGenerator import NameGenerator
 from toontown.toon.ToonDNA import ToonDNA
 import urllib2
 from toontown.toonbase import TTLocalizer
+import hmac
 
 
 # Import from PyCrypto only if we are using a database that requires it. This
@@ -1015,6 +1016,9 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         # For processing name patterns.
         self.nameGenerator = NameGenerator()
 
+        #Temp HMAC key
+        self.key = 'cGFzY2FsYW5kY29keWFyZXNvZnVja2luZ2hvdGl0aXNpbnNhbmU='
+
         # Instantiate our account DB interface:
         if accountDBType == 'developer':
             self.accountDB = DeveloperAccountDB(self)
@@ -1069,10 +1073,21 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         self.account2fsm[sender] = fsmtype(self, sender)
         self.account2fsm[sender].request('Start', *args)
 
-    def login(self, cookie):
+    def login(self, cookie, authKey):
         self.notify.debug('Received login cookie %r from %d' % (cookie, self.air.getMsgSender()))
 
         sender = self.air.getMsgSender()
+
+        # Time to check this login to see if its authentic
+        digest_maker = hmac.new(self.key)
+        digest_maker.update(cookie)
+        serverKey = digest_maker.hexdigest()
+        if serverKey == authKey:
+            # This login is authentic!
+            pass
+        else:
+            # This login is not authentic.
+            self.killConnection(sender, ' ')
 
         if sender >> 32:
             self.killConnection(sender, 'Client is already logged in.')
