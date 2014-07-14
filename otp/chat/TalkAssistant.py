@@ -12,6 +12,7 @@ import time
 from otp.chat.TalkGlobals import *
 from otp.chat.ChatGlobals import *
 from otp.nametag.NametagConstants import CFSpeech, CFTimeout, CFThought
+from toontown.chat.TTWhiteList import TTWhiteList
 ThoughtPrefix = '.'
 
 class TalkAssistant(DirectObject.DirectObject):
@@ -31,6 +32,7 @@ class TalkAssistant(DirectObject.DirectObject):
         self.lastWhisperPlayerId = None
         self.lastWhisper = None
         self.SCDecoder = SCDecoders
+        self.whiteList = TTWhiteList()
         return
 
     def clearHistory(self):
@@ -630,6 +632,22 @@ class TalkAssistant(DirectObject.DirectObject):
         return error
 
     def sendWhisperTalk(self, message, receiverAvId):
+
+        modifications = []
+        words = message.split(' ')
+        offset = 0
+        WantWhitelist = config.GetBool('want-whitelist', 1)
+        for word in words:
+            if word and not self.whiteList.isWord(word) and WantWhitelist:
+                modifications.append((offset, offset+len(word)-1))
+            offset += len(word) + 1
+
+        cleanMessage = message
+        for modStart, modStop in modifications:
+            cleanMessage = cleanMessage[:modStart] + '*'*(modStop-modStart+1) + cleanMessage[modStop+1:]
+
+        message, scrubbed = base.localAvatar.scrubTalk(cleanMessage, modifications)
+
         base.cr.ttiFriendsManager.sendUpdate('sendTalkWhisper', [receiverAvId, message])
 
     def sendAccountTalk(self, message, receiverAccount):
