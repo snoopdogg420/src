@@ -28,10 +28,18 @@ class QuestManagerAI:
                 break
             elif isinstance(questClass, Quests.DeliverGagQuest):
                 if npc.npcId == toNpcId:
+                    questList = []
                     progress = questClass.removeGags(av)
-                    questDesc[4] += progress
-                    if questDesc[4] >= questClass.getNumGags():
-                        completeStatus = Quests.COMPLETE
+                    for i in xrange(0, len(avQuests), 5):
+                        questDesc = avQuests[i:i + 5]
+                        if questDesc[0] == questId:
+                            questDesc[4] += progress
+                            if questDesc[4] >= questClass.getNumGags():
+                                completeStatus = Quests.COMPLETE
+                        questList.append(questDesc)
+                    av.b_setQuests(questList)
+                    if completeStatus != Quests.COMPLETE:
+                        continue
             if completeStatus == Quests.COMPLETE:
                 av.toonUp(av.maxHp)
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
