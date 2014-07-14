@@ -5398,3 +5398,8 @@ def getZone():
     invoker = spellbook.getInvoker()
     zone = invoker.zoneId
     return 'ZoneID: %s' % (zone)
+
+@magicWord(category=CATEGORY_MODERATOR)
+def warn(message):
+    # TODO: Make it add a strike to the user's account.
+    pass

@@ -235,12 +235,21 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
+# Compress the PYD file with UPX:
+cmd = '../tools/upx.exe -6 -k build/{0}'.format(output)
+os.system(cmd)
+
 # ...and encrypt the product:
 os.chdir('build')
 if sys.platform == 'win32':
     os.system('..\\infinitecipher.exe {0} GameData.bin'.format(output))
 else:
     os.system('../infinitecipher {0} GameData.bin'.format(output))
+
+# Copy the necessary patcher includes:
+for include in patcherIncludes:
+    if os.path.exists(os.path.join('..', include)):
+        shutil.copyfile(os.path.join('..', include), include)
 
 # Create a 'dist' directory that will contain everything that will be uploaded
 # to the CDN:

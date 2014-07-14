@@ -15,7 +15,7 @@ class ToontownLoadingScreen:
         ToontownGlobals.LoopyLane : 'phase_3.5/maps/loading/ttc_ll.jpg',
         ToontownGlobals.PunchlinePlace : 'phase_3.5/maps/loading/ttc_pp.jpg',
         ToontownGlobals.DonaldsDock : 'phase_3.5/maps/loading/dd.jpg',
-        ToontownGlobals.BarnacleBoulevard : 'phase_3.5/maps/loading/dd__bb.jpg',
+        ToontownGlobals.BarnacleBoulevard : 'phase_3.5/maps/loading/dd_bb.jpg',
         ToontownGlobals.SeaweedStreet : 'phase_3.5/maps/loading/dd_ss.jpg',
         ToontownGlobals.LighthouseLane : 'phase_3.5/maps/loading/dd_ll.jpg',
         ToontownGlobals.DaisyGardens : 'phase_3.5/maps/loading/dg.jpg',

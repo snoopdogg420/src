@@ -140,8 +140,8 @@ class QuestManagerAI:
             questClass = Quests.getQuest(questId)
             if questId == completeQuestId:
                 av.removeQuest(questId)
-                self.avatarProgressTier(av)
                 self.giveReward(av, questId, rewardId)
+                self.avatarProgressTier(av)
                 break
 
     def giveReward(self, av, questId, rewardId):

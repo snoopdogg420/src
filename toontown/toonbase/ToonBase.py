@@ -221,6 +221,7 @@ class ToonBase(OTPBase.OTPBase):
         self.slowQuietZone = self.config.GetBool('slow-quiet-zone', 0)
         self.slowQuietZoneDelay = self.config.GetFloat('slow-quiet-zone-delay', 5)
         self.killInterestResponse = self.config.GetBool('kill-interest-response', 0)
+        self.forceSkipTutorial = self.config.GetBool('force-skip-tutorial', 0)
         tpMgr = TextPropertiesManager.getGlobalPtr()
         WLDisplay = TextProperties()
         WLDisplay.setSlant(0.3)
@@ -437,14 +438,7 @@ class ToonBase(OTPBase.OTPBase):
             self.cleanupDownloadWatcher()
         else:
             self.acceptOnce('launcherAllPhasesComplete', self.cleanupDownloadWatcher)
-        gameServer = base.config.GetString('game-server', '')
-        if gameServer:
-            self.notify.info('Using game-server from Configrc: %s ' % gameServer)
-        elif launcherServer:
-            gameServer = launcherServer
-            self.notify.info('Using gameServer from launcher: %s ' % gameServer)
-        else:
-            gameServer = 'localhost'
+        gameServer = os.environ.get('TTI_GAMESERVER', 'localhost')
         serverPort = base.config.GetInt('server-port', 7198)
         serverList = []
         for name in gameServer.split(';'):

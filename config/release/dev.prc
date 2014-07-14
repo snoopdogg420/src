@@ -197,6 +197,7 @@ want-parties #f
 want-cogdominiums #f
 want-boarding-groups #t
 want-achievements #f
+want-whitelist #f
 
 # Optional...
 show-population #f
@@ -214,6 +215,7 @@ want-instant-parties #t
 
 # Temporary...
 want-old-fireworks #t
+force-skip-tutorial #t
 
 # Phone quest...
 want-phone-quest #t
