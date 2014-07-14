@@ -30,8 +30,7 @@ class QuestManagerAI:
                 if npc.npcId == toNpcId:
                     progress = questClass.removeGags(av)
                     questDesc[4] += progress
-                    completeStatus = questClass.getCompletionStatus(av , questDesc, npc)
-                    if completeStatus == 3:
+                    if questDesc[4] >= questClass.getNumGags():
                         completeStatus = Quests.COMPLETE
             if completeStatus == Quests.COMPLETE:
                 av.toonUp(av.maxHp)
