@@ -57,6 +57,8 @@ if blacklist:
 
 
 def judgeName(name):
+    if not name:
+        return False
     if blacklist:
         for namePart in name.split(' '):
             namePart = namePart.lower()
