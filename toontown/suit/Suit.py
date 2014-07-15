@@ -195,7 +195,6 @@ def loadTutorialSuit():
 
 
 def loadSuits(level):
-    loadModels()
     loadDialog(level)
 
 
