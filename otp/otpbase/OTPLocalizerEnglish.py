@@ -318,6 +318,7 @@ FriendSecretGettingSecret = 'Getting True Friend Code. . .'
 FriendSecretGotSecret = "Here is your new True Friend Code.  Be sure to write it down!\n\nYou may give this True Friend Code to one person only.  Once someone types in your True Friend Code, it will not work for anyone else.  If you want to give a True Friend Code to more than one person, get another True Friend Code.\n\nThe True Friend Code will only work for the next two days.  Your friend will have to type it in before it goes away, or it won't work.\n\nYour True Friend Code is:"
 FriendSecretTooMany = "Sorry, you can't have any more True Friend Codes today.  You've already had more than your fair share!\n\nTry again tomorrow."
 FriendSecretTryingSecret = 'Trying True Friend Code. . .'
+FriendSecretNotImplemented = 'True Friends has not been implemented yet!'
 FriendSecretEnteredSecretSuccess = 'You are now True Friends with %s!'
 FriendSecretTimeOut = 'Sorry, secrets are not working right now.'
 FriendSecretEnteredSecretUnknown = "That's not anyone's True Friend Code.  Are you sure you spelled it correctly?\n\nIf you did type it correctly, it may have expired.  Ask your friend to get a new True Friend Code for you (or get a new one yourself and give it to your friend)."
