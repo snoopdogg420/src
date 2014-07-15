@@ -524,7 +524,8 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
     def showSmallTitle(self):
         if self.titleText:
             self.titleText.hide()
-        self.smallTitleText.show()
+        if self.smallTitleText:
+            self.smallTitleText.show()
 
     def hideSmallTitleText(self):
         if self.smallTitleText:
