@@ -297,18 +297,16 @@ class ToonBase(OTPBase.OTPBase):
             searchPath.appendDirectory(Filename('resources/phase_3/etc'))
         searchPath.appendDirectory(Filename('/phase_3/etc'))
 
-        for filename in ['toonmono.cur', 'icon.ico']:
-            p3filename = Filename(filename)
-            found = vfs.resolveFilename(p3filename, searchPath)
-            if not found:
-                return # Can't do anything past this point.
-
-            with open(os.path.join(tempdir, filename), 'wb') as f:
-                f.write(vfs.readFile(p3filename, False))
+        filename = Filename('toonmono.cur')
+        found = vfs.resolveFilename(filename, searchPath)
+        if not found:
+            return
+        with open(os.path.join(tempdir, filename), 'wb') as f:
+            f.write(vfs.readFile(filename, False))
 
         wp = WindowProperties()
+        wp.setIconFilename('icon.ico')
         wp.setCursorFilename(Filename.fromOsSpecific(os.path.join(tempdir, 'toonmono.cur')))
-        wp.setIconFilename(Filename.fromOsSpecific(os.path.join(tempdir, 'icon.ico')))
         self.win.requestProperties(wp)
 
     def addCullBins(self):
