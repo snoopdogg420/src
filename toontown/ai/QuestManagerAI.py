@@ -199,24 +199,29 @@ class QuestManagerAI:
 
     def toonCaughtFishingItem(self, av):
         flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        hasPickedQuest = 0
+        questList = []
+        hasPickedQuest = False
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
+            if hasPickedQuest:
+                questList.append(questDesc)
+                continue
             if isinstance(questClass, Quests.RecoverItemQuest):
-                if not hasPickedQuest:
-                    if isinstance(questClass, Quests.RecoverItemQuest):
-                        if questClass.getHolder() == Quests.AnyFish:
-                            if not questClass.getCompletionStatus(av, questDesc) == Quests.COMPLETE:
-                                minChance = questClass.getPercentChance()
-                                chance = random.randint(minChance - 40, 100)
-                                if chance <= minChance:
-                                    questDesc[4] += 1
-                                    hasPickedQuest = questClass
+                if not hasattr(questClass, 'getItem'):
+                    questList.append(questDesc)
+                    continue
+                if questClass.getHolder() == Quests.AnyFish:
+                    if not questClass.getCompletionStatus(av, questDesc) == Quests.COMPLETE:
+                        baseChance = questClass.getPercentChance()
+                        amountRemaining = questClass.getNumItems() - questDesc[4]
+                        chance = Quests.calcRecoverChance(amountRemaining, baseChance)
+                        if chance >= baseChance:
+                            questDesc[4] += 1
+                            hasPickedQuest = True
             questList.append(questDesc)
         av.b_setQuests(questList)
-        if (hasPickedQuest):
+        if hasPickedQuest:
             return questClass.getItem()
         else:
             return -1

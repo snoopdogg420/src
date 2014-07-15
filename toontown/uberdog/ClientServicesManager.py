@@ -10,7 +10,7 @@ class ClientServicesManager(DistributedObjectGlobal):
     # --- LOGIN LOGIC ---
     def performLogin(self, doneEvent):
         self.doneEvent = doneEvent
-        key = 'cGFzY2FsYW5kY29keWFyZXNvZnVja2luZ2hvdGl0aXNpbnNhbmU='
+        key = 'Z29vZ2xlc2VhcmNodHV0aXR1'
 
         token = self.cr.playToken or 'dev'
 
