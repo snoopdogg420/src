@@ -66,7 +66,6 @@ def loadModels():
         print 'Already preloaded avatars..'
 
 loadModels()
-print PreloadHeads
 
 class ToonHead(Actor.Actor):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonHead')
