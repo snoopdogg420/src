@@ -838,7 +838,6 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
         else:
             self.__showCastGui()
         self.track.start()
-        base.localAvatar.laffMeter.hide()
 
     def __appendBingoMethod(self, interval, callback):
         interval.append(Func(callback))
@@ -1035,7 +1034,6 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
         if self.localToonFishing:
             self.track.append(Func(self.fsm.requestFinalState))
         self.track.start()
-        base.localAvatar.laffMeter.show()
 
     def exitLeaving(self):
         self.track.pause()
