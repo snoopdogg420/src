@@ -305,7 +305,7 @@ class ToonBase(OTPBase.OTPBase):
             f.write(vfs.readFile(filename, False))
 
         wp = WindowProperties()
-        wp.setIconFilename('icon.ico')
+        wp.setIconFilename(Filename.fromOsSpecific('icon.ico'))
         wp.setCursorFilename(Filename.fromOsSpecific(os.path.join(tempdir, 'toonmono.cur')))
         self.win.requestProperties(wp)
 
