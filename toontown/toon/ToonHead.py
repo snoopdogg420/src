@@ -48,6 +48,26 @@ DogMuzzleDict = {'dls': '/models/char/dogMM_Shorts-headMuzzles-',
  'dsl': '/models/char/dogSS_Shorts-headMuzzles-',
  'dll': '/models/char/dogLL_Shorts-headMuzzles-'}
 
+PreloadHeads = {}
+
+def loadModels():
+    global PreloadHeads
+    if not PreloadHeads:
+        print 'Preloading avatars...'
+
+        for key in HeadDict.keys():
+            fileRoot = HeadDict[key]
+            PreloadHeads['phase_3' + fileRoot + '1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            PreloadHeads['phase_3' + fileRoot + '500'] = loader.loadModel('phase_3' + fileRoot + '500')
+            PreloadHeads['phase_3' + fileRoot + '250'] = loader.loadModel('phase_3' + fileRoot + '250')
+
+        print 'Done preloading avatars.'
+    else:
+        print 'Already preloaded avatars..'
+
+loadModels()
+print PreloadHeads
+
 class ToonHead(Actor.Actor):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonHead')
     EyesOpen = loader.loadTexture('phase_3/maps/eyes.jpg', 'phase_3/maps/eyes_a.rgb')
@@ -223,6 +243,7 @@ class ToonHead(Actor.Actor):
         return
 
     def generateToonHead(self, copy, style, lods, forGui = 0):
+        global PreloadHeads
         headStyle = style.head
         fix = None
         if headStyle == 'dls':
@@ -360,7 +381,8 @@ class ToonHead(Actor.Actor):
         else:
             ToonHead.notify.error('unknown head style: %s' % headStyle)
         if len(lods) == 1:
-            self.loadModel('phase_3' + filePrefix + lods[0], 'head', 'lodRoot', copy)
+            filepath = 'phase_3' + filePrefix + lods[0]
+            self.loadModel(PreloadHeads[filepath], 'head', 'lodRoot', copy = True)
             if not forGui:
                 pLoaded = self.loadPumpkin(headStyle[1], None, copy)
                 self.loadSnowMan(headStyle[1], None, copy)
