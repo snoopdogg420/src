@@ -633,13 +633,22 @@ class Suit(Avatar.Avatar):
         if base.config.GetBool('want-new-cogs', 0):
             if cogExists(filePrefix + 'zero.bam'):
                 filepath = 'phase_3.5' + filePrefix + 'zero'
-                self.loadModel(Preloaded[filepath], copy = True)
+                if filepath in Preloaded:
+                    self.loadModel(Preloaded[filepath], copy = True)
+                else:
+                    self.loadModel(filepath)
             else:
                 filepath = 'phase_3.5' + filePrefix + 'mod'
-                self.loadModel(Preloaded[filepath], copy = True)
+                if filepath in Preloaded:
+                    self.loadModel(Preloaded[filepath], copy = True)
+                else:
+                    self.loadModel(filepath)
         else:
             filepath = 'phase_3.5' + filePrefix + 'mod'
-            self.loadModel(Preloaded[filepath], copy = True)
+            if filepath in Preloaded:
+                self.loadModel(Preloaded[filepath], copy = True)
+            else:
+                self.loadModel(filepath)
         self.loadAnims(animDict)
         self.setSuitClothes()
 
@@ -779,8 +788,11 @@ class Suit(Avatar.Avatar):
         else:
             filePrefix, phase = ModelDict[self.style.body]
         filepath = 'phase_' + str(phase) + filePrefix + 'heads'
-        headModel = NodePath('cog_head')
-        Preloaded[filepath].copyTo(headModel) #loader.loadModel('phase_' + str(phase) + filePrefix + 'heads')
+        if filepath in Preloaded:
+            headModel = NodePath('cog_head')
+            Preloaded[filepath].copyTo(headModel)
+        else:
+            headModel = loader.loadModel(filepath)
         headReferences = headModel.findAllMatches('**/' + headType)
         for i in xrange(0, headReferences.getNumPaths()):
             if base.config.GetBool('want-new-cogs', 0):
