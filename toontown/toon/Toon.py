@@ -2268,7 +2268,6 @@ class Toon(Avatar.Avatar, ToonHead):
         return track
 
     def doToonColorScale(self, scale, lerpTime, keepDefault = 0):
-        print 'DOING TOON COLOR SCALE'
         if keepDefault:
             self.defaultColorScale = scale
         if scale == None:
@@ -2655,8 +2654,7 @@ class Toon(Avatar.Avatar, ToonHead):
         elif effect == ToontownGlobals.CENoColor:
             return self.__doToonColor(VBase4(1, 1, 1, 1), lerpTime)
         elif effect == ToontownGlobals.CEInvisible:
-            print 'Toon tried doing invisible effect. This effect is currently disabled.'
-            #return self.__doPartsColorScale(VBase4(1, 1, 1, 0), lerpTime)
+            return self.__doPartsColorScale(VBase4(1, 1, 1, 0), lerpTime)
         elif effect == ToontownGlobals.CEPumpkin:
             return self.__doPumpkinHeadSwitch(lerpTime, toPumpkin=True)
         elif effect == ToontownGlobals.CEBigWhite:
