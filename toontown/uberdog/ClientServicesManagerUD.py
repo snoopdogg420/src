@@ -63,6 +63,8 @@ def judgeName(name):
     if blacklist:
         for namePart in name.split(' '):
             namePart = namePart.lower()
+            if len(namePart) <= 0:
+                return False
             for banned in blacklist.get(namePart[0], []):
                 if banned in namePart:
                     return False
