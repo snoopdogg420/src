@@ -204,7 +204,7 @@ class QuestManagerAI:
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
-            if fishingItem:
+            if fishingItem != -1:
                 questList.append(questDesc)
                 continue
             if isinstance(questClass, Quests.RecoverItemQuest):
