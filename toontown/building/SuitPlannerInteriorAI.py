@@ -126,7 +126,7 @@ class SuitPlannerInteriorAI:
         return lvlList
 
     def __setupSuitInfo(self, suit, bldgTrack, suitLevel, suitType):
-        suitName, skeleton, v2, waiter = simbase.air.suitInvasionManager.getInvadingCog()
+        suitName, suitDept, skeleton, v2, waiter = simbase.air.suitInvasionManager.getInvadingCog()
         if suitName and self.respectInvasions:
             suitType = SuitDNA.getSuitType(suitName)
             bldgTrack = SuitDNA.getSuitDept(suitName)
@@ -147,6 +147,8 @@ class SuitPlannerInteriorAI:
         newSuit.generateWithRequired(suitZone)
         if v2:
             newSuit.b_setSkeleRevives(1)
+        if waiter:
+            newSuit.b_setWaiter(1)
         newSuit.node().setName('suit-%s' % newSuit.doId)
         return newSuit
 
