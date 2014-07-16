@@ -200,11 +200,11 @@ class QuestManagerAI:
     def toonCaughtFishingItem(self, av):
         flattenedQuests = av.getQuests()
         questList = []
-        hasPickedQuest = False
+        fishingItem = -1
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
-            if hasPickedQuest:
+            if fishingItem:
                 questList.append(questDesc)
                 continue
             if isinstance(questClass, Quests.RecoverItemQuest):
@@ -218,13 +218,10 @@ class QuestManagerAI:
                         chance = Quests.calcRecoverChance(amountRemaining, baseChance)
                         if chance >= baseChance:
                             questDesc[4] += 1
-                            hasPickedQuest = True
+                            fishingItem = questClass.getItem()
             questList.append(questDesc)
         av.b_setQuests(questList)
-        if hasPickedQuest:
-            return questClass.getItem()
-        else:
-            return -1
+        return fishingItem
 
     def hasTailorClothingTicket(self, av, npc):
         flattenedQuests = av.getQuests()
