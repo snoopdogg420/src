@@ -75,7 +75,7 @@ want-outdoor-zone #t
 want-golf-zone #f
 
 # Cog headquarters...
-want-cog-headquarters #f
+want-cog-headquarters #t
 want-sellbot-headquarters #t
 want-cashbot-headquarters #t
 want-lawbot-headquarters #t
