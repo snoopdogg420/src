@@ -737,6 +737,7 @@ dclass DistributedSuitBase : DistributedObject {
   setDNAString(blob) required broadcast ram;
   setLevelDist(int16) required broadcast ram;
   setBrushOff(int16) broadcast;
+  setWaiter(uint8) broadcast ram;
   setSkelecog(uint8) required broadcast ram;
   setSkeleRevives(uint8) required broadcast ram;
   setHP(int16) required broadcast ram;
