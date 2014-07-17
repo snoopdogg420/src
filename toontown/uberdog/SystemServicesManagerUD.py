@@ -24,12 +24,9 @@ class SystemServicesManagerUD(DistributedObjectGlobalUD):
 
     def gameWhisper(self, msg, channels):
         system = simbase.air.dclassesByName['SystemServicesManagerUD']
-        for channel in channels:
-            dg = system.aiFormatUpdate('gameWhisper', 4821, 4821,
-                                                    channel,
-                                                    [msg, channels])
-            simbase.air.send(dg)
-        #for doId, do in simbase.air.doId2do.items():
-        #    print doId, do
-        #    if isinstance(do, DistributedPlayerUD):
-        #        self.sendUpdateToAvatarId(doId, 'setSystemMessage', [0, msg])
+        channel = channels[0]
+        print 'Sending one to: %s' % channel
+        dg = system.aiFormatUpdate('gameWhisper', 4821, 4821,
+                                                channel,
+                                                [msg, channels])
+        simbase.air.send(dg)

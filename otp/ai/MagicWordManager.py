@@ -33,8 +33,7 @@ class MagicWordManager(DistributedObject.DistributedObject):
             magicWord = magicWord[1:]
             targetId = target.doId
         if 'game' in str(magicWord):
-            for shard in base.cr.activeDistrictMap.values():
-                magicWord += ' %s' % shard.doId + ' '
+            magicWord += ' %s' % base.localAvatar.parentId + ' '
             self.sendUpdate('sendMagicWord', [magicWord, targetId])
         else:
             self.sendUpdate('sendMagicWord', [magicWord, targetId])

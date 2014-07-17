@@ -10,6 +10,7 @@ class SystemServicesManagerAI(DistributedObjectGlobalAI):
         DistributedObjectGlobalAI.announceGenerate(self)
     
     def gameWhisper(self, msg, shards):
-        for doId, do in simbase.air.doId2do.items():
-            if 'DistributedToonAI' in str(simbase.air.doId2do[doId]):
-                do.sendUpdate('setSystemMessage', [0, msg])
+        toDo = []
+        for obj in simbase.air.doId2do.items():
+            if 'DistributedToonAI' in str(simbase.air.doId2do[obj[0]]):
+                    obj[1].sendUpdate('setSystemMessage', [0, msg])
