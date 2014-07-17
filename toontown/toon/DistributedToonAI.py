@@ -5402,4 +5402,4 @@ def getZone():
 @magicWord(category=CATEGORY_MODERATOR)
 def warn(message):
     # TODO: Make it add a strike to the user's account.
-    pass
+    return 'Not implemented'

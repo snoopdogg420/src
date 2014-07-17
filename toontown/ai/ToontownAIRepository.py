@@ -86,6 +86,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.cogSuitMessageSent = False
 
     def createManagers(self):
+        self.ssm = simbase.air.generateGlobalObject(OTP_DO_ID_SYSTEM_SERVICES_MANAGER, 'SystemServicesManager')
         self.timeManager = TimeManagerAI(self)
         self.timeManager.generateWithRequired(2)
         self.magicWordManager = MagicWordManagerAI(self)
