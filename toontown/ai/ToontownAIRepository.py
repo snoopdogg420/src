@@ -81,6 +81,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.wantTrackClsends = self.config.GetBool('want-track-clsends', False)
         self.wantAchievements = self.config.GetBool('want-achievements', True)
         self.wantYinYang = self.config.GetBool('want-yin-yang', False)
+        self.baseXpMultiplier = self.config.GetFloat('base-xp-multiplier', 1.0)
 
         self.cogSuitMessageSent = False
 

@@ -36,7 +36,6 @@ hardware-animated-vertices #t
 preload-avatars #t
 sync-video #f
 smooth-lag 0.4
-ai-sleep 0.01
 
 # Coverage
 want-pstats 0

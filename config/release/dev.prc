@@ -42,7 +42,6 @@ hardware-animated-vertices #t
 preload-avatars #t
 sync-video #f
 smooth-lag 0.4
-ai-sleep 0.01
 
 # Coverage
 want-pstats 0
@@ -76,7 +75,7 @@ want-outdoor-zone #t
 want-golf-zone #f
 
 # Cog headquarters...
-want-cog-headquarters #f
+want-cog-headquarters #t
 want-sellbot-headquarters #t
 want-cashbot-headquarters #t
 want-lawbot-headquarters #t
@@ -217,6 +216,7 @@ want-instant-parties #t
 # Temporary...
 want-old-fireworks #t
 force-skip-tutorial #t
+base-xp-multiplier 2.0
 
 # Phone quest...
 want-phone-quest #t

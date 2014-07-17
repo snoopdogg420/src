@@ -18,6 +18,7 @@ class DistributedSuitBaseAI(DistributedAvatarAI.DistributedAvatarAI, SuitBase.Su
         self.zoneId = 0
         self.dna = SuitDNA.SuitDNA()
         self.virtual = 0
+        self.waiter = 0
         self.skeleRevives = 0
         self.maxSkeleRevives = 0
         self.reviveFlag = 0
@@ -181,3 +182,16 @@ class DistributedSuitBaseAI(DistributedAvatarAI.DistributedAvatarAI, SuitBase.Su
 
     def isVirtual(self):
         return self.getVirtual()
+
+    def setWaiter(self, flag):
+        SuitBase.SuitBase.setWaiter(self, flag)
+
+    def d_setWaiter(self, flag):
+        self.sendUpdate('setWaiter', [flag])
+
+    def b_setWaiter(self, flag):
+        self.setWaiter(flag)
+        self.d_setWaiter(flag)
+
+    def getWaiter(self):
+        return self.waiter

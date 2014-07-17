@@ -29,11 +29,12 @@ class SuitInvasionManagerAI:
 
         if currentInvadingSuit == 'any':
             if currentInvadingDept in suitDepts:
-                currentInvadingSuit = getRandomSuitByDept(currentInvadingDept)
+                currentInvadingSuit = None
             else:
                 currentInvadingSuit = None
+                currentInvadingDept = None
 
-        return (currentInvadingSuit, self.isSkelecog,
+        return (currentInvadingSuit, currentInvadingDept, self.isSkelecog,
                 self.isV2, self.isWaiter)
 
     def newInvasion(self, name='any', dept='any', skelecog=0, v2=0, waiter=0):
