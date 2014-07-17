@@ -6,10 +6,7 @@ from pandac.PandaModules import *
 class SystemServicesManagerAI(DistributedObjectGlobalAI):
     notify = directNotify.newCategory('SystemServicesManager')
     
-    def announceGenerate(self):
-        DistributedObjectGlobalAI.announceGenerate(self)
-    
-    def gameWhisper(self, msg, shards):
+    def systemMessage(self, msg, shards):
         for obj in simbase.air.doId2do.items():
             if 'DistributedToonAI' in str(simbase.air.doId2do[obj[0]]):
                     obj[1].sendUpdate('setSystemMessage', [0, msg])

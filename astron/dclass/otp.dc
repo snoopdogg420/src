@@ -5,7 +5,7 @@ from direct.distributed import DistributedCartesianGrid/AI
 from direct.distributed import DistributedCamera/AI/OV
 from otp.distributed import Account/AI/UD
 from otp.ai import TimeManager/AI
-from otp.ai import MagicWordManager/AI/UD
+from otp.ai import MagicWordManager/AI
 from otp.avatar import DistributedAvatar/AI/UD
 from otp.avatar import DistributedPlayer/AI
 from otp.friends import FriendManager/AI

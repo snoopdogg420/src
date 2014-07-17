@@ -552,5 +552,3 @@ class DistributedToonUD(DistributedObjectUD):
     
     def setAchievements(self, achievements):
         pass
-
-

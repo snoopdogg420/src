@@ -18,7 +18,6 @@ class MagicWordManager(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.disable(self)
 
     def handleMagicWord(self, magicWord):
-        stupidShittyShardArray = []
         if not self.cr.wantMagicWords:
             return
 
@@ -31,7 +30,7 @@ class MagicWordManager(DistributedObject.DistributedObject):
         if magicWord.startswith('~'):
             target = base.localAvatar
             magicWord = magicWord[1:]
-            targetId = target.doId
+        targetId = target.doId
         self.sendUpdate('sendMagicWord', [magicWord, targetId])
         if target == base.localAvatar:
             response = spellbook.process(base.localAvatar, target, magicWord)

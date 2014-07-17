@@ -3282,7 +3282,7 @@ dclass ClientServicesManager : DistributedObjectGlobal {
 };
 
 dclass SystemServicesManager : DistributedObjectGlobal {
-  gameWhisper(string Message, uint32);
+  systemMessage(string message, uint32 parentId);
 };
 
 
