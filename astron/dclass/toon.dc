@@ -203,6 +203,7 @@ from toontown.racing import DistributedLeaderBoard/AI
 from toontown.racing import DistributedGag/AI
 from toontown.racing import DistributedProjectile/AI
 from toontown.racing.DistributedStartingBlock/AI import DistributedViewingBlock/AI
+from toontown.uberdog.SystemServicesManager/AI/UD import SystemServicesManager/AI/UD
 from toontown.uberdog.ClientServicesManager/UD import ClientServicesManager/UD
 from toontown.uberdog.DistributedDeliveryManager/AI/UD import DistributedDeliveryManager/AI/UD
 from toontown.uberdog.DistributedDataStoreManager/AI/UD import DistributedDataStoreManager/AI/UD
@@ -3279,6 +3280,11 @@ dclass ClientServicesManager : DistributedObjectGlobal {
 
   chooseAvatar(uint32 avId) clsend;
 };
+
+dclass SystemServicesManager : DistributedObjectGlobal {
+  gameWhisper(string Message, uint32 []);
+};
+
 
 dclass RATManager : DistributedObjectGlobal {
 };

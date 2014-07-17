@@ -5402,4 +5402,19 @@ def getZone():
 @magicWord(category=CATEGORY_MODERATOR)
 def warn(message):
     # TODO: Make it add a strike to the user's account.
-    pass
+    return 'Not implemented'
+    
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int, int, int, int, int])
+def game(msg, shard1=0, shard2=0, shard3=0, shard4=0, shard5=0, shard6=0,):
+    #Send a whisper to the whole game
+    shardList = [shard1, shard2, shard3, shard4, shard5, shard6]
+    channels = []
+    for shard in shardList:
+        if shard:
+            channels.append(shard)
+    system = simbase.air.dclassesByName['SystemServicesManagerAI']
+    dg = system.aiFormatUpdate('gameWhisper', 4821, 4821,
+                                            1000000,
+                                            [msg, channels])
+    simbase.air.send(dg)
+    
