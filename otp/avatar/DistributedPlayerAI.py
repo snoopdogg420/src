@@ -150,7 +150,7 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
 def system(msg):
     """
-    Send a whisper to the whole game
+    broadcast a <message> to the game server.
     """
     target = spellbook.getTarget()
     channel = simbase.air.ourChannel
@@ -162,10 +162,10 @@ def system(msg):
                                             [message, channel])
     simbase.air.send(dg)
     
-@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[])
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR)
 def maintenance():
     """
-    Send a maintenance whisper to the whole game
+    initiate the maintenance message sequence.
     """
     channel = simbase.air.ourChannel
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
