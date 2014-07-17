@@ -148,7 +148,7 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
         self.friendsList.append((friendId, friendCode))
 
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
-def system(msg):
+def system(message):
     """
     broadcast a <message> to the game server.
     """
@@ -156,11 +156,11 @@ def system(msg):
     channel = simbase.air.ourChannel
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
     name = target.getName()
-    message = 'SYSTEM ADMIN %s' % name + ': %s' % msg
+    message = 'ADMIN: ' + message
     dg = system.aiFormatUpdate(
-     'systemMessage', 4821, 4821, 1000000, [message, channel])
+        'systemMessage', 4821, 4821, 1000000, [message, channel])
     simbase.air.send(dg)
-    
+
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR)
 def maintenance():
     """
@@ -168,9 +168,9 @@ def maintenance():
     """
     channel = simbase.air.ourChannel
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
-    message = 'SYSTEM ADMIN: Attention all Toons! Toontown Infinite will be going down for maintenance in a moment, hang tight!'
+    message = 'ADMIN: Attention all Toons! Toontown Infinite will be going down for maintenance. Hang tight!'
     dg = system.aiFormatUpdate(
-     'systemMessage', 4821, 4821, 1000000, [message, channel])
+        'systemMessage', 4821, 4821, 1000000, [message, channel])
     simbase.air.send(dg)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
