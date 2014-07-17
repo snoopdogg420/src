@@ -157,9 +157,8 @@ def system(msg):
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
     name = target.getName()
     message = 'SYSTEM ADMIN %s' % name + ': %s' % msg
-    dg = system.aiFormatUpdate('systemMessage', 4821, 4821,
-                                            1000000,
-                                            [message, channel])
+    dg = system.aiFormatUpdate(
+     'systemMessage', 4821, 4821, 1000000, [message, channel])
     simbase.air.send(dg)
     
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR)
