@@ -4561,7 +4561,7 @@ def cheesyEffect(value, hood=0, expire=0):
     target.b_setCheesyEffect(value, hood, expire)
     return "Set {0}'s cheesy effect to {1}!".format(target.getName(), value)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def hp(hp):
     """
     Modify the target's current HP.
@@ -4573,7 +4573,7 @@ def hp(hp):
     target.b_setHp(hp)
     return "Set {0}'s HP to {1}!".format(target.getName(), hp)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def maxHp(maxHp):
     """
     Modify the target's max HP.
@@ -4585,7 +4585,7 @@ def maxHp(maxHp):
     target.toonUp(maxHp - target.getHp())
     return "Set {0}'s max HP to {1}!".format(target.getName(), maxHp)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str])
 def maxToon(missingTrack=None):
     """
     Max the invoker's stats for end-level gameplay.
@@ -4665,7 +4665,7 @@ def maxToon(missingTrack=None):
 
     return 'Maxed your Toon!'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR)
+@magicWord(category=CATEGORY_PROGRAMMER)
 def unlocks():
     """
     Unlocks the invoker's teleport access, emotions, and pet trick phrases.
@@ -4694,7 +4694,7 @@ def unlocks():
 
     return 'Unlocked teleport access, emotions, and pet trick phrases!'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, str])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int, str])
 def sos(count, name):
     """
     Modifies the invoker's specified SOS card count.
@@ -4716,7 +4716,7 @@ def sos(count, name):
     invoker.d_setNPCFriendsDict(invoker.NPCFriendsDict)
     return "You were given {0} {1} SOS cards.".format(count, name)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def unites(value=99):
     """
     Restock all resistance messages.
@@ -4725,7 +4725,7 @@ def unites(value=99):
     target.restockAllResistanceMessages(value)
     return 'Restocked {0} unites!'.format(value)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def fires(count):
     """
     Modifies the invoker's pink slip count.
@@ -4736,7 +4736,7 @@ def fires(count):
     invoker.b_setPinkSlips(count)
     return 'You were given {0} fires.'.format(count)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def maxMoney(maxMoney):
     """
     Modifies the target's max money value.
@@ -4747,7 +4747,7 @@ def maxMoney(maxMoney):
     spellbook.getTarget().b_setMaxMoney(maxMoney)
     return "Set {0}'s max money value to {1}!".format(target.getName(), maxMoney)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def money(money):
     """
     Modifies the target's current money value.
@@ -4759,7 +4759,7 @@ def money(money):
     target.b_setMoney(money)
     return "Set {0}'s money value to {1}!".format(target.getName(), money)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, int])
 def bank(command, value):
     """
     Modifies the target's bank money values.
@@ -4798,7 +4798,7 @@ def bank(command, value):
     else:
         return 'Invalid command!'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def fishingRod(rod):
     """
     Modify the target's fishing rod value.
@@ -4809,7 +4809,7 @@ def fishingRod(rod):
     target.b_setFishingRod(rod)
     return "Set {0}'s fishing rod to {1}!".format(target.getName(), rod)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def maxFishTank(maxFishTank):
     """
     Modify the target's max fish tank value.
@@ -4982,7 +4982,7 @@ def badName():
     target.sendUpdate('WishNameState', ['REJECTED'])
     return "Revoked {0}'s name!".format(_name)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def tickets(tickets):
     """
     Set the target's racing tickets value.
@@ -5300,7 +5300,7 @@ def givePies(pieType, numPies=0):
     else:
         target.b_setNumPies(ToontownGlobals.FullPies)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def trackBonus(trackIndex):
     """
     Modify the invoker's track bonus level.
@@ -5313,7 +5313,7 @@ def trackBonus(trackIndex):
     invoker.b_setTrackBonusLevel(trackBonusLevel)
     return 'Your track bonus level has been set!'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, str, int])
 def track(command, track, value=None):
     try:
         index = ('toonup', 'trap', 'lure', 'sound', 'throw',
@@ -5375,7 +5375,7 @@ def suit(command, suitIndex, cogType=0, isSkelecog=0, isV2=0, isWaiter=0):
     else:
         return 'Invalid command.'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, int])
 def achievements(command, achId):
     invoker = spellbook.getInvoker()
     if command.lower() == 'earn':
@@ -5393,7 +5393,7 @@ def achievements(command, achId):
     else:
         return "Unknown Command '%s'"%(command)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR)
+@magicWord(category=CATEGORY_PROGRAMMER)
 def getZone():
     invoker = spellbook.getInvoker()
     zone = invoker.zoneId
