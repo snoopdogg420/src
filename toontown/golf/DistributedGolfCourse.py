@@ -142,7 +142,8 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
                     av = base.cr.doId2do.get(avId)
                     if av:
                         tPanels = ToonHeadFrame.ToonHeadFrame(av, GolfGlobals.PlayerColors[color], headPanel)
-                        tPanels.setPos(-1.17, 0, toonPanelsStart + whichToon * tpDiff)
+                        tPanels.reparentTo(aspect2d)
+                        tPanels.setPos(base.a2dTopLeft.getPos()[0] + 0.1875, 0, toonPanelsStart + whichToon * tpDiff)
                         tPanels.setScale(0.3, 1, 0.7)
                         tPanels.head.setPos(0, 10, 0.18)
                         tPanels.head.setScale(0.47, 0.2, 0.2)
@@ -222,6 +223,9 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
                 if avId == self.avIdList[x] and y < len(self.toonPanels):
                     toonPanel = self.toonPanels[y]
                     toonPanel.headModel.hide()
+                    toonPanel.tag1.hide()
+                    toonPanel.tag2.hide()
+                    print help(toonPanel.av)
                     exitedToon = DirectLabel(parent=self.toonPanels[y], relief=None, pos=(0, 0, 0.4), color=(1, 1, 1, 1), text_align=TextNode.ACenter, text=TTLocalizer.GolferExited % toonPanel.av.getName(), text_scale=0.07, text_wordwrap=6)
                     exitedToon.setScale(2, 1, 1)
                     self.exitedPanels.append(exitedToon)

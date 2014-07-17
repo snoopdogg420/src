@@ -72,7 +72,7 @@ want-the-burrrgh #t
 want-donalds-dreamland #t
 want-goofy-speedway #t
 want-outdoor-zone #t
-want-golf-zone #f
+want-golf-zone #t
 
 # Cog headquarters...
 want-cog-headquarters #t
