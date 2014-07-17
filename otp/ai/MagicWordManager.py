@@ -32,11 +32,7 @@ class MagicWordManager(DistributedObject.DistributedObject):
             target = base.localAvatar
             magicWord = magicWord[1:]
             targetId = target.doId
-        if 'game' in str(magicWord):
-            magicWord += ' %s' % base.localAvatar.parentId + ' '
-            self.sendUpdate('sendMagicWord', [magicWord, targetId])
-        else:
-            self.sendUpdate('sendMagicWord', [magicWord, targetId])
+        self.sendUpdate('sendMagicWord', [magicWord, targetId])
         if target == base.localAvatar:
             response = spellbook.process(base.localAvatar, target, magicWord)
             if response:

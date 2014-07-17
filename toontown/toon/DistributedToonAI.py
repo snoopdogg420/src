@@ -5404,13 +5404,26 @@ def warn(message):
     # TODO: Make it add a strike to the user's account.
     return 'Not implemented'
     
-@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str, int])
-def game(msg, myChannel):
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
+def game(msg):
     #Send a whisper to the whole game
-    channels = [myChannel]
+    target = spellbook.getTarget()
+    channel = simbase.air.ourChannel
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
+    name = target.getName()
+    message = 'SYSTEM ADMIN %s' % name + ': %s' % msg
     dg = system.aiFormatUpdate('gameWhisper', 4821, 4821,
                                             1000000,
-                                            [msg, channels])
+                                            [message, channel])
     simbase.air.send(dg)
-    
+
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[])
+def maintenance():
+    #Maintenance a whisper to the whole game
+    channel = simbase.air.ourChannel
+    system = simbase.air.dclassesByName['SystemServicesManagerAI']
+    message = 'SYSTEM ADMIN: Attention all Toons! Toontown Infinite will be going down for updates in a moment, hang tight!'
+    dg = system.aiFormatUpdate('gameWhisper', 4821, 4821,
+                                            1000000,
+                                            [message, channel])
+    simbase.air.send(dg)

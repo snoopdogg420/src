@@ -22,10 +22,9 @@ class SystemServicesManagerUD(DistributedObjectGlobalUD):
     def announceGenerate(self):
         DistributedObjectGlobalUD.announceGenerate(self)
 
-    def gameWhisper(self, msg, channels):
+    def gameWhisper(self, msg, channel):
         system = simbase.air.dclassesByName['SystemServicesManagerUD']
-        channel = channels[0]
         dg = system.aiFormatUpdate('gameWhisper', 4821, 4821,
                                                 channel,
-                                                [msg, channels])
+                                                [msg, channel])
         simbase.air.send(dg)
