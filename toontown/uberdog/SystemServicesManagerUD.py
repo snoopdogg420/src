@@ -24,7 +24,6 @@ class SystemServicesManagerUD(DistributedObjectGlobalUD):
 
     def systemMessage(self, msg, channel):
         system = simbase.air.dclassesByName['SystemServicesManagerUD']
-        dg = system.aiFormatUpdate('systemMessage', 4821, 4821,
-                                                channel,
-                                                [msg, channel])
+        dg = system.aiFormatUpdate(
+         'systemMessage', 4821, 4821, channel, [msg, channel])
         simbase.air.send(dg)

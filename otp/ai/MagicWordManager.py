@@ -30,6 +30,7 @@ class MagicWordManager(DistributedObject.DistributedObject):
         if magicWord.startswith('~'):
             target = base.localAvatar
             magicWord = magicWord[1:]
+
         targetId = target.doId
         self.sendUpdate('sendMagicWord', [magicWord, targetId])
         if target == base.localAvatar:

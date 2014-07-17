@@ -3285,7 +3285,6 @@ dclass SystemServicesManager : DistributedObjectGlobal {
   systemMessage(string message, uint32 parentId);
 };
 
-
 dclass RATManager : DistributedObjectGlobal {
 };
 

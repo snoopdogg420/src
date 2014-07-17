@@ -149,7 +149,9 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
 def system(msg):
-    #Send a whisper to the whole game
+    """
+    Send a whisper to the whole game
+    """
     target = spellbook.getTarget()
     channel = simbase.air.ourChannel
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
@@ -162,13 +164,14 @@ def system(msg):
     
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[])
 def maintenance():
-    #Maintenance whisper to the whole game
+    """
+    Send a maintenance whisper to the whole game
+    """
     channel = simbase.air.ourChannel
     system = simbase.air.dclassesByName['SystemServicesManagerAI']
     message = 'SYSTEM ADMIN: Attention all Toons! Toontown Infinite will be going down for maintenance in a moment, hang tight!'
-    dg = system.aiFormatUpdate('systemMessage', 4821, 4821,
-                                            1000000,
-                                            [message, channel])
+    dg = system.aiFormatUpdate(
+     'systemMessage', 4821, 4821, 1000000, [message, channel])
     simbase.air.send(dg)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
