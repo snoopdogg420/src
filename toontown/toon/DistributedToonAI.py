@@ -5004,7 +5004,7 @@ def cogIndex(index):
     invoker.b_setCogIndex(index)
     return 'Set your Cog index to {0}!'.format(index)
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
 def inventory(a, b=None, c=None):
     invoker = spellbook.getInvoker()
     inventory = invoker.inventory
