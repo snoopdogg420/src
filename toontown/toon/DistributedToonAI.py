@@ -5404,7 +5404,7 @@ def warn(message):
     # TODO: Make it add a strike to the user's account.
     return 'Not implemented'
     
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int])
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str, int])
 def game(msg, myChannel):
     #Send a whisper to the whole game
     channels = [myChannel]
