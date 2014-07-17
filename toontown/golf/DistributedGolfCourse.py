@@ -225,7 +225,6 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
                     toonPanel.headModel.hide()
                     toonPanel.tag1.hide()
                     toonPanel.tag2.hide()
-                    print help(toonPanel.av)
                     exitedToon = DirectLabel(parent=self.toonPanels[y], relief=None, pos=(0, 0, 0.4), color=(1, 1, 1, 1), text_align=TextNode.ACenter, text=TTLocalizer.GolferExited % toonPanel.av.getName(), text_scale=0.07, text_wordwrap=6)
                     exitedToon.setScale(2, 1, 1)
                     self.exitedPanels.append(exitedToon)
