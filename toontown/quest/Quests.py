@@ -3724,12 +3724,6 @@ def chooseBestQuests(tier, currentNpc, av):
         rewardHistory = map(lambda questDesc: questDesc[3], av.quests)
     else:
         rewardHistory = av.getRewardHistory()[1]
-        toonQuests = av.getQuests() #Flattened Quests.
-        for i in xrange(0, len(toonQuests), 5):
-            questDesc = toonQuests[i:i + 5]
-            rewardId = questDesc[3]
-
-            rewardHistory.append(rewardId)
 
     seedRandomGen(currentNpc.getNpcId(), av.getDoId(), tier, rewardHistory)
     numChoices = getNumChoices(tier)
