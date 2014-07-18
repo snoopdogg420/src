@@ -147,17 +147,31 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 
         self.friendsList.append((friendId, friendCode))
 
-
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
 def system(message):
     """
-    Broadcasts a message to the server.
+    broadcast a <message> to the game server.
     """
-    # TODO: Make this go through the UberDOG, rather than the AI server.
-    for doId, do in simbase.air.doId2do.items():
-        if isinstance(do, DistributedPlayerAI):
-            if str(doId)[0] != str(simbase.air.districtId)[0]:
-                do.d_setSystemMessage(0, message)
+    target = spellbook.getTarget()
+    channel = simbase.air.ourChannel
+    system = simbase.air.dclassesByName['SystemServicesManagerAI']
+    name = target.getName()
+    message = 'ADMIN: ' + message
+    dg = system.aiFormatUpdate(
+        'systemMessage', 4821, 4821, 1000000, [message, channel])
+    simbase.air.send(dg)
+
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR)
+def maintenance():
+    """
+    initiate the maintenance message sequence.
+    """
+    channel = simbase.air.ourChannel
+    system = simbase.air.dclassesByName['SystemServicesManagerAI']
+    message = 'ADMIN: Attention all Toons! Toontown Infinite will be going down for maintenance. Hang tight!'
+    dg = system.aiFormatUpdate(
+        'systemMessage', 4821, 4821, 1000000, [message, channel])
+    simbase.air.send(dg)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
 def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):

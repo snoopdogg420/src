@@ -67,6 +67,8 @@ NPC_FLIPPYTOONHALL = 10
 NPC_SCIENTIST = 11
 NPC_SMART = 13
 NPC_BANKER = 14
+NPC_YIN = 15
+NPC_YANG = 16
 CLERK_COUNTDOWN_TIME = 120
 TAILOR_COUNTDOWN_TIME = 300
 RTDNAFile = '/RTDNAFile.txt'
@@ -92,6 +94,8 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     import DistributedNPCScientistAI
     import DistributedSmartNPCAI
     import DistributedBankerBobNPCAI
+    import DistributedNPCYinAI
+    import DistributedNPCYangAI
     canonicalZoneId, name, dnaType, gender, protected, type = desc
     if type == NPC_REGULAR:
         npc = DistributedNPCToonAI.DistributedNPCToonAI(air, npcId, questCallback=questCallback)
@@ -121,6 +125,12 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
         npc = DistributedSmartNPCAI.DistributedSmartNPCAI(air, npcId)
     elif type == NPC_BANKER:
         npc = DistributedBankerBobNPCAI.DistributedBankerBobNPCAI(air, npcId)
+    elif type == NPC_YIN:
+        if simbase.air.wantYinYang:
+            npc = DistributedNPCYinAI.DistributedNPCYinAI(air, npcId)
+    elif type == NPC_YANG:
+        if simbase.air.wantYinYang:
+            npc = DistributedNPCYangAI.DistributedNPCYangAI(air, npcId)
     else:
         print 'createNPC() error!!!'
     npc.setName(name)
@@ -11559,7 +11569,7 @@ NPCToonDict = {20000: (-1,
         0,
         NPC_REGULAR),
 # Trap Cat SOS
-# 5 Stars, Sound SOS, Opera 1 damage. "We are team trap!".
+# 1 Star, Sound SOS, Opera 1 damage. "We are team trap!".
 91918: (-1,
         lnames[91918],
         ('dss',
@@ -11831,6 +11841,15 @@ FOnpcFriends = {9310: (ToontownBattleGlobals.LURE_TRACK,
         3,
         30,
         2)}
+
+disabledSosCards = ConfigVariableList('disable-sos-card')
+for npcId in disabledSosCards:
+    npcId = int(npcId)
+    if npcId in HQnpcFriends:
+        del HQnpcFriends[npcId]
+    if npcId in FOnpcFriends:
+        del FOnpcFriends[npcId]
+
 npcFriends = dict(HQnpcFriends)
 npcFriends.update(FOnpcFriends)
 

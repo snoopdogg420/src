@@ -155,7 +155,9 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
             self.cameraNode.reparentTo(self.cameraArmNode)
         self.proCameraDummyNode = render.attachNewNode('proCameraDummy')
         self.proCameraDummyNode.reparentTo(render)
-        self.localVehicle = self.ownerId == localAvatar.doId
+        self.localVehicle = False
+        if hasattr(base, 'localAvatar'):
+            self.localVehicle = self.ownerId == base.localAvatar.doId
         if self.localVehicle:
             self.setupPhysics()
             self.setupParticles()

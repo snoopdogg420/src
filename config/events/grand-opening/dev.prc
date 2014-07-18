@@ -7,7 +7,7 @@ icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
 preferences-filename preferences.gz
 
-model-path ../ToontownInfiniteResources
+model-path ../resources
 model-cache-models #f
 model-cache-textures #f
 
@@ -42,7 +42,6 @@ hardware-animated-vertices #t
 preload-avatars #t
 sync-video #f
 smooth-lag 0.4
-ai-sleep 0.01
 
 # Coverage
 want-pstats 0
@@ -73,7 +72,7 @@ want-the-burrrgh #f
 want-donalds-dreamland #f
 want-goofy-speedway #f
 want-outdoor-zone #f
-want-golf-zone #f
+want-golf-zone #t
 
 # Cog headquarters...
 want-cog-headquarters #f
@@ -206,6 +205,7 @@ want-news-page #f
 want-news-tab #f
 want-long-pattern-game #f
 want-talkative-tyler #f
+want-yin-yang #t
 
 # Developer options...
 want-dev #f

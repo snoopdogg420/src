@@ -27,27 +27,19 @@ class QuestManagerAI:
                 npc.presentTrackChoice(avId, questId, questClass.getChoices())
                 break
             elif isinstance(questClass, Quests.DeliverGagQuest):
-                # Gag delivery quests work a bit differently
-                # since progress can be done bit by bit.
-                questList = []
                 if npc.npcId == toNpcId:
+                    questList = []
                     progress = questClass.removeGags(av)
-
                     for i in xrange(0, len(avQuests), 5):
                         questDesc = avQuests[i:i + 5]
-
                         if questDesc[0] == questId:
                             questDesc[4] += progress
-
+                            if questDesc[4] >= questClass.getNumGags():
+                                completeStatus = Quests.COMPLETE
                         questList.append(questDesc)
-
                     av.b_setQuests(questList)
-                    if questDesc[4] >= questClass.getNumGags():
-                        npc.completeQuest(avId, questId, rewardId)
-                        self.completeQuest(av, questId)
-                    else:
-                        npc.rejectAvatar(avId)
-                    return
+                    if completeStatus != Quests.COMPLETE:
+                        continue
             if completeStatus == Quests.COMPLETE:
                 av.toonUp(av.maxHp)
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
@@ -140,8 +132,8 @@ class QuestManagerAI:
             questClass = Quests.getQuest(questId)
             if questId == completeQuestId:
                 av.removeQuest(questId)
-                self.avatarProgressTier(av)
                 self.giveReward(av, questId, rewardId)
+                self.avatarProgressTier(av)
                 break
 
     def giveReward(self, av, questId, rewardId):
@@ -207,27 +199,29 @@ class QuestManagerAI:
 
     def toonCaughtFishingItem(self, av):
         flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        hasPickedQuest = 0
+        questList = []
+        fishingItem = -1
         for i in xrange(0, len(flattenedQuests), 5):
             questDesc = flattenedQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[0])
+            if fishingItem != -1:
+                questList.append(questDesc)
+                continue
             if isinstance(questClass, Quests.RecoverItemQuest):
-                if not hasPickedQuest:
-                    if isinstance(questClass, Quests.RecoverItemQuest):
-                        if questClass.getHolder() == Quests.AnyFish:
-                            if not questClass.getCompletionStatus(av, questDesc) == Quests.COMPLETE:
-                                minChance = questClass.getPercentChance()
-                                chance = random.randint(minChance - 40, 100)
-                                if chance <= minChance:
-                                    questDesc[4] += 1
-                                    hasPickedQuest = questClass
+                if not hasattr(questClass, 'getItem'):
+                    questList.append(questDesc)
+                    continue
+                if questClass.getHolder() == Quests.AnyFish:
+                    if not questClass.getCompletionStatus(av, questDesc) == Quests.COMPLETE:
+                        baseChance = questClass.getPercentChance()
+                        amountRemaining = questClass.getNumItems() - questDesc[4]
+                        chance = Quests.calcRecoverChance(amountRemaining, baseChance)
+                        if chance >= baseChance:
+                            questDesc[4] += 1
+                            fishingItem = questClass.getItem()
             questList.append(questDesc)
         av.b_setQuests(questList)
-        if (hasPickedQuest):
-            return questClass.getItem()
-        else:
-            return -1
+        return fishingItem
 
     def hasTailorClothingTicket(self, av, npc):
         flattenedQuests = av.getQuests()

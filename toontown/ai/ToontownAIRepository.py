@@ -82,10 +82,13 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.doLiveUpdates = self.config.GetBool('want-live-updates', False)
         self.wantTrackClsends = self.config.GetBool('want-track-clsends', False)
         self.wantAchievements = self.config.GetBool('want-achievements', True)
+        self.wantYinYang = self.config.GetBool('want-yin-yang', False)
+        self.baseXpMultiplier = self.config.GetFloat('base-xp-multiplier', 1.0)
 
         self.cogSuitMessageSent = False
 
     def createManagers(self):
+        self.ssm = simbase.air.generateGlobalObject(OTP_DO_ID_SYSTEM_SERVICES_MANAGER, 'SystemServicesManager')
         self.timeManager = TimeManagerAI(self)
         self.timeManager.generateWithRequired(2)
         self.magicWordManager = MagicWordManagerAI(self)

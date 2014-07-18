@@ -36,7 +36,6 @@ hardware-animated-vertices #t
 preload-avatars #t
 sync-video #f
 smooth-lag 0.4
-ai-sleep 0.01
 
 # Coverage
 want-pstats 0
@@ -191,6 +190,7 @@ want-parties #f
 want-cogdominiums #f
 want-boarding-groups #t
 want-achievements #f
+want-whitelist #t
 
 # Optional...
 show-population #f
@@ -200,6 +200,7 @@ want-news-page #f
 want-news-tab #f
 want-long-pattern-game #f
 want-talkative-tyler #f
+want-yin-yang #t
 
 # Developer options...
 want-dev #f
@@ -208,3 +209,7 @@ want-instant-parties #t
 
 # Temporary...
 want-old-fireworks #t
+force-skip-tutorial #t
+
+# Phone quest...
+want-phone-quest #t

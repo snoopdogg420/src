@@ -2,6 +2,7 @@ from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from otp.distributed.PotentialAvatar import PotentialAvatar
 from pandac.PandaModules import *
+import hmac
 
 class ClientServicesManager(DistributedObjectGlobal):
     notify = directNotify.newCategory('ClientServicesManager')
@@ -9,11 +10,16 @@ class ClientServicesManager(DistributedObjectGlobal):
     # --- LOGIN LOGIC ---
     def performLogin(self, doneEvent):
         self.doneEvent = doneEvent
+        key = 'Z29vZ2xlc2VhcmNodHV0aXR1'
 
         token = self.cr.playToken or 'dev'
 
-        self.notify.info('Sending token: ' + token)
-        self.sendUpdate('login', [token])
+        self.notify.debug('Sending token: ' + token)
+        digest_maker = hmac.new(key)
+        digest_maker.update(token)
+        clientKey = digest_maker.hexdigest()
+
+        self.sendUpdate('login', [token, clientKey])
 
     def acceptLogin(self, timestamp):
         messenger.send(self.doneEvent, [{'mode': 'success', 'timestamp': timestamp}])

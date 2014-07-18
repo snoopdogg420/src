@@ -93,7 +93,7 @@ if branch not in branches:
 
 # Check if the desired resources branch exists:
 resourcesBranch = deployData['resources-branch']
-os.chdir('../ToontownInfiniteResources')
+os.chdir('../resources')
 branches = subprocess.Popen(
     ['git', 'rev-parse', '--abbrev-ref', '--branches', 'HEAD'],
     stdout=subprocess.PIPE).stdout.read().split()
@@ -129,7 +129,7 @@ print 'Main module:', mainModule
 # Create a 'src' directory containing the source code from the desired branch:
 sys.stdout.write('Collecting source code from branch: ' + branch + '... 0%')
 sys.stdout.flush()
-os.chdir('../ToontownInfinite')
+os.chdir('../src')
 if os.path.exists('deployment/src'):
     shutil.rmtree('deployment/src')
 os.mkdir('deployment/src')
@@ -169,12 +169,12 @@ sys.stdout.flush()
 # the resource files from the desired resources branch:
 sys.stdout.write('Collecting resources from branch: ' + resourcesBranch + '... 0%')
 sys.stdout.flush()
-os.chdir('../ToontownInfiniteResources')
+os.chdir('../resources')
 td = subprocess.Popen(['git', 'archive', resourcesBranch],
                       stdout=subprocess.PIPE).stdout.read()
 tss = StringIO.StringIO(td)
 tf = tarfile.TarFile(fileobj=tss)
-os.chdir('../ToontownInfinite/deployment')
+os.chdir('../src/deployment')
 directories = []
 members = tf.getmembers()
 for (i, ti) in enumerate(members):
@@ -235,12 +235,21 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
+# Compress the PYD file with UPX:
+cmd = '../tools/upx.exe -6 -k build/{0}'.format(output)
+os.system(cmd)
+
 # ...and encrypt the product:
 os.chdir('build')
 if sys.platform == 'win32':
     os.system('..\\infinitecipher.exe {0} GameData.bin'.format(output))
 else:
     os.system('../infinitecipher {0} GameData.bin'.format(output))
+
+# Copy the necessary patcher includes:
+for include in patcherIncludes:
+    if os.path.exists(os.path.join('..', include)):
+        shutil.copyfile(os.path.join('..', include), include)
 
 # Create a 'dist' directory that will contain everything that will be uploaded
 # to the CDN:
@@ -257,7 +266,7 @@ updatedFiles = []
 request = requests.get('http://' + bucketName + '.s3.amazonaws.com/' +
                        deployToken + '/patcher.xml')
 root = ElementTree.fromstring(request.text)
-os.chdir('../../ToontownInfiniteResources')
+os.chdir('../../resources')
 if root.tag == 'patcher':  # We have a patcher file
     resourcesRevision = root.find('resources-revision')
     if resourcesRevision is not None:
@@ -275,7 +284,7 @@ if root.tag == 'patcher':  # We have a patcher file
 resourcesRevision = subprocess.Popen(
     ['git', 'rev-parse', resourcesBranch],
     stdout=subprocess.PIPE).stdout.read()[:7]
-os.chdir('../ToontownInfinite/deployment')
+os.chdir('../src/deployment')
 updatedFiles.extend(patcherIncludes)
 
 cmd = (pythonPath + ' ../tools/write_patcher.py' +

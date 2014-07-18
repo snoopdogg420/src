@@ -1667,7 +1667,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
                 speech += TTLocalizer.WitnessToonLevelPromotion
             if newCogSuitLevel == maxCogSuitLevel:
                 if newCogSuitLevel != ToontownGlobals.MaxCogSuitLevel:
-                    suitIndex = ((cogTypes[deptIndex]+1) * (deptIndex+1)) - 1
+                    suitIndex = (SuitDNA.suitsPerDept*deptIndex) + cogTypes[deptIndex]
                     cogTypeStr = SuitDNA.suitHeadTypes[suitIndex]
                     cogName = SuitBattleGlobals.SuitAttributes[cogTypeStr]['name']
                     speech += TTLocalizer.WitnessToonSuitPromotion % cogName
