@@ -53,17 +53,12 @@ PreloadHeads = {}
 def loadModels():
     global PreloadHeads
     if not PreloadHeads:
-        print 'Preloading avatars...'
-
+        print 'Preloading Toon heads...'
         for key in HeadDict.keys():
             fileRoot = HeadDict[key]
             PreloadHeads['phase_3' + fileRoot + '1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
             PreloadHeads['phase_3' + fileRoot + '500'] = loader.loadModel('phase_3' + fileRoot + '500')
             PreloadHeads['phase_3' + fileRoot + '250'] = loader.loadModel('phase_3' + fileRoot + '250')
-
-        print 'Done preloading avatars.'
-    else:
-        print 'Already preloaded avatars..'
 
 loadModels()
 
