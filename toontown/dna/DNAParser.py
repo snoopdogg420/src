@@ -2371,7 +2371,7 @@ def loadDNAFile(dnaStore, filename):
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
     if __debug__:
-        filename = '../ToontownInfiniteResources/' + filename
+        filename = '../resources/' + filename
     else:
         filename = '/' + filename
     dnaloader.getData().read(open(filename, 'r'))
@@ -2384,7 +2384,7 @@ def loadDNAFileAI(dnaStore, filename):
     dnaloader = DNALoader()
     dnaloader.getData().setDnaStorage(dnaStore)
     if __debug__:
-        filename = '../ToontownInfiniteResources/' + filename
+        filename = '../resources/' + filename
     else:
         filename = '/' + filename
     dnaloader.getData().read(open(filename, 'r'))
