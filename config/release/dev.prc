@@ -7,7 +7,7 @@ icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
 preferences-filename preferences.gz
 
-model-path ../ToontownInfiniteResources
+model-path ../resources
 model-cache-models #f
 model-cache-textures #f
 
