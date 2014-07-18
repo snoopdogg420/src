@@ -23,7 +23,7 @@ from toontown.coghq import MintManagerAI
 from toontown.distributed.ToontownDistrictAI import ToontownDistrictAI
 from toontown.distributed.ToontownDistrictStatsAI import ToontownDistrictStatsAI
 from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
-from toontown.dna.DNAParser import loadDNAFileAI
+from toontown.dna.DNAParser import DNALoader
 from toontown.estate.EstateManagerAI import EstateManagerAI
 from toontown.hood import BRHoodAI
 from toontown.hood import BossbotHQAI
@@ -66,6 +66,8 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.mintMgr = None
         self.lawOfficeMgr = None
         self.countryClubMgr = None
+        
+        self.__loader = DNALoader()
 
         self.zoneAllocator = UniqueIdAllocator(ToontownGlobals.DynamicZonesBegin,
                                                ToontownGlobals.DynamicZonesEnd)
@@ -205,7 +207,15 @@ class ToontownAIRepository(ToontownInternalRepository):
         return 'phase_{0}/dna/{1}_{2}.dna'.format(phaseNum, hood, zoneId)
 
     def loadDNAFileAI(self, dnastore, filename):
-        return loadDNAFileAI(dnastore, filename)
+        if __debug__:
+            filename = '../ToontownInfiniteResources/' + str(filename)
+        
+        else:
+            filename = '/' + str(filename)
+            
+        f = Filename(str(filename))
+        f.setExtension('pdna')
+        return self.__loader.loadDNAFileAI(dnastore, f)
 
     def incrementPopulation(self):
         self.districtStats.b_setAvatarCount(self.districtStats.getAvatarCount() + 1)

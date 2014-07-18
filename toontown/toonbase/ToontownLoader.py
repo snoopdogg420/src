@@ -4,11 +4,14 @@ from direct.showbase import Loader
 from toontown.toontowngui import ToontownLoadingScreen
 from toontown.dna.DNAParser import *
 
-class ToontownLoader(Loader.Loader):
+from libpandadna.DNALoader import DNALoader
+
+class ToontownLoader(Loader.Loader, DNALoader):
     TickPeriod = 0.2
 
     def __init__(self, base):
         Loader.Loader.__init__(self, base)
+        DNALoader.__init__(self)
         self.inBulkBlock = None
         self.blockName = None
         self.loadingScreen = ToontownLoadingScreen.ToontownLoadingScreen()
@@ -20,7 +23,38 @@ class ToontownLoader(Loader.Loader):
         Loader.Loader.destroy(self)
 
     def loadDNAFile(self, dnastore, filename):
-        return loadDNAFile(dnastore, filename)
+        self.tick()
+        
+        if __debug__:
+            filename = '../ToontownInfiniteResources/' + str(filename)
+        
+        else:
+            filename = '/' + str(filename)
+                
+        f = Filename(filename)
+        f.setExtension('pdna')
+        ret = DNALoader.loadDNAFile(self, dnastore, f)
+            
+        if ret.getChild(0).getNumChildren() > 0:
+            ret = ret.getChild(0).getChild(0).getNode(0)
+                
+        else:
+            ret = None
+            
+        return ret
+        
+    def loadDNAFileAI(self, dnastore, filename):
+        self.tick()
+        
+        if __debug__:
+            filename = '../ToontownInfiniteResources/' + str(filename)
+        
+        else:
+            filename = '/' + str(filename)
+            
+        f = Filename(str(filename))
+        f.setExtension('pdna')
+        return DNALoader.loadDNAFileAI(self, dnastore, f)
 
     def beginBulkLoad(self, name, label, range, gui, tipCategory, zoneId):
         self._loadStartT = globalClock.getRealTime()

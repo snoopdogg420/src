@@ -12,7 +12,7 @@ class ClientServicesManager(DistributedObjectGlobal):
 
         token = self.cr.playToken or 'dev'
 
-        self.notify.debug('Sending token: ' + token)
+        self.notify.info('Sending token: ' + token)
         self.sendUpdate('login', [token])
 
     def acceptLogin(self, timestamp):

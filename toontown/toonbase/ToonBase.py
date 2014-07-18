@@ -440,10 +440,11 @@ class ToonBase(OTPBase.OTPBase):
         gameServer = base.config.GetString('game-server', '')
         if gameServer:
             self.notify.info('Using game-server from Configrc: %s ' % gameServer)
-        elif launcherServer:
+        elif launcherServer is not None:
             gameServer = launcherServer
             self.notify.info('Using gameServer from launcher: %s ' % gameServer)
         else:
+            self.notify.info('Using gameServer as localhost (default), launcherServer=%s' % launcherServer)
             gameServer = 'localhost'
         serverPort = base.config.GetInt('server-port', 7198)
         serverList = []
