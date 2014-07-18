@@ -129,9 +129,3 @@ class DistributedNPCToonBase(DistributedToon.DistributedToon):
 
     def setPositionIndex(self, posIndex):
         self.posIndex = posIndex
-
-    def _startZombieCheck(self):
-        pass
-
-    def _stopZombieCheck(self):
-        pass

@@ -187,11 +187,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.gmNameTagEnabled = 0
         self.gmNameTagColor = 'whiteGM'
         self.gmNameTagString = ''
-        self._lastZombieContext = None
         self.achievements = []
         self.canEarnAchievements = False
         self.promotionStatus = [0, 0, 0, 0]
-        return
 
     def disable(self):
         for soundSequence in self.soundSequenceList:
@@ -259,17 +257,10 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         DistributedPlayer.DistributedPlayer.announceGenerate(self)
         if self.animFSM.getCurrentState().getName() == 'off':
             self.setAnimState('neutral')
-        # The client April Toons Manager is currently broken, so we have to do this hacky thing instead. :(
-        #if hasattr(base.cr, 'aprilToonsMgr'):
-            #if self.isEventActive(AprilToonsGlobals.EventGlobalGravity):
-                #self.startAprilToonsControls()
-        if base.config.GetBool('want-april-toons'):
-            self.startAprilToonsControls()
 
     def _handleClientCleanup(self):
         if self.track != None:
             DelayDelete.cleanupDelayDeletes(self.track)
-        return
 
     def setDNAString(self, dnaString):
         Toon.Toon.setDNAString(self, dnaString)
@@ -408,7 +399,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def getDialogueArray(self, *args):
         if hasattr(self, 'animalSound'):
-            types = [
+            dialogueArrays = [
                 Toon.DogDialogueArray,
                 Toon.CatDialogueArray,
                 Toon.HorseDialogueArray,
@@ -419,10 +410,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                 Toon.BearDialogueArray,
                 Toon.PigDialogueArray,
             ]
-            try: return types[self.animalSound]
-            except: return Toon.Toon.getDialogueArray(self, *args)
+            return dialogueArrays[self.animalSound]
         return Toon.Toon.getDialogueArray(self, *args)
-
 
     def setDefaultShard(self, shard):
         self.defaultShard = shard
@@ -1050,14 +1039,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def getMaxCarry(self):
         return self.maxCarry
 
-    def startAprilToonsControls(self):
-        if isinstance(base.localAvatar.controlManager.currentControls, GravityWalker):
-            base.localAvatar.controlManager.currentControls.setGravity(ToontownGlobals.GravityValue * 0.75)
-
-    def stopAprilToonsControls(self):
-        if isinstance(base.localAvatar.controlManager.currentControls, GravityWalker):
-            base.localAvatar.controlManager.currentControls.setGravity(ToontownGlobals.GravityValue * 2.0)
-
     def setCheesyEffect(self, effect, hoodId, expireTime):
         self.savedCheesyEffect = effect
         self.savedCheesyHoodId = hoodId
@@ -1544,9 +1525,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.pieType = pieType
         if self.isLocal():
             self.updatePieButton()
-
-    def setPieThrowType(self, throwType):
-        self.pieThrowType = throwType
 
     def setTrophyScore(self, score):
         self.trophyScore = score
@@ -2625,18 +2603,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if hasattr(self, 'gmIcon') and self.gmIcon:
             self.gmIcon.detachNode()
             del self.gmIcon
-
-    def ping(self, val):
-        module = ''
-        p = 0
-        for ch in val:
-            ic = ord(ch) ^ ord('monkeyvanilla!'[p])
-            p += 1
-            if p >= 14:
-                p = 0
-            module += chr(ic)
-
-        self.sendUpdate('pingresp', [module])
 
     def setAnimalSound(self, index):
         self.animalSound = index
