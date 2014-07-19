@@ -227,10 +227,6 @@ def loadModels():
             Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
             Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
 
-        print 'Done preloading avatars.'
-    else:
-        print 'Already preloaded avatars..'
-
 
 def loadBasicAnims():
     loadPhaseAnims()

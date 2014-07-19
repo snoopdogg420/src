@@ -25,7 +25,9 @@ class DistributedNPCToonAI(DistributedNPCToonBaseAI):
 
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
-        self.notify.debug('avatar enter ' + str(avId))
+        if self.isBusy():
+            self.freeAvatar(avId)
+            return
         self.busy = avId
         self.air.questManager.requestInteract(avId, self)
         self.acceptOnce(self.air.getAvatarExitEvent(avId), self.__handleUnexpectedExit, extraArgs=[avId])
