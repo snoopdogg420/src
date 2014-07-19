@@ -25,11 +25,10 @@ class ToontownLoader(Loader.Loader, DNALoader):
     def loadDNAFile(self, dnastore, filename):
         self.tick()
 
+        filename = '/' + str(filename)
+
         if __debug__:
             filename = '../resources/' + str(filename)
-
-        else:
-            filename = '/' + str(filename)
 
         f = Filename(filename)
         f.setExtension('pdna')
