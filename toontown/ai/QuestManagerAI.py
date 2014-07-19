@@ -23,10 +23,7 @@ class QuestManagerAI:
                 completeStatus = questClass.getCompletionStatus(av, questDesc, npc)
             else:
                 continue
-            if isinstance(questClass, Quests.TrackChoiceQuest):
-                npc.presentTrackChoice(avId, questId, questClass.getChoices())
-                break
-            elif isinstance(questClass, Quests.DeliverGagQuest):
+            if isinstance(questClass, Quests.DeliverGagQuest):
                 if npc.npcId == toNpcId:
                     questList = []
                     progress = questClass.removeGags(av)
@@ -42,6 +39,9 @@ class QuestManagerAI:
                         continue
             if completeStatus == Quests.COMPLETE:
                 av.toonUp(av.maxHp)
+                if isinstance(questClass, Quests.TrackChoiceQuest):
+                    npc.presentTrackChoice(avId, questId, questClass.getChoices())
+                    break
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
                     self.nextQuest(av, npc, questId)
                 else:
@@ -87,14 +87,12 @@ class QuestManagerAI:
         av = self.air.doId2do.get(avId)
         if not av:
             return
-        fromNpcId = npc.getDoId()
+        fromNpcId = npc.npcId
         if toNpcId == 0:
             toNpcId = Quests.getQuestToNpcId(questId)
-        av.addQuest([questId, fromNpcId, toNpcId, rewardId, 0],
-                      Quests.Quest2RemainingStepsDict[questId] == 1,
-                      recordHistory = 0)
+        transformedRewardId = Quests.transformReward(rewardId, av)
+        av.addQuest([questId, fromNpcId, toNpcId, rewardId, 0], transformedRewardId)
         npc.assignQuest(avId, questId, rewardId, toNpcId)
-        taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
         av = self.air.doId2do.get(avId)
@@ -137,16 +135,16 @@ class QuestManagerAI:
                 break
 
     def giveReward(self, av, questId, rewardId):
-        #Actual reward giving.
+        # Actual reward giving.
         rewardClass = Quests.getReward(rewardId)
         rewardClass.sendRewardAI(av)
-        #Add it to reward history.
-        realRewardId = Quests.transformReward(rewardId, av)
-        tier, rewardList = av.getRewardHistory()
-        rewardList.append(rewardId)
-        if realRewardId != rewardId:
-            rewardList.append(realRewardId)
-        av.b_setRewardHistory(tier, rewardList)
+
+        rewardTier, rewardHistory = av.getRewardHistory()
+        transformedRewardId = Quests.transformReward(rewardId, av)
+        if transformedRewardId != rewardId:
+            rewardHistory.append(rewardId)
+
+        av.b_setRewardHistory(rewardTier, rewardHistory)
 
     def avatarProgressTier(self, av):
         currentTier = av.getRewardHistory()[0]
