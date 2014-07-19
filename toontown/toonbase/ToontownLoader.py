@@ -45,11 +45,10 @@ class ToontownLoader(Loader.Loader, DNALoader):
     def loadDNAFileAI(self, dnastore, filename):
         self.tick()
 
+        filename = '/' + str(filename)
+
         if __debug__:
             filename = '../resources/' + str(filename)
-
-        else:
-            filename = '/' + str(filename)
 
         f = Filename(str(filename))
         f.setExtension('pdna')
