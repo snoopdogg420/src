@@ -66,7 +66,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.mintMgr = None
         self.lawOfficeMgr = None
         self.countryClubMgr = None
-        
+
         self.__loader = DNALoader()
 
         self.zoneAllocator = UniqueIdAllocator(ToontownGlobals.DynamicZonesBegin,
@@ -211,11 +211,11 @@ class ToontownAIRepository(ToontownInternalRepository):
 
     def loadDNAFileAI(self, dnastore, filename):
         if __debug__:
-            filename = '../ToontownInfiniteResources/' + str(filename)
-        
+            filename = '../resources/' + str(filename)
+
         else:
             filename = '/' + str(filename)
-            
+
         f = Filename(str(filename))
         f.setExtension('pdna')
         return self.__loader.loadDNAFileAI(dnastore, f)

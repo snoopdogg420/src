@@ -1,10 +1,10 @@
 from pandac.PandaModules import *
 from direct.directnotify.DirectNotifyGlobal import *
-from direct.showbase import Loader
 from toontown.toontowngui import ToontownLoadingScreen
 from toontown.dna.DNAParser import *
 
 from libpandadna.DNALoader import DNALoader
+from direct.showbase import Loader
 
 class ToontownLoader(Loader.Loader, DNALoader):
     TickPeriod = 0.2
@@ -24,34 +24,34 @@ class ToontownLoader(Loader.Loader, DNALoader):
 
     def loadDNAFile(self, dnastore, filename):
         self.tick()
-        
+
         if __debug__:
-            filename = '../ToontownInfiniteResources/' + str(filename)
-        
+            filename = '../resources/' + str(filename)
+
         else:
             filename = '/' + str(filename)
-                
+
         f = Filename(filename)
         f.setExtension('pdna')
         ret = DNALoader.loadDNAFile(self, dnastore, f)
-            
+
         if ret.getChild(0).getNumChildren() > 0:
             ret = ret.getChild(0).getChild(0).getNode(0)
-                
+
         else:
             ret = None
-            
+
         return ret
-        
+
     def loadDNAFileAI(self, dnastore, filename):
         self.tick()
-        
+
         if __debug__:
-            filename = '../ToontownInfiniteResources/' + str(filename)
-        
+            filename = '../resources/' + str(filename)
+
         else:
             filename = '/' + str(filename)
-            
+
         f = Filename(str(filename))
         f.setExtension('pdna')
         return DNALoader.loadDNAFileAI(self, dnastore, f)
