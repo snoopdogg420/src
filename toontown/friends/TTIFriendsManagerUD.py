@@ -94,7 +94,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 del self.listResponses[avId]
             else:
                 self.friendIndexes[avId] += 1
-                self.air.dbInterface.queryObject(self.air.dbId, self.friendsLists[avId][self.friendIndexes[avId]][0], functools.partial(addFriend, avId=avId, friendId=self.friendsLists[avId][self.friendIndexes[avId]][0]))
+                if avId in self.friendsIndexes:
+                    self.air.dbInterface.queryObject(self.air.dbId, self.friendsLists[avId][self.friendIndexes[avId]][0], functools.partial(addFriend, avId=avId, friendId=self.friendsLists[avId][self.friendIndexes[avId]][0]))
 
         def handleAv(dclass, fields, avId=0):
             if not avId:
