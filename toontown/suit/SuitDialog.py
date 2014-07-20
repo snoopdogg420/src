@@ -9,17 +9,8 @@ def getBrushOffIndex(suitName):
         brushoffs = SuitBrushOffs[suitName]
     else:
         brushoffs = SuitBrushOffs[None]
-    num = len(brushoffs)
-    chunk = 100 / num
-    randNum = random.randint(0, 99)
-    count = chunk
-    for i in xrange(num):
-        if randNum < count:
-            return i
-        count += chunk
-
-    notify.error('getBrushOffs() - no brush off found!')
-    return
+    choice = random.choice(brushoffs)
+    return brushoffs.index(choice)
 
 
 def getBrushOffText(suitName, index):
