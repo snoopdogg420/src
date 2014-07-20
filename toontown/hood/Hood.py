@@ -54,8 +54,6 @@ class Hood(StateData.StateData):
         self.doSpawnTitleText(hoodText)
 
     def doSpawnTitleText(self, text):
-        return
-        # Disabled for now until client lag is fix
         self.titleText.setText(text)
         self.titleText.show()
         self.titleText.setColor(Vec4(*self.titleColor))
