@@ -3,7 +3,7 @@ from toontown.toonbase import ToontownGlobals
 from toontown.distributed.DistributedTimerAI import DistributedTimerAI
 from toontown.classicchars import DistributedChipAI
 from toontown.classicchars import DistributedDaleAI
-from toontown.dna.DNAParser import DNAGroup, DNAVisGroup
+from toontown.dna.DNAParser import DNAGroup, DNAVisGroup, DNAData
 from toontown.safezone.DistributedPicnicBasketAI import DistributedPicnicBasketAI
 from toontown.safezone import DistributedGameTableAI
 from toontown.hood import ZoneUtil
@@ -74,7 +74,7 @@ class OZHoodAI(HoodAI.HoodAI):
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if dnaData.getName() == "root": # isinstance(dnaData, DNAData)
+            if isinstance(dnaData, DNAData):
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 foundPicnicTables = self.findPicnicTables(
                     dnaData, zoneId, area, overrideDNAZone=True)
@@ -106,7 +106,7 @@ class OZHoodAI(HoodAI.HoodAI):
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if dnaData.getName() == "root": # isinstance(dnaData, DNAData)
+            if isinstance(dnaData, DNAData):
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 foundGameTables = self.findGameTables(
                     dnaData, zoneId, area, overrideDNAZone=True)

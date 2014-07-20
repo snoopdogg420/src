@@ -146,10 +146,10 @@ loader.endBulkLoad('init')
 from otp.friends import FriendManager
 from otp.distributed.OtpDoGlobals import *
 cr.generateGlobalObject(OTP_DO_ID_FRIEND_MANAGER, 'FriendManager')
-
-# force passing the gs
-base.startShow(cr, launcher.getGameServer())
-
+if not launcher.isDummy():
+    base.startShow(cr, launcher.getGameServer())
+else:
+    base.startShow(cr)
 backgroundNodePath.reparentTo(hidden)
 backgroundNodePath.removeNode()
 del backgroundNodePath

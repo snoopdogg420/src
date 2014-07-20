@@ -1,6 +1,6 @@
 from direct.directnotify.DirectNotifyGlobal import *
 from toontown.building import DistributedBuildingMgrAI
-from toontown.dna.DNAParser import DNAStorage, DNAGroup, DNAVisGroup
+from toontown.dna.DNAParser import DNAStorage, DNAGroup, DNAVisGroup, DNAData
 from toontown.fishing.DistributedFishingPondAI import DistributedFishingPondAI
 from toontown.hood import ZoneUtil
 from toontown.safezone import TreasureGlobals
@@ -121,7 +121,7 @@ class HoodAI:
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if dnaData.getName() == "root": # isinstance(dnaData, DNAData)
+            if isinstance(dnaData, DNAData):
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 (foundFishingPonds, foundFishingPondGroups) = self.findFishingPonds(dnaData, zoneId, area)
                 self.fishingPonds.extend(foundFishingPonds)
@@ -150,7 +150,7 @@ class HoodAI:
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if dnaData.getName() == "root": # isinstance(dnaData, DNAData)
+            if isinstance(dnaData, DNAData):
                 foundPartyGates = self.findPartyGates(dnaData, zoneId)
                 self.partyGates.extend(foundPartyGates)
 
