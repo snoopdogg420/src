@@ -195,7 +195,6 @@ class DistributedPartyManagerAI(DistributedObjectAI):
             return
         partyId = self.host2PartyId[hostId]
         if partyId in self.partyId2PlanningZone:
-            print 'freeing zone'
             self.air.deallocateZone(self.partyId2PlanningZone[partyId])
             del self.partyId2PlanningZone[partyId]
             del self.host2PartyId[hostId]
