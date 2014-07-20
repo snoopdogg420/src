@@ -16,7 +16,6 @@ def chooseHealShot(heals, attackDuration):
             isUber = 1
 
     if isUber:
-        print 'is uber'
         openShot = chooseHealOpenShot(heals, attackDuration, isUber)
         openDuration = openShot.getDuration()
         openName = openShot.getName()

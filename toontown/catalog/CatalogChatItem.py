@@ -100,7 +100,6 @@ class CatalogChatItem(CatalogItem.CatalogItem):
         if status == 'pick':
             self.mailbox.acceptItem(self, self.index, self.callback, pickedMessage)
         else:
-            print 'picker canceled'
             self.callback(ToontownGlobals.P_UserCancelled, None, self.index)
         self.messagePicker.hide()
         self.messagePicker.destroy()

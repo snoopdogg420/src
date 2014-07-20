@@ -240,7 +240,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 self.building = self.cr.playGame.hood.loader.geom.find('**/??' + str(self.block) + ':*_landmark_*_DNARoot;+s')
             else:
                 self.building = self.cr.playGame.hood.loader.geom
-                print '---------------- door is interior -------'
         return self.building
 
     def readyToExit(self):

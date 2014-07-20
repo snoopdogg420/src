@@ -427,10 +427,10 @@ class TTChatInputSpeedChat(DirectObject.DirectObject):
 
     def exitOff(self):
         pass
-        
+
 
     def enterActive(self):
-        print 'entering active SC menu'
+
         def handleCancel(self = self):
             self.chatMgr.fsm.request('mainMenu')
 

@@ -86,7 +86,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
             if not (avId or friendId):
                 return
             if dclass == self.air.dclassesByName['DistributedToonUD']:
-                self.listResponses[avId].append([friendId, fields['setName'][0], fields['setDNAString'][0], fields['setPetId'][0]])
+                if avId in self.listResponses:
+                    self.listResponses[avId].append([friendId, fields['setName'][0], fields['setDNAString'][0], fields['setPetId'][0]])
             if len(self.listResponses[avId]) >= len(self.friendsLists[avId]):
                 self.sendUpdateToAvatarId(avId, 'friendList', [self.listResponses[avId]])
                 del self.friendsLists[avId]
@@ -251,7 +252,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 secret += ' '
         self.secret2avId[secret] = avId
         self.sendUpdateToAvatarId(avId, 'requestSecretResponse', [1, secret])
-        print 'Avatar requested tf code'
 
     def submitSecret(self, secret):
         requester = self.air.getAvatarIdFromSender()
