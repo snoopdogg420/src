@@ -2413,7 +2413,7 @@ QuestDict = {
     3260: (DG_TIER, Cont, (RecoverItemQuest, ToontownGlobals.SellbotHQ, 1, 5016, Easy, 's', 'track'), Same, Same, NA, 3261, TTLocalizer.QuestDialogDict[3260]),
     3261: (DG_TIER, Cont, (RecoverItemQuest, ToontownGlobals.SellbotHQ, 1, 5017, Medium, 's', 'track'), Same, Same, 102, NA, TTLocalizer.QuestDialogDict[3261]),
     3262: (DG_TIER, Start, (VisitQuest,), Any, 5313, NA, 3263, TTLocalizer.QuestDialogDict[3262]),
-    3263: (DG_TIER, Start, (FactoryQuest, ToontownGlobals.SellbotHQ, 1), 5313, 5313, 702, NA, TTLocalizer.QuestDialogDict[3263]),
+    3263: (DG_TIER, Start, (CogQuest, ToontownGlobals.SellbotHQ, 20, Any), 5313, 5313, 702, NA, TTLocalizer.QuestDialogDict[3263]),
     3500: (DG_TIER, Start, (CogQuest, ToontownGlobals.DaisyGardens, 25, Any), Any, ToonHQ, NA, 3501, DefaultDialog),
     3501: (DG_TIER, Cont, (DeliverItemQuest, 1000), Any, 5007, 1000, NA, DefaultDialog),
     4001: (MM_TIER, Start, (TrackChoiceQuest, ToontownBattleGlobals.TRAP_TRACK, ToontownBattleGlobals.HEAL_TRACK), Any, ToonHQ, 400, NA, TTLocalizer.QuestDialogDict[4001]),

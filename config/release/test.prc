@@ -28,8 +28,8 @@ server-port 7198
 server-version SERVER_VERSION
 server-timezone US/Eastern
 
-shard-low-pop 150
-shard-mid-pop 300
+shard-low-pop 50
+shard-mid-pop 100
 
 # Performance
 hardware-animated-vertices #t
@@ -210,6 +210,7 @@ want-instant-parties #t
 # Temporary...
 want-old-fireworks #t
 force-skip-tutorial #t
+base-xp-multiplier 4.0
 
 # Phone quest...
 want-phone-quest #f
