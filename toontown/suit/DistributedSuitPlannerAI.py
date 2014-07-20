@@ -227,7 +227,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 while i >= 0:
                     pi = points.getPointIndex(i)
                     point = self.pointIndexes[pi]
-                    if point.getPointType() == DNASuitPoint.pointTypeMap['STREET_POINT']:
+                    if point.getPointType() == DNASuitPoint.STREET_POINT:
                         pointList.append(point)
                     i -= 1
         if blockNumber in self.buildingFrontDoors:
@@ -413,12 +413,12 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         return 0
 
     def pathCollision(self, path, elapsedTime):
-        pathLength = path.getNumPoints()
         i = 0
         pi = path.getPointIndex(i)
         point = self.pointIndexes[pi]
         adjacentPoint = self.pointIndexes[path.getPointIndex(i + 1)]
-        while (point.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']) or (point.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']):
+        while (point.getPointType() == DNASuitPoint.FRONT_DOOR_POINT) or (
+                point.getPointType() == DNASuitPoint.SIDE_DOOR_POINT):
             i += 1
             lastPi = pi
             pi = path.getPointIndex(i)
