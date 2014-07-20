@@ -1,5 +1,6 @@
 from pandac.PandaModules import *
 from direct.directnotify.DirectNotifyGlobal import *
+from direct.showbase import Loader
 from toontown.toontowngui import ToontownLoadingScreen
 from toontown.dna.DNAParser import *
 

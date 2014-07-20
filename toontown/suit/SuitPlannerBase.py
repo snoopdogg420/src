@@ -3,7 +3,7 @@ from direct.directnotify.DirectNotifyGlobal import *
 from toontown.hood import ZoneUtil
 from toontown.toonbase import ToontownGlobals
 from toontown.building import SuitBuildingGlobals
-from toontown.dna.DNAParser import DNASuitPoint, DNAStorage
+from toontown.dna.DNAParser import DNASuitPoint, DNAStorage, loadDNAFileAI
 
 class SuitPlannerBase:
     notify = directNotify.newCategory('SuitPlannerBase')
@@ -488,10 +488,7 @@ class SuitPlannerBase:
             return None
         self.dnaStore = DNAStorage()
         dnaFileName = self.genDNAFileName()
-        if game.process == 'server':
-            simbase.air.loadDNAFileAI(self.dnaStore, dnaFileName)
-        else:
-            loader.loadDNAFileAI(self.dnaStore, dnaFileName)
+        loadDNAFileAI(self.dnaStore, dnaFileName)
         self.initDNAInfo()
 
     def genDNAFileName(self):
