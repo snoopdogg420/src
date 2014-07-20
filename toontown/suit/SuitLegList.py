@@ -170,6 +170,7 @@ class SuitLegList:
         for i, leg in enumerate(self.legs):
             if leg.getEndTime() > time:
                 return i
+        return self.getNumLegs() - 1
 
     def isPointInRange(self, point, lowTime, highTime):
         legIndex = self.getLegIndexAtTime(lowTime, 0)
