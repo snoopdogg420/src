@@ -82,7 +82,6 @@ class ChatInputTyped(DirectObject.DirectObject):
         self.typedChatButton.hide()
         self.typedChatBar.hide()
         if self.whisperId:
-            print 'have id'
             if self.toPlayer:
                 if not base.talkAssistant.checkWhisperTypedChatPlayer(self.whisperId):
                     messenger.send('Chat-Failed player typed chat test')

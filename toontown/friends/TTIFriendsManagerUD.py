@@ -250,7 +250,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 secret += ' '
         self.secret2avId[secret] = avId
         self.sendUpdateToAvatarId(avId, 'requestSecretResponse', [1, secret])
-        print 'Avatar requested tf code'
 
     def submitSecret(self, secret):
         requester = self.air.getAvatarIdFromSender()

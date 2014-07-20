@@ -238,7 +238,6 @@ class DistributedElevatorAI(DistributedObjectAI.DistributedObjectAI):
         self.accepting = 1
 
     def exitWaitCountdown(self):
-        print 'exit wait countdown'
         self.accepting = 0
         taskMgr.remove(self.uniqueName('countdown-timer'))
         self.newTrip()

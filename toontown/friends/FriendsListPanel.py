@@ -218,7 +218,6 @@ class FriendsListPanel(DirectFrame, StateData.StateData):
         if showType == 1 and playerId:
             if not playerName:
                 return
-                print 'ABORTING!!!'
             friendName = playerName
             rolloverName = toonName
         else:

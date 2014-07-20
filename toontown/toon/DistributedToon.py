@@ -1156,7 +1156,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if self.isLocal():
             self.gotCatalogNotify = 1
             self.refreshOnscreenButtons()
-            print 'local'
 
     def setDeliverySchedule(self, onOrder):
         self.onOrder = CatalogItemList.CatalogItemList(onOrder, store=CatalogItem.Customization | CatalogItem.DeliveryDate)
@@ -2020,7 +2019,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         return self.gardenStarted
 
     def sendToGolfCourse(self, zoneId):
-        print 'sending to golfCourse'
         hoodId = self.cr.playGame.hood.hoodId
         golfRequest = {'loader': 'safeZoneLoader',
          'where': 'golfcourse',
