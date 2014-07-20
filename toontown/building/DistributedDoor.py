@@ -529,8 +529,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         doorFrameHoleRight = self.findDoorNode('doorFrameHoleRight')
         if doorFrameHoleRight.isEmpty():
             self.notify.warning('enterClosing(): did not find doorFrameHoleRight')
-            request = self.getRequestStatus()
-            messenger.send('doorDoneEvent', [request])
             return
         rightDoor = self.findDoorNode('rightDoor')
         if rightDoor.isEmpty():
