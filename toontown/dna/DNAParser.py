@@ -433,7 +433,19 @@ class DNASuitPoint:
         self.landmarkBuildingIndex = landmarkBuildingIndex
 
     def __str__(self):
-        pointTypeStr = DNASuitPoint.ivPointTypeMap[self.getPointType()]
+        pointType = self.getPointType()
+        if pointType == DNASuitPoint.STREET_POINT:
+            pointTypeStr = 'STREET_POINT'
+        elif pointType == DNASuitPoint.FRONT_DOOR_POINT:
+            pointTypeStr = 'FRONT_DOOR_POINT'
+        elif pointType == DNASuitPoint.SIDE_DOOR_POINT:
+            pointTypeStr = 'SIDE_DOOR_POINT'
+        elif pointType == DNASuitPoint.COGHQ_IN_POINT:
+            pointTypeStr = 'COGHQ_IN_POINT'
+        elif pointType == DNASuitPoint.COGHQ_OUT_POINT:
+            pointTypeStr = 'COGHQ_OUT_POINt'
+        else:
+            pointTypeStr = '**invalid**'
         return 'DNASuitPoint index: {0}, pointType: {1}, pos: {2}'.format(
             self.getIndex(), pointTypeStr, self.getPos())
 

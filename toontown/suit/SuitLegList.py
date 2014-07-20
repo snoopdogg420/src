@@ -164,7 +164,7 @@ class SuitLegList:
         return self.legs[index].getPointB()
 
     def getStartTime(self, index):
-        self.legs[index].getStartTime()
+        return self.legs[index].getStartTime()
 
     def getLegIndexAtTime(self, time, startLeg):
         endTime = 0.0

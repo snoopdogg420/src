@@ -539,7 +539,7 @@ class SuitPlannerBase:
                 self.frontdoorPointList.append(point)
             elif point.getPointType() == DNASuitPoint.SIDE_DOOR_POINT:
                 self.sidedoorPointList.append(point)
-            elif (point.getPointType() == DNASuitPoint.COGHQ_IN_POINT) or (point.getPointType() == DNASuitPointCOGHQ_OUT_POINT):
+            elif (point.getPointType() == DNASuitPoint.COGHQ_IN_POINT) or (point.getPointType() == DNASuitPoint.COGHQ_OUT_POINT):
                 self.cogHQDoorPointList.append(point)
             else:
                 self.streetPointList.append(point)
