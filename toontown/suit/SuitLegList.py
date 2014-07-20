@@ -175,16 +175,14 @@ class SuitLegList:
         return legIndex
 
     def isPointInRange(self, point, lowTime, highTime):
-        # Check if this point is in the provided time range:
-        pointIndex = point.getIndex()
-        startLegIndex = self.getLegIndexAtTime(lowTime, 0)
-        endLegIndex = self.getLegIndexAtTime(highTime, pointIndex)
-        for leg in self.legs[startLegIndex:endLegIndex + 1]:
-            if leg.getPointA().getIndex() == pointIndex:
-                return 1
-            if leg.getPointB().getIndex() == pointIndex:
-                return 1
-        return 0
+        legIndex = self.getLegIndexAtTime(lowTime, 0)
+        while lowTime < highTime:
+            leg = self.legs[legIndex]
+            if (leg.pointA == point) or (leg.pointB == point):
+                return True
+            lowTime += leg.getLegTime()
+            legIndex += 1
+        return False
 
     def getFirstLegType(self):
         pointTypeA = self.path.getPoint(0).getPointType()
