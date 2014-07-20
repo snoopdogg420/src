@@ -143,11 +143,12 @@ class DNAStorage:
         self.catalogCodes = {}
 
     def getSuitPath(self, startPoint, endPoint, minPathLen=40, maxPathLen=300):
-        points = [startPoint]
-        while len(points) < maxPathLen:
+        path = DNASuitPath()
+        path.addPoint(startPoint)
+        while path.getNumPoints() < maxPathLen:
             startPointIndex = startPoint.getIndex()
             if startPointIndex == endPoint.getIndex():
-                if len(points) >= minPathLen:
+                if path.getNumPoints() >= minPathLen:
                     break
             if startPointIndex not in self.suitEdges:
                 raise DNAError('Could not find DNASuitPath.')
@@ -160,10 +161,7 @@ class DNAStorage:
                         break
             else:
                 raise DNAError('Could not find DNASuitPath.')
-            points.append(startPoint)
-        path = DNASuitPath()
-        for point in points:
-            path.addPoint(point)
+            path.addPoint(startPoint)
         return path
 
     def getSuitEdgeTravelTime(self, startIndex, endIndex, suitWalkSpeed):
