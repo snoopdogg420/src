@@ -210,7 +210,7 @@ want-instant-parties #f
 # Temporary...
 want-old-fireworks #t
 force-skip-tutorial #t
-base-xp-multiplier 4.0
+base-xp-multiplier 1.0
 
 # Phone quest...
 want-phone-quest #f
