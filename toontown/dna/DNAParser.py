@@ -1621,7 +1621,7 @@ p_suitpoint.__doc__ = \
 
 def p_suitpointtype(p):
     pointTypeStr = p[1]
-    if pointTypeStr == 'SREET_POINT':
+    if pointTypeStr == 'STREET_POINT':
         p[0] = DNASuitPoint.STREET_POINT
     elif pointTypeStr == 'FRONT_DOOR_POINT':
         p[0] = DNASuitPoint.FRONT_DOOR_POINT
