@@ -48,12 +48,12 @@ class SuitLeg:
         return self.startTime
 
     def getLegTime(self):
+        if self.getType() == SuitLeg.TWalk:  # Most common.
+            return self.legTime
         if self.getType() == SuitLeg.TFromSky:
             return SuitTimings.fromSky
         if self.getType() == SuitLeg.TToSky:
             return SuitTimings.toSky
-        if self.getType() == SuitLeg.TToSuitBuilding:
-            return SuitTimings.toSuitBuilding
         if self.getType() == SuitLeg.TToToonBuilding:
             return SuitTimings.toToonBuilding
         return self.legTime
@@ -124,8 +124,15 @@ class SuitLegList:
         leg = SuitLeg(startTime, zoneId, landmarkBuildingIndex, pointA, pointB, legType)
         self.legs.append(leg)
 
-    def getLegType(self, pointTypeA, pointTypeB):
+    def getFirstLegType(self):
+        pointTypeA = self.path.getPoint(0).getPointType()
         if pointTypeA == DNASuitPoint.STREET_POINT:
+            return SuitLeg.TFromSky
+        else:
+            return SuitLeg.TWalk
+
+    def getLegType(self, pointTypeA, pointTypeB):
+        if pointTypeA == DNASuitPoint.STREET_POINT:  # Most common.
             return SuitLeg.TWalk
         if pointTypeA == DNASuitPoint.FRONT_DOOR_POINT:
             return SuitLeg.TToToonBuilding
@@ -178,10 +185,3 @@ class SuitLegList:
                 return True
             legIndex += 1
         return False
-
-    def getFirstLegType(self):
-        pointTypeA = self.path.getPoint(0).getPointType()
-        if pointTypeA == DNASuitPoint.STREET_POINT:
-            return SuitLeg.TFromSky
-        else:
-            return SuitLeg.TWalk
