@@ -535,11 +535,11 @@ class SuitPlannerBase:
         numPoints = self.dnaStore.getNumSuitPoints()
         for i in xrange(numPoints):
             point = self.dnaStore.getSuitPointAtIndex(i)
-            if point.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
+            if point.getPointType() == DNASuitPoint.FRONT_DOOR_POINT:
                 self.frontdoorPointList.append(point)
-            elif point.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+            elif point.getPointType() == DNASuitPoint.SIDE_DOOR_POINT:
                 self.sidedoorPointList.append(point)
-            elif (point.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']) or (point.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']):
+            elif (point.getPointType() == DNASuitPoint.COGHQ_IN_POINT) or (point.getPointType() == DNASuitPoint.COGHQ_OUT_POINT):
                 self.cogHQDoorPointList.append(point)
             else:
                 self.streetPointList.append(point)
