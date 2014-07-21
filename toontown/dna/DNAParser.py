@@ -441,7 +441,7 @@ class DNASuitPoint:
         elif pointType == DNASuitPoint.COGHQ_IN_POINT:
             pointTypeStr = 'COGHQ_IN_POINT'
         elif pointType == DNASuitPoint.COGHQ_OUT_POINT:
-            pointTypeStr = 'COGHQ_OUT_POINt'
+            pointTypeStr = 'COGHQ_OUT_POINT'
         else:
             pointTypeStr = '**invalid**'
         return 'DNASuitPoint index: {0}, pointType: {1}, pos: {2}'.format(
