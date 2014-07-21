@@ -184,4 +184,6 @@ class SuitLegList:
             if (leg.pointA == point) or (leg.pointB == point):
                 return True
             legIndex += 1
+        else:
+            return True
         return False
