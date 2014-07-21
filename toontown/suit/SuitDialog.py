@@ -1,20 +1,22 @@
-import random
 from direct.directnotify import DirectNotifyGlobal
+import random
+
 from otp.otpbase import OTPLocalizer
-from toontown.toonbase import TTLocalizer
+
+
 notify = DirectNotifyGlobal.directNotify.newCategory('SuitDialog')
 
+
 def getBrushOffIndex(suitName):
-    if SuitBrushOffs.has_key(suitName):
+    if suitName in SuitBrushOffs:
         brushoffs = SuitBrushOffs[suitName]
     else:
         brushoffs = SuitBrushOffs[None]
-    choice = random.choice(brushoffs)
-    return brushoffs.index(choice)
+    return random.randrange(len(brushoffs))
 
 
 def getBrushOffText(suitName, index):
-    if SuitBrushOffs.has_key(suitName):
+    if suitName in SuitBrushOffs:
         brushoffs = SuitBrushOffs[suitName]
     else:
         brushoffs = SuitBrushOffs[None]
