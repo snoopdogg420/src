@@ -113,7 +113,7 @@ class SuitLegList:
         self.add(endPoint, endPoint, SuitLeg.TToSky)
 
     def add(self, pointA, pointB, legType):
-        if pointA != pointB:  # The last SuitLeg will have identical points.
+        if pointA != pointB:  # If not, we'll have to get our zone ID a different way.
             zoneId = self.dnaStore.getSuitEdgeZone(pointA.getIndex(), pointB.getIndex())
         else:
             zoneId = self.dnaStore.suitEdges[pointA.getIndex()][0].getZoneId()
@@ -125,8 +125,7 @@ class SuitLegList:
         self.legs.append(leg)
 
     def getFirstLegType(self):
-        pointTypeA = self.path.getPoint(0).getPointType()
-        if pointTypeA == DNASuitPoint.STREET_POINT:
+        if self.path.getPoint(0).getPointType() == DNASuitPoint.STREET_POINT:
             return SuitLeg.TFromSky
         else:
             return SuitLeg.TWalk
