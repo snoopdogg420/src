@@ -52,8 +52,6 @@ class SuitLeg:
             return SuitTimings.fromSky
         if self.getType() == SuitLeg.TToSky:
             return SuitTimings.toSky
-        if self.getType() == SuitLeg.TFromSuitBuilding:
-            return SuitTimings.fromSuitBuilding
         if self.getType() == SuitLeg.TToSuitBuilding:
             return SuitTimings.toSuitBuilding
         if self.getType() == SuitLeg.TToToonBuilding:
@@ -131,8 +129,6 @@ class SuitLegList:
             return SuitLeg.TWalk
         if pointTypeA == DNASuitPoint.FRONT_DOOR_POINT:
             return SuitLeg.TToToonBuilding
-        if pointTypeA == DNASuitPoint.SIDE_DOOR_POINT:
-            return SuitLeg.TFromSuitBuilding
         if pointTypeA == DNASuitPoint.COGHQ_IN_POINT:
             return SuitLeg.TToCogHQ
         if pointTypeA == DNASuitPoint.COGHQ_OUT_POINT:
@@ -187,7 +183,5 @@ class SuitLegList:
         pointTypeA = self.path.getPoint(0).getPointType()
         if pointTypeA == DNASuitPoint.STREET_POINT:
             return SuitLeg.TFromSky
-        if pointTypeA == DNASuitPoint.COGHQ_OUT_POINT:
-            return SuitLeg.TFromCogHQ
-        pointTypeB = self.path.getPoint(1).getPointType()
-        return self.getLegType(pointTypeA, pointTypeB)
+        else:
+            return SuitLeg.TWalk
