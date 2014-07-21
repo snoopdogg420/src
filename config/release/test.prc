@@ -64,7 +64,7 @@ want-daisys-garden #t
 want-minnies-melodyland #t
 want-the-burrrgh #t
 want-donalds-dreamland #t
-want-goofy-speedway #t
+want-goofy-speedway #f
 want-outdoor-zone #t
 want-golf-zone #t
 
@@ -172,9 +172,9 @@ want-resistance-money #t
 want-resistance-dance #f
 
 # Picnic table board games...
-want-game-tables #t
-want-checkers #t
-want-chinese-checkers #t
+want-game-tables #f
+want-checkers #f
+want-chinese-checkers #f
 want-find-four #f
 
 # True friends...
@@ -185,7 +185,7 @@ allow-secret-chat #t
 want-fishing #t
 want-housing #f
 want-pets #f
-want-karts #t
+want-karts #f
 want-parties #f
 want-cogdominiums #f
 want-boarding-groups #t
@@ -205,7 +205,7 @@ want-yin-yang #t
 # Developer options...
 want-dev #f
 want-tailor-jellybeans #f
-want-instant-parties #t
+want-instant-parties #f
 
 # Temporary...
 want-old-fireworks #t
