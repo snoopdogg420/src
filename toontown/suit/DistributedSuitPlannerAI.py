@@ -243,7 +243,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
     def createNewSuit(self, blockNumbers, streetPoints, toonBlockTakeover=None,
             cogdoTakeover=None, minPathLen=None, maxPathLen=None,
             buildingHeight=None, suitLevel=None, suitType=None, suitTrack=None,
-            suitName=None, skelecog=None, revives=None):
+            suitName=None, skelecog=None, revives=None, waiter=None):
         startPoint = None
         blockNumber = None
         if self.notify.getDebug():
@@ -294,7 +294,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                     del self.pendingBuildingHeights[0]
                     self.pendingBuildingHeights.append(buildingHeight)
         if suitName == None:
-            (suitName, suitTrack, skelecog, v2, waiter) = self.air.suitInvasionManager.getInvadingCog()
+            (suitName, suitTrack, skelecog, revives, waiter) = self.air.suitInvasionManager.getInvadingCog()
             if suitName == None:
                 suitName = self.defaultSuitName
         if suitType == None and suitName != None:
@@ -316,8 +316,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if skelecog:
             newSuit.setSkelecog(skelecog)
         newSuit.generateWithRequired(newSuit.zoneId)
-        if v2:
-            newSuit.b_setSkeleRevives(1)
+        if revives is not None:
+            newSuit.b_setSkeleRevives(revives)
         if waiter:
             newSuit.b_setWaiter(1)
         newSuit.d_setSPDoId(self.doId)
