@@ -36,6 +36,10 @@ want-cogdominiums #t
 want-achievements #t
 want-whitelist #t
 
+# Chat...
+parent-password-set #t
+allow-secret-chat #t
+
 # Districts...
 show-population #t
 show-total-population #t
@@ -59,6 +63,17 @@ want-treasure-planners #t
 want-suit-planners #t
 want-butterflies #f
 
+# Classic characters...
+want-classic-chars #f
+want-mickey #f
+want-donald-dock #f
+want-daisy #f
+want-minnie #f
+want-pluto #f
+want-donald-dreamland #f
+want-chip-and-dale #f
+want-goofy #f
+
 # Cog headquarters...
 want-cog-headquarters #t
 want-sellbot-headquarters #t
@@ -71,17 +86,6 @@ want-resistance-toonup #f
 want-resistance-restock #f
 want-resistance-money #t
 want-resistance-dance #f
-
-# Classic characters...
-want-classic-chars #f
-want-mickey #f
-want-donald-dock #f
-want-daisy #f
-want-minnie #f
-want-pluto #f
-want-donald-dreamland #f
-want-chip-and-dale #f
-want-goofy #f
 
 # Trolley minigames...
 want-minigames #t
@@ -103,10 +107,6 @@ want-2d-game #t
 want-photo-game #t
 want-travel-game #f
 force-minigame 0
-
-# Chat...
-parent-password-set #t
-allow-secret-chat #t
 
 # Cog buildings...
 want-cogbuildings #t
