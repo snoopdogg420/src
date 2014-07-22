@@ -1,20 +1,30 @@
-from otp.ai.MagicWordGlobal import *
+from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
 from toontown.building import FADoorCodes
+from otp.ai.MagicWordGlobal import *
 from toontown.hood import ZoneUtil
 from toontown.quest import Quests
-from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
-import random
+
+QuestIdIndex = 0
+QuestFromNpcIdIndex = 1
+QuestToNpcIdIndex = 2
+QuestRewardIdIndex = 3
+QuestProgressIndex = 4
 
 class QuestManagerAI:
     def __init__(self, air):
         self.air = air
 
     def requestInteract(self, avId, npc):
+        # Get the avatar.
         av = self.air.doId2do.get(avId)
         if not av:
             return
+
+        # Get the avatars pocket size and current quests.
         avQuestPocketSize = av.getQuestCarryLimit()
         avQuests = av.getQuests()
+
+        # Iterate through their quests.
         for i in xrange(0, len(avQuests), 5):
             questDesc = avQuests[i:i + 5]
             questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
@@ -23,122 +33,158 @@ class QuestManagerAI:
                 completeStatus = questClass.getCompletionStatus(av, questDesc, npc)
             else:
                 continue
+
+            # If the quest is a DeliverGagQuest, add the gags.
             if isinstance(questClass, Quests.DeliverGagQuest):
+                # Check if it's the required NPC.
                 if npc.npcId == toNpcId:
+                    # Add progress.
                     questList = []
                     progress = questClass.removeGags(av)
+
                     for i in xrange(0, len(avQuests), 5):
                         questDesc = avQuests[i:i + 5]
-                        if questDesc[0] == questId:
-                            questDesc[4] += progress
-                            if questDesc[4] >= questClass.getNumGags():
+                        if questDesc[QuestIdIndex] == questId:
+                            questDesc[QuestProgressIndex] += progress
+                            if questDesc[QuestProgressIndex] >= questClass.getNumGags():
                                 completeStatus = Quests.COMPLETE
                         questList.append(questDesc)
                     av.b_setQuests(questList)
+
                     if completeStatus != Quests.COMPLETE:
                         continue
+
+            # If they've completed a quest.
             if completeStatus == Quests.COMPLETE:
+                # ToonUp the toon to max health.
                 av.toonUp(av.maxHp)
+
+                # If it's a TrackChoiceQuest then present their track choices.
                 if isinstance(questClass, Quests.TrackChoiceQuest):
                     npc.presentTrackChoice(avId, questId, questClass.getChoices())
                     break
+                # If there is another part to this quest then give them that.
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
                     self.nextQuest(av, npc, questId)
+                    break
                 else:
+                    # The toon has completed this quest. Give them a reward!
                     npc.completeQuest(avId, questId, rewardId)
                     self.completeQuest(av, questId)
-                if isinstance(npc, DistributedNPCSpecialQuestGiverAI):
-                    if npc.tutorial and (npc.npcId == 20002):
-                        messenger.send('intHqDoor0-{0}'.format(npc.zoneId), [FADoorCodes.WRONG_DOOR_HQ])
-                        messenger.send('intHqDoor1-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
-                        streetZone = self.air.tutorialManager.currentAllocatedZones[avId][0]
-                        messenger.send('extHqDoor0-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
-                        messenger.send('extHqDoor1-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
-                        messenger.send('extShopDoor-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+                self.openTutorialDoors(avId, npc)
                 break
         else:
+            # They haven't completed any quests so we have to give them choices.
+            # If they've got a full pouch then reject them.
             if (len(avQuests) == avQuestPocketSize*5):
-                #Full quests!
                 npc.rejectAvatar(avId)
                 return
             elif isinstance(npc, DistributedNPCSpecialQuestGiverAI):
-                #Tutorial
-                choices = self.avatarQuestChoice(av, npc)
-                quest = choices[0]
-                self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
-                if npc.tutorial:
-                    if npc.npcId == 20000:
-                        messenger.send('intShopDoor-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
+                # Don't display choices. Force a choice.
+                self.tutorialQuestChoice(avId, npc)
                 return
             else:
                 #Present quest choices.
                 choices = self.avatarQuestChoice(av, npc)
                 if choices != []:
                     npc.presentQuestChoice(avId, choices)
-                    return
                 else:
                     npc.rejectAvatar(avId)
-                    return
 
     def avatarQuestChoice(self, av, npc):
+        # Get the best quests for an avatar/npc.
         return Quests.chooseBestQuests(av.getRewardTier(), npc, av)
 
     def avatarChoseQuest(self, avId, npc, questId, rewardId, toNpcId):
+        # Get the avatar.
         av = self.air.doId2do.get(avId)
         if not av:
             return
+
+        # Get the npcIds
         fromNpcId = npc.npcId
         if toNpcId == 0:
             toNpcId = Quests.getQuestToNpcId(questId)
+
+        # Add the quest to the avatars list.
         transformedRewardId = Quests.transformReward(rewardId, av)
         av.addQuest([questId, fromNpcId, toNpcId, rewardId, 0], transformedRewardId)
+
+        # Remove the tasks for timeout.
+        taskMgr.remove(npc.uniqueName('clearMovie'))
+
+        # Assign the quest.
         npc.assignQuest(avId, questId, rewardId, toNpcId)
 
     def avatarChoseTrack(self, avId, npc, pendingTrackQuest, trackId):
+        # Get the avatar.
         av = self.air.doId2do.get(avId)
         if not av:
             return
+
+        # Remove the tasks for timeout.
+        taskMgr.remove(npc.uniqueName('clearMovie'))
+
+        # Show the completion movie and remove the task.
         npc.completeQuest(avId, pendingTrackQuest, Quests.getRewardIdFromTrackId(trackId))
         self.completeQuest(av, pendingTrackQuest)
+
+        # Set their track their working on.
         av.b_setTrackProgress(trackId, 0)
 
     def avatarCancelled(self, npcId):
+        # Get the NPC.
         npc = self.air.doId2do.get(npcId)
         if not npc:
             return
+
+        # Remove the task for timeout.
         taskMgr.remove(npc.uniqueName('clearMovie'))
 
     def nextQuest(self, av, npc, questId):
-        nextQuestId = Quests.getNextQuest(questId, npc, av)
-        avQuests = av.getQuests() #Flattened Quests.
-        questList = [] #Unflattened Quests.
+        # Get the next QuestId and toNpcId.
+        nextQuestId, toNpcId = Quests.getNextQuest(questId, npc, av)
+
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
+
+        # Iterate through their current quests.
         for i in xrange(0, len(avQuests), 5):
             questDesc = avQuests[i:i + 5]
-            if questDesc[0] == questId:
-                questDesc[0] = nextQuestId[0]
-                questDesc[2] = nextQuestId[1]
-                questDesc[4] = 0
+
+            if questDesc[QuestIdIndex] == questId:
+                questDesc[QuestIdIndex] = nextQuestId
+                questDesc[QuestToNpcIdIndex] = toNpcId
+                questDesc[QuestProgressIndex] = 0
             questList.append(questDesc)
-        npc.incompleteQuest(av.doId, nextQuestId[0], Quests.QUEST, nextQuestId[1])
+
+        # Show the quest movie and set their quests.
+        npc.incompleteQuest(av.doId, nextQuestId, Quests.QUEST, toNpcId)
         av.b_setQuests(questList)
 
     def completeQuest(self, av, completeQuestId):
+        #Get the avatars current quests.
         avQuests = av.getQuests()
+
+        # Iterate through their current quests.
         for i in xrange(0, len(avQuests), 5):
             questDesc = avQuests[i:i + 5]
             questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
             questClass = Quests.getQuest(questId)
+
             if questId == completeQuestId:
                 av.removeQuest(questId)
                 self.giveReward(av, questId, rewardId)
-                self.avatarProgressTier(av)
+                self.avatarConsiderProgressTier(av)
                 break
 
     def giveReward(self, av, questId, rewardId):
-        # Actual reward giving.
+        # Give the reward.
         rewardClass = Quests.getReward(rewardId)
         rewardClass.sendRewardAI(av)
 
+        # Add the rewardId to the avatars rewardHistory.
         rewardTier, rewardHistory = av.getRewardHistory()
         transformedRewardId = Quests.transformReward(rewardId, av)
         if transformedRewardId != rewardId:
@@ -146,62 +192,113 @@ class QuestManagerAI:
 
         av.b_setRewardHistory(rewardTier, rewardHistory)
 
-    def avatarProgressTier(self, av):
-        currentTier = av.getRewardHistory()[0]
+    def avatarConsiderProgressTier(self, av):
+        # Get the avatars current tier.
+        currentTier = av.getRewardTier()
+
+        # Check if they have all required rewards.
         if Quests.avatarHasAllRequiredRewards(av, currentTier):
             if currentTier != Quests.ELDER_TIER:
                 currentTier += 1
             av.b_setRewardHistory(currentTier, [])
 
+    def openTutorialDoors(self, avId, npc):
+        # Opens the hq-exit doors after talking to HQ-Harry.
+        if isinstance(npc, DistributedNPCSpecialQuestGiverAI):
+            if npc.tutorial and (npc.npcId == 20002):
+                messenger.send('intHqDoor0-{0}'.format(npc.zoneId), [FADoorCodes.WRONG_DOOR_HQ])
+                messenger.send('intHqDoor1-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
+                streetZone = self.air.tutorialManager.currentAllocatedZones[avId][0]
+                messenger.send('extHqDoor0-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+                messenger.send('extHqDoor1-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+                messenger.send('extShopDoor-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
+
+    def tutorialQuestChoice(self, avId, npc):
+        # Get the avatar.
+        av = self.air.doId2do.get(avId)
+        if not av:
+            return
+
+        # Get the possible quest choices and force the player to choose it.
+        choices = self.avatarQuestChoice(av, npc)
+        quest = choices[0]
+
+        self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
+
+        # If its the tutorial introduction. Open the shop doors.
+        if npc.tutorial:
+            if npc.npcId == 20000:
+                messenger.send('intShopDoor-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
+
     def toonRodeTrolleyFirstTime(self, av):
+        # Toon played a minigame.
         self.toonPlayedMinigame(av, [])
 
     def toonPlayedMinigame(self, av, toons):
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
+
+        # Iterate through their current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.TrolleyQuest):
-                questDesc[4] = 1
+                questDesc[QuestProgressIndex] = 1
             questList.append(questDesc)
+
         av.b_setQuests(questList)
 
     def toonMadeFriend(self, avId):
+        # Get the avatar.
         av = self.air.doId2do.get(avId)
         if not av:
             return
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
+
+        # Iterate through their current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.FriendQuest):
-                questDesc[4] = 1
+                questDesc[QuestProgressIndex] = 1
             questList.append(questDesc)
+
         av.b_setQuests(questList)
 
     def toonUsedPhone(self, avId):
+        # Get the avatar.
         av = self.air.doId2do.get(avId)
         if not av:
             return
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
+
+        # Iterate through their current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.PhoneQuest):
-                questDesc[4] += 1
+                questDesc[QuestProgressIndex] += 1
             questList.append(questDesc)
+
         av.b_setQuests(questList)
 
     def toonCaughtFishingItem(self, av):
-        flattenedQuests = av.getQuests()
-        questList = []
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
         fishingItem = -1
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+        questList = []
+
+        # Iterate through their current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if fishingItem != -1:
                 questList.append(questDesc)
                 continue
@@ -212,107 +309,128 @@ class QuestManagerAI:
                 if questClass.getHolder() == Quests.AnyFish:
                     if not questClass.getCompletionStatus(av, questDesc) == Quests.COMPLETE:
                         baseChance = questClass.getPercentChance()
-                        amountRemaining = questClass.getNumItems() - questDesc[4]
+                        amountRemaining = questClass.getNumItems() - questDesc[QuestProgressIndex]
                         chance = Quests.calcRecoverChance(amountRemaining, baseChance)
                         if chance >= baseChance:
-                            questDesc[4] += 1
+                            questDesc[QuestProgressIndex] += 1
                             fishingItem = questClass.getItem()
             questList.append(questDesc)
+
         av.b_setQuests(questList)
         return fishingItem
 
     def hasTailorClothingTicket(self, av, npc):
-        flattenedQuests = av.getQuests()
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+
+        # Iterate through their current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.DeliverItemQuest):
                 if questClass.getCompletionStatus(av, questDesc, npc) == Quests.COMPLETE:
+                    # They have a clothing ticket.
                     return 1
         return 0
 
     def removeClothingTicket(self, av, npc):
-        flattenedQuests = av.getQuests()
-        questList = []
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+
+        # Iterate through their current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.DeliverItemQuest):
                 if questClass.getCompletionStatus(av, questDesc, npc) == Quests.COMPLETE:
-                    av.removeQuest(questDesc[0])
+                    av.removeQuest(questDesc[QuestIdIndex])
                     break
 
     def recoverItems(self, av, suitsKilled, taskZoneId):
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
         recoveredItems = []
         unrecoveredItems = []
         taskZoneId = ZoneUtil.getBranchZone(taskZoneId)
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+
+        # Iterate through the avatars current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if questClass.getCompletionStatus(av, questDesc) == Quests.INCOMPLETE:
                 if isinstance(questClass, Quests.CogQuest):
                     for suit in suitsKilled:
                         if questClass.doesCogCount(av.doId, suit, taskZoneId, suit['activeToons']):
-                            questDesc[4] += 1
+                            questDesc[QuestProgressIndex] += 1
                 elif isinstance(questClass, Quests.RecoverItemQuest):
                     if questClass.getHolder() != Quests.AnyFish:
                         for suit in suitsKilled:
                             if questClass.doesCogCount(av.doId, suit, taskZoneId, suit['activeToons']):
                                 baseChance = questClass.getPercentChance()
-                                amountRemaining = questClass.getNumItems() - questDesc[4]
+                                amountRemaining = questClass.getNumItems() - questDesc[QuestProgressIndex]
                                 chance = Quests.calcRecoverChance(amountRemaining, baseChance)
                                 if chance >= baseChance:
-                                    questDesc[4] += 1
+                                    questDesc[QuestProgressIndex] += 1
                                     recoveredItems.append(questClass.getItem())
                                 else:
                                     unrecoveredItems.append(questClass.getItem())
             questList.append(questDesc)
+
         av.b_setQuests(questList)
         return (recoveredItems, unrecoveredItems)
 
     def toonKilledBuilding(self, av, type, difficulty, floors, zoneId, activeToons):
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
         zoneId = ZoneUtil.getBranchZone(zoneId)
-        recoveredItems = []
-        unrecoveredItems = []
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+
+        # Iterate through the avatars current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if questClass.getCompletionStatus(av, questDesc) == Quests.INCOMPLETE:
                 if isinstance(questClass, Quests.BuildingQuest):
                     if questClass.isLocationMatch(zoneId):
                         if questClass.doesBuildingTypeCount(type):
                             if questClass.doesBuildingCount(av, activeToons):
                                 if floors >= questClass.getNumFloors():
-                                    questDesc[4] += 1
+                                    questDesc[QuestProgressIndex] += 1
             questList.append(questDesc)
+
         av.b_setQuests(questList)
 
     def toonDefeatedFactory(self, av, factoryId, activeVictors):
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
+
+        # Iterate through the avatars current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.FactoryQuest):
                 if questClass.doesFactoryCount(av, factoryId, activeVictors):
-                    questDesc[4] += 1
+                    questDesc[QuestProgressIndex] += 1
             questList.append(questDesc)
+
         av.b_setQuests(questList)
 
     def toonDefeatedMint(self, av, mintId, activeVictors):
-        flattenedQuests = av.getQuests()
-        questList = [] #unflattened
-        for i in xrange(0, len(flattenedQuests), 5):
-            questDesc = flattenedQuests[i : i + 5]
-            questClass = Quests.getQuest(questDesc[0])
+        # Get the avatars current quests.
+        avQuests = av.getQuests()
+        questList = []
+
+        # Iterate through the avatars current quests.
+        for i in xrange(0, len(avQuests), 5):
+            questDesc = avQuests[i : i + 5]
+            questClass = Quests.getQuest(questDesc[QuestIdIndex])
             if isinstance(questClass, Quests.MintQuest):
                 if questClass.doesMintCount(av, mintId, activeVictors):
-                    questDesc[4] += 1
+                    questDesc[QuestProgressIndex] += 1
             questList.append(questDesc)
+
         av.b_setQuests(questList)
 
     def toonDefeatedStage(self, av, stageId, activeVictors):
