@@ -20,6 +20,9 @@ class DistributedFishingTargetAI(DistributedNodeAI):
     def generate(self):
         DistributedNodeAI.generate(self)
         self.updateState()
+        if not self.pondId:
+            #We dont have a pond ID for some reason...
+            return
         pond = self.air.doId2do[self.pondId]
         pond.addTarget(self)
         self.centerPoint = FishingTargetGlobals.getTargetCenter(pond.getArea())
