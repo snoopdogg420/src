@@ -13,7 +13,7 @@ def isClosetAlmostFull(av):
 class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
     freeClothes = simbase.config.GetBool('free-clothes', 0)
     housingEnabled = simbase.config.GetBool('want-housing', 1)
-    useJellybeans = simbase.config.GetBool('want-tailor-jellybeans', True)
+    useJellybeans = simbase.config.GetBool('want-tailor-jellybeans', False)
 
     def __init__(self, air, npcId):
         DistributedNPCToonBaseAI.__init__(self, air, npcId)
@@ -22,10 +22,10 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
         self.customerDNA = None
         self.customerId = None
         self.jbCost = 150
-        
+
         if self.freeClothes:
             self.useJellybeans = False
-        
+
         return
 
     def getTailor(self):
@@ -53,22 +53,22 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
         self.customerId = avId
         av.b_setDNAString(self.customerDNA.makeNetString())
         self.acceptOnce(self.air.getAvatarExitEvent(avId), self.__handleUnexpectedExit, extraArgs=[avId])
-        
+
         if self.useJellybeans:
             flag = NPCToons.PURCHASE_MOVIE_START_BROWSE_JBS
         else:
             flag = NPCToons.PURCHASE_MOVIE_START_BROWSE
-        
+
         if self.freeClothes:
             flag = NPCToons.PURCHASE_MOVIE_START
         elif self.useJellybeans and self.hasEnoughJbs(av):
             flag = NPCToons.PURCHASE_MOVIE_START
         elif self.air.questManager.hasTailorClothingTicket(av, self):
             flag = NPCToons.PURCHASE_MOVIE_START
-        
+
         if self.housingEnabled and isClosetAlmostFull(av):
             flag = NPCToons.PURCHASE_MOVIE_START_NOROOM
-        
+
         self.sendShoppingMovie(avId, flag)
         DistributedNPCToonBaseAI.avatarEnter(self)
 
@@ -77,7 +77,7 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
         if numClothes >= av.maxClothes - 1:
             return 1
         return 0
-        
+
     def hasEnoughJbs(self, av):
         if av.getTotalMoney() >= self.jbCost:
             return True
