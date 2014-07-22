@@ -4789,7 +4789,24 @@ def avatarWorkingOnRequiredRewards(av):
 
 
 def avatarHasAllRequiredRewards(av, tier):
+    # Get the reward history.
     rewardHistory = list(av.getRewardHistory()[1])
+
+    # Delete quests we're working on from the reward History.
+    avQuests = av.getQuests()
+
+    # Iterate through the current quests.
+    for i in xrange(0, len(avQuests), 5):
+        questDesc = avQuests[i:i + 5]
+        questId, fromNpcId, toNpcId, rewardId, toonProgress = questDesc
+        transformedRewardId = transformReward(rewardId, av)
+
+        if rewardId in rewardHistory:
+            rewardHistory.remove(rewardId)
+
+        if transformedRewardId in rewardHistory:
+            rewardHistory.remove(transformedRewardId)
+
     rewardList = getRewardsInTier(tier)
     notify.debug('checking avatarHasAllRequiredRewards: history: %s, tier: %s' % (rewardHistory, rewardList))
     for rewardId in rewardList:
