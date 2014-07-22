@@ -23,6 +23,10 @@ want-cogdominiums #f
 want-achievements #f
 want-whitelist #f
 
+# Districts...
+shard-low-pop 50
+shard-mid-pop 100
+
 # Picnic table board games...
 want-find-four #f
 
