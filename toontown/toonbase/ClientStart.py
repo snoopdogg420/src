@@ -4,6 +4,7 @@ import __builtin__
 
 
 if __debug__:
+    loadPrcFile('config/general.prc')
     loadPrcFile('config/release/dev.prc')
 
 
