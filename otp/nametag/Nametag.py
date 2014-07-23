@@ -3,6 +3,12 @@ import NametagGlobals
 from otp.margins.ClickablePopup import ClickablePopup
 from pandac.PandaModules import *
 
+def logDecorator(func):
+    def runFunc(*args, **kwargs):
+        print "Calling %s.%s with arguments: %s, %s" %(func.__module__, func.__name__, str(args), str(kwargs))
+        func(*args, **kwargs)
+    return runFunc
+
 class Nametag(ClickablePopup):
     CName = 1
     CSpeech = 2
@@ -42,6 +48,7 @@ class Nametag(ClickablePopup):
         self.chatString = ''
         self.chatFlags = 0
 
+        self.balloon = None
         self.balloonActive = False
 
     def destroy(self):
@@ -93,6 +100,8 @@ class Nametag(ClickablePopup):
                                    balloonColor=color, wordWrap=self.chatWordWrap,
                                    button=self.getButton())
         balloon.reparentTo(self.innerNP)
+        self.balloon = balloon
+        self.balloonText = text
         self.balloonActive = True
 
     def showThought(self):
@@ -133,4 +142,8 @@ class Nametag(ClickablePopup):
         panel.setScale(width + self.NAME_PADDING, 1, height + self.NAME_PADDING)
         panel.setColor(self.nameBg)
         panel.setTransparency(self.nameBg[3] < 1.0)
+
+        # Reset chat balloon variables:
+        self.balloon = None
+        self.balloonText = None
         self.balloonActive = False

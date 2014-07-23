@@ -50,14 +50,19 @@ class Nametag3d(Nametag):
 
         # As 3D nametags can move around on their own, we need to update the
         # click frame constantly:
-        self.updateClickRegion(-1, 1, -1, 1)
-
-        #if self.balloonActive:
-        #    self.rightCorner = max(self.innerNP.find('**/text').node().getWidth() / 2.63, 1)
-        #    self.topEdge = max(self.innerNP.find('**/text').node().getHeight() / 1.3, 1)
-        #    self.updateClickRegion(-0.1, self.rightCorner, 0.2, self.topEdge)
-        #else:
-        #    self.updateClickRegion(-1, 1, -1, 1)
+        if self.balloon:
+            t = TextNode('text')
+            t.setFont(self.font)
+            t.setWordwrap(self.chatWordWrap)
+            t.setText(self.balloonText)
+            width = t.getWidth()/3.25
+            height = t.getHeight()*(8.0/11)
+            width = max(0.475, width)
+            print width
+            print t.getHeight()
+            self.updateClickRegion(0, width, 3.0/11, height)
+        else:
+            self.updateClickRegion(-1, 1, -0.35, 0.30)
 
     def getSpeechBalloon(self):
         return NametagGlobals.speechBalloon3d
