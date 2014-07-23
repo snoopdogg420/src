@@ -439,7 +439,7 @@ class QuestManagerAI:
     def toonKilledCogs(self, av, suitsKilled, zoneId, activeToonList):
         pass
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int])
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
 def quests(command, arg0=0, arg1=0):
     target = spellbook.getTarget()
     currQuests = target.getQuests()
