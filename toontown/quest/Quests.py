@@ -3606,30 +3606,21 @@ def chooseTrackChoiceQuest(tier, av, fixed = 0):
             notify.warning('av %s has bogus trackAccess: %s' % (av.getDoId(), trackAccess))
             return fixAndCallAgain()
     elif tier == BR_TIER:
-        if trackAccess[ToontownBattleGlobals.TRAP_TRACK] == 1:
-            if trackAccess[ToontownBattleGlobals.SOUND_TRACK] == 1:
-                if trackAccess[ToontownBattleGlobals.DROP_TRACK] == 1:
-                    bestQuest = 5004
-                elif trackAccess[ToontownBattleGlobals.LURE_TRACK] == 1:
-                    bestQuest = 5003
-                else:
-                    notify.warning('av %s has bogus trackAccess: %s' % (av.getDoId(), trackAccess))
-                    return fixAndCallAgain()
-            elif trackAccess[ToontownBattleGlobals.HEAL_TRACK] == 1:
-                if trackAccess[ToontownBattleGlobals.DROP_TRACK] == 1:
-                    bestQuest = 5002
-                elif trackAccess[ToontownBattleGlobals.LURE_TRACK] == 1:
-                    bestQuest = 5001
-                else:
-                    notify.warning('av %s has bogus trackAccess: %s' % (av.getDoId(), trackAccess))
-                    return fixAndCallAgain()
-        elif trackAccess[ToontownBattleGlobals.SOUND_TRACK] == 0:
+        if trackAccess[ToontownBattleGlobals.SOUND_TRACK] + trackAccess[ToontownBattleGlobals.DROP_TRACK] == 0:
+            bestQuest = 5001
+        elif trackAccess[ToontownBattleGlobals.SOUND_TRACK] + trackAccess[ToontownBattleGlobals.LURE_TRACK] == 0:
+            bestQuest = 5002
+        elif trackAccess[ToontownBattleGlobals.HEAL_TRACK] + trackAccess[ToontownBattleGlobals.DROP_TRACK] == 0:
+            bestQuest = 5003
+        elif trackAccess[ToontownBattleGlobals.HEAL_TRACK] + trackAccess[ToontownBattleGlobals.LURE_TRACK] == 0:
+            bestQuest = 5004
+        elif trackAccess[ToontownBattleGlobals.TRAP_TRACK] + trackAccess[ToontownBattleGlobals.SOUND_TRACK] == 0:
             bestQuest = 5005
-        elif trackAccess[ToontownBattleGlobals.HEAL_TRACK] == 0:
+        elif trackAccess[ToontownBattleGlobals.TRAP_TRACK] + trackAccess[ToontownBattleGlobals.HEAL_TRACK] == 0:
             bestQuest = 5006
-        elif trackAccess[ToontownBattleGlobals.DROP_TRACK] == 0:
+        elif trackAccess[ToontownBattleGlobals.TRAP_TRACK] + trackAccess[ToontownBattleGlobals.DROP_TRACK] == 0:
             bestQuest = 5007
-        elif trackAccess[ToontownBattleGlobals.LURE_TRACK] == 0:
+        elif trackAccess[ToontownBattleGlobals.TRAP_TRACK] + trackAccess[ToontownBattleGlobals.LURE_TRACK] == 0:
             bestQuest = 5008
         else:
             notify.warning('av %s has bogus trackAccess: %s' % (av.getDoId(), trackAccess))
