@@ -23,6 +23,10 @@ class Nametag3d(Nametag):
         self.bbOffset = self.BILLBOARD_OFFSET
         self._doBillboard()
 
+        self.textNode = TextNode('text')
+        self.textNode.setFont(self.font)
+        self.textNode.setWordwrap(self.chatWordWrap)
+
     def _doBillboard(self):
         if self.SHOULD_BILLBOARD:
             self.innerNP.setEffect(BillboardEffect.make(
@@ -50,16 +54,11 @@ class Nametag3d(Nametag):
 
         # As 3D nametags can move around on their own, we need to update the
         # click frame constantly:
-        if self.balloon:
-            t = TextNode('text')
-            t.setFont(self.font)
-            t.setWordwrap(self.chatWordWrap)
-            t.setText(self.balloonText)
-            width = t.getWidth()/3.25
-            height = t.getHeight()*(8.0/11)
+        if self.balloonActive:
+            self.textNode.setText(self.balloonText)
+            width = self.textNode.getWidth()/3.25
+            height = self.textNode.getHeight()*(8.0/11)
             width = max(0.475, width)
-            print width
-            print t.getHeight()
             self.updateClickRegion(0, width, 3.0/11, height)
         else:
             self.updateClickRegion(-1, 1, -0.35, 0.30)
