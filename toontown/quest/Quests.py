@@ -3510,13 +3510,14 @@ def getAvatarRewardId(av, questId):
 
 
 def getNextQuest(id, currentNpc, av):
+    validTrackTiers = [MM_TIER, TB_TIER, DD_TIER, TT_TIER + 1]
     nextQuest = QuestDict[id][QuestDictNextQuestIndex]
     if nextQuest == NA:
         return (NA, NA)
     elif type(nextQuest) == type(()):
         nextReward = QuestDict[nextQuest[0]][QuestDictRewardIndex]
         nextNextQuest, nextNextToNpcId = getNextQuest(nextQuest[0], currentNpc, av)
-        if nextReward == 400 and nextNextQuest == NA:
+        if nextReward == 400 and nextNextQuest == NA and av.getRewardTier() in validTrackTiers:
             nextQuest = chooseTrackChoiceQuest(av.getRewardTier(), av)
         else:
             nextQuest = random.choice(nextQuest)
