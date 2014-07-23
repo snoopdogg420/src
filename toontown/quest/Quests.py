@@ -3510,7 +3510,7 @@ def getAvatarRewardId(av, questId):
 
 
 def getNextQuest(id, currentNpc, av):
-    validTrackTiers = [MM_TIER, TB_TIER, DD_TIER, TT_TIER + 1]
+    validTrackTiers = [MM_TIER, BR_TIER, DD_TIER, TT_TIER + 1]
     nextQuest = QuestDict[id][QuestDictNextQuestIndex]
     if nextQuest == NA:
         return (NA, NA)
