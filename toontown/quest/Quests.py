@@ -446,7 +446,8 @@ class NewbieQuest:
         newbieHp = self.getNewbieLevel()
         num = 0
         for av in avList:
-            if av.getDoId() != avId and av.getMaxHp() <= newbieHp:
+            avatar = simbase.air.doId2do(av)
+            if avatar.getDoId() != avId and avatar.getMaxHp() <= newbieHp:
                 num += 1
 
         return num
