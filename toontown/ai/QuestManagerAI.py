@@ -20,9 +20,24 @@ class QuestManagerAI:
         if not av:
             return
 
-        # Get the avatars pocket size and current quests.
         avQuestPocketSize = av.getQuestCarryLimit()
         avQuests = av.getQuests()
+
+        needTrackTask = False
+        fakeTier = 0
+
+        avTrackProgress = av.getTrackProgress()
+        if avTrackProgress[0] == -1:
+            avQuestTier = av.getRewardTier()
+            if avQuestTier < Quests.DG_TIER and avQuestTier > Quests.DD_TIER:
+                fakeTier = Quests.DD_TIER
+                needTrackTask = True
+            elif avQuestTier < Quests.BR_TIER and avQuestTier > Quests.MM_TIER:
+                fakeTier = Quests.MM_TIER
+                needTrackTask = True
+            elif avQuestTier < Quests.DL_TIER and avQuestTier > Quests.BR_TIER:
+                fakeTier = Quests.BR_TIER
+                needTrackTask = True
 
         # Iterate through their quests.
         for i in xrange(0, len(avQuests), 5):
@@ -85,11 +100,18 @@ class QuestManagerAI:
                 return
             else:
                 #Present quest choices.
-                choices = self.avatarQuestChoice(av, npc)
+                if needTrackTask:
+                    choices = self.npcGiveTrackChoice(av, fakeTier)
+                else:
+                    choices = self.avatarQuestChoice(av, npc)
                 if choices != []:
                     npc.presentQuestChoice(avId, choices)
                 else:
                     npc.rejectAvatar(avId)
+
+    def npcGiveTrackChoice(self, av, tier):
+        trackQuest = Quests.chooseTrackChoiceQuest(tier, av)
+        return [(trackQuest, 400, Quests.ToonHQ)]
 
     def avatarQuestChoice(self, av, npc):
         # Get the best quests for an avatar/npc.
