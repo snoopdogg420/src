@@ -60,7 +60,7 @@ class Nametag3d(Nametag):
                 self.balloonHeight += 3.5/11
             self.updateClickRegion(0, self.balloonWidth, 3.5/11, self.balloonHeight)
         else:
-            self.updateClickRegion(-1, 1, -0.35, 0.30)
+            self.updateClickRegion(-1, 1, -0.15, 0.30)
 
     def getSpeechBalloon(self):
         return NametagGlobals.speechBalloon3d
