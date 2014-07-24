@@ -53,7 +53,12 @@ class Nametag3d(Nametag):
         # As 3D nametags can move around on their own, we need to update the
         # click frame constantly:
         if self.balloonActive:
-            self.updateClickRegion(0, self.balloonWidth, 3.0/11, self.balloonHeight)
+            widthScale = 0.35025*(math.sqrt(distance)/5.0)
+            self.balloonWidth = self.balloonTextNode.getWidth()*widthScale
+            self.balloonHeight = self.balloonTextNode.getHeight()*(8.0/11)
+            if self.balloonTextNode.getHeight() == 1:
+                self.balloonHeight += 3.5/11
+            self.updateClickRegion(0, self.balloonWidth, 3.5/11, self.balloonHeight)
         else:
             self.updateClickRegion(-1, 1, -0.35, 0.30)
 

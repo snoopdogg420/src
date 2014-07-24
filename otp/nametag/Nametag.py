@@ -105,9 +105,6 @@ class Nametag(ClickablePopup):
             self.balloonTextNode.setFont(self.font)
             self.balloonTextNode.setWordwrap(self.chatWordWrap)
             self.balloonTextNode.setText(text)
-            self.balloonWidth = self.balloonTextNode.getWidth()/3.5
-            self.balloonHeight = self.balloonTextNode.getHeight()*(8.0/11)
-            self.balloonWidth = max(0.475, self.balloonWidth)
         self.balloonActive = True
 
     def showThought(self):
