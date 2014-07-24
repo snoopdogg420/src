@@ -93,6 +93,11 @@ class Nametag(ClickablePopup):
                                    balloonColor=color, wordWrap=self.chatWordWrap,
                                    button=self.getButton())
         balloon.reparentTo(self.innerNP)
+
+        if hasattr(self, 'balloonTextNode'):
+            self.balloonTextNode.setFont(self.font)
+            self.balloonTextNode.setWordwrap(self.chatWordWrap)
+            self.balloonTextNode.setText(text)
         self.balloonActive = True
 
     def showThought(self):
@@ -133,4 +138,5 @@ class Nametag(ClickablePopup):
         panel.setScale(width + self.NAME_PADDING, 1, height + self.NAME_PADDING)
         panel.setColor(self.nameBg)
         panel.setTransparency(self.nameBg[3] < 1.0)
+
         self.balloonActive = False
