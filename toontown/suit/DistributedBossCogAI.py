@@ -89,10 +89,11 @@ class DistributedBossCogAI(DistributedAvatarAI.DistributedAvatarAI):
 
     def removeToon(self, avId):
         av = self.air.doId2do.get(avId)
-        if av.getHp() <= 0:
-            if avId not in self.punishedToons:
-                self.air.cogSuitMgr.removeParts(av, self.deptIndex)
-                self.punishedToons.append(avId)
+        if not av is None:
+            if av.getHp() <= 0:
+                if avId not in self.punishedToons:
+                    self.air.cogSuitMgr.removeParts(av, self.deptIndex)
+                    self.punishedToons.append(avId)
 
         if avId in self.looseToons:
             self.looseToons.remove(avId)
