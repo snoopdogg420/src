@@ -5,7 +5,7 @@ distribution test
 model-path resources
 
 # Server...
-server-version SERVER_VERSION
+server-version test-v1.0.6
 server-force-ssl #f
 
 # Core features...
