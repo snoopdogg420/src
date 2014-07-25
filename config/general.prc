@@ -41,10 +41,9 @@ parent-password-set #t
 allow-secret-chat #t
 
 # Districts...
-show-population #t
 show-total-population #t
-shard-low-pop 150
-shard-mid-pop 300
+shard-low-pop 25
+shard-mid-pop 50
 
 # Safe zones...
 want-safe-zones #t

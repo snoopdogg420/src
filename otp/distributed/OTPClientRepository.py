@@ -39,8 +39,6 @@ from otp.otpbase import OTPLocalizer
 from otp.otpgui import OTPDialog
 from otp.uberdog import OtpAvatarManager
 from pandac.PandaModules import *
-from pandac.PandaModules import *
-
 
 class OTPClientRepository(ClientRepositoryBase):
     notify = directNotify.newCategory('OTPClientRepository')
@@ -439,20 +437,20 @@ class OTPClientRepository(ClientRepositoryBase):
         self.dclassesByName = {}
         self.dclassesByNumber = {}
         self.hashVal = 0
-        
+
         try:
             dcStream
-            
+
         except:
             pass
-            
+
         else:
             self.notify.info('Detected DC file stream, reading it...')
             dcFileNames = [dcStream]
-            
+
         if isinstance(dcFileNames, str):
             dcFileNames = [dcFileNames]
-            
+
         if dcFileNames is not None:
             for dcFileName in dcFileNames:
                 if isinstance(dcFileName, StringStream):
@@ -463,7 +461,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     self.notify.error('Could not read DC file.')
         else:
             dcFile.readAll()
-            
+
         self.hashVal = DCClassImports.hashVal
         for i in xrange(dcFile.getNumClasses()):
             dclass = dcFile.getClass(i)
@@ -819,9 +817,11 @@ class OTPClientRepository(ClientRepositoryBase):
 
     @report(types=['args', 'deltaStamp'], dConfigParam='teleport')
     def _shardsAreReady(self):
+        maxPop = config.GetInt('shard-mid-pop', 300)
         for shard in self.activeDistrictMap.values():
             if shard.available:
-                return True
+                if shard.avatarCount < maxPop:
+                    return True
         else:
             return False
 
@@ -1657,14 +1657,19 @@ class OTPClientRepository(ClientRepositoryBase):
         if len(self.activeDistrictMap.keys()) == 0:
             self.notify.info('no shards')
             return
+
+        maxPop = config.GetInt('shard-mid-pop', 300)
+
         # Join the least populated district.
         for shard in self.activeDistrictMap.values():
             if district:
                 if shard.avatarCount < district.avatarCount and shard.available:
-                    district = shard
+                    if shard.avatarCount < maxPop:
+                        district = shard
             else:
                 if shard.available:
-                    district = shard
+                    if shard.avatarCount < maxPop:
+                        district = shard
 
         if district is not None:
             self.notify.debug('chose %s: pop %s' % (district.name, district.avatarCount))
