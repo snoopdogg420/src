@@ -118,7 +118,7 @@ class TTAccount:
          'l3': 'addr3'}
         dict = self.accountData.dict
         for fieldName in dict.keys():
-            if fieldNameMap.has_key(fieldName):
+            if fieldName in fieldNameMap:
                 dict[fieldNameMap[fieldName]] = dict[fieldName]
                 del dict[fieldName]
 
@@ -170,7 +170,7 @@ class TTAccount:
         elif operation == 'create':
             pass
         elif operation == 'purchase':
-            if data.has_key('newPassword'):
+            if 'newPassword' in data:
                 pass
         else:
             self.notify.error("Internal TTAccount error: need to add 'required data' checking for %s operation" % operation)
@@ -194,7 +194,7 @@ class TTAccount:
         else:
             url.setPath('/%s.php' % op2Php[operation])
         body = ''
-        if data.has_key('accountName'):
+        if 'accountName' in data:
             if operation not in newWebOperations:
                 url.setQuery('n=%s' % URLSpec.quote(data['accountName']))
         serverFields = {'accountName': 'n',
@@ -225,7 +225,7 @@ class TTAccount:
         ignoredFields = ('ccType',)
         outBoundFields = {}
         for fieldName in data.keys():
-            if not serverFields.has_key(fieldName):
+            if fieldName not in serverFields:
                 if fieldName not in ignoredFields:
                     self.notify.error('unknown data field: %s' % fieldName)
             else:

@@ -439,20 +439,20 @@ class OTPClientRepository(ClientRepositoryBase):
         self.dclassesByName = {}
         self.dclassesByNumber = {}
         self.hashVal = 0
-        
+
         try:
             dcStream
-            
+
         except:
             pass
-            
+
         else:
             self.notify.info('Detected DC file stream, reading it...')
             dcFileNames = [dcStream]
-            
+
         if isinstance(dcFileNames, str):
             dcFileNames = [dcFileNames]
-            
+
         if dcFileNames is not None:
             for dcFileName in dcFileNames:
                 if isinstance(dcFileName, StringStream):
@@ -463,7 +463,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     self.notify.error('Could not read DC file.')
         else:
             dcFile.readAll()
-            
+
         self.hashVal = DCClassImports.hashVal
         for i in xrange(dcFile.getNumClasses()):
             dclass = dcFile.getClass(i)
@@ -904,9 +904,9 @@ class OTPClientRepository(ClientRepositoryBase):
         self.__currentAvId = 0
         self.stopHeartbeat()
         self.stopReaderPollTask()
-        if self.bootedIndex != None and OTPLocalizer.CRBootedReasons.has_key(self.bootedIndex):
+        if (self.bootedIndex is not None) and (self.bootedIndex in OTPLocalizer.CRBootedReasons):
             message = OTPLocalizer.CRBootedReasons[self.bootedIndex] % {'name': '???'}
-        elif self.bootedText != None:
+        elif self.bootedText is not None:
             message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
         else:
             message = OTPLocalizer.CRLostConnection
@@ -2117,7 +2117,7 @@ class OTPClientRepository(ClientRepositoryBase):
     def disableDoId(self, doId, ownerView=False):
         table, cache = self.getTables(ownerView)
         # Make sure the object exists
-        if table.has_key(doId):
+        if doId in table:
             # Look up the object
             distObj = table[doId]
             # remove the object from the dictionary
@@ -2136,7 +2136,7 @@ class OTPClientRepository(ClientRepositoryBase):
                     # make sure we're not leaking
                     distObj.detectLeaks()
 
-        elif self.deferredDoIds.has_key(doId):
+        elif doId in self.deferredDoIds:
             # The object had been deferred.  Great; we don't even have
             # to generate it now.
             del self.deferredDoIds[doId]

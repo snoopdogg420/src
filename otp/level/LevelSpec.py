@@ -396,7 +396,7 @@ class LevelSpec:
                             del spec[attrib]
 
                     for attribName in attribNames:
-                        if not spec.has_key(attribName):
+                        if attribName not in spec:
                             LevelSpec.notify.warning("entId %s (%s): missing attrib '%s'" % (entId, spec['type'], attribName))
 
             return

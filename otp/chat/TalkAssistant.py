@@ -100,13 +100,13 @@ class TalkAssistant(DirectObject.DirectObject):
         if message.getTalkType() == TALK_WHISPER and doId != localAvatar.doId:
             self.lastWhisperDoId = doId
             self.lastWhisper = self.lastWhisperDoId
-        if not self.historyByDoId.has_key(doId):
+        if doId not in self.historyByDoId:
             self.historyByDoId[doId] = []
         self.historyByDoId[doId].append(message)
         if not self.shownWhiteListWarning and scrubbed and doId == localAvatar.doId:
             self.doWhiteListWarning()
             self.shownWhiteListWarning = 1
-        if not self.floodDataByDoId.has_key(doId):
+        if doId not in self.floodDataByDoId:
             self.floodDataByDoId[doId] = [0.0, self.stampTime(), message]
         else:
             oldTime = self.floodDataByDoId[doId][1]
@@ -133,7 +133,7 @@ class TalkAssistant(DirectObject.DirectObject):
         if message.getTalkType() == TALK_ACCOUNT:
             self.lastWhisperPlayerId = dISLId
             self.lastWhisper = self.lastWhisperPlayerId
-        if not self.historyByDISLId.has_key(dISLId):
+        if dISLId not in self.historyByDISLId:
             self.historyByDISLId[dISLId] = []
         self.historyByDISLId[dISLId].append(message)
 
