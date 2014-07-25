@@ -40,6 +40,7 @@ from otp.otpgui import OTPDialog
 from otp.uberdog import OtpAvatarManager
 from pandac.PandaModules import *
 
+
 class OTPClientRepository(ClientRepositoryBase):
     notify = directNotify.newCategory('OTPClientRepository')
     avatarLimit = 6
