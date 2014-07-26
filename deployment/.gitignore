@@ -4,4 +4,5 @@ infinite
 infinite.exe
 upx.exe
 src
+build
 dist
