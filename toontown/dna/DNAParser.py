@@ -665,7 +665,7 @@ class DNAData(DNAGroup):
         self.dnaStorage = storage
 
     def read(self, stream):
-        parser = yacc.yacc(debug=0, optimize=0)
+        parser = yacc.yacc(debug=0, optimize=0, write_tables=0)
         parser.dnaData = self
         parser.parentGroup = parser.dnaData
         parser.dnaStore = self.getDnaStorage()
