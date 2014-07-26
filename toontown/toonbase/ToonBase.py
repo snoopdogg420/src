@@ -442,7 +442,7 @@ class ToonBase(OTPBase.OTPBase):
         else:
             self.acceptOnce('launcherAllPhasesComplete', self.cleanupDownloadWatcher)
         gameServer = os.environ.get('TTI_GAMESERVER', 'localhost')
-        serverPort = base.config.GetInt('server-port', 7198)
+        serverPort = base.config.GetInt('server-port', 7199)
         serverList = []
         for name in gameServer.split(';'):
             url = URLSpec(name, 1)
