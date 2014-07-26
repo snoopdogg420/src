@@ -86,8 +86,9 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
             if not (avId or friendId):
                 return
             if dclass == self.air.dclassesByName['DistributedToonUD']:
-                if avId in self.listResponses:
-                    self.listResponses[avId].append([friendId, fields['setName'][0], fields['setDNAString'][0], fields['setPetId'][0]])
+                if avId not in self.listResponses:
+                    self.listResponses[avId] = []
+                self.listResponses[avId].append([friendId, fields['setName'][0], fields['setDNAString'][0], fields['setPetId'][0]])
             if len(self.listResponses[avId]) >= len(self.friendsLists[avId]):
                 self.sendUpdateToAvatarId(avId, 'friendList', [self.listResponses[avId]])
                 del self.friendsLists[avId]
