@@ -1018,8 +1018,8 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         # For processing name patterns.
         self.nameGenerator = NameGenerator()
 
-        #Temp HMAC key
-        self.key = 'Z29vZ2xlc2VhcmNodHV0aXR1'
+        # Temporary HMAC key:
+        self.key = 'bG9sLndlLmNoYW5nZS50aGlzLnRvby5tdWNo'
 
         # Instantiate our account DB interface:
         if accountDBType == 'developer':

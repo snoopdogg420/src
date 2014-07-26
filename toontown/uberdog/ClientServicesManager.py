@@ -10,11 +10,10 @@ class ClientServicesManager(DistributedObjectGlobal):
     # --- LOGIN LOGIC ---
     def performLogin(self, doneEvent):
         self.doneEvent = doneEvent
-        key = 'Z29vZ2xlc2VhcmNodHV0aXR1'
 
         token = self.cr.playToken or 'dev'
 
-        self.notify.debug('Sending token: ' + token)
+        key = 'bG9sLndlLmNoYW5nZS50aGlzLnRvby5tdWNo'
         digest_maker = hmac.new(key)
         digest_maker.update(token)
         clientKey = digest_maker.hexdigest()
