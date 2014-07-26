@@ -215,15 +215,21 @@ class ToonTeleportPanel(DirectFrame):
             if shard[0] == shardId:
                 pop = shard[2]
 
+        self.bYes.show()
+        self.bNo.show()
+
         if pop and pop > localAvatar.shardPage.midPop:
             self.notify.warning('Entering full shard: issuing performance warning')
             self['text'] = TTLocalizer.TeleportPanelBusyShard % {'avName': self.avName}
+            self.bYes.hide()
+            self.bNo.hide()
+
+            self.bOk.show()
         else:
             self['text'] = TTLocalizer.TeleportPanelOtherShard % {'avName': self.avName,
              'shardName': shardName,
              'myShardName': myShardName}
-        self.bYes.show()
-        self.bNo.show()
+
         self.shardId = shardId
         self.hoodId = hoodId
         self.zoneId = zoneId

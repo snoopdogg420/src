@@ -18,8 +18,8 @@ want-achievements #f
 
 # Districts...
 show-population #f
-shard-low-pop 50
-shard-mid-pop 100
+shard-low-pop 25
+shard-mid-pop 50
 
 # Sellbot boss...
 disable-sos-card 91917
