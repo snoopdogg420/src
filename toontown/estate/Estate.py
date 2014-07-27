@@ -141,7 +141,8 @@ class Estate(Place.Place):
 
     def exit(self):
         base.localAvatar.stopChat()
-        base.localAvatar.stopAprilToonsControls()
+        if base.config.GetBool('want-april-toons'):
+            base.localAvatar.stopAprilToonsControls()
         self._telemLimiter.destroy()
         del self._telemLimiter
         if hasattr(self, 'fsm'):
