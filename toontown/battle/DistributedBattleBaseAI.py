@@ -1824,14 +1824,14 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         num = self.serialNum
         self.serialNum += 1
         return num
-        
+
     def setFireCount(self, amount):
         self.fireCount = amount
-        
+
     def getFireCount(self):
         return self.fireCount
 
-@magicWord(category=CATEGORY_ADMINISTRATOR)
+@magicWord(category=CATEGORY_PROGRAMMER)
 def skipMovie():
     invoker = spellbook.getInvoker()
     battleId = invoker.getBattleId()
