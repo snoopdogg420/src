@@ -18,7 +18,7 @@ want-achievements #f
 
 # Districts...
 show-population #f
-shard-low-pop 25
+shard-low-pop 250
 shard-mid-pop 500
 
 # Sellbot boss...
