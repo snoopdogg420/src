@@ -1,9 +1,9 @@
-import math
-
 from direct.distributed import DistributedObject
 from direct.fsm import ClassicFSM, State
 from direct.gui.DirectGui import *
+import math
 from pandac.PandaModules import *
+
 from toontown.distributed.DelayDelete import *
 from toontown.safezone import PicnicGameGlobals
 from toontown.safezone.PicnicGameSelectMenu import PicnicGameSelectMenu
@@ -19,6 +19,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
 
         self.tableModelPath = 'phase_6/models/golf/game_table.bam'
         self.numSeats = 6
+        self.requestedSeatIndex = 0
         self.__toonTracks = {}
         self.gameMenu = None
         self.game = None
@@ -91,6 +92,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         self.joinButton = None
         self.observeButton = None
         self.exitButton = None
+        self.stopObserveButton = None
         self.tutorialButton = None
 
         angle = self.picnicTable.getH()
@@ -104,6 +106,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
 
     def disable(self):
         DistributedObject.DistributedObject.disable(self)
+
         self.fsm.request('off')
         self.clearToonTracks()
         # TODO: Disable choice buttons.
@@ -147,6 +150,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         self.tableClothSphereNode.setCollideMask(BitMask32(0))
 
     def handleEnterPicnicTableSphere(self, i, collEntry):
+        self.requestedSeatIndex = i
         self.fsm.request('chooseMode')
 
     def enterOff(self):
@@ -162,10 +166,14 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         self.disableChoiceButtons()
 
     def enterObserving(self):
-        pass
+        self.enableStopObserveButton()
+        self.moveCamera(self.requestedSeatIndex)
 
     def exitObserving(self):
-        pass
+        self.disableStopObserveButton()
+        if self.cameraBoardTrack.isPlaying():
+            self.cameraBoardTrack.pause()
+        self.allowWalk()
 
     def enterSitting(self):
         pass
@@ -232,7 +240,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
                 text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23), text_scale=0.8,
                 image=(self.upButton, self.downButton, self.rolloverButton),
                 image_color=(1, 0, 0, 1), image_scale=(20, 1, 11),
-                pos=(0, 0, 0.6), scale=0.15,
+                pos=(0, 0, 0.8), scale=0.15,
                 command=lambda self=self: self.observeButtonPushed())
         self.exitButton = DirectButton(
             relief=None, text=TTLocalizer.PicnicTableCancelButton,
@@ -266,10 +274,27 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         pass
 
     def observeButtonPushed(self):
-        pass
+        self.fsm.request('observing')
 
     def cancelButtonPushed(self):
         self.allowWalk()
+        self.fsm.request('off')
+
+    def enableStopObserveButton(self):
+        self.stopObserveButton = DirectButton(
+            relief=None, text=TTLocalizer.PicnicTableCancelButton,
+            text_fg=(1, 1, 0.65, 1), text_pos=(0, -0.23), text_scale=0.8,
+            image=(self.upButton, self.downButton, self.rolloverButton),
+            image_color=(1, 0, 0, 1), image_scale=(20, 1, 11),
+            pos=(0.92, 0, 0.4), scale=0.15,
+            command=lambda self = self: self.stopObserveButtonPushed())
+
+    def disableStopObserveButton(self):
+        if self.stopObserveButton:
+            self.stopObserveButton.destroy()
+            self.stopObserveButton = None
+
+    def stopObserveButtonPushed(self):
         self.fsm.request('off')
 
     def tutorialButtonPushed(self):
@@ -289,3 +314,19 @@ class DistributedGameTable(DistributedObject.DistributedObject):
     def tutorialDone(self):
         self.fsm.request('off')
         self.tutorial = None
+
+    def moveCamera(self, seatIndex):
+        self.oldCameraPos = camera.getPos()
+        self.oldCameraHpr = camera.getHpr()
+
+        camera.wrtReparentTo(self.picnicTable)
+        if seatIndex < 3:
+            self.cameraBoardTrack = LerpPosHprInterval(
+                camera, 2.0, Point3(0, 0, 17), Point3(0, -90, 0))
+        elif camera.getH() < 0:
+            self.cameraBoardTrack = LerpPosHprInterval(
+                camera, 2.0, Point3(0, 0, 17), Point3(-180, -90, 0))
+        else:
+            self.cameraBoardTrack = LerpPosHprInterval(
+                camera, 2.0, Point3(0, 0, 17), Point3(180, -90, 0))
+        self.cameraBoardTrack.start()
