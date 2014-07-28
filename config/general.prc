@@ -165,10 +165,10 @@ pajama-place-building-chance 100.0
 base-xp-multiplier 1.0
 
 # Picnic table board games...
-want-game-tables #t
-want-checkers #t
-want-chinese-checkers #t
-want-find-four #t
+want-game-tables #f
+want-checkers #f
+want-chinese-checkers #f
+want-find-four #f
 
 # Optional...
 want-mat-all-tailors #t
