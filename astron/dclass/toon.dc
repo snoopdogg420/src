@@ -2923,6 +2923,7 @@ dclass DistributedGameTable : DistributedObject {
   rejectJoin();
   fillSeat(uint8 seatIndex, uint32 avId) broadcast ram;
   emptySeat(uint8 seatIndex) broadcast ram;
+  requestGame(uint8 gameIndex) airecv clsend;
   announceDraw(uint32 avId) broadcast;
   announceWinner(uint32 avId) broadcast;
 };

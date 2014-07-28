@@ -1,5 +1,7 @@
 from direct.distributed import DistributedObjectAI
 
+from toontown.safezone import PicnicGameGlobals
+
 
 class DistributedGameTableAI(DistributedObjectAI.DistributedObjectAI):
     def __init__(self, air):
@@ -9,6 +11,8 @@ class DistributedGameTableAI(DistributedObjectAI.DistributedObjectAI):
         self.numSeats = 6
         self.seats = [0] * self.numSeats
         self.joinTimes = [0] * self.numSeats
+        self.choosing = 0
+        self.game = None
 
     # Required:
 
@@ -25,11 +29,27 @@ class DistributedGameTableAI(DistributedObjectAI.DistributedObjectAI):
         av = self.air.doId2do.get(avId)
 
         # First, let's make some obvious sanity checks:
-        if (not av) or (avId in self.seats) or self.seats[seatIndex]:
+        if (not av) or (avId in self.seats) or self.seats[seatIndex] or self.game:
             self.sendUpdateToAvatarId(avId, 'rejectJoin', [])
             return
 
         self.fillSeat(seatIndex, avId)
+
+    def requestGame(self, gameIndex):
+        avId = self.air.getAvatarIdFromSender()
+
+        # First, let's make some obvious sanity checks:
+        if self.game or (self.choosing != avId):
+            return
+
+        # Trim the amount of players:
+        playerLimits = PicnicGameGlobals.PlayerLimits[gameIndex]
+        numPlayers = self.getNumPlayers()
+        while numPlayers not in playerLimits:
+            numPlayers -= 1
+        self.trimPlayers(numPlayers)
+
+        self.createGame(gameIndex)
 
     # Handles:
 
@@ -69,6 +89,11 @@ class DistributedGameTableAI(DistributedObjectAI.DistributedObjectAI):
         # It's important that we mark the time they joined before anything
         # else, in case a conflict occurs:
         self.joinTimes[seatIndex] = globalClock.getRealTime()
+
+        # Next, if this is the first player, make them the "chooser":
+        if self.getNumPlayers() == 0:
+            self.choosing = avId
+
         self.seats[seatIndex] = avId
 
         # Handling an unexpected exit is important, as the game must stop
@@ -89,3 +114,9 @@ class DistributedGameTableAI(DistributedObjectAI.DistributedObjectAI):
         self.joinTimes[seatIndex] = 0
 
         self.sendUpdate('emptySeat', [seatIndex])
+
+    def createGame(self, gameIndex):
+        """
+        Create the provided game.
+        """
+        pass
