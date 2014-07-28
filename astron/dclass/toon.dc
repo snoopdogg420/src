@@ -2917,23 +2917,14 @@ dclass DistributedPicnicBasket : DistributedObject {
 };
 
 dclass DistributedGameTable : DistributedObject {
-  requestJoin(uint8) airecv clsend;
+  setPosHpr(int16/10 x, int16/10 y, int16/10 z,
+            int16/10 h, int16/10 p, int16/10 r) required broadcast ram;
+  requestJoin(uint8 seatIndex) airecv clsend;
   rejectJoin();
-  requestExit() airecv clsend;
-  fillSlot0(uint32) broadcast ram;
-  fillSlot1(uint32) broadcast ram;
-  fillSlot2(uint32) broadcast ram;
-  fillSlot3(uint32) broadcast ram;
-  fillSlot4(uint32) broadcast ram;
-  fillSlot5(uint32) broadcast ram;
-  emptySlot0(uint32, int16) broadcast ram;
-  emptySlot1(uint32, int16) broadcast ram;
-  emptySlot2(uint32, int16) broadcast ram;
-  emptySlot3(uint32, int16) broadcast ram;
-  emptySlot4(uint32, int16) broadcast ram;
-  emptySlot5(uint32, int16) broadcast ram;
-  setPosHpr(int16/10, int16/10, int16/10, int16/10, int16/10, int16/10) required broadcast ram;
-  announceWinner(uint32) broadcast;
+  fillSeat(uint8 seatIndex, uint32 avId) broadcast ram;
+  emptySeat(uint8 seatIndex) broadcast ram;
+  announceDraw(uint32 avId) broadcast;
+  announceWinner(uint32 avId) broadcast;
 };
 
 dclass DistributedBossbotBoss : DistributedBossCog {
