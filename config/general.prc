@@ -42,8 +42,8 @@ allow-secret-chat #t
 
 # Districts...
 show-total-population #t
-shard-low-pop 250
-shard-mid-pop 500
+shard-low-pop 150
+shard-mid-pop 300
 
 # Safe zones...
 want-safe-zones #t
