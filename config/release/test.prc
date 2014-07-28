@@ -25,8 +25,8 @@ shard-mid-pop 50
 disable-sos-card 91917
 disable-sos-card 91918
 
-# Optional...
-want-yin-yang #t
+# Picnic table board games...
+want-game-tables #f
 
 # Temporary...
 force-skip-tutorial #t
