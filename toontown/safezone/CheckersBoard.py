@@ -1,6 +1,7 @@
 class CheckersBoard:
     def __init__(self):
         self.squareList = []
+
         for i in xrange(32):
             self.squareList.append(CheckersTile(i))
 
