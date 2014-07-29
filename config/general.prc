@@ -14,6 +14,7 @@ audio-library-name p3fmod_audio
 model-cache-models #f
 model-cache-textures #f
 default-model-extension .bam
+texture-anisotropic-degree 16
 
 # Server...
 server-force-ssl #t

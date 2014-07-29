@@ -285,7 +285,6 @@ from toontown.uberdog.DistributedPartyManager/AI/UD import DistributedPartyManag
 from toontown.rpc.AwardManager/UD import AwardManager/UD
 from toontown.uberdog.DistributedCpuInfoMgr/AI/UD import DistributedCpuInfoMgr/AI/UD
 from toontown.uberdog.DistributedSecurityMgr/AI/UD import DistributedSecurityMgr/AI/UD
-from toontown.rpc.RATManager/UD import RATManager/UD
 from toontown.uberdog.DistributedInGameNewsMgr/AI/UD import DistributedInGameNewsMgr/AI/UD
 from toontown.uberdog.DistributedWhitelistMgr/AI/UD import DistributedWhitelistMgr/AI/UD
 from toontown.coderedemption.TTCodeRedemptionMgr/AI/UD import TTCodeRedemptionMgr/AI/UD
@@ -3279,9 +3278,6 @@ dclass ClientServicesManager : DistributedObjectGlobal {
 
 dclass SystemServicesManager : DistributedObjectGlobal {
   systemMessage(string message, uint32 parentId);
-};
-
-dclass RATManager : DistributedObjectGlobal {
 };
 
 dclass AwardManager : DistributedObjectGlobal {
