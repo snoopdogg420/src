@@ -2,7 +2,7 @@
 from pandac.PandaModules import *
 
 
-hashVal = 3245043284
+hashVal = 3096382848L
 
 
 from toontown.cogdominium import DistributedCogdoInterior, DistributedCogdoBattleBldg, DistributedCogdoElevatorExt, DistributedCogdoElevatorInt, DistributedCogdoBarrel, DistCogdoGame, DistCogdoLevelGame, DistCogdoBoardroomGame, DistCogdoCraneGame, DistCogdoMazeGame, DistCogdoFlyingGame, DistCogdoCrane, DistCogdoCraneMoneyBag, DistCogdoCraneCog
@@ -54,7 +54,6 @@ from toontown.tutorial import DistributedBattleTutorial, TutorialManager
 from toontown.coderedemption.TTCodeRedemptionMgr import TTCodeRedemptionMgr
 from toontown.distributed.NonRepeatableRandomSourceAI import NonRepeatableRandomSourceAI
 from toontown.ai.DistributedMailboxZeroMgr import DistributedMailboxZeroMgr
-from toontown.rpc.RATManager import RATManager
 from toontown.uberdog.DistributedDeliveryManager import DistributedDeliveryManager
 from direct.distributed import DistributedObject, DistributedNode, DistributedSmoothNode, DistributedCartesianGrid, DistributedCamera, DistributedObjectGlobal
 from toontown.uberdog.DistributedWhitelistMgr import DistributedWhitelistMgr
