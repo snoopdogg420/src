@@ -15,6 +15,7 @@ from toontown.hood import DGHood
 from toontown.hood import DLHood
 from toontown.hood import GSHood
 from toontown.hood import OZHood
+from toontown.hood import CPHood
 from toontown.hood import GZHood
 from toontown.hood import SellbotHQ, CashbotHQ, LawbotHQ, BossbotHQ
 from toontown.hood import TutorialHood
@@ -44,6 +45,7 @@ class PlayGame(StateData.StateData):
      ToontownGlobals.CashbotHQ: CashbotHQ.CashbotHQ,
      ToontownGlobals.LawbotHQ: LawbotHQ.LawbotHQ,
      ToontownGlobals.GolfZone: GZHood.GZHood,
+     ToontownGlobals.ChestnutPark: CPHood.CPHood,
      ToontownGlobals.PartyHood: PartyHood.PartyHood}
     Hood2StateDict = {ToontownGlobals.ToontownCentral: 'TTHood',
      ToontownGlobals.DonaldsDock: 'DDHood',
