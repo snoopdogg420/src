@@ -1,5 +1,5 @@
 daemon:
-    name: Client Agent
+    name: Client Agent #3
 
 general:
     eventlogger: 127.0.0.1:7198
@@ -63,5 +63,5 @@ roles:
        relocate: true
        add_interest: enabled
       channels:
-        min: 4000000000
-        max: 4009999999
+        min: 1000003001
+        max: 1000004000

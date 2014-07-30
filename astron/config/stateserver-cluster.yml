@@ -1,5 +1,5 @@
 daemon:
-    name: Developer Cluster
+    name: State Server Cluster
 
 general:
     eventlogger: 127.0.0.1:7198
@@ -8,7 +8,7 @@ general:
         - ../dclass/toon.dc
 
 messagedirector:
-    connect: 127.0.0.1:7100
+    connect: 127.0.0.1:7200
 
 roles:
     - type: stateserver

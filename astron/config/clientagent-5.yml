@@ -1,5 +1,5 @@
 daemon:
-    name: Client Agent
+    name: Client Agent #5
 
 general:
     eventlogger: 127.0.0.1:7198
@@ -57,11 +57,11 @@ messagedirector:
 
 roles:
     - type: clientagent
-      bind: 0.0.0.0:7399
+      bind: 0.0.0.0:7699
       version: "infinite-dev"
       client:
        relocate: true
        add_interest: enabled
       channels:
-        min: 3000000000
-        max: 3009999999
+        min: 1000005001
+        max: 1000006000

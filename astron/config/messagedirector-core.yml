@@ -5,4 +5,4 @@ general:
     eventlogger: 127.0.0.1:7198
 
 messagedirector:
-    bind: 127.0.0.1:7100
+    bind: 127.0.0.1:7200
