@@ -19,6 +19,7 @@ texture-anisotropic-degree 16
 # Server...
 server-force-ssl #t
 server-port 7199
+client-agents 4
 server-timezone US/Eastern
 
 # Database...
