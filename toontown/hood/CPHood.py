@@ -13,7 +13,7 @@ class CPHood(ToonHood.ToonHood):
         self.storageDNAFile = 'phase_6/dna/storage_CP.dna'
         self.holidayStorageDNADict = {HALLOWEEN_PROPS: ['phase_6/dna/halloween_props_storage_CP.dna'],
          SPOOKY_PROPS: ['phase_6/dna/halloween_props_storage_CP.dna']}
-        self.skyFile = 'phase_3.5/models/props/TT_sky'
+        self.skyFile = 'phase_6/models/modules/unpainted_sky'
         self.spookySkyFile = 'phase_3.5/models/props/BR_sky'
         self.titleColor = (1.0, 0.5, 0.4, 1.0)
         self.whiteFogColor = Vec4(0.95, 0.95, 0.95, 1)
