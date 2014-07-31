@@ -2358,7 +2358,11 @@ def p_node(p):
         root = p[3]
     p.parser.dnaStore.storeCatalogCode(root, code)
     if search != '':
-        nodePath = p.parser.nodePath.find('**/' + search)
+        if search[0] == '!':
+            nodePath = p.parser.nodePath
+            nodePath.find('**/' + search[1:]).removeNode()
+        else:
+            nodePath = p.parser.nodePath.find('**/' + search)
     else:
         nodePath = p.parser.nodePath
     nodePath.setTag('DNACode', p[4])
