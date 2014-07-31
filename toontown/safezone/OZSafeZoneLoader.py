@@ -1,26 +1,25 @@
-from direct.directnotify import DirectNotifyGlobal
+import copy
+from direct.actor import Actor
+from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
-from pandac.PandaModules import *
-from otp.avatar import Avatar
-from toontown.hood import ZoneUtil
-from toontown.launcher import DownloadForceAcknowledge
-from toontown.safezone.SafeZoneLoader import SafeZoneLoader
-from toontown.safezone.OZPlayground import OZPlayground
-from direct.actor import Actor
 from direct.interval.IntervalGlobal import *
+from pandac.PandaModules import *
 import random
-from toontown.distributed import DelayDelete
-from direct.distributed.ClockDelta import *
+
+from otp.avatar import Avatar
+from otp.nametag.NametagConstants import CFSpeech
+from otp.nametag.NametagGroup import *
 from otp.otpbase import OTPGlobals
-import copy
+from toontown.distributed import DelayDelete
 from toontown.effects import Bubbles
-import random
-if (__debug__):
-    import pdb
+from toontown.hood import ZoneUtil
+from toontown.safezone.OZPlayground import OZPlayground
+from toontown.safezone.SafeZoneLoader import SafeZoneLoader
+from toontown.toon import Toon, ToonDNA
+
 
 class OZSafeZoneLoader(SafeZoneLoader):
-
     def __init__(self, hood, parentFSM, doneEvent):
         SafeZoneLoader.__init__(self, hood, parentFSM, doneEvent)
         self.musicFile = 'phase_6/audio/bgm/OZ_SZ.ogg'
@@ -142,6 +141,35 @@ class OZSafeZoneLoader(SafeZoneLoader):
             self.constructionSign = loader.loadModel('phase_4/models/props/construction_sign.bam')
             self.constructionSign.reparentTo(self.constructionSite)
             self.constructionSign.setPosHpr(-47.941, -138.724, 0.122, 181, 0, 0)
+
+            self.painterPete = Toon.Toon()
+
+            self.painterPete.setName('Painter Pete')
+            self.painterPete.setPickable(0)
+            self.painterPete.setPlayerType(NametagGroup.CCNonPlayer)
+
+            dna = ToonDNA.ToonDNA()
+            dna.newToonFromProperties('hls', 'ss', 'm', 'm', 18, 0, 13, 9, 0, 0, 0, 0, 2, 15)
+            self.painterPete.setDNA(dna)
+
+            self.painterPete.setHat(43, 0, 0)
+
+            self.painterPete.animFSM.request('neutral')
+            self.painterPete.reparentTo(self.constructionSite)
+            self.painterPete.setPosHpr(-52.5, -133.5, 0.025, 338, 0, 0)
+
+            speechTextList = (
+                'Test #1',
+                'Test #2',
+                'Test #3'
+            )
+            self.painterPeteSpeech = Sequence()
+            for speechText in speechTextList:
+                self.painterPeteSpeech.append(Func(self.painterPete.setChatAbsolute, speechText, CFSpeech))
+                self.painterPeteSpeech.append(Wait(0.75 * len(speechText.split(' '))))
+                self.painterPeteSpeech.append(Func(self.painterPete.clearChat))
+                self.painterPeteSpeech.append(Wait(6))
+            self.painterPeteSpeech.loop(0)
 
     def exit(self):
         self.clearToonTracks()
@@ -336,6 +364,8 @@ class OZSafeZoneLoader(SafeZoneLoader):
         self.geyserSoundNoToon = None
 
         if hasattr(self, 'constructionSite'):
+            self.painterPeteSpeech.pause()
+            self.painterPete.delete()
             self.paintersWantedSign.removeNode()
             self.ladder.removeNode()
             self.cone0.cleanup()
