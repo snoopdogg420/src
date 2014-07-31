@@ -158,15 +158,20 @@ class OZSafeZoneLoader(SafeZoneLoader):
             self.painterPete.reparentTo(self.constructionSite)
             self.painterPete.setPosHpr(-52.5, -133.5, 0.025, 338, 0, 0)
 
+            self.painterPete.sadEyes()
+            self.painterPete.blinkEyes()
+
             speechTextList = (
-                'Test #1',
-                'Test #2',
-                'Test #3'
+                "Oh, brother. How am I going to clean up all of this? Those painters left a big mess here, and I can't finish the job without them!",
+                "I'm beginning to feel nervous about where all of my painters went off to. Construction can't continue without them!",
+                "These cones are out of my control. They're disobedient, and they will not listen to what I say.",
+                "What's a playground without color, anyway? Walking into something like that would be surreal for you all. As a painter, though, I'm pretty used to it.",
+                "The Cogs couldn't have done this... could they?"
             )
             self.painterPeteSpeech = Sequence()
             for speechText in speechTextList:
                 self.painterPeteSpeech.append(Func(self.painterPete.setChatAbsolute, speechText, CFSpeech))
-                self.painterPeteSpeech.append(Wait(0.75 * len(speechText.split(' '))))
+                self.painterPeteSpeech.append(Wait(0.55 * len(speechText.split(' '))))
                 self.painterPeteSpeech.append(Func(self.painterPete.clearChat))
                 self.painterPeteSpeech.append(Wait(6))
             self.painterPeteSpeech.loop(0)
