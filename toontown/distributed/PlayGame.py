@@ -55,6 +55,7 @@ class PlayGame(StateData.StateData):
      ToontownGlobals.DonaldsDreamland: 'DLHood',
      ToontownGlobals.GoofySpeedway: 'GSHood',
      ToontownGlobals.OutdoorZone: 'OZHood',
+     ToontownGlobals.ChestnutPark: 'CPHood',
      ToontownGlobals.Tutorial: 'TutorialHood',
      ToontownGlobals.MyEstate: 'EstateHood',
      ToontownGlobals.BossbotHQ: 'BossbotHQ',
@@ -76,6 +77,7 @@ class PlayGame(StateData.StateData):
           'DLHood',
           'GSHood',
           'OZHood',
+          'CPHood',
           'GZHood',
           'SellbotHQ',
           'CashbotHQ',
@@ -92,6 +94,7 @@ class PlayGame(StateData.StateData):
          State.State('DLHood', self.enterDLHood, self.exitDLHood, ['quietZone']),
          State.State('GSHood', self.enterGSHood, self.exitGSHood, ['quietZone']),
          State.State('OZHood', self.enterOZHood, self.exitOZHood, ['quietZone']),
+         State.State('CPHood', self.enterCPHood, self.exitCPHood, ['quietZone']),
          State.State('GZHood', self.enterGZHood, self.exitGZHood, ['quietZone']),
          State.State('BossbotHQ', self.enterBossbotHQ, self.exitBossbotHQ, ['quietZone']),
          State.State('SellbotHQ', self.enterSellbotHQ, self.exitSellbotHQ, ['quietZone']),
@@ -353,6 +356,13 @@ class PlayGame(StateData.StateData):
         self.hood.enter(requestStatus)
 
     def exitOZHood(self):
+        self._destroyHood()
+
+    def enterCPHood(self, requestStatus):
+        self.accept(self.hoodDoneEvent, self.handleHoodDone)
+        self.hood.enter(requestStatus)
+
+    def exitCPHood(self):
         self._destroyHood()
 
     def enterGZHood(self, requestStatus):
