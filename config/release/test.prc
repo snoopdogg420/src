@@ -28,6 +28,9 @@ disable-sos-card 91918
 # Picnic table board games...
 want-game-tables #f
 
+# Optional...
+want-chestnut-park-construction #t
+
 # Temporary...
 force-skip-tutorial #t
 want-phone-quest #f

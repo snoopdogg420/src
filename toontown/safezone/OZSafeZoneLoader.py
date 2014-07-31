@@ -107,7 +107,37 @@ class OZSafeZoneLoader(SafeZoneLoader):
             mesh.setTexProjector(mesh.findTextureStage('default'), joint, self.waterfallActor)
         self.waterfallActor.setPos(waterfallPlacer.getPos())
         self.accept('clientLogout', self._handleLogout)
-        return
+
+        # If Chestnut Park is under construction, create the construction site:
+        if base.config.GetBool('want-chestnut-park-construction', False):
+            self.constructionSite = render.attachNewNode('constructionSite')
+
+            self.coneModel = loader.loadModel('phase_3.5/models/props/unpainted_barrier_cone.bam')
+
+            self.cone0 = Actor.Actor(self.coneModel)
+            self.cone0.loadAnims({'jumptwist': 'phase_3.5/models/props/barrier_cone_chan_jumptwist.bam'})
+            self.cone0.reparentTo(self.constructionSite)
+            self.cone0.loop('jumptwist')
+            self.cone0.setPos(-43, -142, 0.025)
+
+            self.cone1 = Actor.Actor(self.coneModel)
+            self.cone1.loadAnims({'walktrip': 'phase_3.5/models/props/barrier_cone_chan_walktrip.bam'})
+            self.cone1.reparentTo(self.constructionSite)
+            self.cone1.loop('walktrip')
+            self.cone1.setPos(-52, -145, 0.025)
+
+            self.ladder = loader.loadModel('phase_5/models/props/ladder2.bam')
+            self.ladder.reparentTo(self.constructionSite)
+            self.ladder.setPosHpr(-36.460, -130.828, 0.30, 61, -90, 0)
+            self.ladder.find('**/shadow').removeNode()
+
+            self.paintersWantedSign = loader.loadModel('phase_6/models/props/tti_painters_wanted_sign.bam')
+            self.paintersWantedSign.reparentTo(self.constructionSite)
+            self.paintersWantedSign.setPosHpr(-57, -129.613, 0.025, 160, 0, 0)
+
+            self.constructionSign = loader.loadModel('phase_4/models/props/construction_sign.bam')
+            self.constructionSign.reparentTo(self.constructionSite)
+            self.constructionSign.setPosHpr(-47.941, -138.724, 0.122, 181, 0, 0)
 
     def exit(self):
         self.clearToonTracks()
@@ -300,7 +330,20 @@ class OZSafeZoneLoader(SafeZoneLoader):
         self.geyserSoundNoToon.stop()
         self.geyserSoundNoToonInterval = None
         self.geyserSoundNoToon = None
-        return
+
+        if hasattr(self, 'constructionSite'):
+            self.paintersWantedSign.removeNode()
+            self.ladder.removeNode()
+            self.cone0.cleanup()
+            self.cone1.cleanup()
+            self.coneModel.removeNode()
+            self.constructionSite.removeNode()
+            del self.paintersWantedSign
+            del self.ladder
+            del self.cone0
+            del self.cone1
+            del self.coneModel
+            del self.constructionSite
 
     def enterPlayground(self, requestStatus):
         self.playgroundClass = OZPlayground

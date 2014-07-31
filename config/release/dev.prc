@@ -33,6 +33,7 @@ want-find-four #f
 
 # Optional...
 want-yin-yang #t
+want-chestnut-park-construction #t
 
 # Developer options...
 want-instant-parties #t
