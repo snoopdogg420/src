@@ -95,7 +95,7 @@ roles:
       channels:
         min: 1000003001
         max: 1000004000
-		
+
     - type: clientagent
       bind: 0.0.0.0:7599
       version: "infinite-dev"
