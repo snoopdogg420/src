@@ -112,6 +112,10 @@ class OZSafeZoneLoader(SafeZoneLoader):
         if base.config.GetBool('want-chestnut-park-construction', False):
             self.constructionSite = render.attachNewNode('constructionSite')
 
+            self.constructionSiteBlocker = self.constructionSite.attachNewNode(CollisionNode('constructionSiteBlocker'))
+            self.constructionSiteBlocker.setPos(-48, -154.5, 0)
+            self.constructionSiteBlocker.node().addSolid(CollisionSphere(0, 0, 0, 35))
+
             self.coneModel = loader.loadModel('phase_3.5/models/props/unpainted_barrier_cone.bam')
 
             self.cone0 = Actor.Actor(self.coneModel)
@@ -337,12 +341,14 @@ class OZSafeZoneLoader(SafeZoneLoader):
             self.cone0.cleanup()
             self.cone1.cleanup()
             self.coneModel.removeNode()
+            self.constructionSiteBlocker.removeNode()
             self.constructionSite.removeNode()
             del self.paintersWantedSign
             del self.ladder
             del self.cone0
             del self.cone1
             del self.coneModel
+            del self.constructionSiteBlocker
             del self.constructionSite
 
     def enterPlayground(self, requestStatus):
