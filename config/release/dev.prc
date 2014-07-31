@@ -6,6 +6,7 @@ model-path ../resources
 
 # Server...
 server-version infinite-dev
+client-agents 1
 server-force-ssl #f
 
 # DClass files (in reverse order)...
