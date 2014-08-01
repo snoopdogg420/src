@@ -168,7 +168,7 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
     def doNextAttack(self, task):
         for lawyer in self.lawyers:
             lawyer.doNextAttack(self)
-            
+
         self.waitForNextAttack(ToontownGlobals.LawbotBossLawyerCycleTime)
         timeSinceLastAttack = globalClock.getFrameTime() - self.lastAreaAttackTime
         allowedByTime = 15 < timeSinceLastAttack or self.lastAreaAttackTime == 0
@@ -194,7 +194,7 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
              ToontownGlobals.BossCogDirectedAttack,
              ToontownGlobals.BossCogDirectedAttack,
              ToontownGlobals.BossCogDirectedAttack])
-        if attackCode == ToontownGlobals.BossCogAreaAttack: 
+        if attackCode == ToontownGlobals.BossCogAreaAttack:
             self.__doAreaAttack()
         elif attackCode == ToontownGlobals.BossCogDirectedAttack:
             self.__doDirectedAttack()
@@ -664,72 +664,71 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
         deptIndex = prefDeptIndex
         summonType = prefSummonType
         hasSummon = toon.hasParticularCogSummons(prefDeptIndex, cogLevel, prefSummonType)
-        if hasSummon:
-            self.notify.debug('trying to find another reward')
-            if not toon.hasParticularCogSummons(prefDeptIndex, cogLevel, 'single'):
-                summonType = 'single'
-            elif not toon.hasParticularCogSummons(prefDeptIndex, cogLevel, 'building'):
-                summonType = 'building'
-            elif not toon.hasParticularCogSummons(prefDeptIndex, cogLevel, 'invasion'):
-                summonType = 'invasion'
-            else:
-                foundOne = False
-                for curDeptIndex in xrange(len(SuitDNA.suitDepts)):
-                    if not toon.hasParticularCogSummons(curDeptIndex, cogLevel, prefSummonType):
-                        deptIndex = curDeptIndex
+        self.notify.debug('trying to find another reward')
+        if not toon.hasParticularCogSummons(prefDeptIndex, cogLevel, 'single'):
+            summonType = 'single'
+        elif not toon.hasParticularCogSummons(prefDeptIndex, cogLevel, 'building'):
+            summonType = 'building'
+        elif not toon.hasParticularCogSummons(prefDeptIndex, cogLevel, 'invasion'):
+            summonType = 'invasion'
+        else:
+            foundOne = False
+            for curDeptIndex in xrange(len(SuitDNA.suitDepts)):
+                if not toon.hasParticularCogSummons(curDeptIndex, cogLevel, prefSummonType):
+                    deptIndex = curDeptIndex
+                    foundOne = True
+                    break
+                elif not toon.hasParticularCogSummons(curDeptIndex, cogLevel, 'single'):
+                    deptIndex = curDeptIndex
+                    summonType = 'single'
+                    foundOne = True
+                    break
+                elif not toon.hasParticularCogSummons(curDeptIndex, cogLevel, 'building'):
+                    deptIndex = curDeptIndex
+                    summonType = 'building'
+                    foundOne = True
+                    break
+                elif not toon.hasParticularCogSummons(curDeptIndex, cogLevel, 'invasion'):
+                    summonType = 'invasion'
+                    deptIndex = curDeptIndex
+                    foundOne = True
+                    break
+
+            possibleCogLevel = range(SuitDNA.suitsPerDept)
+            possibleDeptIndex = range(len(SuitDNA.suitDepts))
+            possibleSummonType = ['single', 'building', 'invasion']
+            typeWeights = ['single'] * 70 + ['building'] * 27 + ['invasion'] * 3
+            if not foundOne:
+                 for i in xrange(5):
+                    randomCogLevel = random.choice(possibleCogLevel)
+                    randomSummonType = random.choice(typeWeights)
+                    randomDeptIndex = random.choice(possibleDeptIndex)
+                    if not toon.hasParticularCogSummons(randomDeptIndex, randomCogLevel, randomSummonType):
                         foundOne = True
-                        break
-                    elif not toon.hasParticularCogSummons(curDeptIndex, cogLevel, 'single'):
-                        deptIndex = curDeptIndex
-                        summonType = 'single'
-                        foundOne = True
-                        break
-                    elif not toon.hasParticularCogSummons(curDeptIndex, cogLevel, 'building'):
-                        deptIndex = curDeptIndex
-                        summonType = 'building'
-                        foundOne = True
-                        break
-                    elif not toon.hasParticularCogSummons(curDeptIndex, cogLevel, 'invasion'):
-                        summonType = 'invasion'
-                        deptIndex = curDeptIndex
-                        foundOne = True
+                        cogLevel = randomCogLevel
+                        summonType = randomSummonType
+                        deptIndex = randomDeptIndex
                         break
 
-                possibleCogLevel = range(SuitDNA.suitsPerDept)
-                possibleDeptIndex = range(len(SuitDNA.suitDepts))
-                possibleSummonType = ['single', 'building', 'invasion']
-                typeWeights = ['single'] * 70 + ['building'] * 27 + ['invasion'] * 3
-                if not foundOne:
-                    for i in xrange(5):
-                        randomCogLevel = random.choice(possibleCogLevel)
-                        randomSummonType = random.choice(typeWeights)
-                        randomDeptIndex = random.choice(possibleDeptIndex)
-                        if not toon.hasParticularCogSummons(randomDeptIndex, randomCogLevel, randomSummonType):
-                            foundOne = True
-                            cogLevel = randomCogLevel
-                            summonType = randomSummonType
-                            deptIndex = randomDeptIndex
-                            break
-
-                for curType in possibleSummonType:
+            for curType in possibleSummonType:
+                if foundOne:
+                    break
+                for curCogLevel in possibleCogLevel:
                     if foundOne:
                         break
-                    for curCogLevel in possibleCogLevel:
+                    for curDeptIndex in possibleDeptIndex:
                         if foundOne:
                             break
-                        for curDeptIndex in possibleDeptIndex:
-                            if foundOne:
-                                break
-                            if not toon.hasParticularCogSummons(curDeptIndex, curCogLevel, curType):
-                                foundOne = True
-                                cogLevel = curCogLevel
-                                summonType = curType
-                                deptIndex = curDeptIndex
+                        if not toon.hasParticularCogSummons(curDeptIndex, curCogLevel, curType):
+                            foundOne = True
+                            cogLevel = curCogLevel
+                            summonType = curType
+                            deptIndex = curDeptIndex
 
-                if not foundOne:
-                    cogLevel = None
-                    summonType = None
-                    deptIndex = None
+            if not foundOne:
+                cogLevel = None
+                summonType = None
+                deptIndex = None
         toon.assignNewCogSummons(cogLevel, summonType, deptIndex)
         return
 
