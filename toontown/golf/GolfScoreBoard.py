@@ -32,7 +32,7 @@ class GolfScoreBoard:
         self.lines.setThickness(2)
         guiModel = loader.loadModel('phase_6/models/golf/golf_gui')
         highlight = loader.loadModel('phase_6/models/golf/headPanel')
-        self.maximizeB = DirectButton(parent=aspect2d, pos=(1.2, 0, -0.85), relief=None, state=DGG.NORMAL, image=(guiModel.find('**/score_card_icon'), guiModel.find('**/score_card_icon_rollover'), guiModel.find('**/score_card_icon_rollover')), image_scale=(0.2, 1, 0.2), command=self.showBoard)
+        self.maximizeB = DirectButton(parent=base.a2dBottomRight, pos=(-0.15, 0, 0.15), relief=None, state=DGG.NORMAL, image=(guiModel.find('**/score_card_icon'), guiModel.find('**/score_card_icon_rollover'), guiModel.find('**/score_card_icon_rollover')), image_scale=(0.2, 1, 0.2), command=self.showBoard)
         self.vertOffset = 0.13
         self.playaTop = 0.12
         horzOffset = 0.12

@@ -69,7 +69,7 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
         self.bldgRequest = None
         self.bldg = buildingList[0]
         if not self.bldg:
-            self.notify.error('setBldgDoId: elevator %d cannot find bldg %d!' % (self.doId, self.bldgDoId))
+            self.notify.warning('setBldgDoId: elevator %d cannot find bldg %d!' % (self.doId, self.bldgDoId))
             return
         if self.getBldgDoorOrigin():
             self.bossLevel = self.bldg.getBossLevel()
@@ -79,13 +79,15 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
         return
 
     def setFloor(self, floorNumber):
-        if self.currentFloor >= 0:
-            if self.bldg.floorIndicator[self.currentFloor]:
-                self.bldg.floorIndicator[self.currentFloor].setColor(LIGHT_OFF_COLOR)
-        if floorNumber >= 0:
-            if self.bldg.floorIndicator[floorNumber]:
-                self.bldg.floorIndicator[floorNumber].setColor(LIGHT_ON_COLOR)
-        self.currentFloor = floorNumber
+        self.currentFloor = 0
+        if hasattr(self, 'bldg'):
+            if self.currentFloor >= 0:
+                if self.bldg.floorIndicator[self.currentFloor]:
+                    self.bldg.floorIndicator[self.currentFloor].setColor(LIGHT_OFF_COLOR)
+            if floorNumber >= 0:
+                if self.bldg.floorIndicator[floorNumber]:
+                    self.bldg.floorIndicator[floorNumber].setColor(LIGHT_ON_COLOR)
+            self.currentFloor = floorNumber
 
     def handleEnterSphere(self, collEntry):
         self.notify.debug('Entering Elevator Sphere....')

@@ -15,7 +15,7 @@ class ToontownLoadingScreen:
         ToontownGlobals.LoopyLane : 'phase_3.5/maps/loading/ttc_ll.jpg',
         ToontownGlobals.PunchlinePlace : 'phase_3.5/maps/loading/ttc_pp.jpg',
         ToontownGlobals.DonaldsDock : 'phase_3.5/maps/loading/dd.jpg',
-        ToontownGlobals.BarnacleBoulevard : 'phase_3.5/maps/loading/dd__bb.jpg',
+        ToontownGlobals.BarnacleBoulevard : 'phase_3.5/maps/loading/dd_bb.jpg',
         ToontownGlobals.SeaweedStreet : 'phase_3.5/maps/loading/dd_ss.jpg',
         ToontownGlobals.LighthouseLane : 'phase_3.5/maps/loading/dd_ll.jpg',
         ToontownGlobals.DaisyGardens : 'phase_3.5/maps/loading/dg.jpg',
@@ -45,10 +45,10 @@ class ToontownLoadingScreen:
         self.gui = loader.loadModel('phase_3/models/gui/progress-background.bam')
         self.title = DirectLabel(guiId='ToontownLoadingScreenTitle', parent=self.gui, relief=None, pos=(base.a2dRight/5, 0, 0.235), text='', textMayChange=1, text_scale=0.08, text_fg=(0.03, 0.83, 0, 1), text_align=TextNode.ALeft, text_font=ToontownGlobals.getSignFont())
         self.waitBar = self.waitBar = DirectWaitBar(guiId='ToontownLoadingScreenWaitBar', parent=self.gui, frameSize=(base.a2dLeft+(base.a2dRight/4.95), base.a2dRight-(base.a2dRight/4.95), -0.03, 0.03), pos=(0, 0, 0.15), text='')
-        logoScale = 0.75  # Locked aspect ratio scale.
+        logoScale = 0.5625  # Scale for our locked aspect ratio (2:1).
         self.logo = OnscreenImage(
             image='phase_3/maps/toontown-logo.png',
-            scale=(((16.0 / 9.0)*logoScale) / (4.0/3.0), 1, logoScale / (4.0/3.0)))
+            scale=(logoScale * 2.0, 1, logoScale))
         self.logo.reparentTo(hidden)
         self.logo.setTransparency(TransparencyAttrib.MAlpha)
         scale = self.logo.getScale()

@@ -182,7 +182,6 @@ class GolfingRecordsUI(DirectFrame):
         DirectFrame.show(self)
 
     def regenerateScrollList(self):
-        print '### regen scroll'
         selectedIndex = 0
         if self.scrollList:
             selectedIndex = self.scrollList.getSelectedIndex()

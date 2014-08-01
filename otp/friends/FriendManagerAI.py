@@ -63,8 +63,20 @@ class FriendManagerAI(DistributedObjectAI):
             return
         self.sendUpdateToAvatarId(self.requests[context][0][0], 'friendResponse', [response, context])
         if response == 1:
-            requested = self.air.doId2do[self.requests[context][0][1]]
-            requester = self.air.doId2do[self.requests[context][0][0]]
+
+            requested = self.requests[context][0][1]
+            if requested in self.air.doId2do:
+                requested = self.air.doId2do[requested]
+            else:
+                del self.requests[context]
+                return
+
+            requester = self.requests[context][0][0]
+            if requester in self.air.doId2do:
+                requester = self.air.doId2do[requester]
+            else:
+                del self.requests[context]
+                return
 
             requested.extendFriendsList(requester.getDoId(), 0)
             requester.extendFriendsList(requested.getDoId(), 0)

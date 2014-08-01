@@ -47,7 +47,7 @@ PigDialogueArray = []
 LegsAnimDict = {}
 TorsoAnimDict = {}
 HeadAnimDict = {}
-Preloaded = []
+Preloaded = {}
 Phase3AnimList = (('neutral', 'neutral'), ('run', 'run'))
 Phase3_5AnimList = (('walk', 'walk'),
  ('teleport', 'teleport'),
@@ -188,63 +188,44 @@ suitList = ['phase_3.5/models/char/suitA-mod',
 
 def loadModels():
     global Preloaded
-    preloadAvatars = base.config.GetBool('preload-avatars', 0)
-    if preloadAvatars:
-        if not Preloaded:
-            print 'Preloading avatars...'
-            def loadTex(path):
-                tex = loader.loadTexture(path)
-                tex.setMinfilter(Texture.FTLinearMipmapLinear)
-                tex.setMagfilter(Texture.FTLinear)
-                Preloaded.append(tex)
+    if not Preloaded:
+        print 'Preloading avatars...'
+        def loadTex(path):
+            tex = loader.loadTexture(path)
+            tex.setMinfilter(Texture.FTLinearMipmapLinear)
+            tex.setMagfilter(Texture.FTLinear)
+            Preloaded[path] = tex
 
-            for shirt in ToonDNA.Shirts:
-                loadTex(shirt)
+        for shirt in ToonDNA.Shirts:
+            loadTex(shirt)
 
-            for sleeve in ToonDNA.Sleeves:
-                loadTex(sleeve)
+        for sleeve in ToonDNA.Sleeves:
+            loadTex(sleeve)
 
-            for short in ToonDNA.BoyShorts:
-                loadTex(short)
+        for short in ToonDNA.BoyShorts:
+            loadTex(short)
 
-            for bottom in ToonDNA.GirlBottoms:
-                loadTex(bottom[0])
+        for bottom in ToonDNA.GirlBottoms:
+            loadTex(bottom[0])
 
-            for key in LegDict.keys():
-                fileRoot = LegDict[key]
-                model = loader.loadModelNode('phase_3' + fileRoot + '1000')
-                Preloaded.append(model)
-                model = loader.loadModelNode('phase_3' + fileRoot + '500')
-                Preloaded.append(model)
-                model = loader.loadModelNode('phase_3' + fileRoot + '250')
-                Preloaded.append(model)
+        for key in LegDict.keys():
+            fileRoot = LegDict[key]
+            Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
+            Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
 
-            for key in TorsoDict.keys():
-                fileRoot = TorsoDict[key]
-                model = loader.loadModelNode('phase_3' + fileRoot + '1000')
-                Preloaded.append(model)
-                if len(key) > 1:
-                    model = loader.loadModelNode('phase_3' + fileRoot + '500')
-                    Preloaded.append(model)
-                    model = loader.loadModelNode('phase_3' + fileRoot + '250')
-                    Preloaded.append(model)
+        for key in TorsoDict.keys():
+            fileRoot = TorsoDict[key]
+            Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            if len(key) > 1:
+                Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
+                Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
 
-            for key in HeadDict.keys():
-                fileRoot = HeadDict[key]
-                model = loader.loadModelNode('phase_3' + fileRoot + '1000')
-                Preloaded.append(model)
-                model = loader.loadModelNode('phase_3' + fileRoot + '500')
-                Preloaded.append(model)
-                model = loader.loadModelNode('phase_3' + fileRoot + '250')
-                Preloaded.append(model)
-
-            for modelToLoad in suitList:
-                model = loader.loadModelNode(modelToLoad)
-                Preloaded.append(model)
-
-            print 'Done preloading avatars.'
-        else:
-            print 'Already preloaded avatars..'
+        for key in HeadDict.keys():
+            fileRoot = HeadDict[key]
+            Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
+            Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
 
 
 def loadBasicAnims():
@@ -797,13 +778,14 @@ class Toon(Avatar.Avatar, ToonHead):
             self.setHeight(height)
 
     def generateToonLegs(self, copy = 1):
+        global Preloaded
         legStyle = self.style.legs
         filePrefix = LegDict.get(legStyle)
         if filePrefix is None:
             self.notify.error('unknown leg style: %s' % legStyle)
-        self.loadModel('phase_3' + filePrefix + '1000', 'legs', '1000', copy)
-        self.loadModel('phase_3' + filePrefix + '500', 'legs', '500', copy)
-        self.loadModel('phase_3' + filePrefix + '250', 'legs', '250', copy)
+        self.loadModel((Preloaded[filePrefix+'-1000']), 'legs', '1000', True)
+        self.loadModel((Preloaded[filePrefix+'-500']), 'legs', '500', True)
+        self.loadModel((Preloaded[filePrefix+'-250']), 'legs', '250', True)
         if not copy:
             self.showPart('legs', '1000')
             self.showPart('legs', '500')
@@ -835,17 +817,18 @@ class Toon(Avatar.Avatar, ToonHead):
         self.initializeNametag3d()
 
     def generateToonTorso(self, copy = 1, genClothes = 1):
+        global Preloaded
         torsoStyle = self.style.torso
         filePrefix = TorsoDict.get(torsoStyle)
         if filePrefix is None:
             self.notify.error('unknown torso style: %s' % torsoStyle)
-        self.loadModel('phase_3' + filePrefix + '1000', 'torso', '1000', copy)
+        self.loadModel((Preloaded[filePrefix+'-1000']), 'torso', '1000', copy)
         if len(torsoStyle) == 1:
-            self.loadModel('phase_3' + filePrefix + '1000', 'torso', '500', copy)
-            self.loadModel('phase_3' + filePrefix + '1000', 'torso', '250', copy)
+            self.loadModel((Preloaded[filePrefix+'-1000']), 'torso', '500', copy)
+            self.loadModel((Preloaded[filePrefix+'-1000']), 'torso', '250', copy)
         else:
-            self.loadModel('phase_3' + filePrefix + '500', 'torso', '500', copy)
-            self.loadModel('phase_3' + filePrefix + '250', 'torso', '250', copy)
+            self.loadModel((Preloaded[filePrefix+'-500']), 'torso', '500', copy)
+            self.loadModel((Preloaded[filePrefix+'-250']), 'torso', '250', copy)
         if not copy:
             self.showPart('torso', '1000')
             self.showPart('torso', '500')

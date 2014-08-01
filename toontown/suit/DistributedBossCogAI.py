@@ -25,6 +25,7 @@ class DistributedBossCogAI(DistributedAvatarAI.DistributedAvatarAI):
         self.resetBattleCounters()
         self.looseToons = []
         self.involvedToons = []
+        self.punishedToons = []
         self.toonsA = []
         self.toonsB = []
         self.nearToons = []
@@ -87,32 +88,27 @@ class DistributedBossCogAI(DistributedAvatarAI.DistributedAvatarAI):
             self.acceptOnce(event, self.__handleUnexpectedExit, extraArgs=[avId])
 
     def removeToon(self, avId):
-        resendIds = 0
-        try:
+        av = self.air.doId2do.get(avId)
+        if not av is None:
+            if av.getHp() <= 0:
+                if avId not in self.punishedToons:
+                    self.air.cogSuitMgr.removeParts(av, self.deptIndex)
+                    self.punishedToons.append(avId)
+
+        if avId in self.looseToons:
             self.looseToons.remove(avId)
-        except:
-            pass
 
-        try:
+        if avId in self.involvedToons:
             self.involvedToons.remove(avId)
-            resendIds = 1
-        except:
-            pass
 
-        try:
+        if avId in self.toonsA:
             self.toonsA.remove(avId)
-        except:
-            pass
 
-        try:
+        if avId in self.toonsB:
             self.toonsB.remove(avId)
-        except:
-            pass
 
-        try:
+        if avId in self.nearToons:
             self.nearToons.remove(avId)
-        except:
-            pass
 
         event = self.air.getAvatarExitEvent(avId)
         self.ignore(event)

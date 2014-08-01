@@ -97,7 +97,6 @@ from toontown.toon import DistributedNPCToonBase/AI
 from toontown.toon import DistributedNPCToon/AI
 from toontown.toon import DistributedSmartNPC/AI
 from toontown.toon import DistributedSmartNPC/AI
-from toontown.toon import DistributedNPCSnowballGiver/AI
 from toontown.toon import DistributedNPCSpecialQuestGiver/AI
 from toontown.toon import DistributedNPCFlippyInToonHall/AI
 from toontown.toon import DistributedNPCScientist/AI
@@ -108,6 +107,8 @@ from toontown.toon import DistributedNPCFisherman/AI
 from toontown.toon import DistributedNPCPartyPerson/AI
 from toontown.toon import DistributedNPCPetclerk/AI
 from toontown.toon import DistributedNPCKartClerk/AI
+from toontown.toon import DistributedNPCYin/AI
+from toontown.toon import DistributedNPCYang/AI
 from toontown.building import DistributedKnockKnockDoor/AI
 from toontown.building import DistributedElevator/AI
 from toontown.building import DistributedElevatorFSM/AI
@@ -202,6 +203,7 @@ from toontown.racing import DistributedLeaderBoard/AI
 from toontown.racing import DistributedGag/AI
 from toontown.racing import DistributedProjectile/AI
 from toontown.racing.DistributedStartingBlock/AI import DistributedViewingBlock/AI
+from toontown.uberdog.SystemServicesManager/AI/UD import SystemServicesManager/AI/UD
 from toontown.uberdog.ClientServicesManager/UD import ClientServicesManager/UD
 from toontown.uberdog.DistributedDeliveryManager/AI/UD import DistributedDeliveryManager/AI/UD
 from toontown.uberdog.DistributedDataStoreManager/AI/UD import DistributedDataStoreManager/AI/UD
@@ -283,7 +285,6 @@ from toontown.uberdog.DistributedPartyManager/AI/UD import DistributedPartyManag
 from toontown.rpc.AwardManager/UD import AwardManager/UD
 from toontown.uberdog.DistributedCpuInfoMgr/AI/UD import DistributedCpuInfoMgr/AI/UD
 from toontown.uberdog.DistributedSecurityMgr/AI/UD import DistributedSecurityMgr/AI/UD
-from toontown.rpc.RATManager/UD import RATManager/UD
 from toontown.uberdog.DistributedInGameNewsMgr/AI/UD import DistributedInGameNewsMgr/AI/UD
 from toontown.uberdog.DistributedWhitelistMgr/AI/UD import DistributedWhitelistMgr/AI/UD
 from toontown.coderedemption.TTCodeRedemptionMgr/AI/UD import TTCodeRedemptionMgr/AI/UD
@@ -523,6 +524,8 @@ dclass DistributedToon : DistributedPlayer {
   setCogTypes(uint8[] = [0 * 4]) required broadcast ownrecv db;
   setCogParts(uint32[] = [0 * 4]) required broadcast ownrecv db;
   setCogMerits(uint16[] = [0 * 4]) required ownrecv db;
+  setPromotionStatus(uint8[] = [0 * 4]) required broadcast ownrecv db;
+  requestPromotion(uint8) ownsend airecv;
   setCogIndex(int8) broadcast ram;
   setDisguisePageFlag(int8) ownrecv;
   setSosPageFlag(int8) ownrecv;
@@ -556,7 +559,6 @@ dclass DistributedToon : DistributedPlayer {
   pieSplat(int16/10, int16/10, int16/10, uint8, uint8, int32) broadcast ownsend;
   setPieType(uint8) broadcast ownrecv ram;
   setNumPies(uint16) broadcast ownrecv ram;
-  setPieThrowType(uint8) broadcast ownrecv ram;
   catalogGenClothes(uint32) broadcast ownrecv;
   catalogGenAccessories(uint32) broadcast ownrecv;
   setPetId(uint32 = 0) required broadcast ownrecv db;
@@ -622,10 +624,6 @@ dclass DistributedToon : DistributedPlayer {
   setDISLname(string) ram;
   setDISLid(uint32) ram db airecv;
   flagAv(uint32, uint16, string []) airecv ownsend;
-  requestPing(uint32) airecv ownsend;
-  ping(char [0-1024]);
-  pingresp(char [0-1024]) airecv ownsend;
-
   setAnimalSound(uint8 index) ram broadcast ownrecv;
 };
 
@@ -734,6 +732,7 @@ dclass DistributedSuitBase : DistributedObject {
   setDNAString(blob) required broadcast ram;
   setLevelDist(int16) required broadcast ram;
   setBrushOff(int16) broadcast;
+  setWaiter(uint8) broadcast ram;
   setSkelecog(uint8) required broadcast ram;
   setSkeleRevives(uint8) required broadcast ram;
   setHP(int16) required broadcast ram;
@@ -1816,10 +1815,6 @@ dclass DistributedNPCToon : DistributedNPCToonBase {
   chooseTrack(int8) airecv clsend;
 };
 
-dclass DistributedNPCSnowballGiver : DistributedNPCToonBase {
-  gaveSnowballs(uint32, uint32, uint8) broadcast ram;
-};
-
 dclass DistributedSmartNPC : DistributedNPCToonBase {
   greet(uint32, uint32) broadcast ram;
   talkMessage(uint32, string) airecv clsend;
@@ -1888,6 +1883,16 @@ dclass DistributedNPCKartClerk : DistributedNPCToonBase {
   buyKart(uint8) airecv clsend;
   buyAccessory(uint8) airecv clsend;
   transactionDone() airecv clsend;
+};
+
+dclass DistributedNPCYin : DistributedNPCToonBase {
+  doTransformation(uint32 avId) broadcast;
+  requestTransformation() airecv clsend;
+};
+
+dclass DistributedNPCYang : DistributedNPCToonBase {
+  doTransformation(uint32 avId) broadcast;
+  requestTransformation() airecv clsend;
 };
 
 dclass DistributedKnockKnockDoor : DistributedAnimatedProp {
@@ -3249,7 +3254,7 @@ struct PotentialToon {
 };
 
 dclass ClientServicesManager : DistributedObjectGlobal {
-  login(string cookie) clsend;
+  login(string cookie, char auth [0-256]) clsend;
   acceptLogin(uint32 timestamp);
 
   requestAvatars() clsend;
@@ -3271,7 +3276,8 @@ dclass ClientServicesManager : DistributedObjectGlobal {
   chooseAvatar(uint32 avId) clsend;
 };
 
-dclass RATManager : DistributedObjectGlobal {
+dclass SystemServicesManager : DistributedObjectGlobal {
+  systemMessage(string message, uint32 parentId);
 };
 
 dclass AwardManager : DistributedObjectGlobal {

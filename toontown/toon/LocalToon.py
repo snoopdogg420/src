@@ -1950,14 +1950,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         if self.questMap:
             self.questMap.stop()
 
-    def _startZombieCheck(self):
-        pass
-
-    def _stopZombieCheck(self):
-        pass
-
-    # TODO: Add pets
-
     def getPetId(self):
         return False
 
@@ -1972,5 +1964,5 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
                         self.achievementGui.earnAchievement(achievementId)
             else:
                 self.canEarnAchievements = True
-        
+
         DistributedToon.DistributedToon.setAchievements(self, achievements)

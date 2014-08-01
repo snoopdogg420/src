@@ -395,7 +395,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
                 self.notify.warning('No FriendManager available.')
                 self.exit()
                 return
-            base.cr.ttrFriendsManager.d_requestSecret()
+            base.cr.ttiFriendsManager.d_requestSecret()
             self.accept('requestSecretResponse', self.__gotAvatarSecret)
         else:
             if base.cr.needParentPasswordForSecretChat():
@@ -463,7 +463,7 @@ class FriendSecret(DirectFrame, StateData.StateData):
                 secret = secret[3:]
                 self.notify.info('### use TT secret')
                 self.accept('submitSecretResponse', self.__enteredSecret)
-                base.cr.ttrFriendsManager.d_submitSecret(secret)
+                base.cr.ttiFriendsManager.d_submitSecret(secret)
             else:
                 self.accept(OTPGlobals.PlayerFriendUpdateEvent, self.__useAccountSecret)
                 self.accept(OTPGlobals.PlayerFriendRejectUseSecretEvent, self.__rejectUseAccountSecret)
@@ -473,7 +473,8 @@ class FriendSecret(DirectFrame, StateData.StateData):
                 else:
                     self.notify.info('### useUnlimitedSecret')
                     base.cr.playerFriendsManager.sendRequestUseUnlimitedSecret(secret)
-        self.nextText['text'] = OTPLocalizer.FriendSecretTryingSecret
+        # self.nextText['text'] = OTPLocalizer.FriendSecretTryingSecret
+        self.nextText['text'] = OTPLocalizer.FriendSecretNotImplemented
         self.nextText.setPos(0, 0, 0.3)
         self.nextText.show()
         self.ok1.hide()

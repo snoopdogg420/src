@@ -44,7 +44,6 @@ class ToonAvatarDetailPanel(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonAvatarDetailPanel')
 
     def __init__(self, avId, avName, playerId = None, parent = base.a2dTopRight, **kw):
-        print 'ToonAvatarDetailPanel %s' % playerId
         buttons = loader.loadModel('phase_3/models/gui/dialog_box_buttons_gui')
         gui = loader.loadModel('phase_3.5/models/gui/avatar_panel_gui')
         detailPanel = gui.find('**/avatarInfoPanel')

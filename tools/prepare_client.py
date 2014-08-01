@@ -107,21 +107,29 @@ for module in args.modules:
 # collection of data that will be used by the game at runtime. It contains the
 # PRC file data, (stripped) DC file, and time zone info.
 
-# First, we need the PRC file data:
-configFilePath = os.path.join(args.config_dir, '{0}.prc'.format(args.distribution))
-print 'Using configuration file: {0}'.format(configFilePath)
+# First, we need to add the configuration pages:
 configData = []
+with open('../config/general.prc') as f:
+    configData.append(f.read())
+
+configFileName = args.distribution + '.prc'
+configFilePath = os.path.join(args.config_dir, configFileName)
+print 'Using configuration file: {0}'.format(configFilePath)
+
 with open(configFilePath) as f:
     data = f.readlines()
+
+    # Replace server-version definitions with the desired server version:
     for i, line in enumerate(data):
         if 'server-version' in line:
             data[i] = 'server-version {0}'.format(args.server_ver)
-            print 'serverVersion = {0}'.format(args.server_ver)
-    data += '\n# Virtual file system...\nmodel-path /\n'
+
+    # Add our virtual file system data:
+    data.append('\n# Virtual file system...\nmodel-path /\n')
     for filepath in args.vfs:
-        data += 'vfs-mount {0} /\n'.format(filepath)
-    data = '\n'.join(data)
-    configData.append(data)
+        data.append('vfs-mount {0} /\n'.format(filepath))
+
+    configData.append('\n'.join(data))
 
 # Next, we need the DC file:
 dcData = ''
@@ -138,9 +146,17 @@ for filename in os.listdir(filepath):
             dcData += data
 
 # Now, collect our timezone info:
+import marshal, zlib
 zoneInfo = {}
+filename = os.path.split(pytz.__file__)[0]
 for timezone in pytz.all_timezones:
-    zoneInfo['zoneinfo/' + timezone] = pytz.open_resource(timezone).read()
+    fn = os.path.join(filename, 'zoneinfo', timezone.replace('-', '_minus_').replace('+', '_plus_') + '.py')
+    if not os.path.exists(fn):
+        print 'Unable to find timezone %s file!' % timezone
+        continue
+
+    with open(fn, 'rb') as f:
+        zoneInfo['zoneinfo/' + timezone] = zlib.compress(marshal.dumps(compile(f.read(), '', 'exec')))
 
 # Finally, write our data to game_data.py:
 print 'Writing game_data.py...'
@@ -148,7 +164,7 @@ gameData = '''\
 CONFIG = %r
 DC = %r
 ZONEINFO = %r'''
-with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
+with open(os.path.join(args.build_dir, 'game_data.py'), 'wb') as f:
     f.write(gameData % (configData, dcData.strip(), zoneInfo))
 
 # We have all of the code gathered together. Let's create the multifiles now:

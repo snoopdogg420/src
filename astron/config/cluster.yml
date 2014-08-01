@@ -1,0 +1,159 @@
+daemon:
+    name: Developer Cluster
+
+general:
+    eventlogger: 127.0.0.1:7198
+    dc_files:
+        - ../dclass/otp.dc
+        - ../dclass/toon.dc
+
+messagedirector:
+    bind: 127.0.0.1:7100
+
+uberdogs:
+    - class: CentralLogger
+      id: 4688
+      anonymous: false
+
+    - class: ClientServicesManager
+      id: 4665
+      anonymous: true
+
+    - class: ChatAgent
+      id: 4681
+      anonymous: false
+
+    - class: FriendManager
+      id: 4501
+      anonymous: false
+
+    - class: AvatarFriendsManager
+      id: 4686
+      anonymous: false
+
+    - class: PlayerFriendsManager
+      id: 4687
+      anonymous: false
+
+    - class: TTIFriendsManager
+      id: 4666
+      anonymous: false
+
+    - class: TTSpeedchatRelay
+      id: 4712
+      anonymous: false
+
+    - class: DistributedDeliveryManager
+      id: 4683
+      anonymous: false
+
+    - class: TTCodeRedemptionMgr
+      id: 4695
+      anonymous: false
+
+    - class: GlobalPartyManager
+      id: 4477
+      anonymous: false
+
+roles:
+    - type: clientagent
+      bind: 0.0.0.0:7199
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000000000
+        max: 1000001000
+
+    - type: clientagent
+      bind: 0.0.0.0:7299
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000001001
+        max: 1000002000
+
+    - type: clientagent
+      bind: 0.0.0.0:7399
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000002001
+        max: 1000003000
+
+    - type: clientagent
+      bind: 0.0.0.0:7499
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000003001
+        max: 1000004000
+
+    - type: clientagent
+      bind: 0.0.0.0:7599
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000004001
+        max: 1000005000
+
+    - type: clientagent
+      bind: 0.0.0.0:7699
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000005001
+        max: 1000006000
+
+    - type: clientagent
+      bind: 0.0.0.0:7799
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000006001
+        max: 1000007000
+
+    - type: clientagent
+      bind: 0.0.0.0:7899
+      version: "infinite-dev"
+      client:
+       relocate: true
+       add_interest: enabled
+      channels:
+        min: 1000007001
+        max: 1000008000
+
+    - type: stateserver
+      control: 4002
+
+    - type: database
+      control: 4003
+      generate:
+        min: 100000000
+        max: 399999999
+      backend:
+        type: yaml
+        foldername: ../databases/astrondb
+
+    - type: dbss
+      database: 4003
+      ranges:
+        - min: 100000000
+          max: 399999999
+
+    - type: eventlogger
+      bind: 127.0.0.1:7198
+      output: ../logs/events-%y%m%d_%H%M%S.log

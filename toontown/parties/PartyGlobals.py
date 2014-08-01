@@ -110,16 +110,14 @@ PartyEditorActivityOrder = [ ActivityIds.PartyClock,
  ActivityIds.PartyCog,
  ActivityIds.PartyWinterCog,
  ActivityIds.PartyFireworks]
-UnreleasedActivityIds = (ActivityIds.PartyCog,
- ActivityIds.PartyWinterCog,
+UnreleasedActivityIds = (ActivityIds.PartyWinterCog,
  ActivityIds.PartyValentineJukebox,
  ActivityIds.PartyValentineJukebox40,
  ActivityIds.PartyValentineTrampoline,
  ActivityIds.PartyWinterTrampoline,
  ActivityIds.PartyWinterCatch,
  ActivityIds.PartyValentineDance,
- ActivityIds.PartyValentineDance20,
- ActivityIds.PartyTugOfWar)
+ ActivityIds.PartyValentineDance20)
 MutuallyExclusiveActivities = ((ActivityIds.PartyJukebox, ActivityIds.PartyJukebox40),
  (ActivityIds.PartyValentineJukebox, ActivityIds.PartyValentineJukebox40),
  (ActivityIds.PartyDance, ActivityIds.PartyDance20),

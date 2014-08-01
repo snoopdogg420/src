@@ -247,7 +247,7 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
         else:
             DistributedLevel.notify.debug('entity %s requesting reparent to %s, not yet created' % (entity, parentId))
             entity.reparentTo(hidden)
-            if not self.parent2pendingChildren.has_key(parentId):
+            if parentId not in self.parent2pendingChildren:
                 self.parent2pendingChildren[parentId] = []
 
                 def doReparent(parentId = parentId, self = self, wrt = wrt):
@@ -524,7 +524,8 @@ class DistributedLevel(DistributedObject.DistributedObject, Level.Level):
     def showSmallTitle(self):
         if self.titleText:
             self.titleText.hide()
-        self.smallTitleText.show()
+        if self.smallTitleText:
+            self.smallTitleText.show()
 
     def hideSmallTitleText(self):
         if self.smallTitleText:

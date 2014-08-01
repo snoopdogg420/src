@@ -18,6 +18,8 @@ CFOElevatorFov = 43.0
 CJElevatorFov = 59.0
 CEOElevatorFov = 59.0
 CBElevatorFov = 42.0
+WantPromotion = 0
+PendingPromotion = 1
 CeilingBitmask = BitMask32(256)
 FloorEventBitmask = BitMask32(16)
 PieBitmask = BitMask32(256)
@@ -100,18 +102,12 @@ FM_DeletedItem = 3
 FM_RecoveredItem = 4
 SPDonaldsBoat = 3
 SPMinniesPiano = 4
-SPSlappysBalloon = 5
 CEVirtual = 14
-MaxHpLimit = 137
+MaxHpLimit = 145
 MaxCarryLimit = 80
 MaxQuestCarryLimit = 4
 GravityValue = 32.174
-MaxCogSuitLevel = 50 - 1
-CogSuitHPLevels = (15 - 1,
- 20 - 1,
- 30 - 1,
- 40 - 1,
- 50 - 1)
+MaxCogSuitLevel = 12 - 1
 setInterfaceFont(TTLocalizer.InterfaceFont)
 setSignFont(TTLocalizer.SignFont)
 from toontown.toontowngui import TTDialog
@@ -1602,7 +1598,7 @@ DG = 5
 BR = 6
 OZ = 7
 DL = 8
-DefaultWantNewsPageSetting = 1
+DefaultWantNewsPageSetting = 0
 gmMagicWordList = ['restock',
  'restockUber',
  'autoRestock',

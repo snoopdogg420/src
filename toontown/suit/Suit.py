@@ -172,44 +172,45 @@ HeadModelDict = {'a': ('/models/char/suitA-', 4),
  'b': ('/models/char/suitB-', 4),
  'c': ('/models/char/suitC-', 3.5)}
 
+SuitParts = ['phase_3.5/models/char/suitA-mod',
+            'phase_3.5/models/char/suitB-mod',
+            'phase_3.5/models/char/suitC-mod',
+            'phase_4/models/char/suitA-heads',
+            'phase_4/models/char/suitB-heads',
+            'phase_3.5/models/char/suitC-heads']
+
+Preloaded = {}
+
+def loadModels():
+    global Preloaded
+    if not Preloaded:
+        print 'Preloading suits...'
+        for x, y in enumerate(SuitParts):
+            Preloaded[SuitParts[x]] = loader.loadModel(y)
+        print 'Done preloading suits'
+
 def loadTutorialSuit():
     loader.loadModelNode('phase_3.5/models/char/suitC-mod')
     loadDialog(1)
 
 
 def loadSuits(level):
-    loadSuitModelsAndAnims(level, flag=1)
     loadDialog(level)
 
 
 def unloadSuits(level):
-    loadSuitModelsAndAnims(level, flag=0)
+    #loadSuitModelsAndAnims(level, flag=0)
     unloadDialog(level)
 
 
 def loadSuitModelsAndAnims(level, flag = 0):
     for key in ModelDict.keys():
         model, phase = ModelDict[key]
-        if base.config.GetBool('want-new-cogs', 0):
-            headModel, headPhase = HeadModelDict[key]
-        else:
-            headModel, headPhase = ModelDict[key]
         if flag:
-            if base.config.GetBool('want-new-cogs', 0):
-                filepath = 'phase_3.5' + model + 'zero'
-                if cogExists(model + 'zero.bam'):
-                    loader.loadModelNode(filepath)
-            else:
-                loader.loadModelNode('phase_3.5' + model + 'mod')
-            loader.loadModelNode('phase_' + str(headPhase) + headModel + 'heads')
-        else:
-            if base.config.GetBool('want-new-cogs', 0):
-                filepath = 'phase_3.5' + model + 'zero'
-                if cogExists(model + 'zero.bam'):
-                    loader.unloadModel(filepath)
-            else:
-                loader.unloadModel('phase_3.5' + model + 'mod')
-            loader.unloadModel('phase_' + str(headPhase) + headModel + 'heads')
+            filepath = 'phase_3.5' + model + 'mod'
+            Preloaded[filepath] = loader.loadModel(filepath)
+            filepath = 'phase_' + str(phase) + model + 'heads'
+            Preloaded[filepath] = loader.loadModel(filepath)
 
 
 def cogExists(filePrefix):
@@ -621,15 +622,19 @@ class Suit(Avatar.Avatar):
         return
 
     def generateBody(self):
+        global Preloaded
         animDict = self.generateAnimDict()
         filePrefix, bodyPhase = ModelDict[self.style.body]
         if base.config.GetBool('want-new-cogs', 0):
             if cogExists(filePrefix + 'zero.bam'):
-                self.loadModel('phase_3.5' + filePrefix + 'zero')
+                filepath = 'phase_3.5' + filePrefix + 'zero'
+                self.loadModel(Preloaded[filepath], copy = True)
             else:
-                self.loadModel('phase_3.5' + filePrefix + 'mod')
+                filepath = 'phase_3.5' + filePrefix + 'mod'
+                self.loadModel(Preloaded[filepath], copy = True)
         else:
-            self.loadModel('phase_3.5' + filePrefix + 'mod')
+            filepath = 'phase_3.5' + filePrefix + 'mod'
+            self.loadModel(Preloaded[filepath], copy = True)
         self.loadAnims(animDict)
         self.setSuitClothes()
 
@@ -768,7 +773,9 @@ class Suit(Avatar.Avatar):
             filePrefix, phase = HeadModelDict[self.style.body]
         else:
             filePrefix, phase = ModelDict[self.style.body]
-        headModel = loader.loadModel('phase_' + str(phase) + filePrefix + 'heads')
+        filepath = 'phase_' + str(phase) + filePrefix + 'heads'
+        headModel = NodePath('cog_head')
+        Preloaded[filepath].copyTo(headModel)
         headReferences = headModel.findAllMatches('**/' + headType)
         for i in xrange(0, headReferences.getNumPaths()):
             if base.config.GetBool('want-new-cogs', 0):

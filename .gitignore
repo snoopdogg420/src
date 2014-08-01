@@ -1,25 +1,9 @@
-# Python / compiled / optimized
+# Python
 *.py[cod]
-
-# C extensions
-*.so
-
-# Unit test / coverage reports
-.coverage
-.tox
-nosetests.xml
 
 # Eclipse IDE
 .project
 .pydevproject
-
-# Deployment
-Release
-Debug
-build
-
-# PLY
-parsetab.py
 
 # Mac directory info
 .DS_Store

@@ -1,35 +1,34 @@
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from toontown.battle.BattleProps import *
-from direct.distributed.ClockDelta import *
-from direct.showbase.PythonUtil import Functor
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from direct.fsm import FSM
-from direct.fsm import ClassicFSM, State
-from direct.fsm import State
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import ToontownBattleGlobals
-import DistributedBossCog
-from toontown.toonbase import TTLocalizer
-import SuitDNA
-from toontown.toon import Toon
-from toontown.battle import BattleBase
 from direct.directutil import Mopath
+from direct.distributed.ClockDelta import *
+from direct.fsm import ClassicFSM, State
+from direct.fsm import FSM
+from direct.gui.DirectGui import *
+from direct.interval.IntervalGlobal import *
+from direct.showbase.PythonUtil import Functor
 from direct.showutil import Rope
-from toontown.distributed import DelayDelete
-from toontown.battle import MovieToonVictory
-from toontown.building import ElevatorUtils
-from toontown.battle import RewardPanel
-from toontown.toon import NPCToons
 from direct.task import Task
-import random
 import math
-from toontown.coghq import CogDisguiseGlobals
-from toontown.suit import SellbotBossGlobals
+from pandac.PandaModules import *
+import random
+
+import DistributedBossCog
+import SuitDNA
 from otp.nametag.NametagConstants import *
-from otp.nametag import NametagGlobals
+from toontown.battle import BattleBase
+from toontown.battle import MovieToonVictory
+from toontown.battle import RewardPanel
+from toontown.battle import SuitBattleGlobals
+from toontown.battle.BattleProps import *
+from toontown.coghq import CogDisguiseGlobals
+from toontown.distributed import DelayDelete
+from toontown.suit import SellbotBossGlobals
+from toontown.toon import NPCToons
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+
+
 OneBossCog = None
 
 class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
@@ -443,15 +442,20 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         return bossTrack
 
     def __talkAboutPromotion(self, speech):
-        if not self.localToonPromoted:
-            pass
-        elif self.prevCogSuitLevel < ToontownGlobals.MaxCogSuitLevel:
-            speech += TTLocalizer.CagedToonPromotion
-            newCogSuitLevel = localAvatar.getCogLevels()[CogDisguiseGlobals.dept2deptIndex(self.style.dept)]
-            if newCogSuitLevel == ToontownGlobals.MaxCogSuitLevel:
-                speech += TTLocalizer.CagedToonLastPromotion % (ToontownGlobals.MaxCogSuitLevel + 1)
-            if newCogSuitLevel in ToontownGlobals.CogSuitHPLevels:
-                speech += TTLocalizer.CagedToonHPBoost
+        if self.prevCogSuitLevel < ToontownGlobals.MaxCogSuitLevel:
+            deptIndex = CogDisguiseGlobals.dept2deptIndex(self.style.dept)
+            cogLevels = base.localAvatar.getCogLevels()
+            newCogSuitLevel = cogLevels[deptIndex]
+            cogTypes = base.localAvatar.getCogTypes()
+            maxCogSuitLevel = (SuitDNA.levelsPerSuit-1) + cogTypes[deptIndex]
+            if self.prevCogSuitLevel != maxCogSuitLevel:
+                speech += TTLocalizer.CagedToonLevelPromotion
+            if newCogSuitLevel == maxCogSuitLevel:
+                if newCogSuitLevel != ToontownGlobals.MaxCogSuitLevel:
+                    suitIndex = (SuitDNA.suitsPerDept*deptIndex) + cogTypes[deptIndex]
+                    cogTypeStr = SuitDNA.suitHeadTypes[suitIndex]
+                    cogName = SuitBattleGlobals.SuitAttributes[cogTypeStr]['name']
+                    speech += TTLocalizer.CagedToonSuitPromotion % cogName
         else:
             speech += TTLocalizer.CagedToonMaxed % (ToontownGlobals.MaxCogSuitLevel + 1)
         return speech

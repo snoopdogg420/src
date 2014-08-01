@@ -1,34 +1,35 @@
-import math
-import random
-from pandac.PandaModules import VBase3, CollisionPlane, CollisionNode, CollisionSphere, CollisionTube, NodePath, Plane, Vec3, Vec2, Point3, BitMask32, CollisionHandlerEvent, TextureStage, VBase4, BoundingSphere
-from otp.nametag.NametagConstants import CFSpeech
-from otp.nametag.NametagGroup import NametagGroup
-from direct.interval.IntervalGlobal import Sequence, Wait, Func, LerpHprInterval, Parallel, LerpPosInterval, Track, ActorInterval, ParallelEndTogether, LerpFunctionInterval, LerpScaleInterval, LerpPosHprInterval, SoundInterval
-from direct.task import Task
-from direct.fsm import FSM
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import globalClockDelta
+from direct.fsm import FSM
+from direct.interval.IntervalGlobal import Sequence, Wait, Func, LerpHprInterval, Parallel, LerpPosInterval, Track, ActorInterval, ParallelEndTogether, LerpFunctionInterval, LerpScaleInterval, LerpPosHprInterval, SoundInterval
 from direct.showbase import PythonUtil
 from direct.task import Task
+import math
+from pandac.PandaModules import VBase3, CollisionPlane, CollisionNode, CollisionSphere, CollisionTube, NodePath, Plane, Vec3, Vec2, Point3, BitMask32, CollisionHandlerEvent, TextureStage, VBase4, BoundingSphere
+import random
+
+from otp.nametag.NametagConstants import CFSpeech
+from otp.nametag.NametagGroup import NametagGroup
+from toontown.battle import MovieToonVictory
+from toontown.battle import RewardPanel
+from toontown.battle import SuitBattleGlobals
+from toontown.building import ElevatorConstants
+from toontown.coghq import CogDisguiseGlobals
 from toontown.distributed import DelayDelete
-from toontown.toonbase import ToontownGlobals
+from toontown.effects import DustCloud
 from toontown.suit import DistributedBossCog
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownGlobals
+from toontown.suit import Suit
 from toontown.suit import SuitDNA
 from toontown.toon import Toon
 from toontown.toon import ToonDNA
-from toontown.building import ElevatorConstants
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownTimer
-from toontown.toonbase import ToontownBattleGlobals
-from toontown.battle import RewardPanel
-from toontown.battle import MovieToonVictory
-from toontown.coghq import CogDisguiseGlobals
-from toontown.suit import Suit
-from toontown.suit import SuitDNA
-from toontown.effects import DustCloud
+
+
 OneBossCog = None
 TTL = TTLocalizer
+
 
 class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBossbotBoss')
@@ -460,27 +461,28 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.toonFoodStatus[avId] = (beltIndex, foodNum)
         av = base.cr.doId2do.get(avId)
         if av:
-            intervalName = self.uniqueName('loadFoodSoundIval-%d' % avId)
-            seq = SoundInterval(self.pickupFoodSfx, node=av, name=intervalName)
-            oldSeq = self.activeIntervals.get(intervalName)
-            if oldSeq:
-                oldSeq.finish()
-            seq.start()
-            self.activeIntervals[intervalName] = seq
-            foodModel = loader.loadModel('phase_12/models/bossbotHQ/canoffood')
-            foodModel.setName('cogFood')
-            foodModel.setScale(ToontownGlobals.BossbotFoodModelScale)
-            foodModel.reparentTo(av.suit.getRightHand())
-            foodModel.setHpr(52.1961, 180.4983, -4.2882)
-            curAnim = av.suit.getCurrentAnim()
-            self.notify.debug('curAnim=%s' % curAnim)
-            if curAnim in ('walk', 'run'):
-                av.suit.loop('tray-walk')
-            elif curAnim == 'neutral':
-                self.notify.debug('looping tray-netural')
-                av.suit.loop('tray-neutral')
-            else:
-                self.notify.warning("don't know what to do with anim=%s" % curAnim)
+            if hasattr(av, 'suit'):
+                intervalName = self.uniqueName('loadFoodSoundIval-%d' % avId)
+                seq = SoundInterval(self.pickupFoodSfx, node=av, name=intervalName)
+                oldSeq = self.activeIntervals.get(intervalName)
+                if oldSeq:
+                    oldSeq.finish()
+                seq.start()
+                self.activeIntervals[intervalName] = seq
+                foodModel = loader.loadModel('phase_12/models/bossbotHQ/canoffood')
+                foodModel.setName('cogFood')
+                foodModel.setScale(ToontownGlobals.BossbotFoodModelScale)
+                foodModel.reparentTo(av.suit.getRightHand())
+                foodModel.setHpr(52.1961, 180.4983, -4.2882)
+                curAnim = av.suit.getCurrentAnim()
+                self.notify.debug('curAnim=%s' % curAnim)
+                if curAnim in ('walk', 'run'):
+                    av.suit.loop('tray-walk')
+                elif curAnim == 'neutral':
+                    self.notify.debug('looping tray-netural')
+                    av.suit.loop('tray-neutral')
+                else:
+                    self.notify.warning("don't know what to do with anim=%s" % curAnim)
 
     def removeFoodFromToon(self, avId):
         self.toonFoodStatus[avId] = None
@@ -841,11 +843,19 @@ class DistributedBossbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
 
     def __talkAboutPromotion(self, speech):
         if self.prevCogSuitLevel < ToontownGlobals.MaxCogSuitLevel:
-            newCogSuitLevel = localAvatar.getCogLevels()[CogDisguiseGlobals.dept2deptIndex(self.style.dept)]
-            if newCogSuitLevel == ToontownGlobals.MaxCogSuitLevel:
-                speech += TTLocalizer.BossbotRTLastPromotion % (ToontownGlobals.MaxCogSuitLevel + 1)
-            if newCogSuitLevel in ToontownGlobals.CogSuitHPLevels:
-                speech += TTLocalizer.BossbotRTHPBoost
+            deptIndex = CogDisguiseGlobals.dept2deptIndex(self.style.dept)
+            cogLevels = base.localAvatar.getCogLevels()
+            newCogSuitLevel = cogLevels[deptIndex]
+            cogTypes = base.localAvatar.getCogTypes()
+            maxCogSuitLevel = (SuitDNA.levelsPerSuit-1) + cogTypes[deptIndex]
+            if self.prevCogSuitLevel != maxCogSuitLevel:
+                speech += TTLocalizer.BossbotRTLevelPromotion
+            if newCogSuitLevel == maxCogSuitLevel:
+                if newCogSuitLevel != ToontownGlobals.MaxCogSuitLevel:
+                    suitIndex = (SuitDNA.suitsPerDept*deptIndex) + cogTypes[deptIndex]
+                    cogTypeStr = SuitDNA.suitHeadTypes[suitIndex]
+                    cogName = SuitBattleGlobals.SuitAttributes[cogTypeStr]['name']
+                    speech += TTLocalizer.BossbotRTSuitPromotion % cogName
         else:
             speech += TTLocalizer.BossbotRTMaxed % (ToontownGlobals.MaxCogSuitLevel + 1)
         return speech

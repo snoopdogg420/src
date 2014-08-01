@@ -12,6 +12,7 @@ import time
 from otp.chat.TalkGlobals import *
 from otp.chat.ChatGlobals import *
 from otp.nametag.NametagConstants import CFSpeech, CFTimeout, CFThought
+from toontown.chat.TTWhiteList import TTWhiteList
 ThoughtPrefix = '.'
 
 class TalkAssistant(DirectObject.DirectObject):
@@ -31,6 +32,7 @@ class TalkAssistant(DirectObject.DirectObject):
         self.lastWhisperPlayerId = None
         self.lastWhisper = None
         self.SCDecoder = SCDecoders
+        self.whiteList = TTWhiteList()
         return
 
     def clearHistory(self):
@@ -98,13 +100,13 @@ class TalkAssistant(DirectObject.DirectObject):
         if message.getTalkType() == TALK_WHISPER and doId != localAvatar.doId:
             self.lastWhisperDoId = doId
             self.lastWhisper = self.lastWhisperDoId
-        if not self.historyByDoId.has_key(doId):
+        if doId not in self.historyByDoId:
             self.historyByDoId[doId] = []
         self.historyByDoId[doId].append(message)
         if not self.shownWhiteListWarning and scrubbed and doId == localAvatar.doId:
             self.doWhiteListWarning()
             self.shownWhiteListWarning = 1
-        if not self.floodDataByDoId.has_key(doId):
+        if doId not in self.floodDataByDoId:
             self.floodDataByDoId[doId] = [0.0, self.stampTime(), message]
         else:
             oldTime = self.floodDataByDoId[doId][1]
@@ -131,7 +133,7 @@ class TalkAssistant(DirectObject.DirectObject):
         if message.getTalkType() == TALK_ACCOUNT:
             self.lastWhisperPlayerId = dISLId
             self.lastWhisper = self.lastWhisperPlayerId
-        if not self.historyByDISLId.has_key(dISLId):
+        if dISLId not in self.historyByDISLId:
             self.historyByDISLId[dISLId] = []
         self.historyByDISLId[dISLId].append(message)
 
@@ -630,7 +632,23 @@ class TalkAssistant(DirectObject.DirectObject):
         return error
 
     def sendWhisperTalk(self, message, receiverAvId):
-        base.cr.ttrFriendsManager.sendUpdate('sendTalkWhisper', [receiverAvId, message])
+
+        modifications = []
+        words = message.split(' ')
+        offset = 0
+        WantWhitelist = config.GetBool('want-whitelist', 1)
+        for word in words:
+            if word and not self.whiteList.isWord(word) and WantWhitelist:
+                modifications.append((offset, offset+len(word)-1))
+            offset += len(word) + 1
+
+        cleanMessage = message
+        for modStart, modStop in modifications:
+            cleanMessage = cleanMessage[:modStart] + '*'*(modStop-modStart+1) + cleanMessage[modStop+1:]
+
+        message, scrubbed = base.localAvatar.scrubTalk(cleanMessage, modifications)
+
+        base.cr.ttiFriendsManager.sendUpdate('sendTalkWhisper', [receiverAvId, message])
 
     def sendAccountTalk(self, message, receiverAccount):
         error = None

@@ -142,13 +142,7 @@ class LauncherBase(DirectObject):
         else:
             Configrc_args = ''
             print 'generating standard configrc'
-        if os.environ.has_key('PRC_EXECUTABLE_ARGS'):
-            print 'PRC_EXECUTABLE_ARGS is set to: ' + os.environ['PRC_EXECUTABLE_ARGS']
-            print 'Resetting PRC_EXECUTABLE_ARGS'
         ExecutionEnvironment.setEnvironmentVariable('PRC_EXECUTABLE_ARGS', '-stdout ' + Configrc_args)
-        if os.environ.has_key('CONFIG_CONFIG'):
-            print 'CONFIG_CONFIG is set to: ' + os.environ['CONFIG_CONFIG']
-            print 'Resetting CONFIG_CONFIG'
         os.environ['CONFIG_CONFIG'] = ':_:configdir_.:configpath_:configname_Configrc.exe:configexe_1:configargs_-stdout ' + Configrc_args
         cpMgr = ConfigPageManager.getGlobalPtr()
         cpMgr.reloadImplicitPages()
@@ -1846,7 +1840,7 @@ class LauncherBase(DirectObject):
             try:
                 for p in procapi.getProcessList():
                     pname = p.name
-                    if knownHacksExe.has_key(pname):
+                    if pname in knownHacksExe:
                         hacksRunning[knownHacksExe[pname]] = 1
             except:
                 pass
@@ -1855,7 +1849,7 @@ class LauncherBase(DirectObject):
             self.notify.info("Third party programs installed:")
             for hack in hacksInstalled.keys():
                 self.notify.info(hack)
-        
+
         if len(hacksRunning) > 0:
             self.notify.info("Third party programs running:")
             for hack in hacksRunning.keys():

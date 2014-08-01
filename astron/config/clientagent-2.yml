@@ -1,11 +1,11 @@
+daemon:
+    name: Client Agent #2
+
 general:
-    eventlogger: 127.0.0.1:7197
+    eventlogger: 127.0.0.1:7198
     dc_files:
         - ../dclass/otp.dc
         - ../dclass/toon.dc
-
-messagedirector:
-    bind: 127.0.0.1:7199
 
 uberdogs:
     - class: CentralLogger
@@ -52,35 +52,16 @@ uberdogs:
       id: 4477
       anonymous: false
 
+messagedirector:
+    connect: 127.0.0.1:7100
+
 roles:
     - type: clientagent
-      bind: 0.0.0.0:7198
+      bind: 0.0.0.0:7399
       version: "infinite-dev"
       client:
        relocate: true
        add_interest: enabled
       channels:
-        min: 1000000000
-        max: 1009999999
-
-    - type: stateserver
-      control: 4002
-
-    - type: database
-      control: 4003
-      generate:
-        min: 100000000
-        max: 399999999
-      backend:
-        type: yaml
-        foldername: ../databases/astrondb
-
-    - type: dbss
-      database: 4003
-      ranges:
-        - min: 100000000
-          max: 399999999
-
-    - type: eventlogger
-      bind: 127.0.0.1:7197
-      output: ../logs/events-%y%m%d_%H%M%S.log
+        min: 1000002001
+        max: 1000003000

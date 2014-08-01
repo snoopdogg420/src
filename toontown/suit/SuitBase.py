@@ -22,6 +22,7 @@ class SuitBase:
         self.maxHP = 10
         self.currHP = 10
         self.isSkelecog = 0
+        self.isWaiter = 0
         return
 
     def delete(self):
@@ -60,6 +61,9 @@ class SuitBase:
     def setSkelecog(self, flag):
         self.isSkelecog = flag
 
+    def setWaiter(self, flag):
+        self.isWaiter = flag
+
     def getActualLevel(self):
         if hasattr(self, 'dna'):
             return SuitBattleGlobals.getActualFromRelativeLevel(self.getStyleName(), self.level) + 1
@@ -81,4 +85,4 @@ class SuitBase:
             print '\t', self.sp.dnaStore.getSuitPointWithIndex(indexVal)
 
     def makeLegList(self):
-        self.legList = SuitLegList(self.path, self.sp.dnaStore, self.sp.suitWalkSpeed, SuitTimings.fromSky, SuitTimings.toSky, SuitTimings.fromSuitBuilding, SuitTimings.toSuitBuilding, SuitTimings.toToonBuilding)
+        self.legList = SuitLegList(self.path, self.sp.dnaStore)

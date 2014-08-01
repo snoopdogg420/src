@@ -132,7 +132,7 @@ TheBrrrgh = ('to', 'in', lTheBrrrgh)
 MinniesMelodyland = ('to', 'in', lMinniesMelodyland)
 DaisyGardens = ('to', 'in', lDaisyGardens)
 OutdoorZone = ('to', 'in', lOutdoorZone)
-FunnyFarm = ('to the', 'in the', 'Funny Farm')
+FunnyFarm = ('to', 'in', 'The Unpainted Playground')
 GoofySpeedway = ('to', 'in', lGoofySpeedway)
 DonaldsDreamland = ('to', 'in', lDonaldsDreamland)
 BossbotHQ = ('to', 'in', 'Bossbot HQ')
@@ -772,7 +772,7 @@ QuestDialogDict = {160: {GREETING: '',
         COMPLETE: "You found it!?!?\x07Aren't you a darling!\x07You've more than earned this..."},
  2209: {QUEST: 'Melville is preparing for an important voyage.\x07Pop in and see what you can do to help sort him out._where_'},
  2210: {QUEST: "I can use your help.\x07I've been asked by Toon HQ to take a voyage and see if I can find where the Cogs are coming from.\x07I'll need a few things for my ship but I don't have many Jellybeans.\x07Stop by and pick up some ballast from Alice. You'll have to do a favor for her to get it._where_",
-        GREETING: 'Howdy, _avName_',
+        GREETING: 'Howdy, _avName_!',
         LEAVING: ''},
  2211: {QUEST: "So Melville wants ballast, does he?\x07He still owes me for the last bushel.\x07I'll give it to you if you can clear five Micromanagers off my street.",
         INCOMPLETE_PROGRESS: 'No, silly! I said FIVE micromanagers...',
@@ -2019,7 +2019,7 @@ TeleportPanelUnknownHood = "You don't know how to get to %s!"
 TeleportPanelUnavailableHood = '%s is not available right now; try again later.'
 TeleportPanelDenySelf = "You can't go to yourself!"
 TeleportPanelOtherShard = "%(avName)s is in district %(shardName)s, and you're in district %(myShardName)s.  Do you want to switch to %(shardName)s?"
-TeleportPanelBusyShard = '%(avName)s is in a full District. Playing in a full District can severely slow down game performance. Are you sure you want to switch districts?'
+TeleportPanelBusyShard = '%(avName)s is in a full District.'
 BattleBldgBossTaunt = "I'm the boss."
 CogdoBattleBldgBossTaunt = "I don't take meetings with Toons."
 FactoryBossTaunt = "I'm the Foreman."
@@ -2251,12 +2251,12 @@ RewardPanelCongratsStrings = ['Yeah!',
 RewardPanelNewGag = 'New %(gagName)s gag for %(avName)s!'
 RewardPanelUberGag = '%(avName)s earned the %(gagName)s gag with %(exp)s experience points!'
 RewardPanelEndTrack = 'Yay! %(avName)s has reached the end of the %(gagName)s Gag Track!'
+RewardPanelPromotionPending = 'Pending promotion...'
 RewardPanelMeritsMaxed = 'Maxed'
 RewardPanelMeritBarLabels = ['Stock Options',
  'Jury Notices',
  'Cogbucks',
  'Merits']
-RewardPanelMeritAlert = 'Ready for promotion!'
 RewardPanelCogPart = 'You gained a Cog disguise part!'
 RewardPanelPromotion = 'Ready for promotion in %s  track!'
 RewardPanelSkip = 'Skip'
@@ -3091,9 +3091,9 @@ FADoorCodes_TALK_TO_HQ_TOM = 'Go get your reward from Toon Headquarters!'
 FADoorCodes_SUIT_APPROACHING = None
 FADoorCodes_BUILDING_TAKEOVER = "Watch out! There's a Cog in there!"
 FADoorCodes_SB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Sellbot Disguise first!\n\nBuild your Sellbot Disguise out of parts from the Factory."
-FADoorCodes_CB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Cashbot Disguise first!\n\nBuild your Cashbot Disguise by doing ToonTasks in Donald's Dreamland."
-FADoorCodes_LB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Lawbot Disguise first!\n\nBuild your Lawbot Disguise by doing the ToonTasks after Donald's Dreamland."
-FADoorCodes_BB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Bossbot Disguise first!\n\nBuild your Bossbot Disguise by doing the ToonTasks after Donald's Dreamland."
+FADoorCodes_CB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Cashbot Disguise first!\n\nBuild your Cashbot Disguise out of parts from the Mints."
+FADoorCodes_LB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Lawbot Disguise first!\n\nBuild your Lawbot Disguise out of parts from the DA Offices."
+FADoorCodes_BB_DISGUISE_INCOMPLETE = "You'll get caught going in there as a Toon! You need to complete your Bossbot Disguise first!\n\nBuild your Bossbot Disguise out of parts from the Cog Golf Courses."
 KnockKnockJokes = [['Who', "Bad echo in here, isn't there?"],
  ['Dozen', 'Dozen anybody want to let me in?'],
  ['Freddie', 'Freddie or not, here I come.'],
@@ -5644,8 +5644,9 @@ BossBattleHowToGetPies = 'Jump up to touch the cage to get pies.'
 BossBattleHowToThrowPies = 'Press the Delete key to throw pies!'
 CagedToonYippee = 'Yippee!'
 CagedToonThankYou = "It's great to be free!\x07Thanks for all your help!\x07I am in your debt.\x07Here's my card. If you ever need a hand in battle, give a shout!\x07Just click on your SOS button."
-CagedToonPromotion = "\x07Say--that V.P. Cog left behind your promotion papers.\x07I'll file them for you on the way out, so you'll get your promotion!"
-CagedToonLastPromotion = "\x07Wow, you've reached level %s on your Cog suit!\x07Cogs don't get promoted higher than that.\x07You can't upgrade your Cog suit anymore, but you can certainly keep rescuing Toons!"
+CagedToonLevelPromotion = "\x07Say--that V.P. Cog left behind your promotion papers.\x07I'll file them for you on the way out, so you'll get your promotion!"
+CagedToonSuitPromotion = "\x07It seems like you've reached the highest level you can for a %s.\x07You can continue upgrading your Cog suit through the disguise page in your Shticker Book.\x07Along with getting a new Cog suit, you will also get a 1 point Laff boost!"
+CagedToonLastPromotion = "\x07Wow, you've reached level %s on your Cog suit!\x07I'm pretty sure Cogs don't get promoted higher than that.\x07You can't upgrade your Cog suit anymore, but you can certainly keep rescuing Toons!"
 CagedToonHPBoost = "\x07You've rescued a lot of Toons from this HQ.\x07The Toon Council has decided to give you another Laff point. Congratulations!"
 CagedToonMaxed = '\x07I see that you have a level %s Cog suit. Very impressive!\x07On behalf of the Toon Council, thank you for coming back to rescue more Toons!'
 CagedToonGoodbye = 'See ya!'
@@ -5674,8 +5675,10 @@ ResistanceToonMoneyInstructions = 'all the Toons near you will gain %s Jellybean
 ResistanceToonMoneyAllInstructions = 'all the Toons near you will fill their Jellybean jars'
 ResistanceToonRestockInstructions = 'all the Toons near you will restock their "%s" gags'
 ResistanceToonRestockAllInstructions = 'all the Toons near you will restock all their gags'
-ResistanceToonLastPromotion = "\x07Wow, you've reached level %s on your Cog suit!\x07Cogs don't get promoted higher than that.\x07You can't upgrade your Cog suit anymore, but you can certainly keep working for the Resistance!"
 ResistanceToonHPBoost = "\x07You've done a lot of work for the Resistance.\x07The Toon Council has decided to give you another Laff point. Congratulations!"
+ResistanceToonLevelPromotion = "\x07Say--that C.F.O. Cog left behind your promotion papers.\x07I'll file them for you on the way out, so you'll get your promotion!"
+ResistanceToonSuitPromotion = "\x07It seems like you've reached the highest level you can for a %s.\x07You can continue upgrading your Cog suit through the disguise page in your Shticker Book.\x07Along with getting a new Cog suit, you will also get a 1 point Laff boost!"
+ResistanceToonLastPromotion = "\x07Wow, you've reached level %s on your Cog suit!\x07I'm pretty sure Cogs don't get promoted higher than that.\x07You can't upgrade your Cog suit anymore, but you can certainly keep working for the Resistance!!"
 ResistanceToonMaxed = '\x07I see that you have a level %s Cog suit. Very impressive!\x07On behalf of the Toon Council, thank you for coming back to rescue more Toons!'
 CashbotBossCogAttack = 'Get them!!!'
 ResistanceToonWelcome = 'Hey, you made it!  Follow me to the main vault before the C.F.O. finds us!'
@@ -6977,6 +6980,8 @@ NPCToonNames = {20000: 'Tutorial Tom',
  2018: 'Doctor Surlee',
  2019: 'Doctor Dimm',
  2020: 'Professor Prepostera',
+ 2021: 'Yin',
+ 2022: 'Yang',
  2101: 'Dentist Daniel',
  2102: 'Sheriff Sherry',
  2103: 'Sneezy Kitty',
@@ -8248,20 +8253,14 @@ PetTrait2descriptions = {'hungerThreshold': ('Always Hungry',
                         'Sometimes Affectionate',
                         'Often Affectionate',
                         'Always Affectionate')}
-FireworksInstructions = 'Flippy: Look up using the "Page Up" key to see, or hop in Slappy\'s Balloon for a ride over the sky!'
+FireworksInstructions = lToonHQ + ': Hit the "Page Up" key to see the show!'
 startFireworksResponse = "Usage: startFireworksShow ['num']\n                                         'num' = %s - New Years\n                                         %s - Party Summer \n                                         %s - 4th of July"
-#FireworksJuly4Beginning = lToonHQ + ': Welcome to summer fireworks! Enjoy the show!'
-#FireworksJuly4Ending = lToonHQ + ': Hope you enjoyed the show! Have a great summer!'
-#FireworksNewYearsEveBeginning = lToonHQ + ': Happy New Year! Enjoy the fireworks show, sponsored by Flippy!'
-#FireworksNewYearsEveEnding = lToonHQ + ': Hope you enjoyed the show! Have a Toontastic New Year!'
-#FireworksComboBeginning = lToonHQ + ': Enjoy lots of Laffs with Toon fireworks!'
-#FireworksComboEnding = lToonHQ + ': Thank you, Toons! Hope you enjoyed the show!'
-FireworksJuly4Beginning = 'Flippy: Hiya, Toons! Get ready to see some fireworks to celebrate this last week of the election!'
-FireworksJuly4Ending = 'Flippy: Hope you enjoyed the show. Don\'t forget to stop by Toontown Central for some pies!'
-FireworksNewYearsEveBeginning = 'Flippy: Hiya, Toons! Get ready to see some fireworks to celebrate this last week of the election!'
-FireworksNewYearsEveEnding =  'Flippy: Hope you enjoyed the show. Don\'t forget to stop by Toontown Central for some pies!'
-FireworksComboBeginning = 'Flippy: Hiya, Toons! Get ready to see some fireworks to celebrate this last week of the election!'
-FireworksComboEnding = 'Flippy: Hope you enjoyed the show. Don\'t forget to stop by Toontown Central for some pies!'
+FireworksJuly4Beginning = lToonHQ + ': Welcome to summer fireworks! Enjoy the show!'
+FireworksJuly4Ending = lToonHQ + ': Hope you enjoyed the show! Have a great summer!'
+FireworksNewYearsEveBeginning = lToonHQ + ': Happy New Year! Enjoy the fireworks show, sponsored by Flippy!'
+FireworksNewYearsEveEnding = lToonHQ + ': Hope you enjoyed the show! Have a Toontastic New Year!'
+FireworksComboBeginning = lToonHQ + ': Enjoy lots of Laffs with Toon fireworks!'
+FireworksComboEnding = lToonHQ + ': Thank you, Toons! Hope you enjoyed the show!'
 BlockerTitle = 'LOADING TOONTOWN...'
 BlockerLoadingTexts = ['Rewriting history',
  'Baking pie crusts',
@@ -8949,9 +8948,11 @@ WitnessToonSomeJurors = 'Cool! There are %d Toons in the jury!'
 WitnessToonAllJurors = 'Awesome! All the jurors are Toons!'
 WitnessToonPrepareBattleThree = 'Hurry, touch the witness stand to get evidence.\x07Press the Delete key to throw the evidence at the lawyers, or at the defense pan.'
 WitnessToonCongratulations = "You did it!  Thank you for a spectacular defense!\x07Here, take these papers the Chief Justice left behind.\x07With it you'll be able to summon Cogs from your Cog Gallery page."
-WitnessToonLastPromotion = "\x07Wow, you've reached level %s on your Cog Suit!\x07Cogs don't get promoted higher than that.\x07You can't upgrade your Cog Suit anymore, but you can certainly keep working for the Resistance!"
 WitnessToonHPBoost = "\x07You've done a lot of work for the Resistance.\x07The Toon Council has decided to give you another Laff point. Congratulations!"
-WitnessToonMaxed = '\x07I see that you have a level %s Cog Suit. Very impressive!\x07On behalf of the Toon Council, thank you for coming back to defend more Toons!'
+WitnessToonLevelPromotion = "\x07Say--that C.J. Cog left behind your promotion papers.\x07I'll file them for you on the way out, so you'll get your promotion!"
+WitnessToonSuitPromotion = "\x07It seems like you've reached the highest level you can for a %s.\x07You can continue upgrading your Cog suit through the disguise page in your Shticker Book.\x07Along with getting a new Cog suit, you will also get a 1 point Laff boost!"
+WitnessToonLastPromotion = "\x07Wow, you've reached level %s on your Cog suit!\x07I'm pretty sure Cogs don't get promoted higher than that.\x07You can't upgrade your Cog suit anymore, but you can certainly keep working for the Resistance!!"
+WitnessToonMaxed = '\x07I see that you have a level %s Cog suit. Very impressive!\x07On behalf of the Toon Council, thank you for coming back to rescue more Toons!'
 WitnessToonBonus = 'Wonderful! All the lawyers are stunned. Your evidence weight is %s times heavier for %s seconds'
 WitnessToonJuryWeightBonusSingular = {6: 'This is a tough case. You seated %d Toon juror, so your evidence has a bonus weight of %d.',
  7: 'This is a very tough case. You seated %d Toon juror, so your evidence has a bonus weight of %d.',
@@ -9523,9 +9524,11 @@ BossbotGolfSpotAdvice = 'Use the left and right keys to rotate.\nCtrl to fire.'
 BossbotRewardSpeech1 = "No! The Chairman won't like this."
 BossbotRewardSpeech2 = 'Arrrggghhh!!!!'
 BossbotRTCongratulations = "You did it!  You've demoted the C.E.O.!\x07Here, take these pink slips the C.E.O. left behind.\x07With it you'll be able to fire Cogs in a battle."
-BossbotRTLastPromotion = "\x07Wow, you've reached level %s on your Cog Suit!\x07Cogs don't get promoted higher than that.\x07You can't upgrade your Cog Suit anymore, but you can certainly keep working for the Resistance!"
 BossbotRTHPBoost = "\x07You've done a lot of work for the Resistance.\x07The Toon Council has decided to give you another Laff point. Congratulations!"
-BossbotRTMaxed = '\x07I see that you have a level %s Cog Suit. Very impressive!\x07On behalf of the Toon Council, thank you for coming back to defend more Toons!'
+BossbotRTLevelPromotion = "\x07Say--that C.E.O. Cog left behind your promotion papers.\x07I'll file them for you on the way out, so you'll get your promotion!"
+BossbotRTSuitPromotion = "\x07It seems like you've reached the highest level you can for a %s.\x07You can continue upgrading your Cog suit through the disguise page in your Shticker Book.\x07Along with getting a new Cog suit, you will also get a 1 point Laff boost!"
+BossbotRTLastPromotion = "\x07Wow, you've reached level %s on your Cog suit!\x07I'm pretty sure Cogs don't get promoted higher than that.\x07You can't upgrade your Cog suit anymore, but you can certainly keep working for the Resistance!!"
+BossbotRTMaxed = '\x07I see that you have a level %s Cog suit. Very impressive!\x07On behalf of the Toon Council, thank you for coming back to rescue more Toons!'
 GolfAreaAttackTaunt = 'Fore!'
 OvertimeAttackTaunts = ["It's time to reorganize.", "Now let's downsize."]
 ElevatorBossBotBoss = 'Bossbot Clubhouse'
@@ -9777,3 +9780,15 @@ InteractivePropTrackBonusTerms = {0: 'Super Toon-Up!',
  5: 'Super Squirt!',
  6: ''}
 PlayingCardUnknown = 'Card Name is unknown'
+YinTitle = 'Are you absolutely sure?'
+YinNotCat = 'Sorry, I only make cats black.'
+YinAlreadyBlack = "You're already black!"
+YinPickColor = 'Are you sure you want to be a black cat?'
+YinEnjoy = 'Enjoy! You are now permanently a black cat.'
+YinGoodbye = 'Okay, then. See you later!'
+YangTitle = 'Are you absolutely sure?'
+YangNotBear = 'Sorry, I only make bears white.'
+YangAlreadyWhite = "You're already white!"
+YangPickColor = 'Are you sure you want to be a polar bear?'
+YangEnjoy = 'Enjoy! You are now permanently a polar bear.'
+YangGoodbye = 'Okay, then. See you later!'

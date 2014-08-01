@@ -322,8 +322,7 @@ Shirts = ['phase_3/maps/desat_shirt_1.jpg',
  'phase_4/maps/tt_t_chr_avt_shirt_trolley05.jpg',
  'phase_4/maps/tt_t_chr_avt_shirt_saveBuilding4.jpg',
  'phase_4/maps/tt_t_chr_avt_shirt_saveBuilding05.jpg',
- 'phase_4/maps/tt_t_chr_avt_shirt_anniversary.jpg',
- 'phase_4/maps/tt_t_chr_avt_shirt_slappy.jpg']
+ 'phase_4/maps/tt_t_chr_avt_shirt_anniversary.jpg']
 BoyShirts = [(0, 0),
  (1, 1),
  (2, 2),
@@ -505,8 +504,7 @@ Sleeves = ['phase_3/maps/desat_sleeve_1.jpg',
  'phase_4/maps/tt_t_chr_avt_shirtSleeve_trolley05.jpg',
  'phase_4/maps/tt_t_chr_avt_shirtSleeve_saveBuilding4.jpg',
  'phase_4/maps/tt_t_chr_avt_shirtSleeve_saveBuilding05.jpg',
- 'phase_4/maps/tt_t_chr_avt_shirtSleeve_anniversary.jpg',
- 'phase_4/maps/tt_t_chr_avt_shirtSleeve_slappy.jpg']
+ 'phase_4/maps/tt_t_chr_avt_shirtSleeve_anniversary.jpg']
 BoyShorts = ['phase_3/maps/desat_shorts_1.jpg',
  'phase_3/maps/desat_shorts_2.jpg',
  'phase_3/maps/desat_shorts_4.jpg',
@@ -563,8 +561,7 @@ BoyShorts = ['phase_3/maps/desat_shorts_1.jpg',
  'phase_4/maps/tt_t_chr_avt_shorts_golf04.jpg',
  'phase_4/maps/tt_t_chr_avt_shorts_golf05.jpg',
  'phase_4/maps/tt_t_chr_avt_shorts_racing04.jpg',
- 'phase_4/maps/tt_t_chr_avt_shorts_racing05.jpg',
- 'phase_4/maps/tt_t_chr_avt_shorts_slappy.jpg']
+ 'phase_4/maps/tt_t_chr_avt_shorts_racing05.jpg']
 SHORTS = 0
 SKIRT = 1
 GirlBottoms = [('phase_3/maps/desat_skirt_1.jpg', SKIRT),
@@ -659,7 +656,8 @@ ClothesColors = [VBase4(0.933594, 0.265625, 0.28125, 1.0),
  VBase4(1.0, 1.0, 1.0, 1.0),
  VBase4(0.0, 0.2, 0.956862, 1.0),
  VBase4(0.972549, 0.094117, 0.094117, 1.0),
- VBase4(0.447058, 0.0, 0.90196, 1.0)]
+ VBase4(0.447058, 0.0, 0.90196, 1.0),
+ VBase4(0.3, 0.3, 0.35, 1.0)]
 ShirtStyles = {'bss1': [0, 0, [(0, 0),
            (1, 1),
            (2, 2),
@@ -1689,7 +1687,7 @@ TailorCollections = {MAKE_A_TOON: [['bss1', 'bss2'],
                   ['gss13', 'gss15'],
                   ['bbs8'],
                   ['gsk7']]}
-                  
+
 BOY_SHIRTS = 0
 GIRL_SHIRTS = 1
 BOY_SHORTS = 2
@@ -2524,15 +2522,8 @@ class ToonDNA(AvatarDNA.AvatarDNA):
             return False
         if armColor >= len(allColorsList):
             return False
-        
-        # I hate this hacky code... GG TMS.
-        try:
-            if gloveColor != 0 and not simbase.config.GetBool('want-glove-colors', False):
-                return False
-        except:
-            if gloveColor != 0 and not base.config.GetBool('want-glove-colors', False):
-                return False
-                
+        if gloveColor != 0:
+            return False
         if legColor >= len(allColorsList):
             return False
         if headColor >= len(allColorsList):
@@ -2840,7 +2831,7 @@ class ToonDNA(AvatarDNA.AvatarDNA):
             return allColorsList[26]
         except:
             return allColorsList[0]
-            
+
     def getWhiteColor(self):
         return allColorsList[0]
 

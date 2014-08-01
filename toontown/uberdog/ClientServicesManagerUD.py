@@ -1,16 +1,21 @@
-import base64
-import json
-import time
-
 import anydbm
+import base64
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.distributed.DistributedObjectGlobalUD import DistributedObjectGlobalUD
 from direct.distributed.PyDatagram import *
 from direct.fsm.FSM import FSM
+import hashlib
+import hmac
+import json
 from otp.ai.MagicWordGlobal import *
+from pandac.PandaModules import *
+import time
 from toontown.makeatoon.NameGenerator import NameGenerator
 from toontown.toon.ToonDNA import ToonDNA
+import urllib2
 from toontown.toonbase import TTLocalizer
+import hmac
+
 
 # Import from PyCrypto only if we are using a database that requires it. This
 # allows local hosted and developer builds of the game to run without it:
@@ -22,9 +27,48 @@ if accountDBType == 'remote':
 # developer server:
 minAccessLevel = simbase.config.GetInt('account-server-min-access-level', 0)
 
+accountServerEndpoint = simbase.config.GetString(
+    'account-server-endpoint', 'https://toontowninfinite.com/api/')
+accountServerSecret = simbase.config.GetString(
+    'account-server-secret', '6163636f756e7473')
+
+
+http = HTTPClient()
+http.setVerifySsl(0)
+
+
+def executeHttpRequest(url, **extras):
+    timestamp = str(int(time.time()))
+    signature = hmac.new(accountServerSecret, timestamp, hashlib.sha256)
+    request = urllib2.Request(accountServerEndpoint + url)
+    request.add_header('User-Agent', 'TTI-CSM')
+    request.add_header('X-CSM-Timestamp', timestamp)
+    request.add_header('X-CSM-Signature', signature.hexdigest())
+    for k, v in extras.items():
+        request.add_header('X-CSM-' + k, v)
+    try:
+        return urllib2.urlopen(request).read()
+    except urllib2.HTTPError:
+        return None
+
+
+blacklist = executeHttpRequest('names/blacklist.json')
+if blacklist:
+    blacklist = json.loads(blacklist)
+
 
 def judgeName(name):
-    return False
+    if not name:
+        return False
+    if blacklist:
+        for namePart in name.split(' '):
+            namePart = namePart.lower()
+            if len(namePart) < 1:
+                return False
+            for banned in blacklist.get(namePart[0], []):
+                if banned in namePart:
+                    return False
+    return True
 
 
 # --- ACCOUNT DATABASES ---
@@ -32,6 +76,7 @@ def judgeName(name):
 # Databases with login tokens use the PyCrypto module for decrypting them.
 # DeveloperAccountDB is a special database that accepts a username, and assigns
 # each user with 600 access automatically upon login.
+
 
 class AccountDB:
     notify = directNotify.newCategory('AccountDB')
@@ -42,6 +87,15 @@ class AccountDB:
         filename = simbase.config.GetString(
             'account-bridge-filename', 'account-bridge.db')
         self.dbm = anydbm.open(filename, 'c')
+
+    def addNameRequest(self, avId, name):
+        return 'Success'
+
+    def getNameStatus(self, avId):
+        return 'APPROVED'
+
+    def removeNameRequest(self, avId):
+        return 'Success'
 
     def lookup(self, username, callback):
         pass  # Inheritors should override this.
@@ -90,6 +144,8 @@ class DeveloperAccountDB(AccountDB):
 # This is the same as the DeveloperAccountDB, except it doesn't automatically
 # give the user an access level of 600. Instead, the first user that is created
 # gets 700 access, and every user created afterwards gets 100 access:
+
+
 class LocalAccountDB(AccountDB):
     notify = directNotify.newCategory('LocalAccountDB')
 
@@ -122,6 +178,15 @@ class LocalAccountDB(AccountDB):
 class RemoteAccountDB(AccountDB):
     notify = directNotify.newCategory('RemoteAccountDB')
 
+    def addNameRequest(self, avId, name):
+        return executeHttpRequest('names/append', ID=str(avId), Name=name)
+
+    def getNameStatus(self, avId):
+        return executeHttpRequest('names/status/?Id=' + str(avId))
+
+    def removeNameRequest(self, avId):
+        return executeHttpRequest('names/remove', ID=str(avId))
+
     def lookup(self, token, callback):
         # First, base64 decode the token:
         try:
@@ -146,18 +211,18 @@ class RemoteAccountDB(AccountDB):
             return response
 
         # Next, decrypt the token using AES-128 in CBC mode:
-        secret = simbase.config.GetString(
+        accountServerSecret = simbase.config.GetString(
             'account-server-secret', '6163636f756e7473')
 
         # Ensure that our secret is the correct size:
-        if len(secret) > AES.block_size:
+        if len(accountServerSecret) > AES.block_size:
             self.notify.warning('account-server-secret is too big!')
-            secret = secret[:AES.block_size]
-        elif len(secret) < AES.block_size:
+            accountServerSecret = accountServerSecret[:AES.block_size]
+        elif len(accountServerSecret) < AES.block_size:
             self.notify.warning('account-server-secret is too small!')
-            secret += '\x80'
-            while len(secret) < AES.block_size:
-                secret += '\x00'
+            accountServerSecret += '\x80'
+            while len(accountServerSecret) < AES.block_size:
+                accountServerSecret += '\x00'
 
         # Take the initialization vector off the front of the token:
         iv = token[:AES.block_size]
@@ -166,7 +231,7 @@ class RemoteAccountDB(AccountDB):
         cipherText = token[AES.block_size:]
 
         # Decrypt!
-        cipher = AES.new(secret, mode=AES.MODE_CBC, IV=iv)
+        cipher = AES.new(accountServerSecret, mode=AES.MODE_CBC, IV=iv)
         try:
             token = json.loads(cipher.decrypt(cipherText).replace('\x00', ''))
             if ('timestamp' not in token) or (not isinstance(token['timestamp'], int)):
@@ -543,27 +608,35 @@ class GetAvatarsFSM(AvatarOperationFSM):
             index = self.avList.index(avId)
             wishNameState = fields.get('WishNameState', [''])[0]
             name = fields['setName'][0]
+            nameState = 0
+
             if wishNameState == 'OPEN':
                 nameState = 1
             elif wishNameState == 'PENDING':
-                nameState = 2
+                actualNameState = self.csm.accountDB.getNameStatus(avId)
+                self.csm.air.dbInterface.updateObject(
+                    self.csm.air.dbId,
+                    avId,
+                    self.csm.air.dclassesByName['DistributedToonUD'],
+                    {'WishNameState': [actualNameState]}
+                )
+                if actualNameState == 'PENDING':
+                    nameState = 2
+                if actualNameState == 'APPROVED':
+                    nameState = 3
+                    name = fields['WishName'][0]
+                elif actualNameState == 'REJECTED':
+                    nameState = 4
             elif wishNameState == 'APPROVED':
                 nameState = 3
-                name = fields['WishName'][0]
             elif wishNameState == 'REJECTED':
                 nameState = 4
-            elif wishNameState == '':
-                nameState = 0
-            else:
-                self.csm.notify.warning('Avatar %d is in unknown name state %s.' % (avId, wishNameState))
-                nameState = 0
 
             potentialAvs.append([avId, name, fields['setDNAString'][0],
                                  index, nameState])
 
         self.csm.sendUpdateToAccountId(self.target, 'setAvatars', [potentialAvs])
         self.demand('Off')
-
 
 # This inherits from GetAvatarsFSM, because the delete operation ends in a
 # setAvatars message being sent to the client.
@@ -608,6 +681,7 @@ class DeleteAvatarFSM(GetAvatarsFSM):
             {'ACCOUNT_AV_SET': self.account['ACCOUNT_AV_SET'],
              'ACCOUNT_AV_SET_DEL': self.account['ACCOUNT_AV_SET_DEL']},
             self.__handleDelete)
+        self.csm.accountDB.removeNameRequest(self.avId)
 
     def __handleDelete(self, fields):
         if fields:
@@ -657,12 +731,16 @@ class SetNameTypedFSM(AvatarOperationFSM):
         status = judgeName(self.name)
 
         if self.avId and status:
-            self.csm.air.dbInterface.updateObject(
-                self.csm.air.dbId,
-                self.avId,
-                self.csm.air.dclassesByName['DistributedToonUD'],
-                {'WishNameState': ('PENDING',),
-                 'WishName': (self.name,)})
+            resp = self.csm.accountDB.addNameRequest(self.avId, self.name)
+            if resp != 'Success':
+                status = False
+            else:
+                self.csm.air.dbInterface.updateObject(
+                    self.csm.air.dbId,
+                    self.avId,
+                    self.csm.air.dclassesByName['DistributedToonUD'],
+                    {'WishNameState': ('PENDING',),
+                     'WishName': (self.name,)})
 
         if self.avId:
             self.csm.air.writeServerEvent('avatarWishname', self.avId, self.name)
@@ -759,9 +837,11 @@ class AcknowledgeNameFSM(AvatarOperationFSM):
             wishNameState = ''
             name = wishName
             wishName = ''
+            self.csm.accountDB.removeNameRequest(self.avId)
         elif wishNameState == 'REJECTED':
             wishNameState = 'OPEN'
             wishName = ''
+            self.csm.accountDB.removeNameRequest(self.avId)
         else:
             self.demand('Kill', "Tried to acknowledge name on an avatar in %s state!" % wishNameState)
             return
@@ -939,6 +1019,9 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         # For processing name patterns.
         self.nameGenerator = NameGenerator()
 
+        # Temporary HMAC key:
+        self.key = 'bG9sLndlLmNoYW5nZS50aGlzLnRvby5tdWNo'
+
         # Instantiate our account DB interface:
         if accountDBType == 'developer':
             self.accountDB = DeveloperAccountDB(self)
@@ -993,10 +1076,21 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         self.account2fsm[sender] = fsmtype(self, sender)
         self.account2fsm[sender].request('Start', *args)
 
-    def login(self, cookie):
+    def login(self, cookie, authKey):
         self.notify.debug('Received login cookie %r from %d' % (cookie, self.air.getMsgSender()))
 
         sender = self.air.getMsgSender()
+
+        # Time to check this login to see if its authentic
+        digest_maker = hmac.new(self.key)
+        digest_maker.update(cookie)
+        serverKey = digest_maker.hexdigest()
+        if serverKey == authKey:
+            # This login is authentic!
+            pass
+        else:
+            # This login is not authentic.
+            self.killConnection(sender, ' ')
 
         if sender >> 32:
             self.killConnection(sender, 'Client is already logged in.')

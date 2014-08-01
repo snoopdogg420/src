@@ -76,13 +76,13 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
             del points[pi]
         text = '%s' % p.getIndex()
         pos = p.getPos()
-        if p.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
+        if p.getPointType() == DNASuitPoint.FRONT_DOOR_POINT:
             color = (1, 0, 0, 1)
-        elif p.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+        elif p.getPointType() == DNASuitPoint.SIDE_DOOR_POINT:
             color = (0, 0, 1, 1)
-        elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
+        elif p.getPointType() == DNASuitPoint.COGHQ_IN_POINT:
             color = (0, 0, 0, 1)
-        elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
+        elif p.getPointType() == DNASuitPoint.COGHQ_OUT_POINT:
             color = (0.5, 0.5, 0.5, 1)
         else:
             color = (0, 1, 0, 1)
@@ -157,13 +157,13 @@ class DistributedSuitPlanner(DistributedObject.DistributedObject, SuitPlannerBas
             p = self.dnaStore.getSuitPointWithIndex(i)
             pos = p.getPos()
             self.debugText[i].removeNode()
-            if p.getPointType() == DNASuitPoint.pointTypeMap['FRONT_DOOR_POINT']:
+            if p.getPointType() == DNASuitPoint.FRONT_DOOR_POINT:
                 color = (1, 0, 0, 1)
-            elif p.getPointType() == DNASuitPoint.pointTypeMap['SIDE_DOOR_POINT']:
+            elif p.getPointType() == DNASuitPoint.SIDE_DOOR_POINT:
                 color = (0, 0, 1, 1)
-            elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_IN_POINT']:
+            elif p.getPointType() == DNASuitPoint.COGHQ_IN_POINT:
                 color = (0, 0, 0, 1)
-            elif p.getPointType() == DNASuitPoint.pointTypeMap['COGHQ_OUT_POINT']:
+            elif p.getPointType() == DNASuitPoint.COGHQ_OUT_POINT:
                 color = (0.5, 0.5, 0.5, 1)
             else:
                 color = (0, 1, 0, 1)
