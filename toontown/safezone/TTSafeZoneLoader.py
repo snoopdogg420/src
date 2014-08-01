@@ -1,14 +1,15 @@
 from pandac.PandaModules import *
+
 import SafeZoneLoader
 import TTPlayground
-import random
-from toontown.launcher import DownloadForceAcknowledge
 from otp.nametag.NametagConstants import *
+
 
 class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
 
     def __init__(self, hood, parentFSM, doneEvent):
         SafeZoneLoader.SafeZoneLoader.__init__(self, hood, parentFSM, doneEvent)
+
         self.playgroundClass = TTPlayground.TTPlayground
         self.musicFile = 'phase_4/audio/bgm/TC_nbrhood.ogg'
         self.activityMusicFile = 'phase_3.5/audio/bgm/TC_SZ_activity.ogg'
@@ -17,10 +18,23 @@ class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
 
     def load(self):
         SafeZoneLoader.SafeZoneLoader.load(self)
-        self.birdSound = map(base.loadSfx, ['phase_4/audio/sfx/SZ_TC_bird1.ogg', 'phase_4/audio/sfx/SZ_TC_bird2.ogg', 'phase_4/audio/sfx/SZ_TC_bird3.ogg'])
+
+        self.birdSound = map(
+            base.loadSfx,
+            [
+                'phase_4/audio/sfx/SZ_TC_bird1.ogg',
+                'phase_4/audio/sfx/SZ_TC_bird2.ogg',
+                'phase_4/audio/sfx/SZ_TC_bird3.ogg'
+            ]
+        )
+
+        bank = self.geom.find('**/*toon_landmark_TT_bank_DNARoot')
+        doorTrigger = bank.find('**/door_trigger*')
+        doorTrigger.setY(doorTrigger.getY() - 1.5)  # Fixes the misplaced door trigger.
 
     def unload(self):
         del self.birdSound
+
         SafeZoneLoader.SafeZoneLoader.unload(self)
 
     def enter(self, requestStatus):
