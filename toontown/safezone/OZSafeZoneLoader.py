@@ -166,7 +166,10 @@ class OZSafeZoneLoader(SafeZoneLoader):
                 "I'm beginning to feel nervous about where all of my painters went off to. Construction can't continue without them!",
                 "These cones are out of my control. They're disobedient, and they will not listen to what I say.",
                 "What's a playground without color, anyway? Walking into something like that would be surreal for you all. As a painter, though, I'm pretty used to it.",
-                "The Cogs couldn't have done this... could they?"
+                "The Cogs couldn't have done this... could they?",
+                "If anyone sees my painters anywhere, please let me know. Then maybe we'll get this playground done!",
+                "Looks like I'll have to finish this sign myself.",
+                'The documents for this project were just sitting right by this tunnel... Where could have they gone?'
             )
             self.painterPeteSpeech = Sequence()
             for speechText in speechTextList:
