@@ -169,7 +169,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
                 "The Cogs couldn't have done this... could they?",
                 "If anyone sees my painters anywhere, please let me know. Then maybe we'll get this playground done!",
                 "Looks like I'll have to finish this sign myself.",
-                'The documents for this project were just sitting right by this tunnel... Where could have they gone?'
+                'The documents for this project were just sitting right by this tunnel... Where could they have gone?'
             )
             self.painterPeteSpeech = Sequence()
             for speechText in speechTextList:
