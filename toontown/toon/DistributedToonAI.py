@@ -127,7 +127,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.fishingTrophies = []
         self.trackArray = []
         self.emoteAccess = [0] * 25
-        self.maxBankMoney = ToontownGlobals.DefaultMaxBankMoney
+        self.maxBankMoney = ToontownGlobals.MaxBankMoney
         self.gardenSpecials = []
         self.houseId = 0
         self.posIndex = 0
