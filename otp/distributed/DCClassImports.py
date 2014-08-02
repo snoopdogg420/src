@@ -2,13 +2,13 @@
 from pandac.PandaModules import *
 
 
-hashVal = 3659329332L
+hashVal = 3136911280L
 
 
 from toontown.cogdominium import DistributedCogdoInterior, DistributedCogdoBattleBldg, DistributedCogdoElevatorExt, DistributedCogdoElevatorInt, DistributedCogdoBarrel, DistCogdoGame, DistCogdoLevelGame, DistCogdoBoardroomGame, DistCogdoCraneGame, DistCogdoMazeGame, DistCogdoFlyingGame, DistCogdoCrane, DistCogdoCraneMoneyBag, DistCogdoCraneCog
 from toontown.classicchars import DistributedCCharBase, DistributedMickey, DistributedVampireMickey, DistributedMinnie, DistributedWitchMinnie, DistributedGoofy, DistributedSuperGoofy, DistributedDaisy, DistributedSockHopDaisy, DistributedChip, DistributedPoliceChip, DistributedDale, DistributedJailbirdDale, DistributedGoofySpeedway, DistributedDonald, DistributedFrankenDonald, DistributedDonaldDock, DistributedPluto, DistributedWesternPluto
 from toontown.golf import DistributedPhysicsWorld, DistributedGolfHole, DistributedGolfCourse
-from toontown.building import DistributedAnimatedProp, DistributedTrophyMgr, DistributedBuilding, DistributedAnimBuilding, DistributedToonInterior, DistributedToonHallInterior, DistributedSuitInterior, DistributedHQInterior, DistributedGagshopInterior, DistributedPetshopInterior, DistributedKartShopInterior, DistributedBankInterior, DistributedDoor, DistributedAnimDoor, DistributedKnockKnockDoor, DistributedElevator, DistributedElevatorFSM, DistributedElevatorExt, DistributedElevatorInt, DistributedElevatorFloor, DistributedBossElevator, DistributedVPElevator, DistributedCFOElevator, DistributedCJElevator, DistributedBBElevator, DistributedBoardingParty, DistributedTutorialInterior, DistributedClubElevator
+from toontown.building import DistributedAnimatedProp, DistributedTrophyMgr, DistributedBuilding, DistributedAnimBuilding, DistributedToonInterior, DistributedToonHallInterior, DistributedSuitInterior, DistributedHQInterior, DistributedGagshopInterior, DistributedPetshopInterior, DistributedKartShopInterior, DistributedBankInterior, DistributedBankCollectable, DistributedDoor, DistributedAnimDoor, DistributedKnockKnockDoor, DistributedElevator, DistributedElevatorFSM, DistributedElevatorExt, DistributedElevatorInt, DistributedElevatorFloor, DistributedBossElevator, DistributedVPElevator, DistributedCFOElevator, DistributedCJElevator, DistributedBBElevator, DistributedBoardingParty, DistributedTutorialInterior, DistributedClubElevator
 from toontown.uberdog.DistributedPartyManager import DistributedPartyManager
 from otp.friends import FriendManager, AvatarFriendsManager, PlayerFriendsManager, GuildManager, FriendInfo, AvatarFriendInfo
 from otp.level import DistributedLevel, DistributedEntity, DistributedInteractiveEntity

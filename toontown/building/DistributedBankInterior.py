@@ -1,4 +1,7 @@
+from direct.distributed.ClockDelta import *
 from direct.distributed.DistributedObject import DistributedObject
+from direct.fsm import ClassicFSM, State
+from direct.interval.IntervalGlobal import *
 from pandac.PandaModules import *
 import random
 
@@ -16,10 +19,126 @@ class DistributedBankInterior(DistributedObject):
 
         self.dnaStore = cr.playGame.dnaStore
 
+        self.inVault = False
+        self.vaultCollNodePath = None
+
+        self.fsm = ClassicFSM.ClassicFSM(
+            'DistributedBankInterior',
+            [
+                State.State('off', self.enterOff, self.exitOff,
+                            ['vaultClosed', 'vaultOpening', 'vaultOpen', 'vaultClosing']),
+                State.State('vaultClosed', self.enterVaultClosed, self.exitVaultClosed,
+                            ['vaultOpening']),
+                State.State('vaultOpening', self.enterVaultOpening, self.exitVaultOpening,
+                            ['vaultOpen']),
+                State.State('vaultOpen', self.enterVaultOpen, self.exitVaultOpen,
+                            ['vaultClosing']),
+                State.State('vaultClosing', self.enterVaultClosing, self.exitVaultClosing,
+                            ['vaultClosed'])
+            ], 'off', 'off')
+        self.fsm.enterInitialState()
+
     def announceGenerate(self):
         DistributedObject.announceGenerate(self)
 
         self.setup()
+
+    def disable(self):
+        self.ignoreAll()
+
+        self.interior.removeNode()
+        del self.interior
+
+        if self.collNodePath is not None:
+            self.collNodePath.removeNode()
+            self.collNodePath = None
+
+        DistributedObject.disable(self)
+
+    def setZoneIdAndBlock(self, zoneId, block):
+        self.zoneId = zoneId
+        self.block = block
+
+    def setState(self, name, timestamp):
+        self.fsm.request(name, [globalClockDelta.localElapsedTime(timestamp)])
+
+    def enterOff(self):
+        pass
+
+    def exitOff(self):
+        pass
+
+    def enterVaultClosed(self, timestamp):
+        vaultDoor = render.find('**/vault_door')
+        vaultDoor.setH(0)
+
+        if self.inVault:
+            self.clearVault()
+
+    def exitVaultClosed(self):
+        pass
+
+    def enterVaultOpening(self, timestamp):
+        track = Sequence()
+
+        vaultDoor = render.find('**/vault_door')
+
+        # First, spin the vault lock dial:
+        dial = vaultDoor.find('**/vault_door_front_dial')
+        track.append(LerpHprInterval(dial, 2, Vec3(0, 0, -2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
+
+        # Then, open the vault door:
+        track.append(LerpHprInterval(vaultDoor, 3, Vec3(-120, 0, 0), startHpr=Vec3(0, 0, 0), blendType='easeOut'))
+
+        track.start(timestamp)
+
+    def exitVaultOpening(self):
+        pass
+
+    def enterVaultOpen(self, timestamp):
+        vaultDoor = render.find('**/vault_door')
+        vaultDoor.setH(-120)
+
+    def exitVaultOpen(self):
+        pass
+
+    def enterVaultClosing(self, timestamp):
+        track = Sequence()
+
+        vaultDoor = render.find('**/vault_door')
+
+        # First, close the vault door:
+        track.append(LerpHprInterval(vaultDoor, 3, Vec3(0, 0, 0), startHpr=Vec3(-120, 0, 0), blendType='easeOut'))
+
+        # Then, spin the vault lock dial:
+        dial = vaultDoor.find('**/vault_door_front_dial')
+        track.append(LerpHprInterval(dial, 2, Vec3(0, 0, 2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
+
+        track.start(timestamp)
+
+    def exitVaultClosing(self):
+        pass
+
+    def __handleEnterVaultBox(self, collEntry=None):
+        self.inVault = True
+
+        if self.fsm.getCurrentState().getName() == 'vaultClosed':
+            self.clearVault()
+
+    def __handleExitVaultBox(self, collEntry=None):
+        self.inVault = False
+
+    def clearVault(self):
+        place = base.cr.playGame.getPlace()
+        place.setState('stopped')
+        self.teleportTrack = Sequence()
+        self.teleportTrack.append(Func(base.localAvatar.b_setAnimState, 'TeleportOut'))
+        self.teleportTrack.append(Wait(3.5))
+        self.teleportTrack.append(Func(base.localAvatar.setPos, Point3(0, 0, 0)))
+        self.teleportTrack.append(Func(base.localAvatar.b_setAnimState, 'TeleportIn'))
+        self.teleportTrack.append(Wait(1))
+        self.teleportTrack.append(Func(place.setState, 'walk'))
+        self.teleportTrack.start()
 
     def randomDNAItem(self, category, findFunc):
         codeCount = self.dnaStore.getNumCatalogCodes(category)
@@ -52,10 +171,6 @@ class DistributedBankInterior(DistributedObject):
                     newNP.setColorScale(self.randomGenerator.choice(self.colors[category]))
                 else:
                     newNP.setColorScale(self.randomGenerator.choice(self.colors[category]))
-
-    def setZoneIdAndBlock(self, zoneId, block):
-        self.zoneId = zoneId
-        self.block = block
 
     def chooseDoor(self):
         doorModelName = 'door_double_round_ul'
@@ -94,13 +209,21 @@ class DistributedBankInterior(DistributedObject):
         del self.dnaStore
         del self.randomGenerator
 
-        self.interior.flattenMedium()
+        room = render.find('**/vault_walls')
+        minPoint, maxPoint = room.getTightBounds()
+        offset = 0.2  # We want a slight offset
+        maxPoint -= offset
+        collBox = CollisionBox(minPoint, maxPoint)
+        collBox.setTangible(0)
+        collNode = CollisionNode(self.uniqueName('vaultBox'))
+        collNode.setIntoCollideMask(BitMask32(1))
+        collNode.addSolid(collBox)
+        self.collNodePath = render.attachNewNode(collNode)
+        radius = ((maxPoint-minPoint) / 2).getZ()
+        self.collNodePath.setPos(-11.2 + (offset/2), 14 + radius + offset, 0)
 
         for npcToon in self.cr.doFindAllInstances(DistributedNPCToonBase):
             npcToon.initToonState()
 
-    def disable(self):
-        self.interior.removeNode()
-        del self.interior
-
-        DistributedObject.disable(self)
+        self.accept(self.uniqueName('entervaultBox'), self.__handleEnterVaultBox)
+        self.accept(self.uniqueName('exitvaultBox'), self.__handleExitVaultBox)
