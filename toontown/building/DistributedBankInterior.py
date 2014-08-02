@@ -72,7 +72,7 @@ class DistributedBankInterior(DistributedObject):
         self.randomGenerator = random.Random()
         self.randomGenerator.seed(self.zoneId)
 
-        self.interior = loader.loadModel('phase_4/models/modules/ttc_bank_interior1.bam')
+        self.interior = loader.loadModel('phase_4/models/modules/ttc_bank_interior.bam')
         self.interior.reparentTo(render)
 
         hoodId = ZoneUtil.getCanonicalHoodId(self.zoneId)
