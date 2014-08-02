@@ -88,6 +88,7 @@ from toontown.building import DistributedHQInterior/AI
 from toontown.building import DistributedGagshopInterior/AI
 from toontown.building import DistributedPetshopInterior/AI
 from toontown.building import DistributedKartShopInterior/AI
+from toontown.building import DistributedBankInterior/AI
 from toontown.building import DistributedDoor/AI
 from toontown.building import DistributedAnimDoor/AI
 from toontown.estate import DistributedHouseDoor/AI
@@ -1768,7 +1769,9 @@ dclass DistributedKartShopInterior : DistributedObject {
   setZoneIdAndBlock(uint32, uint16) required broadcast ram;
 };
 
-
+dclass DistributedBankInterior : DistributedObject {
+  setZoneIdAndBlock(uint32, uint16) required broadcast ram;
+};
 
 dclass DistributedDoor : DistributedObject {
   setZoneIdAndBlock(uint32, uint32) required broadcast ram;
