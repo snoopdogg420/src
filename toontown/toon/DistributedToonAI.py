@@ -4819,11 +4819,11 @@ def inventory(a, b=None, c=None):
 
 @magicWord(category=CATEGORY_CREATIVE, types=[str, str])
 def dna(part, value):
-    """Modify a DNA part on the target."""
-    target = spellbook.getTarget()
+    """Modify a DNA part on the invoker."""
+    invoker = spellbook.getInvoker()
 
     dna = ToonDNA.ToonDNA()
-    dna.makeFromNetString(target.getDNAString())
+    dna.makeFromNetString(invoker.getDNAString())
 
     part = part.lower()
     if part.endswith('color') or part.endswith('tex') or part.endswith('size'):
@@ -4833,7 +4833,7 @@ def dna(part, value):
         if value not in ('m', 'f', 'male', 'female'):
             return 'Invalid gender: {0}'.format(value)
         dna.gender = value[0]
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Gender set to: {0}'.format(dna.gender)
 
     if part in ('head', 'species'):
@@ -4851,7 +4851,7 @@ def dna(part, value):
         if (dna.headColor == 0x00) and (value == 'b'):
             return 'Invalid species for color: white'
         dna.head = value + dna.head[1:3]
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Species set to: {0}'.format(dna.head[0])
 
     if part == 'headsize':
@@ -4859,7 +4859,7 @@ def dna(part, value):
         if not 0 <= value <= len(sizes):
             return 'Invalid head size index: {0}'.format(value)
         dna.head = dna.head[0] + sizes[value]
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Head size index set to: {0}'.format(dna.head[1:])
 
     if part == 'torso':
@@ -4871,7 +4871,7 @@ def dna(part, value):
         if (dna.gender == 'f') and (not 3 <= value <= 8):
             return 'Female torso index out of range (3-8).'
         dna.torso = ToonDNA.toonTorsoTypes[value]
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Torso set to: {0}'.format(dna.torso)
 
     if part == 'legs':
@@ -4880,7 +4880,7 @@ def dna(part, value):
             return 'Legs index out of range (0-{0}).'.format(
                 len(ToonDNA.toonLegTypes))
         dna.legs = ToonDNA.toonLegTypes[value]
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Legs set to: {0}'.format(dna.legs)
 
     if part == 'headcolor':
@@ -4895,7 +4895,7 @@ def dna(part, value):
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
             return 'Invalid female head color index: {0}'.format(value)
         dna.headColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Head color index set to: {0}'.format(dna.headColor)
 
     if part == 'armcolor':
@@ -4910,7 +4910,7 @@ def dna(part, value):
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
             return 'Invalid female arm color index: {0}'.format(value)
         dna.armColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Arm color index set to: {0}'.format(dna.armColor)
 
     if part == 'legcolor':
@@ -4925,7 +4925,7 @@ def dna(part, value):
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
             return 'Invalid female leg color index: {0}'.format(value)
         dna.legColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Leg color index set to: {0}'.format(dna.legColor)
 
     if part == 'color':
@@ -4944,7 +4944,7 @@ def dna(part, value):
         dna.headColor = value
         dna.armColor = value
         dna.legColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Color index set to: {0}'.format(dna.headColor)
 
     if part == 'gloves':
@@ -4952,7 +4952,7 @@ def dna(part, value):
         if value != 0:
             return 'Invalid glove color: {0}'.format(value)
         dna.gloveColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Glove color set to: {0}'.format(dna.gloveColor)
 
     if part == 'toptex':
@@ -4960,7 +4960,7 @@ def dna(part, value):
             return 'Top texture index out of range (0-{0}).'.format(
                 len(ToonDNA.Shirts))
         dna.topTex = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Top texture index set to: {0}'.format(dna.topTex)
 
     if part == 'toptexcolor':
@@ -4968,7 +4968,7 @@ def dna(part, value):
             return 'Top texture color index out of range(0-{0}).'.format(
                 len(ToonDNA.ClothesColors))
         dna.topTexColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Top texture color index set to: {0}'.format(dna.topTexColor)
 
     if part == 'sleevetex':
@@ -4976,7 +4976,7 @@ def dna(part, value):
             return 'Sleeve texture index out of range(0-{0}).'.format(
                 len(ToonDNA.Sleeves))
         dna.sleeveTex = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Sleeve texture index set to: {0}'.format(dna.sleeveTex)
 
     if part == 'sleevetexcolor':
@@ -4984,7 +4984,7 @@ def dna(part, value):
             return 'Sleeve texture color index out of range(0-{0}).'.format(
                 len(ToonDNA.ClothesColors))
         dna.sleeveTexColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Sleeve texture color index set to: {0}'.format(
             dna.sleeveTexColor)
 
@@ -4999,7 +4999,7 @@ def dna(part, value):
             return 'Bottom texture index out of range (0-{0}).'.format(
                 len(bottoms))
         dna.botTex = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Bottom texture index set to: {0}'.format(dna.botTex)
 
     if part == 'bottexcolor':
@@ -5007,25 +5007,25 @@ def dna(part, value):
             return 'Bottom texture color index out of range(0-{0}).'.format(
                 len(ToonDNA.ClothesColors))
         dna.botTexColor = value
-        target.b_setDNAString(dna.makeNetString())
+        invoker.b_setDNAString(dna.makeNetString())
         return 'Bottom texture color index set to: {0}'.format(dna.botTexColor)
 
     if part == 'save':
-        data = simbase.backups.load('toondna', (target.doId,), default={})
-        data[value] = target.getDNAString()
-        simbase.backups.save('toondna', (target.doId,), data)
+        data = simbase.backups.load('toondna', (invoker.doId,), default={})
+        data[value] = invoker.getDNAString()
+        simbase.backups.save('toondna', (invoker.doId,), data)
         return "Saved a DNA backup for {0} under file: {1}".format(
-            target.getName(), value)
+            invoker.getName(), value)
 
     if part == 'restore':
-        data = simbase.backups.load('toondna', (target.doId,), {})
+        data = simbase.backups.load('toondna', (invoker.doId,), {})
         if value not in data:
             return 'Could not find DNA backup for {0} under file: {1}'.format(
-                target.getName(), value)
+                invoker.getName(), value)
         dna.makeFromNetString(data[value])
-        target.b_setDNAString(data[value])
+        invoker.b_setDNAString(data[value])
         return 'Restored DNA backup for {0} under file: {1}'.format(
-            target.getName(), value)
+            invoker.getName(), value)
 
     return 'Invalid part: {0}'.format(part)
 
