@@ -4600,7 +4600,7 @@ def name(name=''):
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def hat(hatIndex, hatTex=0):
     """
-    Modify the target's hat.
+    Modify the invoker's hat.
     """
     if not 0 <= hatIndex < len(ToonDNA.HatModels):
         return 'Invalid hat index.'
@@ -4613,7 +4613,7 @@ def hat(hatIndex, hatTex=0):
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def glasses(glassesIndex, glassesTex=0):
     """
-    Modify the target's glasses.
+    Modify the invoker's glasses.
     """
     if not 0 <= glassesIndex < len(ToonDNA.GlassesModels):
         return 'Invalid glasses index.'
@@ -4626,7 +4626,7 @@ def glasses(glassesIndex, glassesTex=0):
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def backpack(backpackIndex, backpackTex=0):
     """
-    Modify the target's backpack.
+    Modify the invoker's backpack.
     """
     if not 0 <= backpackIndex < len(ToonDNA.BackpackModels):
         return 'Invalid backpack index.'
@@ -4639,7 +4639,7 @@ def backpack(backpackIndex, backpackTex=0):
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def shoes(shoesIndex, shoesTex=0):
     """
-    Modify the target's shoes.
+    Modify the invoker's shoes.
     """
     if not 0 <= shoesIndex < len(ToonDNA.ShoesModels):
         return 'Invalid shoes index.'
