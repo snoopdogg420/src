@@ -52,6 +52,14 @@ class DistributedBankCollectable(DistributedObject):
         self.floatTrack.append(LerpPosInterval(self.nodePath, 2, Point3(-22, 27.5, 1.5), startPos=Point3(-22, 27.5, 2)))
         self.floatTrack.loop()
 
+        glow = jellybeanjar.copyTo(self.bankCollectable)
+        glow.setScale(1.1)
+
+        glowTrack = Sequence()
+        glowTrack.append(LerpColorScaleInterval(glow, 2.5, Vec4(0.6, 0.6, 0, 0.6), startColorScale=Vec4(0.4, 0.4, 0, 0.6)))
+        glowTrack.append(LerpColorScaleInterval(glow, 2.5, Vec4(0.4, 0.4, 0, 0.6), startColorScale=Vec4(0.6, 0.6, 0, 0.6)))
+        glowTrack.loop()
+
         self.accept(self.uniqueName('enterbankCollectableSphere'), self.__handleEnterSphere)
 
     def disable(self):

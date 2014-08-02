@@ -136,7 +136,7 @@ class DistributedBankInterior(DistributedObject):
         self.teleportTrack.append(Wait(3.5))
         self.teleportTrack.append(Func(base.localAvatar.setPos, Point3(0, 0, 0)))
         self.teleportTrack.append(Func(base.localAvatar.b_setAnimState, 'TeleportIn'))
-        self.teleportTrack.append(Wait(1))
+        self.teleportTrack.append(Wait(2.25))
         self.teleportTrack.append(Func(place.setState, 'walk'))
         self.teleportTrack.start()
 
