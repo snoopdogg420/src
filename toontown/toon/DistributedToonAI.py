@@ -4600,54 +4600,54 @@ def name(name=''):
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def hat(hatIndex, hatTex=0):
     """
-    Modify the target's hat.
+    Modify the invoker's hat.
     """
     if not 0 <= hatIndex < len(ToonDNA.HatModels):
         return 'Invalid hat index.'
     if not 0 <= hatTex < len(ToonDNA.HatTextures):
         return 'Invalid hat texture.'
-    target = spellbook.getTarget()
-    target.b_setHat(hatIndex, hatTex, 0)
-    return "Set {0}'s hat to {1}, {2}!".format(target.getName(), hatIndex, hatTex)
+    invoker = spellbook.getInvoker()
+    invoker.b_setHat(hatIndex, hatTex, 0)
+    return "Set {0}'s hat to {1}, {2}!".format(invoker.getName(), hatIndex, hatTex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def glasses(glassesIndex, glassesTex=0):
     """
-    Modify the target's glasses.
+    Modify the invoker's glasses.
     """
     if not 0 <= glassesIndex < len(ToonDNA.GlassesModels):
         return 'Invalid glasses index.'
     if not 0 <= glassesTex < len(ToonDNA.GlassesTextures):
         return 'Invalid glasses texture.'
-    target = spellbook.getTarget()
-    target.b_setGlasses(glassesIndex, glassesTex, 0)
-    return "Set {0}'s glasses to {1}, {2}!".format(target.getName(), glassesIndex, glassesTex)
+    invoker = spellbook.getInvoker()
+    invoker.b_setGlasses(glassesIndex, glassesTex, 0)
+    return "Set {0}'s glasses to {1}, {2}!".format(invoker.getName(), glassesIndex, glassesTex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def backpack(backpackIndex, backpackTex=0):
     """
-    Modify the target's backpack.
+    Modify the invoker's backpack.
     """
     if not 0 <= backpackIndex < len(ToonDNA.BackpackModels):
         return 'Invalid backpack index.'
     if not 0 <= backpackTex < len(ToonDNA.BackpackTextures):
         return 'Invalid backpack texture.'
-    target = spellbook.getTarget()
-    target.b_setBackpack(backpackIndex, backpackTex, 0)
-    return "Set {0}'s backpack to {1}, {2}!".format(target.getName(), backpackIndex, backpackTex)
+    invoker = spellbook.getInvoker()
+    invoker.b_setBackpack(backpackIndex, backpackTex, 0)
+    return "Set {0}'s backpack to {1}, {2}!".format(invoker.getName(), backpackIndex, backpackTex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def shoes(shoesIndex, shoesTex=0):
     """
-    Modify the target's shoes.
+    Modify the invoker's shoes.
     """
     if not 0 <= shoesIndex < len(ToonDNA.ShoesModels):
         return 'Invalid shoes index.'
     if not 0 <= shoesTex < len(ToonDNA.ShoesTextures):
         return 'Invalid shoes texture.'
-    target = spellbook.getTarget()
-    target.b_setShoes(shoesIndex, shoesTex, 0)
-    return "Set {0}'s shoes to {1}, {2}!".format(target.getName(), shoesIndex, shoesTex)
+    invoker = spellbook.getInvoker()
+    invoker.b_setShoes(shoesIndex, shoesTex, 0)
+    return "Set {0}'s shoes to {1}, {2}!".format(invoker.getName(), shoesIndex, shoesTex)
 
 @magicWord(category=CATEGORY_MODERATOR)
 def kick():
