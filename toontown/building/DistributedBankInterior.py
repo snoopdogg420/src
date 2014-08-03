@@ -82,19 +82,19 @@ class DistributedBankInterior(DistributedObject):
         pass
 
     def enterVaultOpening(self, timestamp):
-        track = Sequence()
-
-        # Play the sound effect:
         vaultDoor = render.find('**/vault_door')
-        base.playSfx(self.vaultOpenSfx, node=vaultDoor)
 
-        # Spin the vault lock dial:
+        doorTrack = Sequence()
+
+        # First, spin the vault lock dial:
         dial = vaultDoor.find('**/vault_door_front_dial')
-        track.append(LerpHprInterval(dial, 2, Vec3(0, 0, -2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
+        doorTrack.append(LerpHprInterval(dial, 2, Vec3(0, 0, -2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
 
         # Then, open the vault door:
-        track.append(LerpHprInterval(vaultDoor, 3, Vec3(-120, 0, 0), startHpr=Vec3(0, 0, 0), blendType='easeOut'))
+        doorTrack.append(LerpHprInterval(vaultDoor, 3, Vec3(-120, 0, 0), startHpr=Vec3(0, 0, 0), blendType='easeOut'))
 
+        # We need the sound effect to play in parallel:
+        track = Parallel(SoundInterval(self.vaultOpenSfx, node=vaultDoor), doorTrack)
         track.start(timestamp)
 
     def exitVaultOpening(self):
@@ -108,19 +108,19 @@ class DistributedBankInterior(DistributedObject):
         pass
 
     def enterVaultClosing(self, timestamp):
-        track = Sequence()
-
-        # Play the sound effect:
         vaultDoor = render.find('**/vault_door')
-        base.playSfx(self.vaultCloseSfx, node=vaultDoor)
 
-        # Close the vault door:
-        track.append(LerpHprInterval(vaultDoor, 3, Vec3(0, 0, 0), startHpr=Vec3(-120, 0, 0), blendType='easeOut'))
+        doorTrack = Sequence()
+
+        # First, close the vault door:
+        doorTrack.append(LerpHprInterval(vaultDoor, 3, Vec3(0, 0, 0), startHpr=Vec3(-120, 0, 0), blendType='easeOut'))
 
         # Then, spin the vault lock dial:
         dial = vaultDoor.find('**/vault_door_front_dial')
-        track.append(LerpHprInterval(dial, 2, Vec3(0, 0, 2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
+        doorTrack.append(LerpHprInterval(dial, 2, Vec3(0, 0, 2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
 
+        # We need the sound effect to play in parallel:
+        track = Parallel(SoundInterval(self.vaultCloseSfx, node=vaultDoor), doorTrack)
         track.start(timestamp)
 
     def exitVaultClosing(self):
@@ -221,7 +221,7 @@ class DistributedBankInterior(DistributedObject):
 
         room = render.find('**/vault_walls')
         minPoint, maxPoint = room.getTightBounds()
-        offset = 0.2  # We want a slight offset
+        offset = 1  # We want a slight offset
         maxPoint -= offset
         collBox = CollisionBox(minPoint, maxPoint)
         collBox.setTangible(0)
