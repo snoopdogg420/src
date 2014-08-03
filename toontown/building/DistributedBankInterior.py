@@ -53,6 +53,9 @@ class DistributedBankInterior(DistributedObject):
             self.collNodePath.removeNode()
             self.collNodePath = None
 
+        del self.vaultOpenSfx
+        del self.vaultCloseSfx
+
         DistributedObject.disable(self)
 
     def setZoneIdAndBlock(self, zoneId, block):
@@ -81,9 +84,11 @@ class DistributedBankInterior(DistributedObject):
     def enterVaultOpening(self, timestamp):
         track = Sequence()
 
+        # Play the sound effect:
         vaultDoor = render.find('**/vault_door')
+        base.playSfx(self.vaultOpenSfx, node=vaultDoor)
 
-        # First, spin the vault lock dial:
+        # Spin the vault lock dial:
         dial = vaultDoor.find('**/vault_door_front_dial')
         track.append(LerpHprInterval(dial, 2, Vec3(0, 0, -2160), startHpr=(0, 0, 0), blendType='easeOut', fluid=1))
 
@@ -105,9 +110,11 @@ class DistributedBankInterior(DistributedObject):
     def enterVaultClosing(self, timestamp):
         track = Sequence()
 
+        # Play the sound effect:
         vaultDoor = render.find('**/vault_door')
+        base.playSfx(self.vaultCloseSfx, node=vaultDoor)
 
-        # First, close the vault door:
+        # Close the vault door:
         track.append(LerpHprInterval(vaultDoor, 3, Vec3(0, 0, 0), startHpr=Vec3(-120, 0, 0), blendType='easeOut'))
 
         # Then, spin the vault lock dial:
@@ -189,6 +196,9 @@ class DistributedBankInterior(DistributedObject):
 
         self.interior = loader.loadModel('phase_4/models/modules/ttc_bank_interior.bam')
         self.interior.reparentTo(render)
+
+        self.vaultOpenSfx = loader.loadSfx('phase_4/audio/sfx/vault_door_open.ogg')
+        self.vaultCloseSfx = loader.loadSfx('phase_4/audio/sfx/vault_door_close.ogg')
 
         hoodId = ZoneUtil.getCanonicalHoodId(self.zoneId)
         self.colors = ToonInteriorColors.colors[hoodId]
