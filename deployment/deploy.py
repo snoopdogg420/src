@@ -302,7 +302,7 @@ for directory in localRoot.findall('directory'):
     # If we haven't pushed a patcher previously, we can assume this is the
     # first time deploying this distribution. Therefore, let's upload
     # everything:
-    if root.tag != 'patcher':
+    if (not root) or (root.tag != 'patcher'):
         for child in directory.getchildren():
             filepath = child.get('name')
             if directoryName:
