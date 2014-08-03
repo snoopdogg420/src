@@ -256,8 +256,7 @@ os.mkdir('dist')
 # need to be updated using 'git diff'. We need to do this because two
 # compilations of the same multifile will never have the same hash:
 updatedFiles = []
-request = requests.get('http://' + bucketName + '.s3.amazonaws.com/' +
-                       deployToken + '/patcher.xml')
+request = requests.get('http://' + ftpAddress + '/' + deployToken + '/patcher.xml')
 root = ElementTree.fromstring(request.text)
 os.chdir('../../resources')
 if root.tag == 'patcher':  # We have a patcher file
