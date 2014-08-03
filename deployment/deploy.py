@@ -262,7 +262,7 @@ try:
 except:
     root = None
 os.chdir('../../resources')
-if root or (root.tag == 'patcher'):  # We have a patcher file
+if root and (root.tag == 'patcher'):  # We have a patcher file
     resourcesRevision = root.find('resources-revision')
     if resourcesRevision is not None:
         resourcesRevision = resourcesRevision.text
