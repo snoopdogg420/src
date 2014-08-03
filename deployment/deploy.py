@@ -257,9 +257,12 @@ os.mkdir('dist')
 # compilations of the same multifile will never have the same hash:
 updatedFiles = []
 request = requests.get('http://' + ftpAddress + '/' + deployToken + '/patcher.xml')
-root = ElementTree.fromstring(request.text)
+try:
+    root = ElementTree.fromstring(request.text)
+except:
+    root = None
 os.chdir('../../resources')
-if root.tag == 'patcher':  # We have a patcher file
+if root or (root.tag == 'patcher'):  # We have a patcher file
     resourcesRevision = root.find('resources-revision')
     if resourcesRevision is not None:
         resourcesRevision = resourcesRevision.text
