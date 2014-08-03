@@ -62,7 +62,7 @@ if not ftpPassword:
 
 # Ensure that the platform we're building for is supported:
 platform = deployData['platform']
-if platform not in ('win32', 'linux', 'darwin'):  # Supported platforms
+if platform not in ('win32', 'linux2', 'darwin'):  # Supported platforms
     print 'Unsupported platform:', platform
     sys.exit(2)
 
