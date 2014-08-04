@@ -377,53 +377,18 @@ class ToonBase(OTPBase.OTPBase):
         self.screenshotStr += str
 
     def initNametagGlobals(self):
-        arrow = loader.loadModel('phase_3/models/props/arrow')
-        card = loader.loadModel('phase_3/models/props/panel')
-        speech3d = ChatBalloon(loader.loadModel('phase_3/models/props/chatbox'))
-        thought3d = ChatBalloon(loader.loadModel('phase_3/models/props/chatbox_thought_cutout'))
-        speech2d = ChatBalloon(loader.loadModel('phase_3/models/props/chatbox_noarrow'))
-        chatButtonGui = loader.loadModel('phase_3/models/gui/chat_button_gui')
-        NametagGlobals.setCamera(self.cam)
-        NametagGlobals.setArrowModel(arrow)
-        NametagGlobals.setNametagCard(card, VBase4(-0.5, 0.5, -0.5, 0.5))
-        if self.mouseWatcherNode:
-            NametagGlobals.setMouseWatcher(self.mouseWatcherNode)
-        NametagGlobals.setSpeechBalloon3d(speech3d)
-        NametagGlobals.setThoughtBalloon3d(thought3d)
-        NametagGlobals.setSpeechBalloon2d(speech2d)
-        NametagGlobals.setThoughtBalloon2d(thought3d)
-        NametagGlobals.setPageButton(PGButton.SReady, chatButtonGui.find('**/Horiz_Arrow_UP'))
-        NametagGlobals.setPageButton(PGButton.SDepressed, chatButtonGui.find('**/Horiz_Arrow_DN'))
-        NametagGlobals.setPageButton(PGButton.SRollover, chatButtonGui.find('**/Horiz_Arrow_Rllvr'))
-        NametagGlobals.setQuitButton(PGButton.SReady, chatButtonGui.find('**/CloseBtn_UP'))
-        NametagGlobals.setQuitButton(PGButton.SDepressed, chatButtonGui.find('**/CloseBtn_DN'))
-        NametagGlobals.setQuitButton(PGButton.SRollover, chatButtonGui.find('**/CloseBtn_Rllvr'))
+        NametagGlobals.setCardModel('phase_3/models/props/panel.bam')
+        NametagGlobals.setArrowModel('phase_3/models/props/arrow.bam')
+        NametagGlobals.setChatBalloon3dModel('phase_3/models/props/chatbox.bam')
+        NametagGlobals.setChatBalloon2dModel('phase_3/models/props/chatbox_noarrow.bam')
+        NametagGlobals.setThoughtBalloonModel('phase_3/models/props/chatbox_thought_cutout.bam')
+
         rolloverSound = DirectGuiGlobals.getDefaultRolloverSound()
         if rolloverSound:
             NametagGlobals.setRolloverSound(rolloverSound)
         clickSound = DirectGuiGlobals.getDefaultClickSound()
         if clickSound:
             NametagGlobals.setClickSound(clickSound)
-        NametagGlobals.setToon(self.cam)
-        self.marginManager = MarginManager()
-        self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
-        mm = self.marginManager
-        self.leftCells = [
-            mm.addGridCell(0.25, -0.6, base.a2dTopLeft),
-            mm.addGridCell(0.25, -1.0, base.a2dTopLeft),
-            mm.addGridCell(0.25, -1.4, base.a2dTopLeft)
-        ]
-        self.bottomCells = [
-            mm.addGridCell(0.4, 0.2, base.a2dBottomCenter),
-            mm.addGridCell(-0.4, 0.2, base.a2dBottomCenter),
-            mm.addGridCell(-1.0, 0.2, base.a2dBottomCenter),
-            mm.addGridCell(1.0, 0.2, base.a2dBottomCenter)
-        ]
-        self.rightCells = [
-            mm.addGridCell(-0.25, -0.6, base.a2dTopRight),
-            mm.addGridCell(-0.25, -1.0, base.a2dTopRight),
-            mm.addGridCell(-0.25, -1.4, base.a2dTopRight)
-        ]
 
     def setCellsAvailable(self, cell_list, available):
         for cell in cell_list:
