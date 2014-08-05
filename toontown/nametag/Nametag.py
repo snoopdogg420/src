@@ -35,6 +35,24 @@ class Nametag(PandaNode):
 
         self.icon = NodePath('icon')
 
+    def getChatBalloonModel(self):
+        pass  # Inheritors should override this method.
+
+    def getChatBalloonWidth(self):
+        pass  # Inheritors should override this method.
+
+    def getChatBalloonHeight(self):
+        pass  # Inheritors should override this method.
+
+    def getThoughtBalloonModel(self):
+        pass  # Inheritors should override this method.
+
+    def getThoughtBalloonWidth(self):
+        pass  # Inheritors should override this method.
+
+    def getThoughtBalloonHeight(self):
+        pass  # Inheritors should override this method.
+
     def setAvatar(self, avatar):
         self.avatar = avatar
 
