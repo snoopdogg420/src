@@ -40,7 +40,3 @@ class ChatBalloon(NodePath):
         chatText.setY(ChatBalloon.TEXT_Y_OFFSET)
         chatText.setX(chatText, -(chatTextWidth/2))
         chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
-
-        # Compensate for the top:
-        middle.setSz(paddedHeight - 1.25)
-        top.setZ(middle, 1)
