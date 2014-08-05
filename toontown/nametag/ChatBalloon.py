@@ -3,6 +3,7 @@ from pandac.PandaModules import *
 
 class ChatBalloon(NodePath):
     TEXT_Y_OFFSET = -0.05
+    TEXT_Z_OFFSET = -0.1
     CHAT_BALLOON_X_PADDING = 0.5
     CHAT_BALLOON_Z_PADDING = 0.5
 
@@ -38,7 +39,7 @@ class ChatBalloon(NodePath):
         chatText.setPos(chatBalloon.getBounds().getCenter())
         chatText.setY(ChatBalloon.TEXT_Y_OFFSET)
         chatText.setX(chatText, -(chatTextWidth/2))
-        chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING)
+        chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
 
         # Compensate for the top:
         middle.setSz(paddedHeight - 1.25)
