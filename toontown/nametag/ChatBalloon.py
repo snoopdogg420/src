@@ -6,9 +6,8 @@ class ChatBalloon(NodePath):
     CHAT_BUBBLE_X_PADDING = 0.5
     CHAT_BUBBLE_Z_PADDING = 0.5
 
-    def __init__(self, model, modelWidth, modelHeight, chatText, font,
-                 foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1),
-                 wordWrap=10):
+    def __init__(self, model, modelWidth, modelHeight, chatTextNode,
+                 foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1)):
         NodePath.__init__(self, 'chatBalloon')
 
         # Create a chat balloon:
@@ -16,18 +15,15 @@ class ChatBalloon(NodePath):
         chatBalloon.setColor(background)
         chatBalloon.setTransparency(background[3] < 1)
 
-        # Create a TextNode:
-        chatTextNode = TextNode('chatText')
-        chatTextNode.setFont(font)
-        chatTextNode.setWordwrap(wordWrap)
-        chatTextNode.setText(chatText)
+        # Set the TextNode color:
         chatTextNode.setTextColor(foreground)
+
+        # Attach the TextNode:
         chatText = self.attachNewNode(chatTextNode)
         chatText.setTransparency(foreground[3] < 1)
         chatText.setAttrib(DepthWriteAttrib.make(0))
 
         # Resize the chat balloon as necessary:
-        bottom = chatBalloon.find('**/bottom')
         middle = chatBalloon.find('**/middle')
         top = chatBalloon.find('**/top')
         chatTextWidth = chatTextNode.getWidth()
