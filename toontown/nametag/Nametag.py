@@ -20,7 +20,7 @@ class Nametag(PandaNode):
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
 
         # Foreground, background:
-        self.nametagColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
+        self.nametagColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 0.1))
         self.chatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
         self.speedChatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
 
@@ -35,7 +35,7 @@ class Nametag(PandaNode):
         self.chatTextNode.setTextColor(self.chatColor[0])
         self.chatTextNode.setGlyphScale(1.1)
 
-        self.icon = NodePath('icon')
+        self.icon = None
 
         # Add the tick task:
         self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
@@ -151,6 +151,14 @@ class Nametag(PandaNode):
     def getChatText(self, chatText):
         return self.chatTextNode.getText()
 
+    def setIcon(self, icon):
+        self.icon = icon
+        if not self.chatTextNode.getText():
+            self.update()
+
+    def getIcon(self):
+        return self.icon
+
     def update(self):
         """
         Redraw the contents.
@@ -189,7 +197,8 @@ class Nametag(PandaNode):
         foreground, background = self.nametagColor
 
         # Attach the icon:
-        self.contents.attachNewNode(self.icon)
+        if self.icon:
+            self.contents.attachNewNode(self.icon)
 
         # Set the color of the TextNode:
         self.nameTextNode.setColor(foreground)
