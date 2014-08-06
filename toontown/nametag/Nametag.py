@@ -1,3 +1,4 @@
+from direct.task.Task import Task
 from pandac.PandaModules import *
 
 from toontown.nametag import ChatBalloon
@@ -36,6 +37,9 @@ class Nametag(PandaNode):
 
         self.icon = NodePath('icon')
 
+        # Add the tick task:
+        self.tickTask = taskMgr.add(self.tick, 'tickTask')
+
     def getChatBalloonModel(self):
         pass  # Inheritors should override this method.
 
@@ -53,6 +57,22 @@ class Nametag(PandaNode):
 
     def getThoughtBalloonHeight(self):
         pass  # Inheritors should override this method.
+
+    def tick(self, task):
+        return Task.cont  # Inheritors should override this method.
+
+    def destroy(self):
+        taskMgr.remove(self.tickTask)
+
+        if self.contents:
+            self.contents.removeNode()
+            self.contents = None
+
+        if self.chatTextNode:
+            self.chatTextNode = None
+
+        if self.nameTextNode:
+            self.nameTextNode = None
 
     def setAvatar(self, avatar):
         self.avatar = avatar
