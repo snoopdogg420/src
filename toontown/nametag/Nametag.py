@@ -38,7 +38,7 @@ class Nametag(PandaNode):
         self.icon = NodePath('icon')
 
         # Add the tick task:
-        self.tickTask = taskMgr.add(self.tick, 'tickTask')
+        self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
 
     def getChatBalloonModel(self):
         pass  # Inheritors should override this method.
@@ -73,6 +73,9 @@ class Nametag(PandaNode):
 
         if self.nameTextNode:
             self.nameTextNode = None
+
+    def getUniqueName(self):
+        return 'Nametag-' + str(id(self))
 
     def setAvatar(self, avatar):
         self.avatar = avatar
