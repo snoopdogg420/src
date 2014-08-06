@@ -3,9 +3,9 @@ from pandac.PandaModules import *
 
 class ChatBalloon(NodePath):
     TEXT_Y_OFFSET = -0.05
-    TEXT_Z_OFFSET = -0.1
-    CHAT_BALLOON_X_PADDING = 0.5
-    CHAT_BALLOON_Z_PADDING = 0.5
+    TEXT_Z_OFFSET = -0.25
+    CHAT_BALLOON_X_PADDING = 1.0
+    CHAT_BALLOON_Z_PADDING = 1.0
     CHAT_BUBBLE_MIN_WIDTH = 2.0
     CHAT_BUBBLE_MIN_HEIGHT = 2.0
 

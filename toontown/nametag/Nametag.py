@@ -32,6 +32,7 @@ class Nametag(PandaNode):
         self.chatTextNode = TextNode('chatText')
         self.chatTextNode.setWordwrap(10)
         self.chatTextNode.setTextColor(self.chatColor[0])
+        self.chatTextNode.setGlyphScale(1.1)
 
         self.icon = NodePath('icon')
 
