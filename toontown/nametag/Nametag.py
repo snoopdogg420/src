@@ -26,7 +26,7 @@ class Nametag(PandaNode):
 
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
-        self.nameTextNode.setWordwrap(7.5)
+        self.nameTextNode.setWordwrap(8)
         self.nameTextNode.setTextColor(self.nametagColor[0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
