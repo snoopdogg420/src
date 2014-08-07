@@ -63,3 +63,81 @@ class NametagGroup:
         nametag.setChatText(self.chatText)
         nametag.setIcon(self.icon)
         nametag.update()
+
+    def setAvatar(self, avatar):
+        self.avatar = avatar
+        for nametag in self.nametags:
+            nametag.setAvatar(self.avatar)
+
+    def getAvatar(self):
+        return self.avatar
+
+    def setFont(self, font):
+        self.font = font
+        for nametag in self.nametags:
+            nametag.setFont(self.font)
+
+    def getFont(self):
+        return self.font
+
+    def setChatType(self, chatType):
+        self.chatType = chatType
+        for nametag in self.nametags:
+            nametag.setChatType(self.chatType)
+
+    def getChatType(self):
+        return self.chatType
+
+    def setChatBalloonType(self, chatBalloonType):
+        self.chatBalloonType = chatBalloonType
+        for nametag in self.nametags:
+            nametag.setChatBalloonType(chatBalloonType)
+
+    def getChatBalloonType(self):
+        return self.chatBalloonType
+
+    def setNametagColor(self, foreground, background):
+        self.nametagColor = (foreground, background)
+        for nametag in self.nametags:
+            nametag.setNametagColor(foreground, background)
+
+    def getNametagColor(self):
+        return self.nametagColor
+
+    def setChatColor(self, foreground, background):
+        self.chatColor = (foreground, background)
+        for nametag in self.nametags:
+            nametag.setChatColor(foreground, background)
+
+    def getChatColor(self):
+        return self.chatColor
+
+    def setSpeedChatColor(self, foreground, background):
+        self.speedChatColor = (foreground, background)
+        for nametag in self.nametags:
+            nametag.setSpeedChatColor(foreground, background)
+
+    def getSpeedChatColor(self):
+        return self.speedChatColor
+
+    def setNameText(self, nameText):
+        self.nameText = nameText
+        for nametag in self.nametags:
+            nametag.setNameText(nameText)
+
+    def getNameText(self):
+        return self.nameText
+
+    def setChatText(self, chatText):
+        self.chatText = chatText
+        for nametag in self.nametags:
+            nametag.setChatText(chatText)
+
+    def getChatText(self):
+        return self.chatText
+
+    def getNumChatPages(self):
+        return len(self.chatPages)
+
+    def getChatPageIndex(self):
+        return self.chatPageIndex
