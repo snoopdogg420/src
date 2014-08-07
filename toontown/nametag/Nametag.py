@@ -18,9 +18,10 @@ class Nametag(PandaNode):
         self.font = None
         self.chatType = NametagGlobals.CHAT
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
+        self.hidden = False
 
         # Foreground, background:
-        self.nametagColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 0.1))
+        self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
         self.chatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
         self.speedChatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
 
@@ -194,7 +195,10 @@ class Nametag(PandaNode):
         chatBalloon.reparentTo(self.contents)
 
     def drawNametag(self):
-        foreground, background = self.nametagColor
+        if self.hidden:
+            return
+
+        foreground, background = self.nametagColor[0]  # Normal
 
         # Attach the icon:
         if self.icon:
@@ -206,8 +210,7 @@ class Nametag(PandaNode):
         # Attach the TextNode:
         nameText = self.contents.attachNewNode(self.nameTextNode, 1)
         nameText.setTransparency(foreground[3] < 1)
-        nameText.setY(-0.05)
-        nameText.setAttrib(DepthWriteAttrib.make(0))
+        nameText.setDepthOffset(1)
 
         # Attach a panel behind the TextNode:
         namePanel = NametagGlobals.cardModel.copyTo(self.contents, 0)
@@ -219,3 +222,11 @@ class Nametag(PandaNode):
         namePanel.setScale(sX, 1, sZ)
         namePanel.setColor(background)
         namePanel.setTransparency(background[3] < 1)
+
+    def hide(self):
+        self.hidden = True
+        self.update()
+
+    def show(self):
+        self.hidden = False
+        self.update()

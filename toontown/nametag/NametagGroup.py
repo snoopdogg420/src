@@ -16,7 +16,7 @@ class NametagGroup:
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
 
         # Foreground, background:
-        self.nametagColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 0.1))
+        self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
         self.chatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
         self.speedChatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
 
@@ -128,13 +128,21 @@ class NametagGroup:
     def getNameText(self):
         return self.nameText
 
-    def setChatText(self, chatText):
+    def setChatText(self, chatText, timeout=False):
         self.chatText = chatText
         for nametag in self.nametags:
             nametag.setChatText(chatText)
 
+        if timeout:
+            pass  # TODO: Add a timeout task.
+
     def getChatText(self):
         return self.chatText
+
+    def clearChatText(self):
+        self.setChatText('')
+        for nametag in self.nametags:
+            nametag.update()
 
     def getNumChatPages(self):
         return len(self.chatPages)

@@ -1,3 +1,16 @@
+from pandac.PandaModules import *
+
+
+CCNormal = 0
+CCNoChat = 1
+CCNonPlayer = 2
+CCSuit = 3
+CCToonBuilding = 4
+CCSuitBuilding = 5
+CCHouseBuilding = 6
+CCSpeedChat = 7
+CCFreeChat = 8
+
 CHAT = 0
 SPEEDCHAT = 1
 
@@ -69,3 +82,61 @@ def getModelWidthHeight(model):
     width = pointB.getX() - pointA.getX()
     height = pointB.getZ() - pointA.getZ()
     return (width, height)
+
+
+NametagColors = {
+    CCNormal: (
+        (VBase4(0.3, 0.3, 0.7, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.3, 0.3, 0.7, 1.0), VBase4(0.2, 0.2, 0.2, 0.1)),  # Down
+        (VBase4(0.5, 0.5, 1.0, 1.0), VBase4(1.0, 1.0, 1.0, 0.3)),  # Rollover
+        (VBase4(0.3, 0.3, 0.7, 1.0), VBase4(1.0, 1.0, 1.0, 0.2))   # Disabled
+    ),
+    CCNoChat: (
+        (VBase4(0.8, 0.4, 0.0, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(1.0, 0.5, 0.5, 1.0), VBase4(0.2, 0.2, 0.2, 0.1)),  # Click
+        (VBase4(1.0, 0.5, 0.0, 1.0), VBase4(1.0, 1.0, 1.0, 0.3)),  # Rollover
+        (VBase4(0.8, 0.4, 0.0, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCNonPlayer: (
+        (VBase4(0.8, 0.4, 0.0, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.8, 0.4, 0.0, 1.0), VBase4(0.8, 0.8, 0.8, 0.1)),  # Down
+        (VBase4(0.8, 0.4, 0.0, 1.0), VBase4(0.8, 0.8, 0.8, 0.3)),  # Rollover
+        (VBase4(0.8, 0.4, 0.0, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCSuit: (
+        (VBase4(0.2, 0.2, 0.2, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.2, 0.2, 0.2, 1.0), VBase4(0.2, 0.2, 0.2, 0.1)),  # Down
+        (VBase4(0.4, 0.4, 0.4, 1.0), VBase4(1.0, 1.0, 1.0, 0.3)),  # Rollover
+        (VBase4(0.2, 0.2, 0.2, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCSuitBuilding: (
+        (VBase4(0.5, 0.5, 0.5, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.5, 0.5, 0.5, 1.0), VBase4(0.8, 0.8, 0.8, 0.1)),  # Down
+        (VBase4(0.5, 0.5, 0.5, 1.0), VBase4(0.8, 0.8, 0.8, 0.3)),  # Rollover
+        (VBase4(0.5, 0.5, 0.5, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCToonBuilding: (
+        (VBase4(0.2, 0.6, 0.9, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.2, 0.6, 0.9, 1.0), VBase4(0.8, 0.8, 0.8, 0.1)),  # Down
+        (VBase4(0.2, 0.6, 0.9, 1.0), VBase4(0.8, 0.8, 0.8, 0.3)),  # Rollover
+        (VBase4(0.2, 0.6, 0.9, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCHouseBuilding: (
+        (VBase4(0.2, 0.6, 0.9, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.2, 0.2, 0.5, 1.0), VBase4(0.2, 0.2, 0.2, 0.1)),  # Down
+        (VBase4(0.5, 0.5, 1.0, 1.0), VBase4(1.0, 1.0, 1.0, 1.3)),  # Rollover
+        (VBase4(0.0, 0.6, 0.2, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCSpeedChat: (
+        (VBase4(0.0, 0.6, 0.2, 1.0), VBase4(0.8, 0.8, 0.8, 0.2)),  # Normal
+        (VBase4(0.0, 0.5, 0.0, 1.0), VBase4(0.5, 0.5, 0.5, 0.1)),  # Down
+        (VBase4(0.0, 0.7, 0.2, 1.0), VBase4(1.0, 1.0, 1.0, 0.3)),  # Rollover
+        (VBase4(0.0, 0.6, 0.2, 1.0), VBase4(0.8, 0.8, 0.8, 0.2))   # Disabled
+    ),
+    CCFreeChat: (
+        (VBase4(0.3, 0.3, 0.7, 1.0), VBase4(0.8, 0.8, 0.8, 0.5)),  # Normal
+        (VBase4(0.2, 0.2, 0.5, 1.0), VBase4(0.2, 0.2, 0.2, 0.6)),  # Down
+        (VBase4(0.5, 0.5, 1.0, 1.0), VBase4(1.0, 1.0, 1.0, 1.0)),  # Rollover
+        (VBase4(0.3, 0.3, 0.7, 1.0), VBase4(0.8, 0.8, 0.8, 0.5))   # Disabled
+    )
+}
