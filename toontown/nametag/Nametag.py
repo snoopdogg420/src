@@ -18,7 +18,8 @@ class Nametag(PandaNode):
         self.font = None
         self.chatType = NametagGlobals.CHAT
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
-        self.hidden = False
+        self.chatHidden = False
+        self.nametagHidden = False
 
         # Foreground, background:
         self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
@@ -165,9 +166,9 @@ class Nametag(PandaNode):
         Redraw the contents.
         """
         self.contents.node().removeAllChildren()
-        if self.chatTextNode.getText():
+        if self.chatTextNode.getText() and (not self.chatHidden):
             self.drawChatBalloon()
-        else:
+        elif not self.nametagHidden:
             self.drawNametag()
 
     def drawChatBalloon(self):
@@ -195,9 +196,6 @@ class Nametag(PandaNode):
         chatBalloon.reparentTo(self.contents)
 
     def drawNametag(self):
-        if self.hidden:
-            return
-
         foreground, background = self.nametagColor[0]  # Normal
 
         # Attach the icon:
@@ -223,10 +221,18 @@ class Nametag(PandaNode):
         namePanel.setColor(background)
         namePanel.setTransparency(background[3] < 1)
 
-    def hide(self):
-        self.hidden = True
+    def hideChat(self):
+        self.chatHidden = True
         self.update()
 
-    def show(self):
-        self.hidden = False
+    def showChat(self):
+        self.chatHidden = False
+        self.update()
+
+    def hideNametag(self):
+        self.nametagHidden = True
+        self.update()
+
+    def showNametag(self):
+        self.nametagHidden = False
         self.update()
