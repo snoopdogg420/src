@@ -1,20 +1,23 @@
-from pandac.PandaModules import *
-from otp.margins.WhisperPopup import WhisperPopup
-from toontown.nametag.NametagGlobals import CFQuicktalker, CFPageButton, CFQuitButton, CFSpeech, CFThought, CFTimeout
-from otp.chat import ChatGarbler
-import string
+from direct.showbase import PythonUtil
 from direct.task import Task
+from pandac.PandaModules import *
+import string
+import time
+
+from otp.ai.MagicWordGlobal import *
+from otp.avatar import Avatar, PlayerBase
+from otp.avatar import DistributedAvatar
+from otp.avatar.Avatar import teleportNotify
+from otp.chat import ChatGarbler
+from otp.chat import TalkAssistant
+from otp.distributed.TelemetryLimited import TelemetryLimited
+from otp.margins.WhisperPopup import WhisperPopup
+from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from otp.speedchat import SCDecoders
-from direct.showbase import PythonUtil
-from otp.avatar import DistributedAvatar
-import time
-from otp.avatar import Avatar, PlayerBase
-from otp.chat import TalkAssistant
-from otp.otpbase import OTPGlobals
-from otp.avatar.Avatar import teleportNotify
-from otp.distributed.TelemetryLimited import TelemetryLimited
-from otp.ai.MagicWordGlobal import *
+from toontown.chat.ChatGlobals import *
+
+
 if base.config.GetBool('want-chatfilter-hacks', 0):
     from otp.switchboard import badwordpy
     import os
@@ -131,7 +134,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
     def setAccountName(self, accountName):
         self.accountName = accountName
 
-    def setSystemMessage(self, aboutId, chatString, whisperType = WhisperPopup.WTSystem):
+    def setSystemMessage(self, aboutId, chatString, whisperType = WTSystem):
         self.displayWhisper(aboutId, chatString, whisperType)
 
     def displayWhisper(self, fromId, chatString, whisperType):
@@ -162,7 +165,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             return
         chatString = SCDecoders.decodeSCStaticTextMsg(msgIndex)
         if chatString:
-            self.displayWhisper(fromId, chatString, WhisperPopup.WTQuickTalker)
+            self.displayWhisper(fromId, chatString, WTQuickTalker)
             base.talkAssistant.receiveAvatarWhisperSpeedChat(TalkAssistant.SPEEDCHAT_NORMAL, msgIndex, fromId)
         return
 
@@ -195,7 +198,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             return
         chatString = SCDecoders.decodeSCCustomMsg(msgIndex)
         if chatString:
-            self.displayWhisper(fromId, chatString, WhisperPopup.WTQuickTalker)
+            self.displayWhisper(fromId, chatString, WTQuickTalker)
             base.talkAssistant.receiveAvatarWhisperSpeedChat(TalkAssistant.SPEEDCHAT_CUSTOM, msgIndex, fromId)
         return
 
@@ -220,7 +223,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             return
         chatString = SCDecoders.decodeSCEmoteWhisperMsg(emoteId, handle.getName())
         if chatString:
-            self.displayWhisper(fromId, chatString, WhisperPopup.WTEmote)
+            self.displayWhisper(fromId, chatString, WTEmote)
             base.talkAssistant.receiveAvatarWhisperSpeedChat(TalkAssistant.SPEEDCHAT_EMOTE, emoteId, fromId)
         return
 
