@@ -43,6 +43,9 @@ class NametagGroup:
         if self.nametag3d:
             self.nametag3d = None
 
+    def getUniqueName(self):
+        return 'NametagGroup-' + str(id(self))
+
     def add(self, nametag):
         self.nametags.add(nametag)
         self.update(nametag)
@@ -63,6 +66,12 @@ class NametagGroup:
         nametag.setChatText(self.chatText)
         nametag.setIcon(self.icon)
         nametag.update()
+
+    def getNametag2d(self):
+        return self.nametag2d
+
+    def getNametag3d(self):
+        return self.nametag3d
 
     def setAvatar(self, avatar):
         self.avatar = avatar
@@ -147,5 +156,20 @@ class NametagGroup:
     def getNumChatPages(self):
         return len(self.chatPages)
 
+    def setChatPageIndex(self, chatPageIndex):
+        self.chatPageIndex = chatPageIndex
+
     def getChatPageIndex(self):
         return self.chatPageIndex
+
+    def setIcon(self, icon):
+        self.icon = icon
+
+    def getIcon(self):
+        return self.icon
+
+    def manage(self, marginManager):
+        pass
+
+    def unmanage(self, marginManager):
+        pass
