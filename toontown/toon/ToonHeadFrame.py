@@ -4,7 +4,7 @@ import ToonHead
 from toontown.distributed import DelayDelete
 from toontown.toonbase import ToontownGlobals
 from toontown.nametag.Nametag import Nametag
-from toontown.nametag.NametagFloat2d import NametagFloat2d
+from toontown.nametag.Nametag2d import Nametag2d
 
 class ToonHeadFrame(DirectFrame):
 
@@ -19,12 +19,12 @@ class ToonHeadFrame(DirectFrame):
         self.headModel.startBlink()
         self.headModel.setupHead(self.av.style, forGui=1)
         self.headModel.reparentTo(self.head)
-        self.tag1Node = NametagFloat2d()
+        self.tag1Node = Nametag2d()
         self.tag1Node.setContents(Nametag.CSpeech | Nametag.CThought)
         self.av.nametag.addNametag(self.tag1Node)
         self.tag1 = self.attachNewNode(self.tag1Node)
         self.tag1.setPosHprScale(-0.16, 0, -0.09, 0, 0, 0, 0.055, 0.055, 0.055)
-        self.tag2Node = NametagFloat2d()
+        self.tag2Node = Nametag2d()
         self.tag2Node.setContents(Nametag.CName)
         self.av.nametag.addNametag(self.tag2Node)
         self.tag2 = self.attachNewNode(self.tag2Node)

@@ -26,7 +26,7 @@ from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
 from toontown.nametag.NametagGroup import NametagGroup
 from toontown.nametag.Nametag import Nametag
-from toontown.nametag.NametagFloat2d import *
+from toontown.nametag.Nametag2d import *
 
 class PartyPlanner(DirectFrame, FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('PartyPlanner')
@@ -284,14 +284,14 @@ class PartyPlanner(DirectFrame, FSM):
             self.nametagGroup.manage(base.marginManager)
             self.nametagGroup.setColorCode(self.nametagGroup.CCNonPlayer)
             self.nametagGroup.getNametag2d().setContents(0)
-            self.nametagNode = NametagFloat2d()
+            self.nametagNode = Nametag2d()
             self.nametagNode.setContents(Nametag.CName)
             self.nametagGroup.addNametag(self.nametagNode)
             self.nametagGroup.setName(base.cr.partyManager.getPartyPlannerName())
             self.nametagNP = parent.attachNewNode(self.nametagNode)
             nametagPos = self.gui.find('**/step_01_partymanPeteNametag_locator').getPos()
             self.nametagNP.setPosHprScale(nametagPos[0], 0, nametagPos[2], 0, 0, 0, 0.1, 1, 0.1)
-            self.chatNode = NametagFloat2d()
+            self.chatNode = Nametag2d()
             self.chatNode.setContents(Nametag.CSpeech | Nametag.CThought)
             self.nametagGroup.addNametag(self.chatNode)
             self.nametagGroup.setChat(TTLocalizer.PartyPlannerInstructions, CFSpeech)

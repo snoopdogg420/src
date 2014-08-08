@@ -1,5 +1,5 @@
 from PurchaseBase import *
-from toontown.nametag.NametagFloat2d import *
+from toontown.nametag.Nametag2d import *
 from toontown.nametag import NametagGlobals
 from direct.task.Task import Task
 from toontown.toon import ToonHead
@@ -743,12 +743,12 @@ class PurchaseHeadFrame(DirectFrame):
         self.headModel = ToonHead.ToonHead()
         self.headModel.setupHead(self.av.style, forGui=1)
         self.headModel.reparentTo(self.head)
-        self.tag2Node = NametagFloat2d()
+        self.tag2Node = Nametag2d()
         self.tag2Node.setContents(Nametag.CName)
         self.av.nametag.addNametag(self.tag2Node)
         self.tag2 = self.attachNewNode(self.tag2Node)
         self.tag2.setPosHprScale(-0.22, 10.0, 0.12, 0, 0, 0, 0.046, 0.046, 0.046)
-        self.tag1Node = NametagFloat2d()
+        self.tag1Node = Nametag2d()
         self.tag1Node.setContents(Nametag.CSpeech | Nametag.CThought)
         self.av.nametag.addNametag(self.tag1Node)
         self.tag1 = self.attachNewNode(self.tag1Node)
