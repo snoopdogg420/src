@@ -1,4 +1,4 @@
-from DNAUtil import *
+import DNAUtil
 
 class DNAGroup:
     COMPONENT_CODE = 1
@@ -42,9 +42,9 @@ class DNAGroup:
         self.name = name
 
     def makeFromDGI(self, dgi):
-        self.name = dgiExtractString8(dgi)
-        dgiExtractString8(dgi)
-        dgiExtractString8(dgi)
+        self.name = DNAUtil.dgiExtractString8(dgi)
+        DNAUtil.dgiExtractString8(dgi)
+        DNAUtil.dgiExtractString8(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         node = nodePath.attachNewNode(self.name)
