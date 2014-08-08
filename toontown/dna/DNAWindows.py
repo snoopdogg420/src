@@ -1,6 +1,7 @@
+from panda3d.core import LVector4f, NodePath
 import DNAGroup
 import DNAError
-from DNAUtil import *
+import DNAUtil
 
 import random
 
@@ -10,7 +11,7 @@ class DNAWindows(DNAGroup.DNAGroup):
     def __init__(self, name):
         DNAGroup.DNAGroup.__init__(self, name)
         self.code = ''
-        self.color = (1, 1, 1, 1)
+        self.color = LVector4f(1, 1, 1, 1)
         self.windowCount = 0
 
     def setCode(self, code):
@@ -38,16 +39,16 @@ class DNAWindows(DNAGroup.DNAGroup):
         else:
             code += 'r'
         node = dnaStorage.findNode(code)
-        window = node.copyTo(parentNode)
+        window = node.copyTo(parentNode, 0)
         window.setColor(self.color)
-        window.setScale(scale)
+        window.setScale(NodePath(), scale)
         window.setHpr(0, 0, 0)
         window.setPos(x, 0, y)
 
     def makeFromDGI(self, dgi):
         DNAGroup.DNAGroup.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.color = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.color = DNAUtil.dgiExtractColor(dgi)
         self.windowCount = dgi.getUint8()
 
     def traverse(self, nodePath, dnaStorage):
@@ -61,30 +62,30 @@ class DNAWindows(DNAGroup.DNAGroup):
             scale += 1.15
         else:
             scale += 1.3
-        offset = random.random() % 0.0375
+        offset = lambda: random.random() % 0.0375
         if self.windowCount == 1:
-            self.makeWindow(offset + 0.5, offset + 0.5, nodePath, scale,
+            self.makeWindow(offset() + 0.5, offset() + 0.5, nodePath, scale,
                             dnaStorage, False)
         elif self.windowCount == 2:
-            self.makeWindow(offset + 0.33, offset + 0.5, nodePath, scale,
+            self.makeWindow(offset() + 0.33, offset() + 0.5, nodePath, scale,
                             dnaStorage, False)
-            self.makeWindow(offset + 0.66, offset + 0.5, nodePath, scale,
+            self.makeWindow(offset() + 0.66, offset() + 0.5, nodePath, scale,
                             dnaStorage, True)
         elif self.windowCount == 3:
-            self.makeWindow(offset + 0.33, offset + 0.66, nodePath, scale,
+            self.makeWindow(offset() + 0.33, offset() + 0.66, nodePath, scale,
                             dnaStorage, False)
-            self.makeWindow(offset + 0.66, offset + 0.66, nodePath, scale,
+            self.makeWindow(offset() + 0.66, offset() + 0.66, nodePath, scale,
                             dnaStorage, True)
-            self.makeWindow(offset + 0.5, offset + 0.66, nodePath, scale,
+            self.makeWindow(offset() + 0.5, offset() + 0.66, nodePath, scale,
                             dnaStorage, False)
         elif self.windowCount == 4:
-            self.makeWindow(offset + 0.33, offset + 0.25, nodePath, scale,
+            self.makeWindow(offset() + 0.33, offset() + 0.25, nodePath, scale,
                             dnaStorage, False)
-            self.makeWindow(offset + 0.66, offset + 0.25, nodePath, scale,
+            self.makeWindow(offset() + 0.66, offset() + 0.25, nodePath, scale,
                             dnaStorage, True)
-            self.makeWindow(offset + 0.33, offset + 0.66, nodePath, scale,
+            self.makeWindow(offset() + 0.33, offset() + 0.66, nodePath, scale,
                             dnaStorage, False)
-            self.makeWindow(offset + 0.66, offset + 0.66, nodePath, scale,
+            self.makeWindow(offset() + 0.66, offset() + 0.66, nodePath, scale,
                             dnaStorage, True)
         else:
             raise DNAError.DNAError('Invalid window count: %s' % (self.windowCount))
