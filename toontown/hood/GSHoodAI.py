@@ -1,5 +1,5 @@
 from toontown.classicchars import DistributedGoofySpeedwayAI
-from toontown.dna.DNAParser import DNAGroup, DNAVisGroup, DNAData
+from toontown.dna.DNAParser import DNAGroup, DNAVisGroup
 from toontown.hood import HoodAI
 from toontown.hood import ZoneUtil
 from toontown.racing import RaceGlobals

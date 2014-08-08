@@ -1,5 +1,8 @@
 import DNALoader
 from DNAStorage import DNAStorage
+from DNASuitPoint import DNASuitPoint
+from DNAGroup import DNAGroup
+from DNAVisGroup import DNAVisGroup
 
 def loadDNAFile(dnaStorage, file):
     print 'Reading DNA file...', file
