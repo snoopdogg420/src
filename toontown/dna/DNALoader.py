@@ -114,7 +114,7 @@ class DNALoader:
             x, y, z = [dgi.getInt32() / 100.0 for i in xrange(3)]
             graph = dgi.getUint8()
             landmarkBuildingIndex = dgi.getUint8()
-            self.dnaStorage.storeSuitPoint(DNASuitPoint.DNASuitPoint(index, pointType, (x, y, z), landmarkBuildingIndex))
+            self.dnaStorage.storeSuitPoint(DNASuitPoint.DNASuitPoint(index, pointType, LVector3f(x, y, z), landmarkBuildingIndex))
 
         # Suit Edges
         numEdges = dgi.getUint16()
@@ -132,7 +132,7 @@ class DNALoader:
             w = dgi.getUint8()
             h = dgi.getUint8()
             x, y, z = [dgi.getInt32() / 100.0 for i in xrange(3)]
-            self.dnaStorage.storeBattleCell(DNABattleCell.DNABattleCell(w, h, (x, y, z)))
+            self.dnaStorage.storeBattleCell(DNABattleCell.DNABattleCell(w, h, LVector3f(x, y, z)))
 
     def handleCompData(self, dgi):
         propCode = dgi.getUint8()

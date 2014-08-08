@@ -1,6 +1,7 @@
 from panda3d.core import LVector3f
 import DNAGroup
 import DNABattleCell
+import DNAUtil
 
 class DNAVisGroup(DNAGroup.DNAGroup):
     COMPONENT_CODE = 2
@@ -61,7 +62,7 @@ class DNAVisGroup(DNAGroup.DNAGroup):
 
         numVisibles = dgi.getUint16()
         for _ in xrange(numVisibles):
-            self.addVisible(dgiExtractString8(dgi))
+            self.addVisible(DNAUtil.dgiExtractString8(dgi))
 
         numCells = dgi.getUint16()
         for _ in xrange(numCells):

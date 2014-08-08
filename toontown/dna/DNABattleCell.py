@@ -24,7 +24,7 @@ class DNABattleCell:
         self.pos = pos
 
     def getPos(self):
-        return Point3(self.pos)
+        return self.pos
 
     def setWidthHeight(self, width, height):
         self.width = width
