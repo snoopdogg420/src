@@ -3,7 +3,7 @@ import SafeZoneLoader
 import TTPlayground
 import random
 from toontown.launcher import DownloadForceAcknowledge
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 
 class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
 

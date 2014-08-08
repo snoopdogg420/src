@@ -1,6 +1,6 @@
 from pandac.PandaModules import *
 from direct.interval.LerpInterval import LerpPosHprInterval
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 from DistributedNPCToonBase import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *

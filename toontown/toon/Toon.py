@@ -22,7 +22,7 @@ from otp.otpbase import OTPGlobals
 from toontown.effects import DustCloud
 from direct.showbase.PythonUtil import Functor
 from toontown.distributed import DelayDelete
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 import AccessoryGlobals
 import types
 

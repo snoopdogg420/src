@@ -9,8 +9,8 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import State
 from direct.interval.IntervalGlobal import *
 from otp.avatar import Emote
-from toontownn.nametag import NametagGlobals
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag import NametagGlobals
+from toontown.nametag.NametagGlobals import *
 from pandac.PandaModules import *
 from toontown.suit import Suit
 from toontown.suit import SuitDNA

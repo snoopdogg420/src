@@ -21,8 +21,8 @@ from toontown.friends import FriendsListManager
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.showbase import PythonUtil
 import random
-from toontownn.nametag.NametagGlobals import *
-from toontownn.nametag import NametagGlobals
+from toontown.nametag.NametagGlobals import *
+from toontown.nametag import NametagGlobals
 
 class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBossCog')

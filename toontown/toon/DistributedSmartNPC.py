@@ -6,7 +6,7 @@ from toontown.quest import TrackChoiceGui
 from toontown.toonbase import TTLocalizer
 from toontown.hood import ZoneUtil
 from toontown.toontowngui import TeaserPanel
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 SPAMMING = 1
 DOUBLE_ENTRY = 2
 

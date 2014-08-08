@@ -1,5 +1,5 @@
 from otp.avatar import Avatar
-from toontownn.nametag.NametagGroup import *
+from toontown.nametag.NametagGroup import *
 from pandac.PandaModules import *
 from direct.task import Task
 import random

@@ -8,7 +8,7 @@ from otp.avatar import DistributedPlayer
 from otp.avatar import Avatar, DistributedAvatar
 from otp.speedchat import SCDecoders
 from otp.chat import TalkAssistant
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 from otp.margins.WhisperPopup import *
 import Toon
 from direct.task.Task import Task

@@ -21,8 +21,8 @@ import copy
 import DistributedSuitBase
 from otp.otpbase import OTPLocalizer
 import random
-from toontownn.nametag.NametagGlobals import *
-from toontownn.nametag import NametagGlobals
+from toontown.nametag.NametagGlobals import *
+from toontown.nametag import NametagGlobals
 from toontown.suit.SuitLegList import *
 
 STAND_OUTSIDE_DOOR = 2.5

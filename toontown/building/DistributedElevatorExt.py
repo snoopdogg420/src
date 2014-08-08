@@ -6,8 +6,8 @@ from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM
 from direct.fsm import State
 from direct.interval.IntervalGlobal import *
-from toontownn.nametag.Nametag import Nametag
-from toontownn.nametag.NametagGroup import NametagGroup
+from toontown.nametag.Nametag import Nametag
+from toontown.nametag.NametagGroup import NametagGroup
 from pandac.PandaModules import *
 from toontown.hood import ZoneUtil
 from toontown.toonbase import TTLocalizer

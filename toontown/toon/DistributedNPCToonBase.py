@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-from toontownn.nametag.NametagGroup import NametagGroup
+from toontown.nametag.NametagGroup import NametagGroup
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import ClassicFSM
 from direct.fsm import State

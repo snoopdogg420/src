@@ -14,9 +14,9 @@ import random
 
 import DistributedBossCog
 import SuitDNA
-from toontownn.nametag import NametagGlobals
-from toontownn.nametag import NametagGroup
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag import NametagGlobals
+from toontown.nametag import NametagGroup
+from toontown.nametag.NametagGlobals import *
 from toontown.battle import BattleBase
 from toontown.battle import MovieToonVictory
 from toontown.battle import RewardPanel

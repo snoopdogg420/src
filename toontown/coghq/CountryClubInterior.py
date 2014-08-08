@@ -5,7 +5,7 @@ from direct.fsm import State
 from direct.showbase import BulletinBoardWatcher
 from pandac.PandaModules import *
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs
-from toontownn.nametag import NametagGlobals
+from toontown.nametag import NametagGlobals
 from toontown.toon import Toon
 from toontown.toonbase import ToontownGlobals
 from toontown.hood import ZoneUtil
@@ -14,7 +14,7 @@ from toontown.toontowngui import TTDialog
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.coghq import DistributedCountryClub
 from toontown.building import Elevator
-from toontownn.nametag import NametagGlobals
+from toontown.nametag import NametagGlobals
 import random
 
 class CountryClubInterior(BattlePlace.BattlePlace):

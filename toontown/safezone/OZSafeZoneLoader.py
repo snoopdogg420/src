@@ -8,8 +8,8 @@ from pandac.PandaModules import *
 import random
 
 from otp.avatar import Avatar
-from toontownn.nametag.NametagGlobals import CFSpeech
-from toontownn.nametag.NametagGroup import *
+from toontown.nametag.NametagGlobals import CFSpeech
+from toontown.nametag.NametagGroup import *
 from otp.otpbase import OTPGlobals
 from toontown.distributed import DelayDelete
 from toontown.effects import Bubbles

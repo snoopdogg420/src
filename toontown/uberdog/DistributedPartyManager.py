@@ -1,6 +1,6 @@
 from direct.distributed.DistributedObject import DistributedObject
 from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
-from toontownn.nametag.NametagGlobals import CFSpeech, CFTimeout
+from toontown.nametag.NametagGlobals import CFSpeech, CFTimeout
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 from toontown.toon import ToonDNA

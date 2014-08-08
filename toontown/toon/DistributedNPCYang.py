@@ -2,7 +2,7 @@ from DistributedNPCToonBase import *
 from direct.fsm import ClassicFSM, State
 from direct.gui.DirectGui import *
 from direct.task.Task import Task
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 from pandac.PandaModules import *
 import time
 from toontown.effects import DustCloud

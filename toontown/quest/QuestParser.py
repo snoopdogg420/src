@@ -17,7 +17,7 @@ from toontown.toonbase import ToontownBattleGlobals
 from otp.speedchat import SpeedChatGlobals
 from toontown.ai import DistributedBlackCatMgr
 from direct.showbase import PythonUtil
-from toontownn.nametag.NametagGlobals import *
+from toontown.nametag.NametagGlobals import *
 import tokenize
 import token
 import re
