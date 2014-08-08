@@ -11,7 +11,7 @@ import CatalogInvalidItem
 import CatalogItem
 import CatalogItemPanel
 import CatalogItemTypes
-from toontown.chat import ChatBalloon.ChatBalloon
+from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.nametag import NametagGlobals
 from toontown.nametag import NametagGroup
 from toontown.toon import DistributedToon
