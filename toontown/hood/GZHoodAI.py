@@ -48,7 +48,7 @@ class GZHoodAI(HoodAI.HoodAI):
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if isinstance(dnaData, DNAData):
+            if dnaData.getName() == 'root':
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 foundGolfKarts = self.findGolfKarts(dnaData, zoneId, area, overrideDNAZone=True)
                 self.golfKarts.extend(foundGolfKarts)

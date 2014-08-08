@@ -74,7 +74,7 @@ class OZHoodAI(HoodAI.HoodAI):
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if isinstance(dnaData, DNAData):
+            if dnaData.getName() == 'root':
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 foundPicnicTables = self.findPicnicTables(
                     dnaData, zoneId, area, overrideDNAZone=True)
@@ -106,7 +106,7 @@ class OZHoodAI(HoodAI.HoodAI):
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if isinstance(dnaData, DNAData):
+            if dnaData.getName() == 'root':
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 foundGameTables = self.findGameTables(
                     dnaData, zoneId, area, overrideDNAZone=True)

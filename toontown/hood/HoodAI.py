@@ -121,7 +121,7 @@ class HoodAI:
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if isinstance(dnaData, DNAData):
+            if dnaData.getName() == 'root':
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 (foundFishingPonds, foundFishingPondGroups) = self.findFishingPonds(dnaData, zoneId, area)
                 self.fishingPonds.extend(foundFishingPonds)
@@ -150,7 +150,7 @@ class HoodAI:
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if isinstance(dnaData, DNAData):
+            if dnaData.getName() == 'root':
                 foundPartyGates = self.findPartyGates(dnaData, zoneId)
                 self.partyGates.extend(foundPartyGates)
 
