@@ -1,4 +1,4 @@
-from panda3d.core import LVector3f
+from panda3d.core import LVector3f, PandaNode
 import DNAGroup
 
 class DNANode(DNAGroup.DNAGroup):
@@ -47,7 +47,7 @@ class DNANode(DNAGroup.DNAGroup):
         self.scale = LVector3f(sx, sy, sz)
 
     def traverse(self, nodePath, dnaStorage):
-        node = nodePath.attachNewNode(self.name)
+        node = nodePath.attachNewNode(PandaNode(self.name), 0)
         node.setPos(self.pos)
         node.setHpr(self.hpr)
         node.setScale(self.scale)

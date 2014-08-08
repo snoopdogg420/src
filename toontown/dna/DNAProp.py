@@ -1,5 +1,6 @@
+from panda3d.core import LVector4f, ModelNode
 import DNANode
-from DNAUtil import *
+import DNAUtil
 
 class DNAProp(DNANode.DNANode):
     COMPONENT_CODE = 4
@@ -7,7 +8,7 @@ class DNAProp(DNANode.DNANode):
     def __init__(self, name):
         DNANode.DNANode.__init__(self, name)
         self.code = ''
-        self.color = (1, 1, 1, 1)
+        self.color = LVector4f(1, 1, 1, 1)
 
     def getCode(self):
         return self.code
@@ -23,8 +24,8 @@ class DNAProp(DNANode.DNANode):
 
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.color = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.color = DNAUtil.dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         if self.code == 'DCS':
@@ -35,11 +36,11 @@ class DNAProp(DNANode.DNANode):
             node = dnaStorage.findNode(self.code)
             if node is None:
                 return
-            node = node.copyTo(nodePath)
+            node = node.copyTo(nodePath, 0)
         node.setPos(self.pos)
         node.setHpr(self.hpr)
         node.setScale(self.scale)
         node.setName(self.name)
-        node.setColorScale(self.color)
+        node.setColorScale(self.color, 0)
         for child in self.children:
             child.traverse(node, dnaStorage)
