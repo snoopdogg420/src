@@ -29,6 +29,8 @@ class DNANode(DNAGroup.DNAGroup):
         self.scale = scale
 
     def makeFromDGI(self, dgi):
+        DNAGroup.DNAGroup.makeFromDGI(self, dgi)
+
         x = dgi.getInt32() / 100.0
         y = dgi.getInt32() / 100.0
         z = dgi.getInt32() / 100.0
