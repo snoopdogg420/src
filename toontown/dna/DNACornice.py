@@ -3,7 +3,7 @@ import DNAError
 from DNAUtil import *
 
 class DNACornice(DNAGroup.DNAGroup):
-    COMPONENT_CODE = 11
+    COMPONENT_CODE = 12
 
     def __init__(self, name):
         DNAGroup.DNAGroup.__init__(self, name)

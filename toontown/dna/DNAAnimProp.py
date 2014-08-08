@@ -2,7 +2,7 @@ import DNAProp
 from DNAUtil import *
 
 class DNAAnimProp(DNAProp.DNAProp):
-    COMPONENT_CODE = 13
+    COMPONENT_CODE = 14
 
     def __init__(self, name):
         DNAProp.DNAProp.__init__(self, name)
