@@ -1,7 +1,7 @@
 from direct.task.Task import Task
 from pandac.PandaModules import *
 
-from toontown.nametag import ChatBalloon
+from toontown.chat import ChatBalloon
 from toontown.nametag import NametagGlobals
 
 

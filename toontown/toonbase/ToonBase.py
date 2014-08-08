@@ -14,7 +14,7 @@ import ToontownLoader
 import atexit
 from otp.margins.MarginManager import MarginManager
 from toontown.nametag import NametagGlobals
-from toontown.nametag.ChatBalloon import ChatBalloon
+from toontown.chat import ChatBalloon.ChatBalloon
 from otp.otpbase import OTPBase
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLauncherGlobals

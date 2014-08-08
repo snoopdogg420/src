@@ -932,7 +932,7 @@ class CatalogScreen(DirectFrame):
         return
 
     def setClarabelleChat(self, str, timeout = 6):
-        from toontown.nametag.ChatBalloon import ChatBalloon
+from toontown.chat import ChatBalloon.ChatBalloon
         self.clearClarabelleChat()
         if not self.clarabelleChatBalloon:
             self.clarabelleChatBalloon = loader.loadModel('phase_3/models/props/chatbox.bam')
