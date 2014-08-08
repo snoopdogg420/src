@@ -44,8 +44,8 @@ class DNAWindows(DNAGroup.DNAGroup):
         window.setHpr(0, 0, 0)
         window.setPos(x, 0, y)
 
-    def makeFromDGI(self, dgi, dnaStorage):
-        DNAGroup.DNAGroup.makeFromDGI(self, dgi, dnaStorage)
+    def makeFromDGI(self, dgi):
+        DNAGroup.DNAGroup.makeFromDGI(self, dgi)
         self.code = dgiExtractString8(dgi)
         self.color = dgiExtractColor(dgi)
         self.windowCount = dgi.getUint8()
