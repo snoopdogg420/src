@@ -1,6 +1,7 @@
+from panda3d.core import LVector4f, DecalEffect
 import DNANode
 import DNAError
-from DNAUtil import *
+import DNAUtil
 
 class DNASignGraphic(DNANode.DNANode):
     COMPONENT_CODE = 8
@@ -8,7 +9,7 @@ class DNASignGraphic(DNANode.DNANode):
     def __init__(self, name):
         DNANode.DNANode.__init__(self, name)
         self.code = ''
-        self.color = (1, 1, 1, 1)
+        self.color = LVector4f(1, 1, 1, 1)
         self.width = 0
         self.height = 0
         self.bDefaultColor = True
@@ -40,8 +41,8 @@ class DNASignGraphic(DNANode.DNANode):
 
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.color = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.color = DNAUtil.dgiExtractColor(dgi)
         self.width = dgi.getInt16() / 100.0
         self.height = dgi.getInt16() / 100.0
         self.bDefaultColor = dgi.getBool()
@@ -51,8 +52,9 @@ class DNASignGraphic(DNANode.DNANode):
         node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError.DNAError('DNASignGraphic code ' + self.code + ' not found in storage')
-        node = node.copyTo(nodePath)
+        node = node.copyTo(nodePath, 0)
         node.setScale(self.scale)
+        node.setScale(node, self.getParent().scale)
         node.setPos(self.pos)
         node.setHpr(self.hpr)
         for child in self.children:
