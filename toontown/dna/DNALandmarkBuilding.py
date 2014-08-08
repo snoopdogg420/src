@@ -2,6 +2,8 @@ import DNANode
 from DNAUtil import *
 
 class DNALandmarkBuilding(DNANode.DNANode):
+    COMPONENT_CODE = 12
+
     def __init__(self, name):
         DNANode.DNANode.__init__(self, name)
         self.code = ''
