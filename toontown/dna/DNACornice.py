@@ -1,6 +1,7 @@
+from panda3d.core import LVector4f, LVector3f
 import DNAGroup
 import DNAError
-from DNAUtil import *
+import DNAUtil
 
 class DNACornice(DNAGroup.DNAGroup):
     COMPONENT_CODE = 12
@@ -8,7 +9,7 @@ class DNACornice(DNAGroup.DNAGroup):
     def __init__(self, name):
         DNAGroup.DNAGroup.__init__(self, name)
         self.code = ''
-        self.color = (1, 1, 1, 1)
+        self.color = LVector4f(1, 1, 1, 1)
 
     def setCode(self, code):
         self.code = code
@@ -24,8 +25,8 @@ class DNACornice(DNAGroup.DNAGroup):
 
     def makeFromDGI(self, dgi):
         DNAGroup.DNAGroup.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.color = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.color = DNAUtil.dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         pParentXScale = nodePath.getParent().getScale().getX()
