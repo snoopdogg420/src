@@ -1,5 +1,5 @@
+from panda3d.core import ModelNode
 import DNAAnimProp
-from DNAUtil import *
 
 class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
     COMPONENT_CODE = 15
@@ -23,14 +23,14 @@ class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
         if self.getCode() == "DCS":
             node = ModelNode(self.getName())
             node.setPreserveTransform(ModelNode.PTNet)
-            node = nodePath.attachNewNode(node)
+            node = nodePath.attachNewNode(node, 0)
         else:
             node = dnaStorage.findNode(self.getCode())
-            node = node.copyTo(nodePath)
+            node = node.copyTo(nodePath, 0)
             node.setName(self.getName())
         node.setTag('DNAAnim', self.getAnim())
         node.setTag('DNACellIndex', str(self.cellId))
         node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
-        node.setColorScale(self.getColor())
+        node.setColorScale(self.getColor(), 0)
         for child in self.children:
             child.traverse(node, dnaStorage)
