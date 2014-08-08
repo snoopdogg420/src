@@ -1,5 +1,4 @@
 import DNANode
-from DNAUtil import *
 
 class DNASignText(DNANode.DNANode):
     COMPONENT_CODE = 7
