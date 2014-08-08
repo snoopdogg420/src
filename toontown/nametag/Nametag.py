@@ -18,24 +18,24 @@ class Nametag(PandaNode):
         self.font = None
         self.chatType = NametagGlobals.CHAT
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
-        self.chatHidden = False
-        self.nametagHidden = False
         self.active = False
+        self.nametagHidden = False
+        self.chatHidden = False
 
         # Foreground, background:
         self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
-        self.chatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
-        self.speedChatColor = (VBase4(0, 0, 0, 1), VBase4(1, 1, 1, 1))
+        self.chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNormal]
+        self.speedChatColor = VBase4(1, 1, 1, 1)
 
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
         self.nameTextNode.setWordwrap(8)
-        self.nameTextNode.setTextColor(self.nametagColor[0])
+        self.nameTextNode.setTextColor(self.nametagColor[0][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
         self.chatTextNode.setWordwrap(10)
-        self.chatTextNode.setTextColor(self.chatColor[0])
+        self.chatTextNode.setTextColor(self.chatColor[0][0])
         self.chatTextNode.setGlyphScale(1.1)
 
         self.icon = None
@@ -106,25 +106,47 @@ class Nametag(PandaNode):
     def getChatBalloonType(self):
         return self.chatBalloonType
 
-    def setNametagColor(self, foreground, background):
-        self.nametagColor = (foreground, background)
-        if not self.chatTextNode.getText():
+    def setActive(self, active):
+        self.active = active
+
+    def getActive(self):
+        return self.active
+
+    def hideNametag(self):
+        self.nametagHidden = True
+        self.update()
+
+    def showNametag(self):
+        self.nametagHidden = False
+        self.update()
+
+    def hideChat(self):
+        self.chatHidden = True
+        self.update()
+
+    def showChat(self):
+        self.chatHidden = False
+        self.update()
+
+    def setNametagColor(self, nametagColor):
+        self.nametagColor = nametagColor
+        if not self.getChatText():
             self.update()
 
     def getNametagColor(self):
         return self.nametagColor
 
-    def setChatColor(self, foreground, background):
-        self.chatColor = (foreground, background)
-        if self.chatTextNode.getText() and (self.chatType == NametagGlobals.CHAT):
+    def setChatColor(self, chatColor):
+        self.chatColor = chatColor
+        if self.getChatText() and (self.chatType == NametagGlobals.CHAT):
             self.update()
 
     def getChatColor(self):
         return self.chatColor
 
-    def setSpeedChatColor(self, foreground, background):
-        self.speedChatColor = (foreground, background)
-        if self.chatTextNode.getText() and (self.chatType == NametagGlobals.SPEEDCHAT):
+    def setSpeedChatColor(self, speedChatColor):
+        self.speedChatColor = speedChatColor
+        if self.getChatText() and (self.chatType == NametagGlobals.SPEEDCHAT):
             self.update()
 
     def getSpeedChatColor(self):
@@ -142,54 +164,37 @@ class Nametag(PandaNode):
     def getChatWordWrap(self):
         return self.chatTextNode.getWordwrap()
 
-    def setNameText(self, nameText):
-        self.nameTextNode.setText(nameText)
-
-    def getNameText(self):
-        return self.nameTextNode.getText()
-
-    def setChatText(self, chatText):
-        self.chatTextNode.setText(chatText)
-
-    def getChatText(self, chatText):
-        return self.chatTextNode.getText()
-
     def setIcon(self, icon):
         self.icon = icon
-        if not self.chatTextNode.getText():
+        if not self.getChatText():
             self.update()
 
     def getIcon(self):
         return self.icon
 
-    def hideChat(self):
-        self.chatHidden = True
-        self.update()
+    def setNameText(self, nameText):
+        self.nameTextNode.setText(nameText)
+        if not self.getChatText():
+            self.update()
 
-    def showChat(self):
-        self.chatHidden = False
-        self.update()
+    def getNameText(self):
+        return self.nameTextNode.getText()
 
-    def hideNametag(self):
-        self.nametagHidden = True
-        self.update()
+    def setChatText(self, chatText):
+        updateNeeded = not self.getChatText()
+        self.chatTextNode.setText(chatText)
+        if updateNeeded:
+            self.update()
 
-    def showNametag(self):
-        self.nametagHidden = False
-        self.update()
-
-    def setActive(self, active):
-        self.active = active
-
-    def getActive(self):
-        return self.active
+    def getChatText(self, chatText):
+        return self.chatTextNode.getText()
 
     def update(self):
         """
         Redraw the contents.
         """
         self.contents.node().removeAllChildren()
-        if self.chatTextNode.getText() and (not self.chatHidden):
+        if self.getChatText() and (not self.chatHidden):
             self.drawChatBalloon()
         elif not self.nametagHidden:
             self.drawNametag()
