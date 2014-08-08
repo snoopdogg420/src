@@ -28,6 +28,8 @@ import DNABattleCell
 import DNASuitPoint
 
 import zlib
+import sys
+sys.setrecursionlimit(10000)
 
 compClassTable = {
 1: DNAGroup.DNAGroup,
