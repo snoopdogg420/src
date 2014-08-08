@@ -1,5 +1,7 @@
+from panda3d.core import LVector4f, DecalEffect
 import DNAGroup
-from DNAUtil import *
+import DNAError
+import DNAUtil
 
 class DNADoor(DNAGroup.DNAGroup):
     COMPONENT_CODE = 17
@@ -7,7 +9,7 @@ class DNADoor(DNAGroup.DNAGroup):
     def __init__(self, name):
         DNAGroup.DNAGroup.__init__(self, name)
         self.code = ''
-        self.color = (1, 1, 1, 1)
+        self.color = LVector4f(1, 1, 1, 1)
 
     def setCode(self, code):
         self.code = code
@@ -24,7 +26,7 @@ class DNADoor(DNAGroup.DNAGroup):
     @staticmethod
     def setupDoor(doorNodePath, parentNode, doorOrigin, dnaStore, block, color):
         doorNodePath.setPosHprScale(doorOrigin, (0, 0, 0), (0, 0, 0), (1, 1, 1))
-        doorNodePath.setColor(color)
+        doorNodePath.setColor(color, 0)
         leftHole = doorNodePath.find('door_*_hole_left')
         leftHole.setName('doorFrameHoleLeft')
         rightHole = doorNodePath.find('door_*_hole_right')
@@ -34,20 +36,20 @@ class DNADoor(DNAGroup.DNAGroup):
         rightDoor = doorNodePath.find('door_*_right')
         rightDoor.setName('rightDoor')
         doorFlat = doorNodePath.find('door_*_flat')
-        leftHole.wrtReparentTo(doorFlat)
-        rightHole.wrtReparentTo(doorFlat)
+        leftHole.wrtReparentTo(doorFlat, 0)
+        rightHole.wrtReparentTo(doorFlat, 0)
         doorFlat.setEffect(DecalEffect.make())
-        rightDoor.wrtReparentTo(parentNode)
-        leftDoor.wrtReparentTo(parentNode)
+        rightDoor.wrtReparentTo(parentNode, 0)
+        leftDoor.wrtReparentTo(parentNode, 0)
 
-        rightDoor.setColor(color)
-        leftDoor.setColor(color)
-        leftHole.setColor((0, 0, 0, 1))
-        rightHole.setColor((0, 0, 0, 1))
+        rightDoor.setColor(color, 0)
+        leftDoor.setColor(color, 0)
+        leftHole.setColor((0, 0, 0, 1), 0)
+        rightHole.setColor((0, 0, 0, 1), 0)
 
         doorTrigger = doorNodePath.find('door_*_trigger')
         doorTrigger.setScale(2, 2, 2)
-        doorTrigger.wrtReparentTo(parentNode)
+        doorTrigger.wrtReparentTo(parentNode, 0)
         doorTrigger.setName('door_trigger_' + block)
 
         if not dnaStore.getDoorPosHprFromBlockNumber(block):
@@ -57,8 +59,8 @@ class DNADoor(DNAGroup.DNAGroup):
 
     def makeFromDGI(self, dgi):
         DNAGroup.DNAGroup.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.color = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.color = DNAUtil.dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         frontNode = nodePath.find('**/*_front')
@@ -67,7 +69,7 @@ class DNADoor(DNAGroup.DNAGroup):
         frontNode.setEffect(DecalEffect.make())
         node = dnaStorage.findNode(self.code)
         if node is None:
-            raise DNAError('DNADoor code ' + self.code + ' not found in DNAStorage')
+            raise DNAError.DNAError('DNADoor code ' + self.code + ' not found in DNAStorage')
         doorNode = node.copyTo(frontNode)
         block = dnaStorage.getBlock(nodePath.getName())
         DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage, block, self.color)
