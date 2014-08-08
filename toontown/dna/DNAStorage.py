@@ -199,6 +199,13 @@ class DNAStorage:
     def storeBlockBuildingType(self, blockNumber, buildingType):
         self.blockBuildingTypes[blockNumber] = buildingType
 
+    def storeBlock(self, blockNumber, title, article, bldgType, zoneId):
+        self.storeBlockNumber(blockNumber)
+        self.storeBlockTitle(blockNumber, title)
+        self.storeBlockArticle(blockNumber, article)
+        self.storeBlockBuildingType(blockNumber, bldgType)
+        self.storeBlockZone(blockNumber, zoneId)
+
     def storeTexture(self, name, texture):
         self.textures[name] = texture
 
