@@ -1,6 +1,7 @@
+from panda3d.core import LVector4f
 import DNANode
 import DNAError
-from DNAUtil import *
+import DNAUtil
 
 class DNAStreet(DNANode.DNANode):
     COMPONENT_CODE = 19
@@ -11,9 +12,9 @@ class DNAStreet(DNANode.DNANode):
         self.streetTexture = ''
         self.sideWalkTexture = ''
         self.curbTexture = ''
-        self.streetColor = (1, 1, 1, 1)
-        self.sidewalkColor = (1, 1, 1, 1)
-        self.curbColor = (1, 1, 1, 1)
+        self.streetColor = LVector4f(1, 1, 1, 1)
+        self.sidewalkColor = LVector4f(1, 1, 1, 1)
+        self.curbColor = LVector4f(1, 1, 1, 1)
         self.setTexCnt = 0
         self.setColCnt = 0
 
@@ -79,19 +80,19 @@ class DNAStreet(DNANode.DNANode):
 
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.streetTexture = dgiExtractString8(dgi)
-        self.sidewalkTexture = dgiExtractString8(dgi)
-        self.curbTexture = dgiExtractString8(dgi)
-        self.streetColor = dgiExtractColor(dgi)
-        self.sideWalkColor = dgiExtractColor(dgi)
-        self.curbColor = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.streetTexture = DNAUtil.dgiExtractString8(dgi)
+        self.sidewalkTexture = DNAUtil.dgiExtractString8(dgi)
+        self.curbTexture = DNAUtil.dgiExtractString8(dgi)
+        self.streetColor = DNAUtil.dgiExtractColor(dgi)
+        self.sideWalkColor = DNAUtil.dgiExtractColor(dgi)
+        self.curbColor = DNAUtil.dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError.DNAError('DNAStreet code ' + self.code + ' not found in DNAStorage')
-        nodePath = node.copyTo(nodePath)
+        nodePath = node.copyTo(nodePath, 0)
         node.setName(self.getName())
         streetTexture = dnaStorage.findTexture(self.streetTexture)
         sidewalkTexture = dnaStorage.findTexture(self.sidewalkTexture)
@@ -107,13 +108,13 @@ class DNAStreet(DNANode.DNANode):
         curbNode = nodePath.find('**/*_curb')
 
         if not streetNode.isEmpty():
-            streetNode.setTexture(streetTexture)
-            streetNode.setColorScale(self.streetColor)
+            streetNode.setTexture(streetTexture, 1)
+            streetNode.setColorScale(self.streetColor, 0)
         if not sidewalkNode.isEmpty():
-            sidewalkNode.setTexture(sidewalkTexture)
-            sidewalkNode.setColorScale(self.sidewalkColor)
+            sidewalkNode.setTexture(sidewalkTexture, 1)
+            sidewalkNode.setColorScale(self.sidewalkColor, 0)
         if not curbNode.isEmpty():
-            curbNode.setTexture(curbTexture)
-            curbNode.setColorScale(self.curbColor)
+            curbNode.setTexture(curbTexture, 1)
+            curbNode.setColorScale(self.curbColor, 0)
 
         nodePath.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
