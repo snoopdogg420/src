@@ -1,5 +1,4 @@
 import DNAGroup
-import DNASuitEdge
 import DNABattleCell
 from DNAUtil import *
 
