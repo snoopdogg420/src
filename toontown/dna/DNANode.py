@@ -1,14 +1,14 @@
+from panda3d.core import LVector3f
 import DNAGroup
-from DNAUtil import *
 
 class DNANode(DNAGroup.DNAGroup):
     COMPONENT_CODE = 3
 
     def __init__(self, name):
         DNAGroup.DNAGroup.__init__(self, name)
-        self.pos = (0, 0, 0)
-        self.hpr = (0, 0, 0)
-        self.scale = (1, 1, 1)
+        self.pos = LVector3f()
+        self.hpr = LVector3f()
+        self.scale = LVector3f(1, 1, 1)
 
     def getPos(self):
         return self.pos
@@ -34,17 +34,17 @@ class DNANode(DNAGroup.DNAGroup):
         x = dgi.getInt32() / 100.0
         y = dgi.getInt32() / 100.0
         z = dgi.getInt32() / 100.0
-        self.pos = (x, y, z)
+        self.pos = LVector3f(x, y, z)
 
         h = dgi.getInt32() / 100.0
         p = dgi.getInt32() / 100.0
         r = dgi.getInt32() / 100.0
-        self.hpr = (h, p, r)
+        self.hpr = LVector3f(h, p, r)
 
         sx = dgi.getInt16() / 100.0
         sy = dgi.getInt16() / 100.0
         sz = dgi.getInt16() / 100.0
-        self.scale = (sx, sy, sz)
+        self.scale = LVector3f(sx, sy, sz)
 
     def traverse(self, nodePath, dnaStorage):
         node = nodePath.attachNewNode(self.name)
