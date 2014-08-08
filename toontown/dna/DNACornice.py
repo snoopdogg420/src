@@ -24,8 +24,8 @@ class DNACornice(DNAGroup.DNAGroup):
 
     def makeFromDGI(self, dgi):
         DNAGroup.DNAGroup.makeFromDGI(self, dgi)
-        self.code = dgi_extract_string8(dgi)
-        self.color = dgi_extract_color(dgi)
+        self.code = dgiExtractString8(dgi)
+        self.color = dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         pParentXScale = nodePath.getParent().getScale().getX()
