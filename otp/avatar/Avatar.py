@@ -13,7 +13,6 @@ from otp.otpbase import OTPLocalizer
 from otp.otpbase import OTPRender
 from toontown.chat.ChatGlobals import *
 from toontown.nametag import NametagGlobals
-from toontown.nametag.Nametag import Nametag
 from toontown.nametag.NametagGroup import NametagGroup
 
 
@@ -68,7 +67,7 @@ class Avatar(Actor, ShadowCaster):
         self.style = None
         self.commonChatFlags = 0
         self.understandable = 1
-        self.setPlayerType(NametagGroup.CCNormal)
+        self.setPlayerType(NametagGlobals.CCNormal)
         self.ghostMode = 0
         self.__chatParagraph = None
         self.__chatMessage = None
@@ -121,11 +120,15 @@ class Avatar(Actor, ShadowCaster):
             self.notify.warning('no nametag attributed, but would have been used.')
             return
         if self.isUnderstandable():
-            foreground, background = NametagGlobals.NametagColors[self.playerType]
-            self.nametag.setNametagColor(foreground, background)
+            nametagColor = NametagGlobals.NametagColors[self.playerType]
+            self.nametag.setNametagColor(nametagColor)
+            chatColor = NametagGlobals.ChatColors[self.playerType]
+            self.nametag.setChatColor(chatColor)
         else:
-            foreground, background = NametagGlobals.NametagColors[NametagGlobals.CCNoChat]
-            self.nametag.setNametagColor(foreground, background)
+            nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNoChat]
+            self.nametag.setNametagColor(nametagColor)
+            chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNoChat]
+            self.nametag.setChatColor(chatColor)
 
     def setCommonChatFlags(self, commonChatFlags):
         self.commonChatFlags = commonChatFlags
@@ -141,36 +144,38 @@ class Avatar(Actor, ShadowCaster):
 
     def considerUnderstandable(self):
         speed = 0
-        if self.playerType in (NametagGroup.CCNormal, NametagGroup.CCFreeChat, NametagGroup.CCSpeedChat):
-            self.setPlayerType(NametagGroup.CCSpeedChat)
+        if self.playerType in (NametagGlobals.CCNormal, NametagGlobals.CCFreeChat, NametagGlobals.CCSpeedChat):
+            self.setPlayerType(NametagGlobals.CCSpeedChat)
             speed = 1
         if hasattr(base, 'localAvatar') and self == base.localAvatar:
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCFreeChat)
-        elif self.playerType == NametagGroup.CCSuit:
+            self.setPlayerType(NametagGlobals.CCFreeChat)
+        elif self.playerType == NametagGlobals.CCSuit:
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCSuit)
-        elif self.playerType not in (NametagGroup.CCNormal, NametagGroup.CCFreeChat, NametagGroup.CCSpeedChat):
+            self.setPlayerType(NametagGlobals.CCSuit)
+        elif self.playerType not in (NametagGlobals.CCNormal, NametagGlobals.CCFreeChat, NametagGlobals.CCSpeedChat):
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCNoChat)
+            self.setPlayerType(NametagGlobals.CCNoChat)
         elif hasattr(base, 'localAvatar') and self.commonChatFlags & base.localAvatar.commonChatFlags & OTPGlobals.CommonChat:
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCFreeChat)
+            self.setPlayerType(NametagGlobals.CCFreeChat)
         elif self.commonChatFlags & OTPGlobals.SuperChat:
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCFreeChat)
+            self.setPlayerType(NametagGlobals.CCFreeChat)
         elif hasattr(base, 'localAvatar') and base.localAvatar.commonChatFlags & OTPGlobals.SuperChat:
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCFreeChat)
+            self.setPlayerType(NametagGlobals.CCFreeChat)
         elif base.cr.getFriendFlags(self.doId) & OTPGlobals.FriendChat:
             self.understandable = 1
-            self.setPlayerType(NametagGroup.CCFreeChat)
+            self.setPlayerType(NametagGlobals.CCFreeChat)
         elif base.cr.playerFriendsManager.findPlayerIdFromAvId(self.doId) is not None:
             playerInfo = base.cr.playerFriendsManager.findPlayerInfoFromAvId(self.doId)
             if playerInfo.openChatFriendshipYesNo:
                 self.understandable = 1
-                foreground, background = NametagGlobals.NametagColors[NametagGlobals.CCFreeChat]
-                self.nametag.setNametagColor(foreground, background)
+                nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCFreeChat]
+                self.nametag.setNametagColor(nametagColor)
+                chatColor = NametagGlobals.ChatColors[NametagGlobals.CCFreeChat]
+                self.nametag.setChatColor(chatColor)
             elif playerInfo.isUnderstandable():
                 self.understandable = 1
             else:
@@ -182,8 +187,10 @@ class Avatar(Actor, ShadowCaster):
         if not hasattr(self, 'nametag'):
             self.notify.warning('no nametag attributed, but would have been used')
         else:
-            foreground, background = NametagGlobals.NametagColors[self.playerType]
-            self.nametag.setNametagColor(foreground, background)
+            nametagColor = NametagGlobals.NametagColors[self.playerType]
+            self.nametag.setNametagColor(nametagColor)
+            chatColor = NametagGlobals.ChatColors[self.playerType]
+            self.nametag.setChatColor(chatColor)
 
     def isUnderstandable(self):
         return self.understandable
@@ -361,6 +368,8 @@ class Avatar(Actor, ShadowCaster):
         else:
             self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
 
+        # TODO: Handle buttons.
+
         self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags, interrupt)
 
@@ -369,13 +378,15 @@ class Avatar(Actor, ShadowCaster):
 
     def displayTalk(self, chatString):
         if not base.cr.avatarFriendsManager.checkIgnored(self.doId):
+            self.nametag.setChatType(NametagGlobals.CHAT)
+            # TODO: Clear buttons.
             if base.talkAssistant.isThought(chatString):
                 chatString = base.talkAssistant.removeThoughtPrefix(chatString)
                 self.nametag.setChatBalloonType(NametagGlobals.THOUGHT_BALLOON)
-                self.nametag.setChatText(chatString, False)
+                self.nametag.setChatText(chatString)
             else:
                 self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
-                self.nametag.setChatText(chatString, True)
+                self.nametag.setChatText(chatString, timeout=True)
 
     def clearChat(self):
         self.nametag.clearChatText()
@@ -419,15 +430,18 @@ class Avatar(Actor, ShadowCaster):
         nametag3d = self.nametag.getNametag3d()
         nametag3d.hideNametag()
         nametag3d.hideChat()
+        nametag3d.hideThought()
 
     def showNametag3d(self):
         nametag3d = self.nametag.getNametag3d()
         if self.__nameVisible and (not self.ghostMode):
             nametag3d.showNametag()
             nametag3d.showChat()
+            nametag3d.showThought()
         else:
             nametag3d.hideNametag()
             nametag3d.hideChat()
+            nametag3d.hideThought()
 
     def setPickable(self, flag):
         self.nametag.setActive(flag)
@@ -436,7 +450,7 @@ class Avatar(Actor, ShadowCaster):
         MagicWordManager.lastClickedNametag = self
         if self.nametag.hasButton():
             self.advancePageNumber()
-        elif self.nametag.isActive():
+        elif self.nametag.getActive():
             messenger.send('clickedNametag', [self])
 
     def setPageChat(self, addressee, paragraph, message, quitButton, extraChatFlags = None, dialogueList = [], pageButton = True):
@@ -565,7 +579,6 @@ class Avatar(Actor, ShadowCaster):
         if self.nametagNodePath:
             self.nametagNodePath.removeNode()
             self.nametagNodePath = None
-        return
 
     def initializeBodyCollisions(self, collIdStr):
         self.collTube = CollisionTube(0, 0, 0.5, 0, 0, self.height - self.getRadius(), self.getRadius())

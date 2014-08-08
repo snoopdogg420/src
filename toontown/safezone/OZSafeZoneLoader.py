@@ -146,7 +146,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
 
             self.painterPete.setName('Painter Pete')
             self.painterPete.setPickable(0)
-            self.painterPete.setPlayerType(NametagGroup.CCNonPlayer)
+            self.painterPete.setPlayerType(NametagGlobals.CCNonPlayer)
 
             dna = ToonDNA.ToonDNA()
             dna.newToonFromProperties('hls', 'ss', 'm', 'm', 18, 0, 13, 9, 0, 0, 0, 0, 2, 15)

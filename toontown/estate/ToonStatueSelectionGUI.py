@@ -93,13 +93,13 @@ class ToonStatueSelectionGUI(DirectFrame):
         return test
 
     def __makeFFlist(self):
-        playerAvatar = (base.localAvatar.doId, base.localAvatar.name, NametagGroup.CCNonPlayer)
+        playerAvatar = (base.localAvatar.doId, base.localAvatar.name, NametagGlobals.CCNonPlayer)
         self.ffList.append(playerAvatar)
         self.dnaSelected = base.localAvatar.style
         self.createPreviewToon(self.dnaSelected)
         for familyMember in base.cr.avList:
             if familyMember.id != base.localAvatar.doId:
-                newFF = (familyMember.id, familyMember.name, NametagGroup.CCNonPlayer)
+                newFF = (familyMember.id, familyMember.name, NametagGlobals.CCNonPlayer)
                 self.ffList.append(newFF)
 
         for friendPair in base.localAvatar.friendsList:
@@ -107,9 +107,9 @@ class ToonStatueSelectionGUI(DirectFrame):
             handle = base.cr.identifyFriend(friendId)
             if handle and not self.checkFamily(friendId):
                 if hasattr(handle, 'getName'):
-                    colorCode = NametagGroup.CCSpeedChat
+                    colorCode = NametagGlobals.CCSpeedChat
                     if flags & ToontownGlobals.FriendChat:
-                        colorCode = NametagGroup.CCFreeChat
+                        colorCode = NametagGlobals.CCFreeChat
                     newFF = (friendPair[0], handle.getName(), colorCode)
                     self.ffList.append(newFF)
                 else:

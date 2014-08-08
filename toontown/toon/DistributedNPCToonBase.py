@@ -23,7 +23,7 @@ class DistributedNPCToonBase(DistributedToon.DistributedToon):
             DistributedToon.DistributedToon.__init__(self, cr)
             self.__initCollisions()
             self.setPickable(0)
-            self.setPlayerType(NametagGroup.CCNonPlayer)
+            self.setPlayerType(NametagGlobals.CCNonPlayer)
 
     def disable(self):
         self.ignore('enter' + self.cSphereNode.getName())

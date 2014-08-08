@@ -742,7 +742,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
             subject.setName(namegen.randomNameMoreinfo(boy=boy, girl=girl)[-1])
             self.nameCounter += 1
             subject.setPickable(0)
-            subject.setPlayerType(NametagGroup.CCSpeedChat)
+            subject.setPlayerType(NametagGlobals.CCSpeedChat)
             dna = ToonDNA.ToonDNA()
             dna.newToonRandom(seed, gender, 1)
             subject.setDNAString(dna.makeNetString())

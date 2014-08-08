@@ -42,7 +42,7 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
             if TTLocalizer.BuildingNametagShadow:
                 self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
             self.nametag.setContents(Nametag.CName)
-            self.nametag.setColorCode(NametagGroup.CCSuitBuilding)
+            self.nametag.setColorCode(NametagGlobals.CCSuitBuilding)
             self.nametag.setActive(0)
             self.nametag.setAvatar(self.getElevatorModel())
             name = self.cr.playGame.dnaStore.getTitleFromBlockNumber(self.bldg.block)

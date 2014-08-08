@@ -44,7 +44,7 @@ class Pet(Avatar.Avatar):
         Pet.SerialNum += 1
         self.lockedDown = 0
         self.setPickable(1)
-        self.setPlayerType(NametagGroup.CCNonPlayer)
+        self.setPlayerType(NametagGlobals.CCNonPlayer)
         self.animFSM = ClassicFSM('petAnimFSM', [State('off', self.enterOff, self.exitOff),
          State('neutral', self.enterNeutral, self.exitNeutral),
          State('neutralHappy', self.enterNeutralHappy, self.exitNeutralHappy),

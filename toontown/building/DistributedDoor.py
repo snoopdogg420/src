@@ -113,7 +113,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             if TTLocalizer.BuildingNametagShadow:
                 self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
             self.nametag.setContents(Nametag.CName)
-            self.nametag.setColorCode(NametagGroup.CCToonBuilding)
+            self.nametag.setColorCode(NametagGlobals.CCToonBuilding)
             self.nametag.setActive(0)
             self.nametag.setAvatar(self.getDoorNodePath())
             self.nametag.setObjectCode(self.block)
