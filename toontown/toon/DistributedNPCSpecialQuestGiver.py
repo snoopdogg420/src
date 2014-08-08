@@ -1,5 +1,5 @@
 from DistributedNPCToonBase import *
-from otp.nametag.NametagConstants import *
+from toontownn.nametag.NametagGlobals import *
 from pandac.PandaModules import *
 from toontown.hood import ZoneUtil
 from toontown.quest import QuestChoiceGui

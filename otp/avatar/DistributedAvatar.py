@@ -5,7 +5,7 @@ from direct.interval.IntervalGlobal import *
 from direct.showbase import PythonUtil
 from direct.task import Task
 from otp.ai.MagicWordGlobal import *
-from otp.nametag.Nametag import Nametag
+from toontownn.nametag.Nametag import Nametag
 from otp.otpbase import OTPGlobals
 from pandac.PandaModules import *
 from toontown.battle.BattleProps import globalPropPool

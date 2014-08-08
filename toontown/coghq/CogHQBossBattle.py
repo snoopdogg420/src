@@ -9,8 +9,8 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.battle import BattlePlace
 from toontown.suit import Suit
-from otp.nametag.NametagConstants import *
-from otp.nametag import NametagGlobals
+from toontownn.nametag.NametagGlobals import *
+from toontownn.nametag import NametagGlobals
 import math
 
 class CogHQBossBattle(BattlePlace.BattlePlace):

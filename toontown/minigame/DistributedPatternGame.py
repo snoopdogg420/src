@@ -16,7 +16,7 @@ import random
 from toontown.toonbase import ToontownGlobals
 import string
 from toontown.toonbase import TTLocalizer
-from otp.nametag.NametagConstants import *
+from toontownn.nametag.NametagGlobals import *
 
 class DistributedPatternGame(DistributedMinigame):
     phase4snd = 'phase_4/audio/sfx/'

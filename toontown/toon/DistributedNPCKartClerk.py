@@ -6,7 +6,7 @@ from direct.task.Task import Task
 from toontown.toonbase import TTLocalizer
 from toontown.racing.KartShopGui import *
 from toontown.racing.KartShopGlobals import *
-from otp.nametag.NametagConstants import *
+from toontownn.nametag.NametagGlobals import *
 
 class DistributedNPCKartClerk(DistributedNPCToonBase):
 

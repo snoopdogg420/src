@@ -6,7 +6,7 @@ import string
 from otp.otpbase import OTPLocalizer
 from otp.otpbase import OTPGlobals
 from otp.uberdog import RejectCode
-from otp.nametag import NametagGlobals
+from toontownn.nametag import NametagGlobals
 globalFriendSecret = None
 AccountSecret = 0
 AvatarSecret = 1

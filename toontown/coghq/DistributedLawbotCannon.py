@@ -7,7 +7,7 @@ from pandac.PandaModules import CollisionSphere, CollisionNode
 from toontown.toonbase import ToontownGlobals
 from toontown.estate import DistributedCannon
 from toontown.estate import CannonGlobals
-from otp.nametag import NametagGlobals
+from toontownn.nametag import NametagGlobals
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from toontown.toon import NPCToons

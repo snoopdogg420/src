@@ -14,7 +14,7 @@ from direct.actor import Actor
 import random
 from toontown.toon import DistributedToon
 from direct.directnotify import DirectNotifyGlobal
-from otp.nametag import NametagGroup
+from toontownn.nametag import NametagGroup
 
 NUM_CATALOG_ROWS = 3
 NUM_CATALOG_COLS = 2
@@ -932,7 +932,7 @@ class CatalogScreen(DirectFrame):
         return
 
     def setClarabelleChat(self, str, timeout = 6):
-        from otp.nametag.ChatBalloon import ChatBalloon
+        from toontownn.nametag.ChatBalloon import ChatBalloon
         self.clearClarabelleChat()
         if not self.clarabelleChatBalloon:
             self.clarabelleChatBalloon = loader.loadModel('phase_3/models/props/chatbox.bam')
@@ -986,7 +986,7 @@ class CatalogScreen(DirectFrame):
         return test
 
     def __makeFFlist(self):
-        from otp.nametag import NametagGroup
+        from toontownn.nametag import NametagGroup
         for familyMember in base.cr.avList:
             if familyMember.id != base.localAvatar.doId:
                 newFF = (familyMember.id, familyMember.name, NametagGroup.CCNonPlayer)
@@ -1032,8 +1032,8 @@ class CatalogScreen(DirectFrame):
         self.scrollList.refresh()
 
     def makeFamilyButton(self, familyId, familyName, colorCode):
-        from otp.nametag import NametagConstants
-        fg = NametagConstants.NAMETAG_COLORS.get(colorCode)[3][0]
+        from toontownn.nametag import NametagGlobals
+        fg = NametagGlobals.NAMETAG_COLORS.get(colorCode)[3][0]
         return DirectButton(relief=None, text=familyName, text_scale=0.04, text_align=TextNode.ALeft, text_fg=fg, text1_bg=self.textDownColor, text2_bg=self.textRolloverColor, text3_fg=self.textDisabledColor, textMayChange=0, command=self.__chooseFriend, extraArgs=[familyId, familyName])
 
     def __chooseFriend(self, friendId, friendName):

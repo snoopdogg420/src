@@ -24,7 +24,7 @@ from SuitBattleGlobals import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
 from direct.showbase import DirectObject
-from otp.nametag.NametagConstants import *
+from toontownn.nametag.NametagGlobals import *
 from toontown.distributed import DelayDelete
 from toontown.toon import NPCToons
 from toontown.toon import Toon

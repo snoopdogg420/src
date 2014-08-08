@@ -23,7 +23,7 @@ from toontown.effects import Ripples
 from toontown.toonbase import TTLocalizer
 import MinigamePowerMeter
 from direct.task.Task import Task
-from otp.nametag import NametagGlobals
+from toontownn.nametag import NametagGlobals
 
 class DistributedTugOfWarGame(DistributedMinigame):
     bgm = 'phase_4/audio/bgm/MG_tug_o_war.ogg'

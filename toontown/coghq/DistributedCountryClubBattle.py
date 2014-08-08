@@ -5,7 +5,7 @@ from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.interval.IntervalGlobal import *
 from otp.avatar import Emote
-from otp.nametag import NametagGlobals
+from toontownn.nametag import NametagGlobals
 from pandac.PandaModules import *
 from toontown.battle import SuitBattleGlobals
 from toontown.battle.BattleBase import *

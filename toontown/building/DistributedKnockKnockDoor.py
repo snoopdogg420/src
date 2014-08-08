@@ -9,8 +9,8 @@ import DistributedAnimatedProp
 from toontown.distributed import DelayDelete
 from toontown.toonbase import TTLocalizer
 from toontown.hood import ZoneUtil
-from otp.nametag.NametagGroup import NametagGroup
-from otp.nametag.NametagConstants import *
+from toontownn.nametag.NametagGroup import NametagGroup
+from toontownn.nametag.NametagGlobals import *
 
 class DistributedKnockKnockDoor(DistributedAnimatedProp.DistributedAnimatedProp):
 

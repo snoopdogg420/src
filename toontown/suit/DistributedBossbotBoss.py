@@ -8,8 +8,8 @@ import math
 from pandac.PandaModules import VBase3, CollisionPlane, CollisionNode, CollisionSphere, CollisionTube, NodePath, Plane, Vec3, Vec2, Point3, BitMask32, CollisionHandlerEvent, TextureStage, VBase4, BoundingSphere
 import random
 
-from otp.nametag.NametagConstants import CFSpeech
-from otp.nametag.NametagGroup import NametagGroup
+from toontownn.nametag.NametagGlobals import CFSpeech
+from toontownn.nametag.NametagGroup import NametagGroup
 from toontown.battle import MovieToonVictory
 from toontown.battle import RewardPanel
 from toontown.battle import SuitBattleGlobals

@@ -24,9 +24,9 @@ from toontown.parties.PartyEditor import PartyEditor
 from otp.otpbase import OTPGlobals
 from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
-from otp.nametag.NametagGroup import NametagGroup
-from otp.nametag.Nametag import Nametag
-from otp.nametag.NametagFloat2d import *
+from toontownn.nametag.NametagGroup import NametagGroup
+from toontownn.nametag.Nametag import Nametag
+from toontownn.nametag.NametagFloat2d import *
 
 class PartyPlanner(DirectFrame, FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('PartyPlanner')

@@ -9,7 +9,7 @@ import BattleParticles
 import HealJokes
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownBattleGlobals
-from otp.nametag.NametagConstants import *
+from toontownn.nametag.NametagGlobals import *
 from toontown.toon import LaughingManGlobals
 from toontown.toon import NPCToons
 notify = DirectNotifyGlobal.directNotify.newCategory('MovieNPCSOS')

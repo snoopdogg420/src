@@ -4,7 +4,7 @@ from direct.actor import Actor
 from otp.avatar import Avatar
 from direct.directnotify import DirectNotifyGlobal
 from toontown.toonbase import ToontownGlobals
-from otp.nametag import NametagGroup
+from toontownn.nametag import NametagGroup
 from direct.fsm import FSM
 from direct.fsm import State
 from toontown.toonbase import TTLocalizer

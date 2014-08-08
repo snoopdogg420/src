@@ -10,9 +10,9 @@ import random
 import DistributedBossCog
 import DistributedCashbotBossGoon
 import SuitDNA
-from otp.nametag import NametagGlobals
-from otp.nametag import NametagGroup
-from otp.nametag.NametagConstants import *
+from toontownn.nametag import NametagGlobals
+from toontownn.nametag import NametagGroup
+from toontownn.nametag.NametagGlobals import *
 from otp.otpbase import OTPGlobals
 from toontown.battle import MovieToonVictory
 from toontown.battle import RewardPanel

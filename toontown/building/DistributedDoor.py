@@ -14,7 +14,7 @@ from toontown.suit import Suit
 from toontown.toonbase.ToonBaseGlobal import *
 from toontown.toontowngui import TTDialog
 from toontown.toontowngui import TeaserPanel
-from otp.nametag.NametagGroup import NametagGroup, Nametag
+from toontownn.nametag.NametagGroup import NametagGroup, Nametag
 
 
 if __debug__:

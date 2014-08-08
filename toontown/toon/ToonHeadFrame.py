@@ -3,8 +3,8 @@ from pandac.PandaModules import *
 import ToonHead
 from toontown.distributed import DelayDelete
 from toontown.toonbase import ToontownGlobals
-from otp.nametag.Nametag import Nametag
-from otp.nametag.NametagFloat2d import NametagFloat2d
+from toontownn.nametag.Nametag import Nametag
+from toontownn.nametag.NametagFloat2d import NametagFloat2d
 
 class ToonHeadFrame(DirectFrame):
 

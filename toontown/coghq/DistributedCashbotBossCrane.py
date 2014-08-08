@@ -11,7 +11,7 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 from otp.otpbase import OTPGlobals
 import random
-from otp.nametag import NametagGlobals
+from toontownn.nametag import NametagGlobals
 
 class DistributedCashbotBossCrane(DistributedObject.DistributedObject, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCashbotBossCrane')

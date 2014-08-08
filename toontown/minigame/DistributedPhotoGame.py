@@ -19,7 +19,7 @@ from toontown.golf import BuildGeometry
 from toontown.toon import Toon
 from toontown.toon import ToonDNA
 from toontown.dna.DNAParser import *
-from otp.nametag import NametagGroup
+from toontownn.nametag import NametagGroup
 from direct.interval.IntervalGlobal import *
 import random
 from direct.showbase import PythonUtil

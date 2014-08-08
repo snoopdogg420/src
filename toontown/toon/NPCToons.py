@@ -1,5 +1,5 @@
 from pandac.PandaModules import *
-from otp.nametag.NametagGroup import *
+from toontownn.nametag.NametagGroup import *
 from toontown.toonbase import ToontownGlobals
 import random
 from toontown.hood import ZoneUtil

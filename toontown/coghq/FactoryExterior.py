@@ -2,7 +2,7 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs
-from otp.nametag import NametagGlobals
+from toontownn.nametag import NametagGlobals
 from pandac.PandaModules import *
 from toontown.battle import BattlePlace
 from toontown.building import Elevator
