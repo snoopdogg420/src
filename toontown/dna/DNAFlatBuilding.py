@@ -1,6 +1,6 @@
+from panda3d.code import NodePath, DecalEffect
 import DNANode
 import DNAWall
-from DNAUtil import *
 
 import random
 
@@ -51,7 +51,7 @@ class DNAFlatBuilding(DNANode.DNANode):
         wallNode = dnaStorage.findNode(code)
         if not wallNode:
             return
-        wallNode = wallNode.copyTo(node)
+        wallNode = wallNode.copyTo(node, 0)
         wallScale = wallNode.getScale()
         wallScale.setX(self.width)
         wallScale.setZ(DNAFlatBuilding.currentWallHeight)
@@ -81,7 +81,7 @@ class DNAFlatBuilding(DNANode.DNANode):
         wallNode = dnaStorage.findNode(code)
         if not wallNode:
             return
-        wallNode = wallNode.copyTo(node)
+        wallNode = wallNode.copyTo(node, 0)
         wallScale = wallNode.getScale()
         wallScale.setX(self.width)
         wallScale.setZ(DNAFlatBuilding.currentWallHeight)
