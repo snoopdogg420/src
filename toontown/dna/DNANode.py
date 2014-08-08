@@ -1,4 +1,5 @@
 import DNAGroup
+from DNAUtil import *
 
 class DNANode(DNAGroup.DNAGroup):
     COMPONENT_CODE = 3
@@ -27,7 +28,7 @@ class DNANode(DNAGroup.DNAGroup):
     def setScale(self, scale):
         self.scale = scale
 
-    def makeFromDGI(self, dgi, dnaStorage):
+    def makeFromDGI(self, dgi):
         x = dgi.getInt32() / 100.0
         y = dgi.getInt32() / 100.0
         z = dgi.getInt32() / 100.0
