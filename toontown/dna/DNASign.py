@@ -1,5 +1,6 @@
+from panda3d.core import LVector4f, ModelNode
 import DNANode
-from DNAUtil import *
+import DNAUtil
 
 class DNASign(DNANode.DNANode):
     COMPONENT_CODE = 5
@@ -7,7 +8,7 @@ class DNASign(DNANode.DNANode):
     def __init__(self):
         DNANode.DNANode.__init__(self, '')
         self.code = ''
-        self.color = (1, 1, 1, 1)
+        self.color = LVector4f(1, 1, 1, 1)
 
     def getCode(self):
         return self.code
@@ -23,8 +24,8 @@ class DNASign(DNANode.DNANode):
 
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.color = dgiExtractColor(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.color = DNAUtil.dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         decNode = nodePath.find('**/sign_decal')
