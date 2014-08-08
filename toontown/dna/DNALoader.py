@@ -62,7 +62,7 @@ childlessComps = (
 
 class DNALoader:
     def __init__(self, dnaStorage):
-        self.dnaStorage = storage
+        self.dnaStorage = dnaStorage
         self.prop = None
 
     def handleStorageData(self, dgi):
@@ -186,7 +186,7 @@ class DNALoader:
         dnaFile.close()
         header = dgi.extractBytes(5)
         if header != 'PDNA\n':
-            raise DNAError.DNAError('Invalid header')
+            raise DNAError.DNAError('Invalid header: %s' % (header))
         compressed = dgi.getBool()
         dgi.skipBytes(1)
         if compressed:

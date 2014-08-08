@@ -26,9 +26,9 @@ class PartyHood(Hood.Hood):
         self.id = PartyHood
         self.safeZoneLoaderClass = PartyLoader.PartyLoader
         self.partyActivityDoneEvent = 'partyActivityDone'
-        self.storageDNAFile = 'phase_13/dna/storage_party_sz.dna'
-        self.holidayStorageDNADict = {WINTER_DECORATIONS: ['phase_5.5/dna/winter_storage_estate.dna'],
-         WACKY_WINTER_DECORATIONS: ['phase_5.5/dna/winter_storage_estate.dna']}
+        self.storageDNAFile = 'phase_13/dna/storage_party_sz.pdna'
+        self.holidayStorageDNADict = {WINTER_DECORATIONS: ['phase_5.5/dna/winter_storage_estate.pdna'],
+         WACKY_WINTER_DECORATIONS: ['phase_5.5/dna/winter_storage_estate.pdna']}
         self.skyFile = 'phase_3.5/models/props/TT_sky'
         self.popupInfo = None
         return

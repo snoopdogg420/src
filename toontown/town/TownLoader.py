@@ -32,7 +32,7 @@ class TownLoader(StateData.StateData):
         TheBrrrgh : 'phase_9/audio/bgm/encntr_suit_tb.ogg',
         DonaldsDreamland : 'phase_9/audio/bgm/encntr_suit_ddl.ogg'
     }
-    
+
     def __init__(self, hood, parentFSMState, doneEvent):
         StateData.StateData.__init__(self, doneEvent)
         self.hood = hood
@@ -193,8 +193,8 @@ class TownLoader(StateData.StateData):
 
     def createHood(self, dnaFile, loadStorage = 1):
         if loadStorage:
-            loader.loadDNAFile(self.hood.dnaStore, 'phase_5/dna/storage_town.dna')
-            self.notify.debug('done loading %s' % 'phase_5/dna/storage_town.dna')
+            loader.loadDNAFile(self.hood.dnaStore, 'phase_5/dna/storage_town.pdna')
+            self.notify.debug('done loading %s' % 'phase_5/dna/storage_town.pdna')
             loader.loadDNAFile(self.hood.dnaStore, self.townStorageDNAFile)
             self.notify.debug('done loading %s' % self.townStorageDNAFile)
         node = loader.loadDNAFile(self.hood.dnaStore, dnaFile)
@@ -281,7 +281,7 @@ class TownLoader(StateData.StateData):
                 nextZoneId = ZoneUtil.getTrueZoneId(nextZoneId, self.zoneId)
                 visNode = self.zoneDict[nextZoneId]
                 self.nodeDict[zoneId].append(visNode)
-                
+
         self.hood.dnaStore.resetPlaceNodes()
         self.hood.dnaStore.resetDNAGroups()
         self.hood.dnaStore.resetDNAVisGroups()
