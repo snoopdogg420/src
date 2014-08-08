@@ -1,5 +1,6 @@
+from panda3d.core import LVector4f
 import DNANode
-from DNAUtil import *
+import DNAUtil
 
 class DNALandmarkBuilding(DNANode.DNANode):
     COMPONENT_CODE = 13
@@ -52,23 +53,23 @@ class DNALandmarkBuilding(DNANode.DNANode):
                 node = nodePathA.attachNewNode(name)
                 node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
             else:
-                node.wrtReparentTo(nodePathA)
+                node.wrtReparentTo(nodePathA, 0)
                 node.setName(name)
 
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
-        self.code = dgiExtractString8(dgi)
-        self.wallColor = dgiExtractColor(dgi)
-        self.title = dgiExtractString8(dgi)
-        self.article = dgiExtractString8(dgi)
-        self.buildingType = dgiExtractString8(dgi)
+        self.code = DNAUtil.dgiExtractString8(dgi)
+        self.wallColor = DNAUtil.dgiExtractColor(dgi)
+        self.title = DNAUtil.dgiExtractString8(dgi)
+        self.article = DNAUtil.dgiExtractString8(dgi)
+        self.buildingType = DNAUtil.dgiExtractString8(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError('DNALandmarkBuilding code ' + self.code + ' not found in DNAStorage')
         npA = nodePath
-        nodePath = node.copyTo(nodePath)
+        nodePath = node.copyTo(nodePath, 0)
         nodePath.setName(self.getName())
         nodePath.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
         self.setupSuitBuildingOrigin(npA, nodePath)
