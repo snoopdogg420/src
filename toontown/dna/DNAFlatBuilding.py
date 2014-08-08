@@ -51,7 +51,7 @@ class DNAFlatBuilding(DNANode.DNANode):
         wallNode = dnaStorage.findNode(code)
         if not wallNode:
             return
-        wallNode = wallNode.copyTo(node, 0)
+        wallNode = wallNode.copyTo(node)
         wallScale = wallNode.getScale()
         wallScale.setX(self.width)
         wallScale.setZ(DNAFlatBuilding.currentWallHeight)
@@ -81,7 +81,7 @@ class DNAFlatBuilding(DNANode.DNANode):
         wallNode = dnaStorage.findNode(code)
         if not wallNode:
             return
-        wallNode = wallNode.copyTo(node, 0)
+        wallNode = wallNode.copyTo(node)
         wallScale = wallNode.getScale()
         wallScale.setX(self.width)
         wallScale.setZ(DNAFlatBuilding.currentWallHeight)
