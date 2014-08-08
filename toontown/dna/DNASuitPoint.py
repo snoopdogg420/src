@@ -1,5 +1,3 @@
-from DNAUtil import *
-
 class DNASuitPoint:
     COMPONENT_CODE = 20
     STREET_POINT = 0
@@ -88,4 +86,4 @@ class DNASuitPoint:
         return self.pointType
 
     def setPos(self, pos):
-        self.pos = Point3(pos)
+        self.pos = pos
