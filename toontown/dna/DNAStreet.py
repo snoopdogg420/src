@@ -79,13 +79,13 @@ class DNAStreet(DNANode.DNANode):
 
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
-         self.code = dgiExtractString8(dgi)
-         self.streetTexture = dgiExtractString8(dgi)
-         self.sidewalkTexture = dgiExtractString8(dgi)
-         self.curbTexture = dgiExtractString8(dgi)
-         self.streetColor = dgiExtractColor(dgi)
-         self.sideWalkColor = dgiExtractColor(dgi)
-         self.curbColor = dgiExtractColor(dgi)
+        self.code = dgiExtractString8(dgi)
+        self.streetTexture = dgiExtractString8(dgi)
+        self.sidewalkTexture = dgiExtractString8(dgi)
+        self.curbTexture = dgiExtractString8(dgi)
+        self.streetColor = dgiExtractColor(dgi)
+        self.sideWalkColor = dgiExtractColor(dgi)
+        self.curbColor = dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
