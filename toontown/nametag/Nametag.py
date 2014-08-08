@@ -21,6 +21,7 @@ class Nametag(PandaNode):
         self.active = False
         self.nametagHidden = False
         self.chatHidden = False
+        self.thoughtHidden = False
 
         # Foreground, background:
         self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
@@ -114,19 +115,21 @@ class Nametag(PandaNode):
 
     def hideNametag(self):
         self.nametagHidden = True
-        self.update()
 
     def showNametag(self):
         self.nametagHidden = False
-        self.update()
 
     def hideChat(self):
         self.chatHidden = True
-        self.update()
 
     def showChat(self):
         self.chatHidden = False
-        self.update()
+
+    def hideThought(self):
+        self.thoughtHidden = True
+
+    def showThought(self):
+        self.thoughtHidden = False
 
     def setNametagColor(self, nametagColor):
         self.nametagColor = nametagColor
@@ -191,15 +194,29 @@ class Nametag(PandaNode):
 
     def update(self):
         """
-        Redraw the contents.
+        Redraw the contents that are visible.
         """
         self.contents.node().removeAllChildren()
-        if self.getChatText() and (not self.chatHidden):
+
+        if self.getChatText():
+            if self.chatBalloonType == NametagGlobals.CHAT_BALLOON:
+                if self.chatHidden:
+                    return
+            elif self.chatBalloonType == NametagGlobals.THOUGHT_BALLOON:
+                if self.thoughtHidden:
+                    return
+
             self.drawChatBalloon()
-        elif not self.nametagHidden:
+            return
+
+        if not self.nametagHidden:
             self.drawNametag()
 
     def drawChatBalloon(self):
+        if self.font is None:
+            # We can't draw this without a font.
+            return
+
         if self.chatBalloonType == NametagGlobals.CHAT_BALLOON:
             model = self.getChatBalloonModel()
             modelWidth = self.getChatBalloonWidth()
@@ -208,15 +225,11 @@ class Nametag(PandaNode):
             model = self.getThoughtBalloonModel()
             modelWidth = self.getThoughtBalloonWidth()
             modelHeight = self.getThoughtBalloonHeight()
-        else:
-            return
 
         if self.chatType == NametagGlobals.CHAT:
             foreground, background = self.chatColor
         elif self.chatType == NametagGlobals.SPEEDCHAT:
             foreground, background = self.speedChatColor
-        else:
-            return
 
         chatBalloon = ChatBalloon.ChatBalloon(
             model, modelWidth, modelHeight, self.chatTextNode,
@@ -224,14 +237,18 @@ class Nametag(PandaNode):
         chatBalloon.reparentTo(self.contents)
 
     def drawNametag(self):
-        foreground, background = self.nametagColor[0]  # Normal
+        if self.font is None:
+            # We can't draw this without a font.
+            return
+
+        foreground, background = self.nametagColor[0]
 
         # Attach the icon:
         if self.icon:
             self.contents.attachNewNode(self.icon)
 
         # Set the color of the TextNode:
-        self.nameTextNode.setColor(foreground)
+        self.nameTextNode.setTextColor(foreground)
 
         # Attach the TextNode:
         nameText = self.contents.attachNewNode(self.nameTextNode, 1)

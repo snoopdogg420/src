@@ -11,6 +11,7 @@ class Nametag2d(Nametag.Nametag):
 
         self.arrow = None
 
+        self.hideThought()
         self.contents.setScale(0.25)
         self.setChatWordWrap(8)
 
