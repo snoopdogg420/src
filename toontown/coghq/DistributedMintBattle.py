@@ -29,7 +29,7 @@ class DistributedMintBattle(DistributedLevelBattle.DistributedLevelBattle):
         self.disableCollision()
         self.delayDeleteMembers()
         if self.hasLocalToon():
-            NametagGlobals.setMasterArrowsOn(0)
+            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
             if self.bossBattle:
                 messenger.send('localToonConfrontedMintBoss')
         self.movie.playReward(ts, self.uniqueName('building-reward'), self.__handleMintRewardDone)
@@ -45,4 +45,4 @@ class DistributedMintBattle(DistributedLevelBattle.DistributedLevelBattle):
         self.notify.debug('exitMintReward()')
         self.movie.resetReward(finish=1)
         self._removeMembersKeep()
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)

@@ -188,18 +188,16 @@ class DistributedBattleBldg(DistributedBattleBase.DistributedBattleBase):
         self.notify.debug('exitReward()')
         self.clearInterval(self.uniqueName('floorReward'))
         self._removeMembersKeep()
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
         for toon in self.toons:
             toon.startSmooth()
-
-        return None
 
     def enterBuildingReward(self, ts):
         self.delayDeleteMembers()
         if self.hasLocalToon():
-            NametagGlobals.setMasterArrowsOn(0)
+            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+            pass
         self.movie.playReward(ts, self.uniqueName('building-reward'), self.__handleBuildingRewardDone, noSkip=True)
-        return None
 
     def __handleBuildingRewardDone(self):
         if self.hasLocalToon():
@@ -210,13 +208,11 @@ class DistributedBattleBldg(DistributedBattleBase.DistributedBattleBase):
     def exitBuildingReward(self):
         self.movie.resetReward(finish=1)
         self._removeMembersKeep()
-        NametagGlobals.setMasterArrowsOn(1)
-        return None
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
 
-    def enterResume(self, ts = 0):
+    def enterResume(self, ts=0):
         if self.hasLocalToon():
             self.removeLocalToon()
-        return None
 
     def exitResume(self):
         return None

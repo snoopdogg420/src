@@ -1,18 +1,20 @@
-from pandac.PandaModules import *
-from toontown.nametag.NametagGroup import NametagGroup
 from direct.directnotify import DirectNotifyGlobal
+from direct.distributed import ClockDelta
+from direct.distributed import DistributedObject
 from direct.fsm import ClassicFSM
 from direct.fsm import State
-from toontown.toonbase import ToontownGlobals
-import DistributedToon
-from direct.distributed import DistributedObject
-import NPCToons
-from toontown.quest import Quests
-from direct.distributed import ClockDelta
-from toontown.quest import QuestParser
-from toontown.quest import QuestChoiceGui
 from direct.interval.IntervalGlobal import *
+from pandac.PandaModules import *
 import random
+
+import DistributedToon
+import NPCToons
+from toontown.nametag import NametagGlobals
+from toontown.quest import QuestChoiceGui
+from toontown.quest import QuestParser
+from toontown.quest import Quests
+from toontown.toonbase import ToontownGlobals
+
 
 class DistributedNPCToonBase(DistributedToon.DistributedToon):
     def __init__(self, cr):

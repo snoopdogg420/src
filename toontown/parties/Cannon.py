@@ -134,10 +134,11 @@ class Cannon:
         self.toonHead.setupHead(toon.style)
         self.toonHead.reparentTo(hidden)
         tag = NametagFloat3d()
-        tag.setContents(Nametag.CSpeech | Nametag.CThought)
+        tag.hideNametag()
+        tag.update()
         tag.setBillboardOffset(0)
         tag.setAvatar(self.toonHead)
-        toon.nametag.addNametag(tag)
+        toon.nametag.add(tag)
         tagPath = self.toonHead.attachNewNode(tag)
         tagPath.setPos(0, 0, 1)
         self.toonHead.tag = tag
@@ -191,7 +192,7 @@ class Cannon:
         if self.toonHead != None:
             self.hideToonHead()
             if hasattr(self.toonInside, 'nametag'):
-                self.toonInside.nametag.removeNametag(self.toonHead.tag)
+                self.toonInside.nametag.remove(self.toonHead.tag)
             self.toonHead.delete()
             self.toonHead = None
         self.toonInside = None

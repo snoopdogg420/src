@@ -199,7 +199,7 @@ class DistributedCannonGame(DistributedMinigame):
             if av:
                 av.loop('neutral')
                 av.setPlayRate(1.0, 'run')
-                av.nametag.removeNametag(head.tag)
+                av.nametag.remove(head.tag)
             head.delete()
 
         del self.toonHeadDict
@@ -346,10 +346,11 @@ class DistributedCannonGame(DistributedMinigame):
         self.toonHeadDict[avId] = head
         toon = self.getAvatar(avId)
         tag = NametagFloat3d()
-        tag.setContents(Nametag.CSpeech | Nametag.CThought)
+        tag.hideNametag()
+        tag.updateAll()
         tag.setBillboardOffset(0)
         tag.setAvatar(head)
-        toon.nametag.addNametag(tag)
+        toon.nametag.add(tag)
         tagPath = head.attachNewNode(tag)
         tagPath.setPos(0, 0, 1)
         head.tag = tag

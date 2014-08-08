@@ -1,20 +1,24 @@
-from pandac.PandaModules import *
+from direct.actor import Actor
+from direct.directnotify import DirectNotifyGlobal
 from direct.gui.DirectGui import *
-from pandac.PandaModules import *
 from direct.gui.DirectScrolledList import *
-from toontown.toonbase import ToontownGlobals
-from toontown.toontowngui import TTDialog
-import CatalogItem
-import CatalogInvalidItem
+from pandac.PandaModules import *
+from pandac.PandaModules import *
+import random
+
 import CatalogFurnitureItem
-from toontown.toonbase import TTLocalizer
+import CatalogInvalidItem
+import CatalogItem
 import CatalogItemPanel
 import CatalogItemTypes
-from direct.actor import Actor
-import random
-from toontown.toon import DistributedToon
-from direct.directnotify import DirectNotifyGlobal
+from toontown.chat import ChatBalloon.ChatBalloon
+from toontown.nametag import NametagGlobals
 from toontown.nametag import NametagGroup
+from toontown.toon import DistributedToon
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+from toontown.toontowngui import TTDialog
+
 
 NUM_CATALOG_ROWS = 3
 NUM_CATALOG_COLS = 2
@@ -932,7 +936,6 @@ class CatalogScreen(DirectFrame):
         return
 
     def setClarabelleChat(self, str, timeout = 6):
-from toontown.chat import ChatBalloon.ChatBalloon
         self.clearClarabelleChat()
         if not self.clarabelleChatBalloon:
             self.clarabelleChatBalloon = loader.loadModel('phase_3/models/props/chatbox.bam')
@@ -1033,7 +1036,7 @@ from toontown.chat import ChatBalloon.ChatBalloon
 
     def makeFamilyButton(self, familyId, familyName, colorCode):
         from toontown.nametag import NametagGlobals
-        fg = NametagGlobals.NAMETAG_COLORS.get(colorCode)[3][0]
+        fg = NametagGlobals.NametagColors.get(colorCode)[3][0]
         return DirectButton(relief=None, text=familyName, text_scale=0.04, text_align=TextNode.ALeft, text_fg=fg, text1_bg=self.textDownColor, text2_bg=self.textRolloverColor, text3_fg=self.textDisabledColor, textMayChange=0, command=self.__chooseFriend, extraArgs=[familyId, familyName])
 
     def __chooseFriend(self, friendId, friendName):

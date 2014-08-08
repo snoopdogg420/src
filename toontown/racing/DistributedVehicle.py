@@ -498,7 +498,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
                 self.toon.sendCurrentPosition()
             self.doHeadScale(self.toon, 1.75)
             self.toon.setShear(0, 0, 0)
-        NametagGlobals.setOnscreenChatForced(1)
+        # NAMETAG TODO: NametagGlobals.setOnscreenChatForced(1)
         if self.localVehicle:
             camera.reparentTo(self.cameraNode)
             camera.setPosHpr(0, -33, 16, 0, -10, 0)
@@ -538,7 +538,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
             self.toon.reparentTo(render)
             self.toon.loop('neutral')
             self.toon.startSmooth()
-        NametagGlobals.setOnscreenChatForced(0)
+        # NAMETAG TODO: NametagGlobals.setOnscreenChatForced(0)
         base.camLens.setMinFov(ToontownGlobals.DefaultCameraFov/(4./3.))
         return
 

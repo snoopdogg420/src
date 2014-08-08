@@ -31,12 +31,12 @@ class Nametag(PandaNode):
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
         self.nameTextNode.setWordwrap(8)
-        self.nameTextNode.setTextColor(self.nametagColor[0][0])
+        self.nameTextNode.setTextColor(self.nametagColor[3][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
         self.chatTextNode.setWordwrap(10)
-        self.chatTextNode.setTextColor(self.chatColor[0][0])
+        self.chatTextNode.setTextColor(self.chatColor[3][0])
         self.chatTextNode.setGlyphScale(1.1)
 
         self.icon = None
@@ -192,6 +192,15 @@ class Nametag(PandaNode):
     def getChatText(self, chatText):
         return self.chatTextNode.getText()
 
+    def setShadow(self, shadow):
+        self.nameTextNode.setShadow(shadow)
+
+    def getShadow(self):
+        return self.nameTextNode.getShadow()
+
+    def clearShadow(self):
+        self.nameTextNode.clearShadow()
+
     def update(self):
         """
         Redraw the contents that are visible.
@@ -226,10 +235,12 @@ class Nametag(PandaNode):
             modelWidth = self.getThoughtBalloonWidth()
             modelHeight = self.getThoughtBalloonHeight()
 
-        if self.chatType == NametagGlobals.CHAT:
-            foreground, background = self.chatColor
-        elif self.chatType == NametagGlobals.SPEEDCHAT:
-            foreground, background = self.speedChatColor
+        if self.active:
+            foreground, background = self.chatColor[0]
+        else:
+            foreground, background = self.chatColor[3]
+        if self.chatType == NametagGlobals.SPEEDCHAT:
+            background = self.speedChatColor
 
         chatBalloon = ChatBalloon.ChatBalloon(
             model, modelWidth, modelHeight, self.chatTextNode,
@@ -241,7 +252,10 @@ class Nametag(PandaNode):
             # We can't draw this without a font.
             return
 
-        foreground, background = self.nametagColor[0]
+        if self.active:
+            foreground, background = self.nametagColor[0]
+        else:
+            foreground, background = self.nametagColor[3]
 
         # Attach the icon:
         if self.icon:

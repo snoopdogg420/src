@@ -2040,9 +2040,9 @@ class Toon(Avatar.Avatar, ToonHead):
         self.openEyes()
         self.startBlink()
         if config.GetBool('stuck-sleep-fix', 1):
-            doClear = SLEEP_STRING in (self.nametag.getChat(), self.nametag.getStompText())
+            doClear = SLEEP_STRING in (self.nametag.getChatText(), self.nametag.getStompText())
         else:
-            doClear = self.nametag.getChat() == SLEEP_STRING
+            doClear = self.nametag.getChatText() == SLEEP_STRING
         if doClear:
             self.clearChat()
         self.lerpLookAt(Point3(0, 1, 0), time=0.25)
@@ -2788,7 +2788,7 @@ class Toon(Avatar.Avatar, ToonHead):
             self.nametag.setDisplayName(TTLocalizer.SuitBaseNameWithLevel % {'name': name,
              'dept': suitName,
              'level': self.cogLevels[suitDept] + 1})
-            self.nametag.setNameWordwrap(9.0)
+            self.nametag.setNameWordWrap(9.0)
 
     def takeOffSuit(self):
         if not self.isDisguised:
@@ -2811,7 +2811,7 @@ class Toon(Avatar.Avatar, ToonHead):
         Emote.globalEmote.releaseAll(self)
         self.isDisguised = 0
         self.setFont(ToontownGlobals.getToonFont())
-        self.nametag.setNameWordwrap(-1)
+        self.nametag.setNameWordWrap(-1)
         if hasattr(base, 'idTags') and base.idTags:
             name = self.getAvIdName()
         else:

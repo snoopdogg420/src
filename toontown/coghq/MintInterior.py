@@ -84,7 +84,7 @@ class MintInterior(BattlePlace.BattlePlace):
         self._telemLimiter = TLGatherAllAvs('MintInterior', RotationLimitToH)
 
         def commence(self = self):
-            NametagGlobals.setMasterArrowsOn(1)
+            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
             self.fsm.request(requestStatus['how'], [requestStatus])
             base.playMusic(self.music, looping=1, volume=0.8)
             base.transitions.irisIn()
@@ -104,7 +104,7 @@ class MintInterior(BattlePlace.BattlePlace):
         self.acceptOnce('localToonConfrontedMintBoss', handleConfrontedBoss)
 
     def exit(self):
-        NametagGlobals.setMasterArrowsOn(0)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
         bboard.remove(DistributedMint.DistributedMint.ReadyPost)
         self._telemLimiter.destroy()
         del self._telemLimiter

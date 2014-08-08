@@ -1,13 +1,16 @@
 from pandac.PandaModules import *
-from toontown.nametag.NametagGroup import *
-from toontown.toonbase import ToontownGlobals
 import random
-from toontown.hood import ZoneUtil
+import string
+import sys, os
+
 import ToonDNA
+from toontown.hood import ZoneUtil
+from toontown.nametag import NametagGlobals
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownBattleGlobals
-import sys, os
-import string
+from toontown.toonbase import ToontownGlobals
+
+
 try:
     config = simbase.config
 except:

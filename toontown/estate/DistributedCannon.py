@@ -1,26 +1,30 @@
-from pandac.PandaModules import *
-from toontown.toonbase.ToonBaseGlobal import *
-from toontown.toonbase import ToontownGlobals
+from direct.controls.ControlManager import CollisionHandlerRayStart
+from direct.distributed import DistributedObject
 from direct.distributed.ClockDelta import *
-from direct.interval.IntervalGlobal import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
+from direct.gui.DirectGui import *
+from direct.interval.IntervalGlobal import *
+from direct.task.Task import Task
+import math
+from pandac.PandaModules import *
+from pandac.PandaModules import *
+
+import CannonGlobals
+from toontown.effects import DustCloud
+from toontown.effects import Splash
+from toontown.effects import Wake
+from toontown.minigame import CannonGameGlobals
+from toontown.minigame import Trajectory
+from toontown.nametag.NametagFloat3d import NametagFloat3d
+from toontown.toon import ToonHead
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import ToontownTimer
-from direct.task.Task import Task
-from toontown.minigame import Trajectory
-import math
-from toontown.toon import ToonHead
-from toontown.effects import Splash
-from toontown.effects import DustCloud
-from toontown.minigame import CannonGameGlobals
-import CannonGlobals
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from toontown.toonbase import TTLocalizer
-from direct.distributed import DistributedObject
-from toontown.effects import Wake
-from direct.controls.ControlManager import CollisionHandlerRayStart
+from toontown.toonbase.ToonBaseGlobal import *
+
+
 LAND_TIME = 2
 WORLD_SCALE = 2.0
 GROUND_SCALE = 1.4 * WORLD_SCALE
@@ -407,7 +411,7 @@ class DistributedCannon(DistributedObject.DistributedObject):
             self.av.loop('neutral')
             self.av.setPlayRate(1.0, 'run')
             if hasattr(self.av, 'nametag'):
-                self.av.nametag.removeNametag(self.toonHead.tag)
+                self.av.nametag.remove(self.toonHead.tag)
         if self.toonHead != None:
             self.toonHead.stopBlink()
             self.toonHead.stopLookAroundNow()
@@ -463,10 +467,11 @@ class DistributedCannon(DistributedObject.DistributedObject):
         self.toonHead.setupHead(self.av.style)
         self.toonHead.reparentTo(hidden)
         tag = NametagFloat3d()
-        tag.setContents(Nametag.CSpeech | Nametag.CThought)
+        tag.hideNametag()
+        tag.updateAll()
         tag.setBillboardOffset(0)
         tag.setAvatar(self.toonHead)
-        toon.nametag.addNametag(tag)
+        toon.nametag.add(tag)
         tagPath = self.toonHead.attachNewNode(tag.upcastToPandaNode())
         tagPath.setPos(0, 0, 1)
         self.toonHead.tag = tag
@@ -879,7 +884,7 @@ class DistributedCannon(DistributedObject.DistributedObject):
                 if place and not self.inWater:
                     place.fsm.request('walk')
             self.av.setPlayRate(1.0, 'run')
-            self.av.nametag.removeNametag(self.toonHead.tag)
+            self.av.nametag.remove(self.toonHead.tag)
             if self.av.getParent().getName() == 'toonOriginChange':
                 self.av.wrtReparentTo(render)
                 self.__setToonUpright(self.av)

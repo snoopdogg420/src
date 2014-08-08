@@ -53,7 +53,7 @@ class FriendsListManager:
         self.accept('clickedNametag', self.__handleClickedNametag)
         self.accept('clickedNametagPlayer', self.__handleClickedNametagPlayer)
         base.localAvatar.setFriendsListButtonActive(1)
-        NametagGlobals.setMasterNametagsActive(1)
+        # NAMETAG TODO: NametagGlobals.setMasterNametagsActive(1)
         self.accept('gotoAvatar', self.__handleGotoAvatar)
         self.accept('friendAvatar', self.__handleFriendAvatar)
         self.accept('avatarDetails', self.__handleAvatarDetails)
@@ -74,7 +74,7 @@ class FriendsListManager:
         self.ignore('clickedNametag')
         self.ignore('clickedNametagPlayer')
         base.localAvatar.setFriendsListButtonActive(0)
-        NametagGlobals.setMasterNametagsActive(0)
+        # NAMETAG TODO: NametagGlobals.setMasterNametagsActive(0)
         if self.avatarPanel:
             self.avatarPanel.cleanup()
             self.avatarPanel = None

@@ -311,7 +311,7 @@ class Purchase(PurchaseBase):
         floorNode = CollisionNode('collision_floor')
         floorNode.addSolid(floor)
         self.collisionFloor = render.attachNewNode(floorNode)
-        NametagGlobals.setOnscreenChatForced(1)
+        # NAMETAG TODO: NametagGlobals.setOnscreenChatForced(1)
         for index in xrange(len(self.ids)):
             avId = self.ids[index]
             if self.states[index] != PURCHASE_NO_CLIENT_STATE and self.states[index] != PURCHASE_DISCONNECTED_STATE and avId in base.cr.doId2do:
@@ -608,7 +608,7 @@ class Purchase(PurchaseBase):
         self.convertingVotesToBeansLabel.hide()
         self.rewardDoubledJellybeanLabel.hide()
         base.camLens.setMinFov(ToontownGlobals.DefaultCameraFov/(4./3.))
-        NametagGlobals.setOnscreenChatForced(0)
+        # NAMETAG TODO: NametagGlobals.setOnscreenChatForced(0)
 
     def _handleClientCleanup(self):
         if hasattr(self, 'toonsKeep'):
@@ -744,13 +744,16 @@ class PurchaseHeadFrame(DirectFrame):
         self.headModel.setupHead(self.av.style, forGui=1)
         self.headModel.reparentTo(self.head)
         self.tag2Node = Nametag2d()
-        self.tag2Node.setContents(Nametag.CName)
-        self.av.nametag.addNametag(self.tag2Node)
+        self.tag2Node.hideChat()
+        self.tag2Node.hideThought()
+        self.tag2Node.update()
+        self.av.nametag.add(self.tag2Node)
         self.tag2 = self.attachNewNode(self.tag2Node)
         self.tag2.setPosHprScale(-0.22, 10.0, 0.12, 0, 0, 0, 0.046, 0.046, 0.046)
         self.tag1Node = Nametag2d()
-        self.tag1Node.setContents(Nametag.CSpeech | Nametag.CThought)
-        self.av.nametag.addNametag(self.tag1Node)
+        self.tag1Node.hideNametag()
+        self.tag1Node.update()
+        self.av.nametag.add(self.tag1Node)
         self.tag1 = self.attachNewNode(self.tag1Node)
         self.tag1.setPosHprScale(-0.15, 0, -0.1, 0, 0, 0, 0.046, 0.046, 0.046)
         self.hide()
@@ -763,8 +766,8 @@ class PurchaseHeadFrame(DirectFrame):
         del self.headModel
         self.head.removeNode()
         del self.head
-        self.av.nametag.removeNametag(self.tag1Node)
-        self.av.nametag.removeNametag(self.tag2Node)
+        self.av.nametag.remove(self.tag1Node)
+        self.av.nametag.remove(self.tag2Node)
         self.tag1.removeNode()
         self.tag2.removeNode()
         del self.tag1

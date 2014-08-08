@@ -1,14 +1,15 @@
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from direct.task.Task import Task
-from direct.fsm import StateData
-from direct.showbase import AppRunnerGlobal
 from direct.directnotify import DirectNotifyGlobal
+from direct.fsm import StateData
+from direct.gui.DirectGui import *
+from direct.showbase import AppRunnerGlobal
+from direct.task.Task import Task
+from pandac.PandaModules import *
+
 from toontown.toonbase import TTLocalizer
-from toontown.toontowngui import TTDialog
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.DisplayOptions import DisplayOptions
-from toontown.nametag import NametagGlobals
+from toontown.toontowngui import TTDialog
+
 
 class DisplaySettingsDialog(DirectFrame, StateData.StateData):
     ApplyTimeoutSeconds = 15
@@ -423,8 +424,6 @@ class DisplaySettingsDialog(DirectFrame, StateData.StateData):
                 return 0
             self.notify.info('OPEN MAIN WINDOW PASSED')
             base.disableShowbaseMouse()
-            NametagGlobals.setCamera(base.cam)
-            NametagGlobals.setMouseWatcher(base.mouseWatcherNode)
             base.graphicsEngine.renderFrame()
             base.graphicsEngine.renderFrame()
             base.graphicsEngine.openWindows()

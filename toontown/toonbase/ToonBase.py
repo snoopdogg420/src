@@ -14,7 +14,6 @@ import ToontownLoader
 import atexit
 from otp.margins.MarginManager import MarginManager
 from toontown.nametag import NametagGlobals
-from toontown.chat import ChatBalloon.ChatBalloon
 from otp.otpbase import OTPBase
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLauncherGlobals
@@ -112,10 +111,6 @@ class ToonBase(OTPBase.OTPBase):
                 self.openMainWindow(props=properties, gsg=gsg, keepCamera=True)
                 self.graphicsEngine.openWindows()
                 self.disableShowbaseMouse()
-
-                from toontown.nametag import NametagGlobals
-                NametagGlobals.setCamera(self.cam)
-                NametagGlobals.setMouseWatcher(self.mouseWatcherNode)
             else:
                 self.win.requestProperties(properties)
                 self.graphicsEngine.renderFrame()

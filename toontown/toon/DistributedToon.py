@@ -47,6 +47,7 @@ from toontown.friends import FriendHandle
 from toontown.golf import GolfGlobals
 from toontown.hood import ZoneUtil
 from toontown.nametag.NametagGlobals import *
+from toontown.nametag import NametagGlobals
 from toontown.parties import PartyGlobals
 from toontown.parties.InviteInfo import InviteInfo
 from toontown.parties.PartyGlobals import InviteStatus, PartyStatus
@@ -1336,7 +1337,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             base.cr.centralLogger.writeClientEvent('Hacker victim setSpeedChatStyleIndex invalid attacking toon = %d' % self.doId)
         self.speedChatStyleIndex = realIndexToUse
         nameKey, arrowColor, rolloverColor, frameColor = speedChatStyles[realIndexToUse]
-        self.nametag.setQtColor(VBase4(frameColor[0], frameColor[1], frameColor[2], 1))
+        self.nametag.setSpeedChatColor(VBase4(frameColor[0], frameColor[1], frameColor[2], 1))
         if self.isLocal():
             messenger.send('SpeedChatStyleChange', [])
 
@@ -2150,12 +2151,11 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             base.playSfx(dialogue, node=self)
         elif chatFlags & CFSpeech != 0:
             if self.nametag.getNumChatPages() > 0:
-                self.playDialogueForString(self.nametag.getChat())
+                self.playDialogueForString(self.nametag.getChatText())
                 if self.soundChatBubble != None:
                     base.playSfx(self.soundChatBubble, node=self)
-            elif self.nametag.getChatStomp() > 0:
-                self.playDialogueForString(self.nametag.getStompText(), self.nametag.getStompDelay())
-        return
+            elif self.nametag.getStompText() > 0:
+                self.playDialogueForString(self.nametag.getStompText(), self.nametag.CHAT_STOMP_DELAY)
 
     def playDialogueForString(self, chatString, delay = 0.0):
         if len(chatString) == 0:
@@ -2224,19 +2224,32 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def setChatAbsolute(self, chatString, chatFlags, dialogue = None, interrupt = 1, quiet = 0):
         DistributedAvatar.DistributedAvatar.setChatAbsolute(self, chatString, chatFlags, dialogue, interrupt)
 
-    def setChatMuted(self, chatString, chatFlags, dialogue = None, interrupt = 1, quiet = 0):
-        self.nametag.setChat(chatString, chatFlags)
+    def setChatMuted(self, chatString, chatFlags, dialogue=None, interrupt=1, quiet=0):
+        if chatFlags & CFQuicktalker:
+            self.nametag.setChatType(NametagGlobals.SPEEDCHAT)
+        elif chatFlags & CFSpeech:
+            self.nametag.setChatType(NametagGlobals.CHAT)
+
+        if chatFlags & CFThought:
+            self.nametag.setChatBalloonType(NametagGlobals.THOUGHT_BALLOON)
+        else:
+            self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
+
+        # NAMETAG TODO: Handle buttons.
+
+        self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags - CFSpeech, interrupt)
 
-    def displayTalk(self, chatString, mods = None):
-        flags = CFSpeech | CFTimeout
+    def displayTalk(self, chatString, mods=None):
+        self.nametag.setChatType(NametagGlobals.CHAT)
         if base.talkAssistant.isThought(chatString):
-            flags = CFThought
+            self.nametag.setChatBalloonType(NametagGlobals.THOUGHT_BALLOON)
             chatString = base.talkAssistant.removeThoughtPrefix(chatString)
-        self.nametag.setChat(chatString, flags)
+        else:
+            self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
+        self.nametag.setChatText(chatString, True)
         if base.toonChatSounds:
             self.playCurrentDialogue(None, flags, interrupt=1)
-        return
 
     def setMail(self, mail):
         DistributedToon.partyNotify.debug('setMail called with %d mail items' % len(mail))

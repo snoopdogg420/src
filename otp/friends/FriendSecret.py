@@ -345,13 +345,13 @@ class FriendSecret(DirectFrame, StateData.StateData):
         self.secretText.hide()
         base.localAvatar.chatMgr.fsm.request('otherDialog')
         self.enterSecret['focus'] = 1
-        NametagGlobals.setOnscreenChatForced(1)
+        # NAMETAG TODO: NametagGlobals.setOnscreenChatForced(1)
 
     def exit(self):
         if self.isEntered == 0:
             return
         self.isEntered = 0
-        NametagGlobals.setOnscreenChatForced(0)
+        # NAMETAG TODO: NametagGlobals.setOnscreenChatForced(0)
         self.__cleanupFirstPage()
         self.ignoreAll()
         self.accept('clientCleanup', self.unload)

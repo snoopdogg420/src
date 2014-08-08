@@ -1,19 +1,20 @@
-# 2013.08.22 22:25:33 Pacific Daylight Time
-# Embedded file name: toontown.suit.Suit
 from direct.actor import Actor
-from otp.avatar import Avatar
-import SuitDNA
-from toontown.toonbase import ToontownGlobals
-from pandac.PandaModules import *
-from toontown.battle import SuitBattleGlobals
-from direct.task.Task import Task
-from toontown.battle import BattleProps
-from toontown.toonbase import TTLocalizer
-from pandac.PandaModules import VirtualFileMountHTTP, VirtualFileSystem, Filename, DSearchPath
 from direct.showbase import AppRunnerGlobal
-from toontown.nametag import NametagGroup
-import string
+from direct.task.Task import Task
 import os
+from pandac.PandaModules import *
+from pandac.PandaModules import VirtualFileMountHTTP, VirtualFileSystem, Filename, DSearchPath
+import string
+
+import SuitDNA
+from otp.avatar import Avatar
+from toontown.battle import BattleProps
+from toontown.battle import SuitBattleGlobals
+from toontown.nametag import NametagGlobals
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
+
 aSize = 6.06
 bSize = 5.29
 cSize = 4.14

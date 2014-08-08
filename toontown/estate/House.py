@@ -82,7 +82,7 @@ class House(Place.Place):
         self.accept('doorDoneEvent', self.handleDoorDoneEvent)
         self.accept('DistributedDoor_doorTrigger', self.handleDoorTrigger)
         self._telemLimiter = TLGatherAllAvs('House', RotationLimitToH)
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
         self.fsm.request(requestStatus['how'], [requestStatus])
 
     def exit(self):
@@ -92,7 +92,7 @@ class House(Place.Place):
         self._telemLimiter.destroy()
         del self._telemLimiter
         messenger.send('exitHouse')
-        NametagGlobals.setMasterArrowsOn(0)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
 
     def setState(self, state):
         if hasattr(self, 'fsm'):

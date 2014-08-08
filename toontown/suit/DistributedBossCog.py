@@ -21,7 +21,6 @@ from toontown.friends import FriendsListManager
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.showbase import PythonUtil
 import random
-from toontown.nametag.NametagGlobals import *
 from toontown.nametag import NametagGlobals
 
 class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
@@ -938,7 +937,7 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.transitions.IrisModelName = 'phase_3/models/misc/iris'
         self.transitions.FadeModelName = 'phase_3/models/misc/fade'
         self.transitions.fadeScreen(alpha=1)
-        NametagGlobals.setMasterArrowsOn(0)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
 
     def __doneWaitForToons(self):
         self.doneBarrier('WaitForToons')
@@ -947,7 +946,7 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.show()
         self.transitions.noFade()
         del self.transitions
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
 
     def enterElevator(self):
         for toonId in self.involvedToons:
@@ -978,7 +977,7 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
     def enterIntroduction(self):
         self.controlToons()
         ElevatorUtils.openDoors(self.leftDoor, self.rightDoor, self.elevatorType)
-        NametagGlobals.setMasterArrowsOn(0)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
         intervalName = 'IntroductionMovie'
         delayDeletes = []
         seq = Sequence(self.makeIntroductionMovie(delayDeletes), Func(self.__beginBattleOne), name=intervalName)
@@ -997,7 +996,7 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.clearInterval(intervalName)
         self.unstickToons()
         self.releaseToons()
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
         ElevatorUtils.closeDoors(self.leftDoor, self.rightDoor, self.elevatorType)
 
     def enterBattleOne(self):
@@ -1020,8 +1019,8 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.accept('clickedNametag', self.__clickedNameTag)
         self.accept('friendAvatar', self.__handleFriendAvatar)
         self.accept('avatarDetails', self.__handleAvatarDetails)
-        NametagGlobals.setMasterArrowsOn(0)
-        NametagGlobals.setMasterNametagsActive(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+        # NAMETAG TODO: NametagGlobals.setMasterNametagsActive(1)
 
     def exitBattleThree(self):
         self.ignore('clickedNameTag')
@@ -1068,8 +1067,8 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.accept('clickedNametag', self.__clickedNameTag)
         self.accept('friendAvatar', self.__handleFriendAvatar)
         self.accept('avatarDetails', self.__handleAvatarDetails)
-        NametagGlobals.setMasterArrowsOn(0)
-        NametagGlobals.setMasterNametagsActive(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+        # NAMETAG TODO: NametagGlobals.setMasterNametagsActive(1)
 
     def exitBattleFour(self):
         self.ignore('clickedNameTag')

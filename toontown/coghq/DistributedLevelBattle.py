@@ -176,7 +176,7 @@ class DistributedLevelBattle(DistributedBattle.DistributedBattle):
             camTrack.append(Func(camera.lookAt, suit))
         mtrack = Parallel(suitTrack, toonTrack)
         if self.hasLocalToon():
-            NametagGlobals.setMasterArrowsOn(0)
+            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
             mtrack = Parallel(mtrack, camTrack)
         done = Func(callback)
         track = Sequence(mtrack, done, name=name)
@@ -226,6 +226,6 @@ class DistributedLevelBattle(DistributedBattle.DistributedBattle):
         self.notify.info('exitReward()')
         self.clearInterval(self.uniqueName('floorReward'))
         self._removeMembersKeep()
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
         for toon in self.toons:
             toon.startSmooth()

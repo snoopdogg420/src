@@ -2,12 +2,10 @@ from direct.controls import ControlManager
 from direct.controls.GhostWalker import GhostWalker
 from direct.controls.GravityWalker import GravityWalker
 from direct.controls.ObserverWalker import ObserverWalker
-from direct.controls.PhysicsWalker import PhysicsWalker
 from direct.controls.SwimWalker import SwimWalker
 from direct.controls.TwoDWalker import TwoDWalker
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed import DistributedSmoothNode
-from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
 from direct.interval.IntervalGlobal import *
 from direct.showbase.InputStateGlobal import inputState
@@ -16,17 +14,12 @@ from direct.task import Task
 import math
 from pandac.PandaModules import *
 import random
-import string
 
-import Avatar
 import DistributedAvatar
-import PositionExaminer
 from otp.ai.MagicWordGlobal import *
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
-from otp.otpbase import OTPRender
 from toontown.chat.ChatGlobals import *
-from toontown.nametag.Nametag import Nametag
 from toontown.toonbase import ToontownGlobals
 
 
@@ -86,10 +79,8 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar, DistributedSmoothNode.Dis
         self.jumpLandAnimFixTask = None
         self.fov = OTPGlobals.DefaultCameraFov
         self.accept('avatarMoving', self.clearPageUpDown)
-        self.nametag2dNormalContents = Nametag.CSpeech
         self.showNametag2d()
         self.setPickable(0)
-        return
 
     def useSwimControls(self):
         self.controlManager.use('swim', self)

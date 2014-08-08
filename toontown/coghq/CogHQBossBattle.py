@@ -112,7 +112,7 @@ class CogHQBossBattle(BattlePlace.BattlePlace):
         if self.bossCog:
             self.bossCog.d_avatarEnter()
         self._telemLimiter = TLGatherAllAvs('CogHQBossBattle', RotationLimitToH)
-        NametagGlobals.setMasterArrowsOn(1)
+        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
         base.localAvatar.inventory.setRespectInvasions(0)
         self.fsm.request(requestStatus['how'], [requestStatus])
 

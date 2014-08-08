@@ -367,7 +367,7 @@ class Avatar(Actor, ShadowCaster):
         else:
             self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
 
-        # TODO: Handle buttons.
+        # NAMETAG TODO: Handle buttons.
 
         self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags, interrupt)
@@ -406,16 +406,21 @@ class Avatar(Actor, ShadowCaster):
             self.hideName()
 
     def hideName(self):
-        self.nametag.getNametag3d().hideNametag()
+        nametag3d = self.nametag.getNametag3d()
+        nametag3d.hideNametag()
+        nametag3d.update()
 
     def showName(self):
         if self.__nameVisible and (not self.ghostMode):
-            self.nametag.getNametag3d().showNametag()
+            nametag3d = self.nametag.getNametag3d()
+            nametag3d.showNametag()
+            nametag3d.update()
 
     def hideNametag2d(self):
         nametag2d = self.nametag.getNametag2d()
         nametag2d.hideNametag()
         nametag2d.hideChat()
+        nametag2d.update()
 
     def showNametag2d(self):
         nametag2d = self.nametag.getNametag2d()
@@ -423,13 +428,15 @@ class Avatar(Actor, ShadowCaster):
             nametag2d.showNametag()
         else:
             nametag2d.hideNametag()
-        self.nametag.getNametag2d().showChat()
+        nametag2d.showChat()
+        nametag2d.update()
 
     def hideNametag3d(self):
         nametag3d = self.nametag.getNametag3d()
         nametag3d.hideNametag()
         nametag3d.hideChat()
         nametag3d.hideThought()
+        nametag3d.update()
 
     def showNametag3d(self):
         nametag3d = self.nametag.getNametag3d()
@@ -441,6 +448,7 @@ class Avatar(Actor, ShadowCaster):
             nametag3d.hideNametag()
             nametag3d.hideChat()
             nametag3d.hideThought()
+        nametag3d.update()
 
     def setPickable(self, flag):
         self.nametag.setActive(flag)

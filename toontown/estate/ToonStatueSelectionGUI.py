@@ -1,17 +1,20 @@
-from toontown.estate import PlantingGUI
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
-from direct.task import Task
-from toontown.estate import GardenGlobals
-from toontown.estate import DistributedToonStatuary
-from direct.interval.IntervalGlobal import *
-from direct.gui.DirectScrolledList import *
-from toontown.toon import Toon
-from toontown.toon import DistributedToon
 from direct.distributed import DistributedObject
+from direct.gui.DirectGui import *
+from direct.gui.DirectScrolledList import *
+from direct.interval.IntervalGlobal import *
+from direct.task import Task
+from pandac.PandaModules import *
+
+from toontown.estate import DistributedToonStatuary
+from toontown.estate import GardenGlobals
+from toontown.estate import PlantingGUI
+from toontown.nametag import NametagGlobals
+from toontown.toon import DistributedToon
+from toontown.toon import Toon
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 class ToonStatueSelectionGUI(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonStatueSelectionGUI')
@@ -125,7 +128,7 @@ class ToonStatueSelectionGUI(DirectFrame):
         self.scrollList.refresh()
 
     def makeFamilyButton(self, familyId, familyName, colorCode):
-        fg = NametagGlobals.getNameFg(colorCode, PGButton.SInactive)
+        fg = NametagGlobals.NametagColors[colorCode][3][0]
         return DirectButton(relief=None, text=familyName, text_scale=0.04, text_align=TextNode.ALeft, text_fg=fg, text1_bg=self.textDownColor, text2_bg=self.textRolloverColor, text3_fg=self.textDisabledColor, textMayChange=0, command=self.__chooseFriend, extraArgs=[familyId, familyName])
 
     def __chooseFriend(self, friendId, friendName):

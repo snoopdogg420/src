@@ -1,10 +1,12 @@
 from direct.distributed.DistributedObject import DistributedObject
 from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
-from toontown.nametag.NametagGlobals import CFSpeech, CFTimeout
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
-from toontown.toon import ToonDNA
+
+from toontown.chat.ChatGlobals import *
 from toontown.parties import PartyGlobals
+from toontown.toon import ToonDNA
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 class DistributedPartyManager(DistributedObject):
     neverDisable = 1
