@@ -9,7 +9,7 @@ class DNAWindows(DNAGroup.DNAGroup):
 
     def __init__(self, name):
         DNAGroup.DNAGroup.__init__(self, name)
-        self.code - ''
+        self.code = ''
         self.color = (1, 1, 1, 1)
         self.windowCount = 0
 
