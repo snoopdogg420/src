@@ -22,7 +22,7 @@ from otp.ai.MagicWordGlobal import *
 from otp.avatar import Avatar, DistributedAvatar
 from otp.avatar import DistributedPlayer
 from otp.chat import TalkAssistant
-from otp.margins.WhisperPopup import *
+# NAMETAG TODO: from otp.margins.WhisperPopup import *
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from otp.speedchat import SCDecoders

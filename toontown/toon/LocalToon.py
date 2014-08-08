@@ -21,7 +21,7 @@ from otp.avatar import DistributedPlayer
 from otp.avatar import LocalAvatar
 from otp.avatar import PositionExaminer
 from otp.login import LeaveToPayDialog
-from otp.margins.WhisperPopup import *
+# NAMETAG TODO: from otp.margins.WhisperPopup import *
 from otp.otpbase import OTPGlobals
 from toontown.achievements import AchievementGui
 from toontown.battle import Fanfare

@@ -12,7 +12,7 @@ import sys
 import ToontownGlobals
 import ToontownLoader
 import atexit
-from otp.margins.MarginManager import MarginManager
+# NAMETAG TODO: from otp.margins.MarginManager import MarginManager
 from toontown.nametag import NametagGlobals
 from otp.otpbase import OTPBase
 from otp.otpbase import OTPGlobals

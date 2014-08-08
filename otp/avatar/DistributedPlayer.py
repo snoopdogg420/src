@@ -11,7 +11,7 @@ from otp.avatar.Avatar import teleportNotify
 from otp.chat import ChatGarbler
 from otp.chat import TalkAssistant
 from otp.distributed.TelemetryLimited import TelemetryLimited
-from otp.margins.WhisperPopup import WhisperPopup
+# NAMETAG TODO: from otp.margins.WhisperPopup import WhisperPopup
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from otp.speedchat import SCDecoders
