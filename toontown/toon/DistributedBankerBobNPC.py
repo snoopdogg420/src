@@ -1,15 +1,19 @@
+from direct.interval.IntervalGlobal import *
 from pandac.PandaModules import *
+
 from DistributedNPCToonBase import *
-from toontown.quest import QuestParser
+from toontown.chat.ChatGlobals import *
+from toontown.hood import ZoneUtil
+from toontown.nametag.NametagGlobals import *
 from toontown.quest import QuestChoiceGui
+from toontown.quest import QuestParser
 from toontown.quest import TrackChoiceGui
 from toontown.toonbase import TTLocalizer
-from toontown.hood import ZoneUtil
 from toontown.toontowngui import TeaserPanel
-from toontown.nametag.NametagGlobals import *
+
+
 ChoiceTimeout = 20
 
-from direct.interval.IntervalGlobal import *
 
 class DistributedBankerBobNPC(DistributedNPCToonBase):
 
@@ -51,6 +55,6 @@ class DistributedBankerBobNPC(DistributedNPCToonBase):
             base.localAvatar.posCamera(0, 0)
             base.cr.playGame.getPlace().setState('walk')
         self.setChatAbsolute('Don\'t spend them all at once now.', CFSpeech | CFTimeout)
-        
+
     def cleanupMovie(self):
         print 'Cleaning a movie..?'

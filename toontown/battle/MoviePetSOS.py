@@ -1,15 +1,19 @@
+from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
+import random
+
+import BattleParticles
 from BattleProps import *
 from BattleSounds import *
-from direct.directnotify import DirectNotifyGlobal
-import MovieCamera
-import random
-import MovieUtil
-import BattleParticles
 import HealJokes
+import MovieCamera
+import MovieUtil
+from toontown.chat.ChatGlobals import *
+from toontown.pets import Pet, PetTricks
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownBattleGlobals
-from toontown.pets import Pet, PetTricks
+
+
 notify = DirectNotifyGlobal.directNotify.newCategory('MoviePetSOS')
 soundFiles = ('AA_heal_tickle.ogg', 'AA_heal_telljoke.ogg', 'AA_heal_smooch.ogg', 'AA_heal_happydance.ogg', 'AA_heal_pixiedust.ogg', 'AA_heal_juggle.ogg')
 offset = Point3(0, 4.0, 0)

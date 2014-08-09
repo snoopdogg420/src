@@ -6,6 +6,7 @@ from pandac.PandaModules import *
 
 import DistributedAnimatedProp
 from KnockKnockJokes import *
+from toontown.chat.ChatGlobals import *
 from toontown.distributed import DelayDelete
 from toontown.hood import ZoneUtil
 from toontown.nametag.NametagGlobals import *

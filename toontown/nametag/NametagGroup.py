@@ -20,6 +20,7 @@ class NametagGroup:
         self.font = None
         self.chatType = NametagGlobals.CHAT
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
+        self.active = False
         self.objectCode = None
         self.shadow = None
 
@@ -55,7 +56,7 @@ class NametagGroup:
             self.stompText = ''
             self.stompTimeout = False
             self.stompTask = None
-        for nametag in self.nametags:
+        for nametag in list(self.nametags):
             self.remove(nametag)
         if self.icon:
             self.icon.removeAllChildren()
@@ -121,6 +122,14 @@ class NametagGroup:
 
     def getChatBalloonType(self):
         return self.chatBalloonType
+
+    def setActive(self, active):
+        self.active = active
+        for nametag in self.nametags:
+            nametag.setActive(False)
+
+    def getActive(self):
+        return self.active
 
     def setObjectCode(self, objectCode):
         self.objectCode = objectCode
@@ -296,7 +305,7 @@ class NametagGroup:
             return Task.done
 
     def __chatStomp(self, task=None):
-        self.setChat(self.stompText, timeout=self.stompTimeout)
+        self.setChatText(self.stompText, timeout=self.stompTimeout)
 
         self.stompText = ''
         self.stompTimeout = False

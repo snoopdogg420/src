@@ -33,11 +33,13 @@ class Nametag(PandaNode):
         self.nameTextNode.setWordwrap(8)
         self.nameTextNode.setTextColor(self.nametagColor[3][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
+        self.nameTextNode.setCardDecal(1)
 
         self.chatTextNode = TextNode('chatText')
         self.chatTextNode.setWordwrap(10)
         self.chatTextNode.setTextColor(self.chatColor[3][0])
         self.chatTextNode.setGlyphScale(1.1)
+        self.chatTextNode.setCardDecal(1)
 
         self.icon = None
 
@@ -89,8 +91,9 @@ class Nametag(PandaNode):
 
     def setFont(self, font):
         self.font = font
-        self.nameTextNode.setFont(self.font)
-        self.chatTextNode.setFont(self.font)
+        if self.font:
+            self.nameTextNode.setFont(self.font)
+            self.chatTextNode.setFont(self.font)
 
     def getFont(self):
         return self.font
@@ -189,7 +192,7 @@ class Nametag(PandaNode):
         if updateNeeded:
             self.update()
 
-    def getChatText(self, chatText):
+    def getChatText(self):
         return self.chatTextNode.getText()
 
     def setShadow(self, shadow):
@@ -218,7 +221,7 @@ class Nametag(PandaNode):
             self.drawChatBalloon()
             return
 
-        if not self.nametagHidden:
+        if self.getNameText() and (not self.nametagHidden):
             self.drawNametag()
 
     def drawChatBalloon(self):

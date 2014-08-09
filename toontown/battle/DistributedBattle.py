@@ -7,6 +7,7 @@ from BattleBase import *
 import DistributedBattleBase
 import SuitBattleGlobals
 from otp.avatar import Emote
+from toontown.chat.ChatGlobals import *
 from toontown.distributed import DelayDelete
 from toontown.nametag import NametagGlobals
 from toontown.toonbase import ToontownBattleGlobals

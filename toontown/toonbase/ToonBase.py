@@ -385,6 +385,8 @@ class ToonBase(OTPBase.OTPBase):
         if clickSound:
             NametagGlobals.setClickSound(clickSound)
 
+        self.marginManager = None  # NAMETAG TODO
+
     def setCellsAvailable(self, cell_list, available):
         for cell in cell_list:
             self.marginManager.setCellAvailable(cell, available)

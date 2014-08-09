@@ -5,8 +5,8 @@ class ChatBalloon(NodePath):
     TEXT_Z_OFFSET = -0.25
     CHAT_BALLOON_X_PADDING = 1.0
     CHAT_BALLOON_Z_PADDING = 1.0
-    CHAT_BUBBLE_MIN_WIDTH = 2.0
-    CHAT_BUBBLE_MIN_HEIGHT = 2.0
+    CHAT_BALLOON_MIN_WIDTH = 2.0
+    CHAT_BALLOON_MIN_HEIGHT = 2.0
 
     def __init__(self, model, modelWidth, modelHeight, chatTextNode,
                  foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1)):

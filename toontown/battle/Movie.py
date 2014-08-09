@@ -1,4 +1,7 @@
 import copy
+from direct.directnotify import DirectNotifyGlobal
+from direct.interval.IntervalGlobal import *
+from direct.showbase import DirectObject
 import random
 
 from BattleBase import *
@@ -21,9 +24,7 @@ import MovieUtil
 import PlayByPlayText
 import RewardPanel
 from SuitBattleGlobals import *
-from direct.directnotify import DirectNotifyGlobal
-from direct.interval.IntervalGlobal import *
-from direct.showbase import DirectObject
+from toontown.chat.ChatGlobals import *
 from toontown.distributed import DelayDelete
 from toontown.toon import NPCToons
 from toontown.toon import Toon

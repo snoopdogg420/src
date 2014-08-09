@@ -22,7 +22,6 @@ from otp.ai.MagicWordGlobal import *
 from otp.avatar import Avatar, DistributedAvatar
 from otp.avatar import DistributedPlayer
 from otp.chat import TalkAssistant
-# NAMETAG TODO: from otp.margins.WhisperPopup import *
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from otp.speedchat import SCDecoders
@@ -46,8 +45,8 @@ from toontown.fishing import FishTank
 from toontown.friends import FriendHandle
 from toontown.golf import GolfGlobals
 from toontown.hood import ZoneUtil
-from toontown.nametag.NametagGlobals import *
 from toontown.nametag import NametagGlobals
+from toontown.nametag.NametagGlobals import *
 from toontown.parties import PartyGlobals
 from toontown.parties.InviteInfo import InviteInfo
 from toontown.parties.PartyGlobals import InviteStatus, PartyStatus
@@ -61,6 +60,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 
 
+# NAMETAG TODO: from otp.margins.WhisperPopup import *
 if base.wantKarts:
     from toontown.racing.KartDNA import *
 if (__debug__):
@@ -2241,8 +2241,10 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.playCurrentDialogue(dialogue, chatFlags - CFSpeech, interrupt)
 
     def displayTalk(self, chatString, mods=None):
+        flags = CFSpeech | CFTimeout
         self.nametag.setChatType(NametagGlobals.CHAT)
         if base.talkAssistant.isThought(chatString):
+            flags = CFThought
             self.nametag.setChatBalloonType(NametagGlobals.THOUGHT_BALLOON)
             chatString = base.talkAssistant.removeThoughtPrefix(chatString)
         else:

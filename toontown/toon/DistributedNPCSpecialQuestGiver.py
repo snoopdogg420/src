@@ -1,14 +1,16 @@
-from DistributedNPCToonBase import *
-from toontown.nametag.NametagGlobals import *
+from direct.interval.IntervalGlobal import *
 from pandac.PandaModules import *
+
+from DistributedNPCToonBase import *
+from toontown.chat.ChatGlobals import *
 from toontown.hood import ZoneUtil
+from toontown.nametag.NametagGlobals import *
 from toontown.quest import QuestChoiceGui
 from toontown.quest import QuestParser
 from toontown.quest import TrackChoiceGui
 from toontown.toonbase import TTLocalizer
 from toontown.toontowngui import TeaserPanel
 
-from direct.interval.IntervalGlobal import *
 
 ChoiceTimeout = 20
 

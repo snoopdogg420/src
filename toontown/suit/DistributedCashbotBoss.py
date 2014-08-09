@@ -17,6 +17,7 @@ from toontown.battle import SuitBattleGlobals
 from toontown.building import ElevatorConstants
 from toontown.building import ElevatorUtils
 from toontown.chat import ResistanceChat
+from toontown.chat.ChatGlobals import *
 from toontown.coghq import CogDisguiseGlobals
 from toontown.distributed import DelayDelete
 from toontown.nametag import NametagGlobals
