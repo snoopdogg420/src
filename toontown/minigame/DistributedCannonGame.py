@@ -347,7 +347,7 @@ class DistributedCannonGame(DistributedMinigame):
         toon = self.getAvatar(avId)
         tag = NametagFloat3d()
         tag.hideNametag()
-        tag.updateAll()
+        tag.update()
         tag.setBillboardOffset(0)
         tag.setAvatar(head)
         toon.nametag.add(tag)

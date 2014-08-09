@@ -468,7 +468,7 @@ class DistributedCannon(DistributedObject.DistributedObject):
         self.toonHead.reparentTo(hidden)
         tag = NametagFloat3d()
         tag.hideNametag()
-        tag.updateAll()
+        tag.update()
         tag.setBillboardOffset(0)
         tag.setAvatar(self.toonHead)
         toon.nametag.add(tag)
