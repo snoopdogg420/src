@@ -9,12 +9,13 @@ from toontown.nametag.Nametag3d import Nametag3d
 class NametagGroup:
     CHAT_TIMEOUT_MIN = 4.0
     CHAT_TIMEOUT_MAX = 12.0
-
     CHAT_STOMP_DELAY = 0.2
 
     def __init__(self):
         self.nametag2d = Nametag2d()
         self.nametag3d = Nametag3d()
+
+        self.icon = PandaNode('icon')
 
         self.avatar = None
         self.font = None
@@ -24,43 +25,37 @@ class NametagGroup:
         self.objectCode = None
         self.shadow = None
 
-        # Foreground, background:
         self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
         self.chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNormal]
         self.speedChatColor = VBase4(1, 1, 1, 1)
 
         self.nameText = ''
-        self.chatText = ''
-
+        self.stompChatText = ''
         self.chatPages = []
         self.chatPageIndex = 0
 
-        self.icon = PandaNode('icon')
+        self.chatTimeoutTask = None
+        self.chatTimeoutTaskName = self.getUniqueName() + '-timeout'
+        self.stompTask = None
+        self.stompTaskName = self.getUniqueName() + '-stomp'
 
         self.nametags = set()
         self.add(self.nametag2d)
         self.add(self.nametag3d)
 
-        self.stompText = ''
-        self.stompTimeout = False
-
-        self.chatTimeoutTask = None
-        self.stompTask = None
-
     def destroy(self):
-        if self.chatTimeoutTask is not None:
-            taskMgr.remove(self.chatTimeoutTask)
-            self.chatTimeoutTask = None
-        if self.stompTask is not None:
-            taskMgr.remove(self.stompTask)
-            self.stompText = ''
-            self.stompTimeout = False
-            self.stompTask = None
+        self.clearChatText()
+
         for nametag in list(self.nametags):
             self.remove(nametag)
+
         if self.icon:
             self.icon.removeAllChildren()
             self.icon = None
+
+        self.avatar = None
+        self.font = None
+
         if self.nametag2d:
             self.nametag2d = None
         if self.nametag3d:
@@ -68,6 +63,37 @@ class NametagGroup:
 
     def getUniqueName(self):
         return 'NametagGroup-' + str(id(self))
+
+    def add(self, nametag):
+        self.nametags.add(nametag)
+        self.update(nametag)
+
+    def remove(self, nametag):
+        nametag.destroy()
+        self.nametags.remove(nametag)
+
+    def update(self, nametag):
+        nametag.setAvatar(self.avatar)
+        nametag.setFont(self.font)
+        nametag.setChatType(self.chatType)
+        nametag.setChatBalloonType(self.chatBalloonType)
+        nametag.setNametagColor(self.nametagColor)
+        nametag.setChatColor(self.chatColor)
+        nametag.setSpeedChatColor(self.speedChatColor)
+        nametag.setNameText(self.nameText)
+        nametag.setChatText(self.getChatText())
+        nametag.setIcon(self.icon)
+        nametag.update()
+
+    def updateAll(self):
+        for nametag in self.nametags:
+            self.update(nametag)
+
+    def manage(self, marginManager):
+        pass
+
+    def unmanage(self, marginManager):
+        pass
 
     def setNametag2d(self, nametag2d):
         if self.nametag2d:
@@ -126,7 +152,7 @@ class NametagGroup:
     def setActive(self, active):
         self.active = active
         for nametag in self.nametags:
-            nametag.setActive(False)
+            nametag.setActive(self.active)
 
     def getActive(self):
         return self.active
@@ -182,52 +208,71 @@ class NametagGroup:
     def getNameText(self):
         return self.nameText
 
+    def getStompChatText(self):
+        return self.stompChatText
+
     def setChatText(self, chatText, timeout=False):
+        # If we are currently displaying chat text, we need to "stomp" it. In
+        # other words, we need to clear the current chat text, pause for a
+        # short time, then display the new chat text:
+        if self.getChatText():
+            self.clearChatText()
+            self.stompChatText = chatText
+            taskMgr.doMethodLater(
+                NametagGroup.CHAT_STOMP_DELAY, self.__chatStomp,
+                self.stompTaskName, extraArgs=[timeout])
+            return
+
+        self.clearChatText()
+
+        self.chatPages = chatText.split('\x07')
+        self.setChatPageIndex(0)
+
+        if timeout:
+            delay = len(self.getChatText()) * 0.5
+            if delay < NametagGroup.CHAT_TIMEOUT_MIN:
+                delay = NametagGroup.CHAT_TIMEOUT_MIN
+            elif delay > NametagGroup.CHAT_TIMEOUT_MAX:
+                delay = NametagGroup.CHAT_TIMEOUT_MAX
+            taskMgr.doMethodLater(delay, self.clearChatText, self.chatTimeoutTaskName)
+
+    def getChatText(self):
+        if self.chatPageIndex >= self.getNumChatPages():
+            return ''
+        return self.chatPages[self.chatPageIndex]
+
+    def clearChatText(self, task=None):
+        if self.stompTask is not None:
+            taskMgr.remove(self.stompTask)
+            self.stompTask = None
+
+        self.stompChatText = ''
+
         if self.chatTimeoutTask is not None:
             taskMgr.remove(self.chatTimeoutTask)
             self.chatTimeoutTask = None
 
-        if self.stompTask is not None:
-            taskMgr.remove(self.stompTask)
-            self.stompText = ''
-            self.stompTimeout = False
-            self.stompTask = None
+        self.chatPages = []
+        self.chatPageIndex = 0
 
-        if not self.chatText:
-            self.chatText = chatText
-            for nametag in self.nametags:
-                nametag.setChatText(self.chatText)
+        for nametag in self.nametags:
+            nametag.setChatText('')
+            nametag.update()
 
-            if timeout:
-                delay = len(self.chatText) * 0.5
-                if delay < NametagGroup.CHAT_TIMEOUT_MIN:
-                    delay = NametagGroup.CHAT_TIMEOUT_MIN
-                elif delay > NametagGroup.CHAT_TIMEOUT_MAX:
-                    delay = NametagGroup.CHAT_TIMEOUT_MAX
-
-                taskMgr.doMethodLater(
-                    delay, self.__chatTimeout,
-                    self.getUniqueName() + '-timeout')
-        else:
-            self.stompText = chatText
-            self.stompTimeout = timeout
-            taskMgr.doMethodLater(
-                NametagGroup.CHAT_STOMP_DELAY, self.__chatStomp,
-                self.getUniqueName() + '-stomp')
-
-    def getChatText(self):
-        return self.chatText
-
-    def clearChatText(self):
-        self.setChatText('')
-        self.updateAll()
+        if task is not None:
+            return Task.done
 
     def getNumChatPages(self):
         return len(self.chatPages)
 
     def setChatPageIndex(self, chatPageIndex):
+        if chatPageIndex >= self.getNumChatPages():
+            return
+
         self.chatPageIndex = chatPageIndex
-        self.setChatText(self.chatPages[self.chatPageIndex])
+        for nametag in self.nametags:
+            nametag.setChatText(self.chatPages[self.chatPageIndex])
+            nametag.update()
 
     def getChatPageIndex(self):
         return self.chatPageIndex
@@ -239,40 +284,6 @@ class NametagGroup:
 
     def getIcon(self):
         return self.icon
-
-    def getStompText(self):
-        return self.stompText
-
-    def add(self, nametag):
-        self.nametags.add(nametag)
-        self.update(nametag)
-
-    def remove(self, nametag):
-        nametag.destroy()
-        self.nametags.remove(nametag)
-
-    def update(self, nametag):
-        nametag.setAvatar(self.avatar)
-        nametag.setFont(self.font)
-        nametag.setChatType(self.chatType)
-        nametag.setChatBalloonType(self.chatBalloonType)
-        nametag.setNametagColor(self.nametagColor)
-        nametag.setChatColor(self.chatColor)
-        nametag.setSpeedChatColor(self.speedChatColor)
-        nametag.setNameText(self.nameText)
-        nametag.setChatText(self.chatText)
-        nametag.setIcon(self.icon)
-        nametag.update()
-
-    def updateAll(self):
-        for nametag in self.nametags:
-            self.update(nametag)
-
-    def manage(self, marginManager):
-        pass
-
-    def unmanage(self, marginManager):
-        pass
 
     def hideNametag(self):
         for nametag in self.nametags:
@@ -298,17 +309,9 @@ class NametagGroup:
         for nametag in self.nametags:
             nametag.showThought()
 
-    def __chatTimeout(self, task=None):
-        self.clearChatText()
-
-        if task is not None:
-            return Task.done
-
-    def __chatStomp(self, task=None):
-        self.setChatText(self.stompText, timeout=self.stompTimeout)
-
-        self.stompText = ''
-        self.stompTimeout = False
+    def __chatStomp(self, task=None, timeout=False):
+        self.setChatText(self.stompChatText, timeout=timeout)
+        self.stompChatText = ''
 
         if task is not None:
             return Task.done

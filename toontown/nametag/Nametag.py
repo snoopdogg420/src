@@ -6,6 +6,7 @@ from toontown.nametag import NametagGlobals
 
 
 class Nametag(PandaNode):
+    TEXT_Y_OFFSET = -0.05
     NAMETAG_X_PADDING = 0.2
     NAMETAG_Z_PADDING = 0.2
 
@@ -46,6 +47,31 @@ class Nametag(PandaNode):
         # Add the tick task:
         self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
 
+    def destroy(self):
+        if self.tickTask is not None:
+            taskMgr.remove(self.tickTask)
+            self.tickTask = None
+
+        if self.icon is not None:
+            self.icon.removeAllChildren()
+            self.icon = None
+
+        if self.contents:
+            self.contents.removeNode()
+            self.contents = None
+
+        if self.chatTextNode:
+            self.chatTextNode = None
+
+        if self.nameTextNode:
+            self.nameTextNode = None
+
+        self.avatar = None
+        self.font = None
+
+    def getUniqueName(self):
+        return 'Nametag-' + str(id(self))
+
     def getChatBalloonModel(self):
         pass  # Inheritors should override this method.
 
@@ -66,22 +92,6 @@ class Nametag(PandaNode):
 
     def tick(self, task):
         return Task.cont  # Inheritors should override this method.
-
-    def destroy(self):
-        taskMgr.remove(self.tickTask)
-
-        if self.contents:
-            self.contents.removeNode()
-            self.contents = None
-
-        if self.chatTextNode:
-            self.chatTextNode = None
-
-        if self.nameTextNode:
-            self.nameTextNode = None
-
-    def getUniqueName(self):
-        return 'Nametag-' + str(id(self))
 
     def setAvatar(self, avatar):
         self.avatar = avatar
@@ -187,10 +197,7 @@ class Nametag(PandaNode):
         return self.nameTextNode.getText()
 
     def setChatText(self, chatText):
-        updateNeeded = not self.getChatText()
         self.chatTextNode.setText(chatText)
-        if updateNeeded:
-            self.update()
 
     def getChatText(self):
         return self.chatTextNode.getText()
@@ -270,7 +277,8 @@ class Nametag(PandaNode):
         # Attach the TextNode:
         nameText = self.contents.attachNewNode(self.nameTextNode, 1)
         nameText.setTransparency(foreground[3] < 1)
-        nameText.setDepthOffset(1)
+        nameText.setAttrib(DepthWriteAttrib.make(0))
+        nameText.setY(Nametag.TEXT_Y_OFFSET)
 
         # Attach a panel behind the TextNode:
         namePanel = NametagGlobals.cardModel.copyTo(self.contents, 0)

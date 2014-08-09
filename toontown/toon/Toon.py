@@ -2040,7 +2040,7 @@ class Toon(Avatar.Avatar, ToonHead):
         self.openEyes()
         self.startBlink()
         if config.GetBool('stuck-sleep-fix', 1):
-            doClear = SLEEP_STRING in (self.nametag.getChatText(), self.nametag.getStompText())
+            doClear = SLEEP_STRING in (self.nametag.getChatText(), self.nametag.getStompChatText())
         else:
             doClear = self.nametag.getChatText() == SLEEP_STRING
         if doClear:

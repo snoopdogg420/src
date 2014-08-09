@@ -368,6 +368,7 @@ class Avatar(Actor, ShadowCaster):
             self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
 
         # NAMETAG TODO: Handle buttons.
+        # NAMETAG TODO: Handle CFReversed
 
         self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags, interrupt)
