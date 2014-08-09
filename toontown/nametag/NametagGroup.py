@@ -218,9 +218,9 @@ class NametagGroup:
         if self.getChatText():
             self.clearChatText()
             self.stompChatText = chatText
-            taskMgr.doMethodLater(
+            self.stompTask = taskMgr.doMethodLater(
                 NametagGroup.CHAT_STOMP_DELAY, self.__chatStomp,
-                self.stompTaskName, extraArgs=[timeout])
+                self.stompTaskName, extraArgs=[timeout], appendTask=True)
             return
 
         self.clearChatText()
@@ -234,7 +234,8 @@ class NametagGroup:
                 delay = NametagGroup.CHAT_TIMEOUT_MIN
             elif delay > NametagGroup.CHAT_TIMEOUT_MAX:
                 delay = NametagGroup.CHAT_TIMEOUT_MAX
-            taskMgr.doMethodLater(delay, self.clearChatText, self.chatTimeoutTaskName)
+            self.chatTimeoutTask = taskMgr.doMethodLater(
+                delay, self.clearChatText, self.chatTimeoutTaskName)
 
     def getChatText(self):
         if self.chatPageIndex >= self.getNumChatPages():
@@ -309,7 +310,7 @@ class NametagGroup:
         for nametag in self.nametags:
             nametag.showThought()
 
-    def __chatStomp(self, task=None, timeout=False):
+    def __chatStomp(self, timeout=False, task=None):
         self.setChatText(self.stompChatText, timeout=timeout)
         self.stompChatText = ''
 

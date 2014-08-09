@@ -3,10 +3,10 @@ from pandac.PandaModules import *
 
 class ChatBalloon(NodePath):
     TEXT_Y_OFFSET = -0.05
-    TEXT_Z_OFFSET = -0.15
+    TEXT_Z_OFFSET = -0.2
     CHAT_BALLOON_X_PADDING = 0.65
     CHAT_BALLOON_Z_PADDING = 0.65
-    CHAT_BALLOON_MIN_WIDTH = 3
+    CHAT_BALLOON_MIN_WIDTH = 3.0
     CHAT_BALLOON_MIN_HEIGHT = 2.6
 
     def __init__(self, model, modelWidth, modelHeight, chatTextNode,
@@ -34,6 +34,7 @@ class ChatBalloon(NodePath):
         paddedWidth = chatTextWidth + (ChatBalloon.CHAT_BALLOON_X_PADDING*2)
         if paddedWidth < ChatBalloon.CHAT_BALLOON_MIN_WIDTH:
             paddedWidth = ChatBalloon.CHAT_BALLOON_MIN_WIDTH
+            chatTextWidth += 0.15
         chatBalloon.setSx(paddedWidth / modelWidth)
         paddedHeight = chatTextHeight + (ChatBalloon.CHAT_BALLOON_Z_PADDING*2)
         if paddedHeight < ChatBalloon.CHAT_BALLOON_MIN_HEIGHT:
