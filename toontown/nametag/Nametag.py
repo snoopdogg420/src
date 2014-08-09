@@ -34,13 +34,12 @@ class Nametag(PandaNode):
         self.nameTextNode.setWordwrap(8)
         self.nameTextNode.setTextColor(self.nametagColor[3][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
-        self.nameTextNode.setCardDecal(1)
 
         self.chatTextNode = TextNode('chatText')
-        self.chatTextNode.setWordwrap(10)
+        self.chatTextNode.setWordwrap(13)
         self.chatTextNode.setTextColor(self.chatColor[3][0])
-        self.chatTextNode.setGlyphScale(1.1)
-        self.chatTextNode.setCardDecal(1)
+        self.chatTextNode.setGlyphScale(1.05)
+        self.chatTextNode.setGlyphShift(-0.05)
 
         self.icon = None
 

@@ -3,23 +3,23 @@ from pandac.PandaModules import *
 
 class ChatBalloon(NodePath):
     TEXT_Y_OFFSET = -0.05
-    TEXT_Z_OFFSET = -0.25
-    CHAT_BALLOON_X_PADDING = 1.0
-    CHAT_BALLOON_Z_PADDING = 1.0
+    TEXT_Z_OFFSET = -0.15
+    CHAT_BALLOON_X_PADDING = 0.65
+    CHAT_BALLOON_Z_PADDING = 0.65
     CHAT_BALLOON_MIN_WIDTH = 3
-    CHAT_BALLOON_MIN_HEIGHT = 2.5
+    CHAT_BALLOON_MIN_HEIGHT = 2.6
 
     def __init__(self, model, modelWidth, modelHeight, chatTextNode,
                  foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1)):
         NodePath.__init__(self, 'chatBalloon')
 
+        # Set the TextNode color:
+        chatTextNode.setTextColor(foreground)
+
         # Create a chat balloon:
         chatBalloon = model.copyTo(self)
         chatBalloon.setColor(background)
         chatBalloon.setTransparency(background[3] < 1)
-
-        # Set the TextNode color:
-        chatTextNode.setTextColor(foreground)
 
         # Attach the TextNode:
         chatText = self.attachNewNode(chatTextNode)
@@ -43,6 +43,6 @@ class ChatBalloon(NodePath):
 
         # Position the TextNode:
         chatText.setPos(chatBalloon.getBounds().getCenter())
-        chatText.setY(ChatBalloon.TEXT_Y_OFFSET)
         chatText.setX(chatText, -(chatTextWidth/2))
+        chatText.setY(ChatBalloon.TEXT_Y_OFFSET)
         chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
