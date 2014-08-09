@@ -36,7 +36,7 @@ class Nametag(PandaNode):
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
-        self.chatTextNode.setWordwrap(13)
+        self.chatTextNode.setWordwrap(12)
         self.chatTextNode.setTextColor(self.chatColor[3][0])
         self.chatTextNode.setGlyphScale(1.05)
         self.chatTextNode.setGlyphShift(-0.05)

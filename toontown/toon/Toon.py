@@ -1,30 +1,33 @@
-from otp.avatar import Avatar
-from otp.avatar.Avatar import teleportNotify
-import ToonDNA
-from direct.task.Task import Task
-from toontown.suit import SuitDNA
 from direct.actor import Actor
-from ToonHead import *
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from otp.otpbase import OTPLocalizer
-from toontown.toonbase import TTLocalizer
-import random
-from toontown.effects import Wake
-import TTEmote
-from otp.avatar import Emote
-import Motion
-from toontown.hood import ZoneUtil
-from toontown.battle import SuitBattleGlobals
-from otp.otpbase import OTPGlobals
-from toontown.effects import DustCloud
+from direct.interval.IntervalGlobal import *
 from direct.showbase.PythonUtil import Functor
-from toontown.distributed import DelayDelete
-from toontown.nametag.NametagGlobals import *
-import AccessoryGlobals
+from direct.task.Task import Task
+from pandac.PandaModules import *
+import random
 import types
+
+import AccessoryGlobals
+import Motion
+import TTEmote
+import ToonDNA
+from ToonHead import *
+from otp.avatar import Avatar
+from otp.avatar import Emote
+from otp.avatar.Avatar import teleportNotify
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLocalizer
+from toontown.battle import SuitBattleGlobals
+from toontown.chat.ChatGlobals import *
+from toontown.distributed import DelayDelete
+from toontown.effects import DustCloud
+from toontown.effects import Wake
+from toontown.hood import ZoneUtil
+from toontown.nametag.NametagGlobals import *
+from toontown.suit import SuitDNA
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 def teleportDebug(requestStatus, msg, onlyIfToAv = True):
     if teleportNotify.getDebug():
