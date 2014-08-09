@@ -2,10 +2,11 @@ from pandac.PandaModules import *
 
 
 class ChatBalloon(NodePath):
+    TEXT_X_OFFSET = -0.05
     TEXT_Y_OFFSET = -0.05
-    TEXT_Z_OFFSET = -0.15
-    TEXT_MIN_WIDTH = 2.75
-    TEXT_MIN_HEIGHT = 2.0
+    TEXT_Z_OFFSET = -(4.0/33.0)
+    TEXT_MIN_WIDTH = 2.25
+    TEXT_MIN_HEIGHT = 1.5
     CHAT_BALLOON_X_PADDING = 0.65
     CHAT_BALLOON_Z_PADDING = 0.65
 
@@ -50,3 +51,4 @@ class ChatBalloon(NodePath):
         chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
         if chatTextHeight == ChatBalloon.TEXT_MIN_HEIGHT:
             chatText.setZ(chatText, -((ChatBalloon.TEXT_MIN_HEIGHT-chatTextNode.getHeight()) / 2.0))
+        chatText.setX(chatText, ChatBalloon.TEXT_X_OFFSET)
