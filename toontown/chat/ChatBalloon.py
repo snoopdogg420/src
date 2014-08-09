@@ -4,10 +4,10 @@ from pandac.PandaModules import *
 class ChatBalloon(NodePath):
     TEXT_Y_OFFSET = -0.05
     TEXT_Z_OFFSET = -0.15
+    TEXT_MIN_WIDTH = 2.75
+    TEXT_MIN_HEIGHT = 2.0
     CHAT_BALLOON_X_PADDING = 0.65
     CHAT_BALLOON_Z_PADDING = 0.65
-    CHAT_BALLOON_MIN_WIDTH = 3.0
-    CHAT_BALLOON_MIN_HEIGHT = 2.6
 
     def __init__(self, model, modelWidth, modelHeight, chatTextNode,
                  foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1)):
@@ -30,19 +30,23 @@ class ChatBalloon(NodePath):
         middle = chatBalloon.find('**/middle')
         top = chatBalloon.find('**/top')
         chatTextWidth = chatTextNode.getWidth()
+        if chatTextWidth < ChatBalloon.TEXT_MIN_WIDTH:
+            chatTextWidth = ChatBalloon.TEXT_MIN_WIDTH
         chatTextHeight = chatTextNode.getHeight()
+        if chatTextHeight < ChatBalloon.TEXT_MIN_HEIGHT:
+            chatTextHeight = ChatBalloon.TEXT_MIN_HEIGHT
         paddedWidth = chatTextWidth + (ChatBalloon.CHAT_BALLOON_X_PADDING*2)
-        if paddedWidth < ChatBalloon.CHAT_BALLOON_MIN_WIDTH:
-            paddedWidth = ChatBalloon.CHAT_BALLOON_MIN_WIDTH
         chatBalloon.setSx(paddedWidth / modelWidth)
         paddedHeight = chatTextHeight + (ChatBalloon.CHAT_BALLOON_Z_PADDING*2)
-        if paddedHeight < ChatBalloon.CHAT_BALLOON_MIN_HEIGHT:
-            paddedHeight = ChatBalloon.CHAT_BALLOON_MIN_HEIGHT
         middle.setSz(paddedHeight - 1.5)  # Compensate for the top, as well.
         top.setZ(middle, 1)
 
         # Position the TextNode:
         chatText.setPos(chatBalloon.getBounds().getCenter())
         chatText.setX(chatText, -(chatTextWidth/2))
+        if chatTextWidth == ChatBalloon.TEXT_MIN_WIDTH:
+            chatText.setX(chatText, (ChatBalloon.TEXT_MIN_WIDTH-chatTextNode.getWidth()) / 2.0)
         chatText.setY(ChatBalloon.TEXT_Y_OFFSET)
         chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
+        if chatTextHeight == ChatBalloon.TEXT_MIN_HEIGHT:
+            chatText.setZ(chatText, -((ChatBalloon.TEXT_MIN_HEIGHT-chatTextNode.getHeight()) / 2.0))
