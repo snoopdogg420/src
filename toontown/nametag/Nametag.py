@@ -53,7 +53,7 @@ class Nametag(PandaNode, DirectObject):
         self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
 
         self.fsm = ClassicFSM.ClassicFSM(
-            'DistributedBankInterior',
+            'Nametag',
             [
                 State.State('disabled', self.enterDisabled, self.exitDisabled,
                             ['normal', 'down', 'rollover']),
@@ -167,7 +167,7 @@ class Nametag(PandaNode, DirectObject):
         elif self.clickState == NametagGlobals.ROLLOVER:
             self.fsm.request('rollover')
         elif self.clickState == NametagGlobals.DISABLED:
-            self.fsm.request('disable')
+            self.fsm.request('disabled')
         self.update()
 
     def getClickState(self):

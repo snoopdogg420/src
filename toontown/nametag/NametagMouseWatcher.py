@@ -6,6 +6,8 @@ from otp.otpbase import OTPGlobals
 
 class NametagMouseWatcher:
     def __init__(self):
+        self.cTrav = CollisionTraverser('NametagMouseWatcher.cTrav')
+
         self.pickerNode = CollisionNode(self.getUniqueName() + '-mouseRay')
         self.pickerNodePath = base.camera.attachNewNode(self.pickerNode)
         self.pickerNode.setFromCollideMask(OTPGlobals.WallBitmask)
@@ -15,7 +17,7 @@ class NametagMouseWatcher:
         self.pickerHandler = CollisionHandlerEvent()
         self.pickerHandler.addInPattern('%fn-into-%in')
         self.pickerHandler.addOutPattern('%fn-out-%in')
-        base.cTrav.addCollider(self.pickerNodePath, self.pickerHandler)
+        self.cTrav.addCollider(self.pickerNodePath, self.pickerHandler)
 
         self.updateRayTask = taskMgr.add(
             self.updateRay, self.getUniqueName() + '-updateRayTask')
