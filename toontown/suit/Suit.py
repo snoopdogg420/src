@@ -359,7 +359,6 @@ class Suit(Avatar.Avatar):
         self.isDisguised = 0
         self.isWaiter = 0
         self.isRental = 0
-        return
 
     def delete(self):
         try:
@@ -385,8 +384,6 @@ class Suit(Avatar.Avatar):
             self.removeHealthBar()
             Avatar.Avatar.delete(self)
 
-        return
-
     def setHeight(self, height):
         Avatar.Avatar.setHeight(self, height)
         self.nametag3d.setPos(0, 0, height + 1.0)
@@ -395,18 +392,18 @@ class Suit(Avatar.Avatar):
         return 2
 
     def setDNAString(self, dnaString):
-        self.dna = SuitDNA.SuitDNA()
-        self.dna.makeFromNetString(dnaString)
-        self.setDNA(self.dna)
+        dna = SuitDNA.SuitDNA()
+        dna.makeFromNetString(dnaString)
+        self.setDNA(dna)
 
     def setDNA(self, dna):
         if self.style:
-            pass
-        else:
-            self.style = dna
-            self.generateSuit()
-            self.initializeDropShadow()
-            self.initializeNametag3d()
+            return
+
+        self.style = dna
+        self.generateSuit()
+        self.initializeDropShadow()
+        self.initializeNametag3d()
 
     def generateSuit(self):
         dna = self.style
@@ -416,22 +413,22 @@ class Suit(Avatar.Avatar):
         self.loseActor = None
         self.isSkeleton = 0
 
-        if dna.name in SuitGlobals.suitDict:
-            self.scale = SuitGlobals.suitDict[dna.name][SuitGlobals.SCALE_INDEX]
-            self.handColor = SuitGlobals.suitDict[dna.name][SuitGlobals.HAND_COLOR_INDEX]
+        if dna.name in SuitGlobals.suitProperties:
+            self.scale = SuitGlobals.suitProperties[dna.name][SuitGlobals.SCALE_INDEX]
+            self.handColor = SuitGlobals.suitProperties[dna.name][SuitGlobals.HAND_COLOR_INDEX]
 
             if dna.name == 'cc':
                 self.headColor = SuitGlobals.ColdCallerHead
 
             self.generateBody()
 
-            if SuitGlobals.suitDict[dna.name][SuitGlobals.HEAD_TEXTURE_INDEX]:
-                self.headTexture = SuitGlobals.suitDict[dna.name][SuitGlobals.HEAD_TEXTURE_INDEX]
+            if SuitGlobals.suitProperties[dna.name][SuitGlobals.HEAD_TEXTURE_INDEX]:
+                self.headTexture = SuitGlobals.suitProperties[dna.name][SuitGlobals.HEAD_TEXTURE_INDEX]
 
-            for head in SuitGlobals.suitDict[dna.name][SuitGlobals.HEADS_INDEX]:
+            for head in SuitGlobals.suitProperties[dna.name][SuitGlobals.HEADS_INDEX]:
                 self.generateHead(head)
 
-            self.setHeight(SuitGlobals.suitDict[dna.name][SuitGlobals.HEIGHT_INDEX])
+            self.setHeight(SuitGlobals.suitProperties[dna.name][SuitGlobals.HEIGHT_INDEX])
 
         self.setName(SuitBattleGlobals.SuitAttributes[dna.name]['name'])
         self.getGeomNode().setScale(self.scale)
