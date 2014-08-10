@@ -1,6 +1,7 @@
 from direct.task.Task import Task
 from pandac.PandaModules import *
 
+from otp.otpbase import OTPGlobals
 from toontown.chat import ChatBalloon
 from toontown.nametag import NametagGlobals
 
@@ -256,6 +257,9 @@ class Nametag(PandaNode):
             foreground=foreground, background=background)
         chatBalloon.reparentTo(self.contents)
 
+        # Finally, draw the collisions:
+        self.drawCollisions()
+
     def drawNametag(self):
         if self.font is None:
             # We can't draw this without a font.
@@ -289,3 +293,13 @@ class Nametag(PandaNode):
         namePanel.setScale(sX, 1, sZ)
         namePanel.setColor(background)
         namePanel.setTransparency(background[3] < 1)
+
+        # Finally, draw the collisions:
+        self.drawCollisions()
+
+    def drawCollisions(self):
+        collNode = CollisionNode('picker')
+        collNodePath = self.contents.attachNewNode(collNode)
+        collNodePath.setCollideMask(OTPGlobals.WallBitmask)
+        collBox = CollisionBox(*self.contents.getTightBounds())
+        collNode.addSolid(collBox)
