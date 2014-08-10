@@ -4649,33 +4649,6 @@ def shoes(shoesIndex, shoesTex=0):
     invoker.b_setShoes(shoesIndex, shoesTex, 0)
     return "Set {0}'s shoes to {1}, {2}!".format(invoker.getName(), shoesIndex, shoesTex)
 
-@magicWord(category=CATEGORY_MODERATOR)
-def kick():
-    """
-    Kick the target from the game server.
-    """
-    target = spellbook.getTarget()
-    if target == spellbook.getInvoker():
-        return "You can't kick yourself!"
-    datagram = PyDatagram()
-    datagram.addServerHeader(
-        target.GetPuppetConnectionChannel(target.doId),
-        simbase.air.ourChannel, CLIENTAGENT_EJECT)
-    datagram.addUint16(155)
-    datagram.addString('You were kicked by a moderator!')
-    simbase.air.send(datagram)
-    return "Kicked {0} from the game server!".format(target.getName())
-
-@magicWord(category=CATEGORY_MODERATOR)
-def ban():
-    """
-    Ban the target from the game server.
-    """
-    target = spellbook.getTarget()
-    if target == spellbook.getInvoker():
-        return "You can't ban yourself!"
-    return 'Not implemented.'
-
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[int])
 def gmIcon(accessLevel=None):
     """
