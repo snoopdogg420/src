@@ -156,8 +156,7 @@ class PlayGame(StateData.StateData):
 
     def unloadDnaStore(self):
         if hasattr(self, 'dnaStore'):
-            self.dnaStore.resetNodes()
-            self.dnaStore.resetTextures()
+            self.dnaStore.cleanup()
             del self.dnaStore
             ModelPool.garbageCollect()
             TexturePool.garbageCollect()
@@ -199,12 +198,7 @@ class PlayGame(StateData.StateData):
         return
 
     def _destroyHood(self):
-        self.ignore(self.hoodDoneEvent)
-        self.hood.exit()
-        self.hood.unload()
-        self.hood = None
-        base.cr.cache.flush()
-        return
+        self.unload()
 
     def enterQuietZone(self, requestStatus):
         self.acceptOnce(self.quietZoneDoneEvent, self.handleQuietZoneDone)
@@ -239,6 +233,8 @@ class PlayGame(StateData.StateData):
         if base.config.GetBool('want-qa-regression', 0):
             self.notify.info('QA-REGRESSION: NEIGHBORHOODS: Visit %s' % hoodName)
         count = ToontownGlobals.hoodCountMap[canonicalHoodId]
+        if not hasattr(self, 'dnaStore'):
+            self.loadDnaStore()
         if loaderName == 'safeZoneLoader':
             count += ToontownGlobals.safeZoneCountMap[canonicalHoodId]
         elif loaderName == 'townLoader':
@@ -271,8 +267,6 @@ class PlayGame(StateData.StateData):
                  'hood': hoodName}, count, 1, TTLocalizer.TIP_GENERAL, zoneId)
         if hoodId == ToontownGlobals.Tutorial:
             self.loadDnaStoreTutorial()
-        else:
-            self.loadDnaStore()
         hoodClass = self.getHoodClassByNumber(canonicalHoodId)
         self.hood = hoodClass(self.fsm, self.hoodDoneEvent, self.dnaStore, hoodId)
         self.hood.load()

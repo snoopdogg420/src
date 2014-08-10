@@ -1,3 +1,4 @@
+from pandac.PandaModules import *
 from DNAError import DNAError
 from DNASuitPoint import DNASuitPoint
 from DNASuitPath import DNASuitPath
@@ -140,12 +141,18 @@ class DNAStorage:
             return self.placeNodes[code]
 
     def resetNodes(self):
+        for node in self.nodes:
+            self.nodes[node].removeNode()
         self.nodes = {}
 
     def resetHoodNodes(self):
+        for node in self.hoodNodes:
+            self.hoodNodes[node].removeNode()
         self.hoodNodes = {}
 
     def resetPlaceNodes(self):
+        for node in self.placeNodes:
+            self.placeNodes[node].removeNode()
         self.placeNodes = {}
 
     def storeNode(self, node, code):
@@ -240,6 +247,9 @@ class DNAStorage:
             return -1
         return len(self.catalogCodes[category])
 
+    def resetCatalogCodes(self):
+        self.catalogCodes = {}
+
     def getCatalogCode(self, category, index):
         return self.catalogCodes[category][index]
 
@@ -276,3 +286,20 @@ class DNAStorage:
 
     def resetBlockZones(self):
         self.blockZones = {}
+
+    def cleanup(self):
+        self.resetBattleCells()
+        self.resetBlockNumbers()
+        self.resetDNAGroups()
+        self.resetDNAVisGroups()
+        self.resetDNAVisGroupsAI()
+        self.resetFonts()
+        self.resetHood()
+        self.resetHoodNodes()
+        self.resetNodes()
+        self.resetPlaceNodes()
+        self.resetSuitPoints()
+        self.resetTextures()
+        self.resetCatalogCodes()
+        ModelPool.garbageCollect()
+        TexturePool.garbageCollect()
