@@ -1,3 +1,4 @@
+import atexit
 from direct.directnotify import DirectNotifyGlobal
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
@@ -6,27 +7,27 @@ from direct.showbase.Transitions import Transitions
 import math
 import os
 from pandac.PandaModules import *
+import random
+import shutil
 from sys import platform
 import sys
+import tempfile
 
 import ToontownGlobals
 import ToontownLoader
-import atexit
-# NAMETAG TODO: from otp.margins.MarginManager import MarginManager
-from toontown.nametag import NametagGlobals
 from otp.otpbase import OTPBase
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLauncherGlobals
-import shutil
-import tempfile
 from toontown.launcher import ToontownDownloadWatcher
+from toontown.nametag import NametagGlobals
+from toontown.nametag import NametagMouseWatcher
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownAccess
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toontowngui import TTDialog
 
-import random
 
+# NAMETAG TODO: from otp.margins.MarginManager import MarginManager
 class ToonBase(OTPBase.OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonBase')
 
@@ -389,6 +390,8 @@ class ToonBase(OTPBase.OTPBase):
         self.leftCells = []
         self.rightCells = []
         self.bottomCells = []
+
+        self.nametagMouseWatcher = NametagMouseWatcher.NametagMouseWatcher()
 
     def setCellsAvailable(self, cell_list, available):
         for cell in cell_list:

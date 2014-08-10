@@ -66,6 +66,14 @@ class Nametag(PandaNode, DirectObject):
             ], 'disabled', 'disabled')
         self.fsm.enterInitialState()
 
+        self.pickerName = self.getUniqueName() + '-picker'
+        self.accept(
+            base.nametagMouseWatcher.getIntoEventName() % self.pickerName,
+            self.__handleMouseEnter)
+        base.accept(
+            base.nametagMouseWatcher.getOutEventName() % self.pickerName,
+            self.__handleMouseLeave)
+
     def destroy(self):
         if self.tickTask is not None:
             taskMgr.remove(self.tickTask)
@@ -142,8 +150,7 @@ class Nametag(PandaNode, DirectObject):
     def setActive(self, active):
         self.active = active
         if self.active:
-            self.clickState = NametagGlobals.NORMAL
-            self.fsm.request('normal')
+            self.setClickState(NametagGlobals.NORMAL)
         else:
             self.setClickState(NametagGlobals.DISABLED)
 
@@ -151,8 +158,6 @@ class Nametag(PandaNode, DirectObject):
         return self.active
 
     def setClickState(self, clickState):
-        if self.clickState == NametagGlobals.DISABLED:
-            return
         self.lastClickState = self.clickState
         self.clickState = clickState
         if self.clickState == NametagGlobals.NORMAL:
@@ -337,7 +342,7 @@ class Nametag(PandaNode, DirectObject):
         self.drawCollisions()
 
     def drawCollisions(self):
-        collNode = CollisionNode('picker')
+        collNode = CollisionNode(self.pickerName)
         collNodePath = self.contents.attachNewNode(collNode)
         collNodePath.setCollideMask(OTPGlobals.WallBitmask)
         collBox = CollisionBox(*self.contents.getTightBounds())
@@ -367,3 +372,13 @@ class Nametag(PandaNode, DirectObject):
 
     def exitDisabled(self):
         pass
+
+    def __handleMouseEnter(self, collEntry=None):
+        if self.clickState == NametagGlobals.DISABLED:
+            return
+        self.setClickState(NametagGlobals.ROLLOVER)
+
+    def __handleMouseLeave(self, collEntry=None):
+        if self.clickState == NametagGlobals.DISABLED:
+            return
+        self.setClickState(NametagGlobals.NORMAL)
