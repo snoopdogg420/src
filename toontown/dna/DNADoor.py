@@ -1,4 +1,5 @@
 from panda3d.core import LVector4f, DecalEffect
+from pandac.PandaModules import *
 import DNAGroup
 import DNAError
 import DNAUtil
@@ -38,7 +39,9 @@ class DNADoor(DNAGroup.DNAGroup):
         doorFlat = doorNodePath.find('door_*_flat')
         leftHole.wrtReparentTo(doorFlat, 0)
         rightHole.wrtReparentTo(doorFlat, 0)
-        doorFlat.setEffect(DecalEffect.make())
+        doorFlatGeom = doorFlat.find('**/+GeomNode')
+        if doorFlatGeom:
+            doorFlatGeom.setEffect(DecalEffect.make())
         rightDoor.wrtReparentTo(parentNode, 0)
         leftDoor.wrtReparentTo(parentNode, 0)
 

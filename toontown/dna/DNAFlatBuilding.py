@@ -62,7 +62,9 @@ class DNAFlatBuilding(DNANode.DNANode):
             doorNode = doorNode.copyTo(wallNodePath, 0)
             doorNode.setScale(NodePath(), (1, 1, 1))
             doorNode.setPosHpr(0.5, 0, 0, 0, 0, 0)
-            wallNodePath.setEffect(DecalEffect.make())
+            wallGeomNode = wallNodePath.find('**/+GeomNode')
+            if wallGeomNode:
+                wallGeomNode.setEffect(DecalEffect.make())
         node.flattenMedium()
         node.stash()
 
@@ -92,7 +94,9 @@ class DNAFlatBuilding(DNANode.DNANode):
             doorNode = doorNode.copyTo(wallNodePath, 0)
             doorNode.setScale(NodePath(), (1, 1, 1))
             doorNode.setPosHpr(0.5, 0, 0, 0, 0, 0)
-            wallNodePath.setEffect(DecalEffect.make())
+            wallGeomNode = wallNodePath.find('**/+GeomNode')
+            if wallGeomNode:
+                wallGeomNode.setEffect(DecalEffect.make())
         node.flattenMedium()
         node.stash()
 
@@ -141,7 +145,9 @@ class DNAFlatBuilding(DNANode.DNANode):
             holderChild0 = wallHolder.getChild(0)
             wallDecal.getChildren().reparentTo(holderChild0)
             holderChild0.reparentTo(internalNode)
-            holderChild0.setEffect(DecalEffect.make())
+            holderChildGeom0 = holderChild0.find('**/+GeomNode')
+            if holderChildGeom0:
+                holderChildGeom0.setEffect(DecalEffect.make())
             wallHolder.removeNode()
             wallDecal.removeNode()
             self.setupSuitFlatBuilding(nodePath, dnaStorage)

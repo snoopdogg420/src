@@ -10,4 +10,6 @@ class DNAFlatDoor(DNADoor.DNADoor):
         node.setScale(NodePath(), (1, 1, 1))
         node.setPosHpr((0.5, 0, 0), (0, 0, 0))
         node.setColor(self.getColor())
-        node.getNode(0).setEffect(DecalEffect.make())
+        geomNode = node.find('**/+GeomNode')
+        if geomNode:
+            geomNode.setEffect(DecalEffect.make())
