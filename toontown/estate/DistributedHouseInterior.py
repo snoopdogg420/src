@@ -13,7 +13,7 @@ from toontown.catalog import CatalogWallpaperItem
 from toontown.catalog import CatalogFlooringItem
 from toontown.catalog import CatalogMouldingItem
 from toontown.catalog import CatalogWainscotingItem
-from toontown.dna.DNAParser import DNADoor
+from toontown.dna.DNADoor import DNADoor
 WindowPlugNames = ('**/windowcut_c*', '**/windowcut_e*')
 RoomNames = ('**/group2', '**/group1')
 WallNames = ('ceiling*', 'wall_side_middle*', 'wall_front_middle*', 'windowcut_*')
@@ -151,7 +151,7 @@ class DistributedHouseInterior(DistributedObject.DistributedObject):
                     model.reparentTo(self.interior)
                     if self.exteriorWindowsHidden:
                         model.findAllMatches('**/outside').stash()
-                    
+
     def hideExteriorWindows(self):
         self.exteriorWindowsHidden = 1
         for item in self.windows:
