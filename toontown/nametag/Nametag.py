@@ -1,3 +1,5 @@
+from direct.fsm import ClassicFSM, State
+from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from pandac.PandaModules import *
 
@@ -6,13 +8,14 @@ from toontown.chat import ChatBalloon
 from toontown.nametag import NametagGlobals
 
 
-class Nametag(PandaNode):
+class Nametag(PandaNode, DirectObject):
     TEXT_Y_OFFSET = -0.05
     NAMETAG_X_PADDING = 0.2
     NAMETAG_Z_PADDING = 0.2
 
     def __init__(self):
         PandaNode.__init__(self, 'nametag')
+        DirectObject.__init__(self)
 
         self.contents = NodePath.anyPath(self).attachNewNode('contents')
 
@@ -21,6 +24,8 @@ class Nametag(PandaNode):
         self.chatType = NametagGlobals.CHAT
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
         self.active = False
+        self.clickState = NametagGlobals.DISABLED
+        self.lastClickState = NametagGlobals.DISABLED
         self.nametagHidden = False
         self.chatHidden = False
         self.thoughtHidden = False
@@ -33,12 +38,12 @@ class Nametag(PandaNode):
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
         self.nameTextNode.setWordwrap(8)
-        self.nameTextNode.setTextColor(self.nametagColor[3][0])
+        self.nameTextNode.setTextColor(self.nametagColor[self.clickState][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
         self.chatTextNode.setWordwrap(12)
-        self.chatTextNode.setTextColor(self.chatColor[3][0])
+        self.chatTextNode.setTextColor(self.chatColor[self.clickState][0])
         self.chatTextNode.setGlyphScale(1.05)
         self.chatTextNode.setGlyphShift(-0.05)
 
@@ -46,6 +51,20 @@ class Nametag(PandaNode):
 
         # Add the tick task:
         self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
+
+        self.fsm = ClassicFSM.ClassicFSM(
+            'DistributedBankInterior',
+            [
+                State.State('disabled', self.enterDisabled, self.exitDisabled,
+                            ['normal', 'down', 'rollover']),
+                State.State('normal', self.enterNormal, self.exitNormal,
+                            ['down', 'rollover', 'disabled']),
+                State.State('down', self.enterDown, self.exitDown,
+                            ['rollover', 'disabled', 'normal']),
+                State.State('rollover', self.enterRollover, self.exitRollover,
+                            ['disabled', 'normal', 'down'])
+            ], 'disabled', 'disabled')
+        self.fsm.enterInitialState()
 
     def destroy(self):
         if self.tickTask is not None:
@@ -122,9 +141,35 @@ class Nametag(PandaNode):
 
     def setActive(self, active):
         self.active = active
+        if self.active:
+            self.clickState = NametagGlobals.NORMAL
+            self.fsm.request('normal')
+        else:
+            self.setClickState(NametagGlobals.DISABLED)
 
     def getActive(self):
         return self.active
+
+    def setClickState(self, clickState):
+        if self.clickState == NametagGlobals.DISABLED:
+            return
+        self.lastClickState = self.clickState
+        self.clickState = clickState
+        if self.clickState == NametagGlobals.NORMAL:
+            self.fsm.request('normal')
+        elif self.clickState == NametagGlobals.DOWN:
+            self.fsm.request('down')
+        elif self.clickState == NametagGlobals.ROLLOVER:
+            self.fsm.request('rollover')
+        elif self.clickState == NametagGlobals.DISABLED:
+            self.fsm.request('disable')
+        self.update()
+
+    def getClickState(self):
+        return self.clickState
+
+    def getLastClickState(self):
+        return self.lastClickState
 
     def hideNametag(self):
         self.nametagHidden = True
@@ -245,10 +290,7 @@ class Nametag(PandaNode):
             modelWidth = self.getThoughtBalloonWidth()
             modelHeight = self.getThoughtBalloonHeight()
 
-        if self.active:
-            foreground, background = self.chatColor[0]
-        else:
-            foreground, background = self.chatColor[3]
+        foreground, background = self.chatColor[self.clickState]
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
 
@@ -265,10 +307,7 @@ class Nametag(PandaNode):
             # We can't draw this without a font.
             return
 
-        if self.active:
-            foreground, background = self.nametagColor[0]
-        else:
-            foreground, background = self.nametagColor[3]
+        foreground, background = self.nametagColor[self.clickState]
 
         # Attach the icon:
         if self.icon:
@@ -303,3 +342,28 @@ class Nametag(PandaNode):
         collNodePath.setCollideMask(OTPGlobals.WallBitmask)
         collBox = CollisionBox(*self.contents.getTightBounds())
         collNode.addSolid(collBox)
+
+    def enterNormal(self):
+        if self.lastClickState == NametagGlobals.DOWN:
+            pass  # TODO: Send a message.
+
+    def exitNormal(self):
+        pass
+
+    def enterDown(self):
+        base.playSfx(NametagGlobals.clickSound)
+
+    def exitDown(self):
+        pass
+
+    def enterRollover(self):
+        base.playSfx(NametagGlobals.rolloverSound)
+
+    def exitRollover(self):
+        pass
+
+    def enterDisabled(self):
+        pass
+
+    def exitDisabled(self):
+        pass
