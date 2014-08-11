@@ -8,7 +8,7 @@ general:
         - ../dclass/toon.dc
 
 messagedirector:
-    bind: 127.0.0.1:7100
+    bind: 127.0.0.1:7300
 
 uberdogs:
     - class: CentralLogger

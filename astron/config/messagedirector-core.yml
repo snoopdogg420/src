@@ -3,6 +3,13 @@ daemon:
 
 general:
     eventlogger: 127.0.0.1:7198
+    dc_files:
+        - ../dclass/otp.dc
+        - ../dclass/toon.dc
 
 messagedirector:
     bind: 127.0.0.1:7200
+
+roles:
+    - type: stateserver
+      control: 4002
