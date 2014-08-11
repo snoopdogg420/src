@@ -904,6 +904,7 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar, DistributedSmoothNode.Dis
         messenger.send('customMessagesChanged')
 
     def displayWhisper(self, fromId, chatString, whisperType):
+        return  # NAMETAG TODO
         sender = None
         sfx = self.soundWhisper
         if whisperType == WTNormal or whisperType == WTQuickTalker:
@@ -915,9 +916,9 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar, DistributedSmoothNode.Dis
             whisper.setClickable(sender.getName(), fromId)
         whisper.manage(base.marginManager)
         base.playSfx(sfx)
-        return
 
     def displayWhisperPlayer(self, fromId, chatString, whisperType):
+        return  # NAMETAG TODO
         sender = None
         playerInfo = None
         sfx = self.soundWhisper
@@ -932,7 +933,6 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar, DistributedSmoothNode.Dis
             whisper.setClickable(senderName, fromId)
         whisper.manage(base.marginManager)
         base.playSfx(sfx)
-        return
 
     def setAnimMultiplier(self, value):
         self.animMultiplier = value

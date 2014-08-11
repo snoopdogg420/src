@@ -550,6 +550,7 @@ class OTPClientRepository(ClientRepositoryBase):
         del self.connectingBox
 
     def handleSystemMessage(self, di):
+        return  # NAMETAG TODO
         message = ClientRepositoryBase.handleSystemMessage(self, di)
         whisper = WhisperPopup(message, OTPGlobals.getInterfaceFont(), WTSystem)
         whisper.manage(base.marginManager)
