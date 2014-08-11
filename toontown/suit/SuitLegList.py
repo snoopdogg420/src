@@ -1,4 +1,4 @@
-from toontown.dna.DNASuitPoint import DNASuitPoint
+from toontown.dna.DNAParser import DNASuitPoint
 from toontown.suit import SuitTimings
 from toontown.toonbase import ToontownGlobals
 

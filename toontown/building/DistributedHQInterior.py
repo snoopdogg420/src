@@ -8,7 +8,7 @@ from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase.ToonBaseGlobal import *
 from toontown.toonbase.ToontownGlobals import *
-from toontown.dna.DNADoor import DNADoor
+from toontown.dna.DNAParser import DNADoor
 from toontown.toon.DistributedNPCToonBase import DistributedNPCToonBase
 
 

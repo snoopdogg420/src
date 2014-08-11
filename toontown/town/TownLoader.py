@@ -199,11 +199,11 @@ class TownLoader(StateData.StateData):
             self.notify.debug('done loading %s' % self.townStorageDNAFile)
         node = loader.loadDNAFile(self.hood.dnaStore, dnaFile)
         self.notify.debug('done loading %s' % dnaFile)
-        if node.node().getNumParents() == 1:
+        if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))
             self.geom.reparentTo(hidden)
         else:
-            self.geom = hidden.attachNewNode(node.node())
+            self.geom = hidden.attachNewNode(node)
         self.makeDictionaries(self.hood.dnaStore)
         self.reparentLandmarkBlockNodes()
         self.renameFloorPolys(self.nodeList)

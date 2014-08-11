@@ -2,7 +2,7 @@ import SuitPlannerBase
 from direct.distributed import DistributedObject
 from otp.ai.MagicWordGlobal import *
 from pandac.PandaModules import *
-from toontown.dna.DNASuitPoint import DNASuitPoint
+from toontown.dna.DNAParser import DNASuitPoint
 from toontown.toonbase import ToontownGlobals
 
 
