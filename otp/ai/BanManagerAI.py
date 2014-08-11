@@ -7,6 +7,7 @@ from direct.distributed.MsgTypes import *
 from otp.ai.MagicWordGlobal import *
 from direct.showbase.DirectObject import DirectObject
 
+
 class BanFSM(FSM):
 
     def __init__(self, air, avId, comment, duration):
@@ -96,6 +97,7 @@ class BanFSM(FSM):
     def exitOff(self):
         pass
 
+
 class BanManagerAI(DirectObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('BanManagerAI')
 
@@ -112,6 +114,7 @@ class BanManagerAI(DirectObject):
     def banDone(self, avId):
         self.banFSMs[avId].request('Off')
         self.banFSMs[avId] = None
+
 
 @magicWord(category=CATEGORY_MODERATOR)
 def kick():
@@ -130,6 +133,7 @@ def kick():
     simbase.air.send(datagram)
     return "Kicked %s from the game server!" % target.getName()
 
+
 @magicWord(category=CATEGORY_MODERATOR, types=[str, int])
 def ban(reason, duration):
     """
@@ -138,7 +142,8 @@ def ban(reason, duration):
     target = spellbook.getTarget()
     if target == spellbook.getInvoker():
         return "You can't ban yourself!"
-    if reason not in ['hacking','language','other']:
+    if reason not in ('hacking', 'language', 'other'):
         return "'%s' is not a valid reason." % reason
     simbase.air.banManager.ban(target.doId, duration, reason)
     return "Banned %s from the game server!" % target.getName()
+
