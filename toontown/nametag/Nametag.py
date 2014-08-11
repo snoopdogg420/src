@@ -1,4 +1,4 @@
-from direct.fsm import ClassicFSM, State
+from direct.fsm.FSM import FSM
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from pandac.PandaModules import *
@@ -8,12 +8,13 @@ from toontown.chat import ChatBalloon
 from toontown.nametag import NametagGlobals
 
 
-class Nametag(PandaNode, DirectObject):
+class Nametag(FSM, PandaNode, DirectObject):
     TEXT_Y_OFFSET = -0.05
     NAMETAG_X_PADDING = 0.2
     NAMETAG_Z_PADDING = 0.2
 
     def __init__(self):
+        FSM.__init__(self, 'nametag')
         PandaNode.__init__(self, 'nametag')
         DirectObject.__init__(self)
 
@@ -23,9 +24,9 @@ class Nametag(PandaNode, DirectObject):
         self.font = None
         self.chatType = NametagGlobals.CHAT
         self.chatBalloonType = NametagGlobals.CHAT_BALLOON
-        self.active = False
-        self.clickState = NametagGlobals.DISABLED
-        self.lastClickState = NametagGlobals.DISABLED
+        self.active = True
+        self.clickState = NametagGlobals.NORMAL
+        self.lastClickState = NametagGlobals.NORMAL
         self.nametagHidden = False
         self.chatHidden = False
         self.thoughtHidden = False
@@ -52,25 +53,12 @@ class Nametag(PandaNode, DirectObject):
         # Add the tick task:
         self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
 
-        self.fsm = ClassicFSM.ClassicFSM(
-            'Nametag',
-            [
-                State.State('disabled', self.enterDisabled, self.exitDisabled,
-                            ['normal', 'down', 'rollover']),
-                State.State('normal', self.enterNormal, self.exitNormal,
-                            ['down', 'rollover', 'disabled']),
-                State.State('down', self.enterDown, self.exitDown,
-                            ['rollover', 'disabled', 'normal']),
-                State.State('rollover', self.enterRollover, self.exitRollover,
-                            ['disabled', 'normal', 'down'])
-            ], 'disabled', 'disabled')
-        self.fsm.enterInitialState()
-
+        # Accept the collision events:
         self.pickerName = self.getUniqueName() + '-picker'
         self.accept(
             base.nametagMouseWatcher.getIntoEventName() % self.pickerName,
             self.__handleMouseEnter)
-        base.accept(
+        self.accept(
             base.nametagMouseWatcher.getOutEventName() % self.pickerName,
             self.__handleMouseLeave)
 
@@ -161,13 +149,13 @@ class Nametag(PandaNode, DirectObject):
         self.lastClickState = self.clickState
         self.clickState = clickState
         if self.clickState == NametagGlobals.NORMAL:
-            self.fsm.request('normal')
+            self.request('Normal')
         elif self.clickState == NametagGlobals.DOWN:
-            self.fsm.request('down')
+            self.request('Down')
         elif self.clickState == NametagGlobals.ROLLOVER:
-            self.fsm.request('rollover')
+            self.request('Rollover')
         elif self.clickState == NametagGlobals.DISABLED:
-            self.fsm.request('disabled')
+            self.request('Disabled')
         self.update()
 
     def getClickState(self):
@@ -344,7 +332,7 @@ class Nametag(PandaNode, DirectObject):
     def drawCollisions(self):
         collNode = CollisionNode(self.pickerName)
         collNodePath = self.contents.attachNewNode(collNode)
-        collNodePath.setCollideMask(OTPGlobals.WallBitmask)
+        collNodePath.setCollideMask(OTPGlobals.PickerBitmask)
         collBox = CollisionBox(*self.contents.getTightBounds())
         collNode.addSolid(collBox)
 
@@ -352,25 +340,13 @@ class Nametag(PandaNode, DirectObject):
         if self.lastClickState == NametagGlobals.DOWN:
             pass  # TODO: Send a message.
 
-    def exitNormal(self):
-        pass
-
     def enterDown(self):
         base.playSfx(NametagGlobals.clickSound)
-
-    def exitDown(self):
-        pass
 
     def enterRollover(self):
         base.playSfx(NametagGlobals.rolloverSound)
 
-    def exitRollover(self):
-        pass
-
     def enterDisabled(self):
-        pass
-
-    def exitDisabled(self):
         pass
 
     def __handleMouseEnter(self, collEntry=None):

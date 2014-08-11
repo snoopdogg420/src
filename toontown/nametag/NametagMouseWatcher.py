@@ -10,7 +10,7 @@ class NametagMouseWatcher:
 
         self.pickerNode = CollisionNode(self.getUniqueName() + '-mouseRay')
         self.pickerNodePath = base.camera.attachNewNode(self.pickerNode)
-        self.pickerNode.setFromCollideMask(OTPGlobals.WallBitmask)
+        self.pickerNode.setFromCollideMask(OTPGlobals.PickerBitmask)
         self.pickerRay = CollisionRay()
         self.pickerNode.addSolid(self.pickerRay)
 
@@ -27,12 +27,13 @@ class NametagMouseWatcher:
 
     def updateRay(self, task):
         if base.mouseWatcherNode.hasMouse():
+            self.cTrav.traverse(render)
             mouse = base.mouseWatcherNode.getMouse()
             self.pickerRay.setFromLens(base.camNode, mouse.getX(), mouse.getY())
         return Task.cont
 
     def getIntoEventName(self):
-        return self.getUniqueName() + '-mouseRay' + '-into-%s'
+        return self.getUniqueName() + '-mouseRay-into-%s'
 
     def getOutEventName(self):
-        return self.getUniqueName() + '-mouseRay' + '-out-%s'
+        return self.getUniqueName() + '-mouseRay-out-%s'
