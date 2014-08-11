@@ -30,7 +30,7 @@ def BanFSM(FSM):
         if not av:
             return
 
-        # Send the client a 'CLIENT_EJECT' with the players name.
+        # Send the client a 'CLIENTAGENT_EJECT' with the players name.
         datagram = PyDatagram()
         datagram.addServerHeader(
                 av.GetPuppetConnectionChannel(self.avId),
@@ -104,7 +104,7 @@ class BanManagerAI(DirectObject):
         self.banFSMs = {}
 
     def ban(self, avId, duration, comment):
-        self.banFSMs[avId] = BanFSM(avId, comment, duration)
+        self.banFSMs[avId] = BanFSM(self.air, avId, comment, duration)
         self.banFSMs.request('Start')
 
         self.acceptOnce(self.air.getAvatarExitEvent(avId), self.banDone, [avId])
