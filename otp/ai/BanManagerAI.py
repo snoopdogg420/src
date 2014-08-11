@@ -7,7 +7,7 @@ from direct.distributed.MsgTypes import *
 from otp.ai.MagicWordGlobal import *
 from direct.showbase.DirectObject import DirectObject
 
-def BanFSM(FSM):
+class BanFSM(FSM):
 
     def __init__(self, air, avId, comment, duration):
         FSM.__init__(self, 'banFSM-%s' % avId)
@@ -105,7 +105,7 @@ class BanManagerAI(DirectObject):
 
     def ban(self, avId, duration, comment):
         self.banFSMs[avId] = BanFSM(self.air, avId, comment, duration)
-        self.banFSMs.request('Start')
+        self.banFSMs[avId].request('Start')
 
         self.acceptOnce(self.air.getAvatarExitEvent(avId), self.banDone, [avId])
 
