@@ -48,9 +48,7 @@ class DNASignGraphic(DNANode.DNANode):
         self.bDefaultColor = dgi.getBool()
 
     def traverse(self, nodePath, dnaStorage):
-        geom = nodePath.find('**/+GeomNode')
-        if geom:
-            geom.setEffect(DecalEffect.make())
+        nodePath.getTop().getNode(0).setEffect(DecalEffect.make())
         node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError.DNAError('DNASignGraphic code ' + self.code + ' not found in storage')

@@ -1,5 +1,4 @@
 from panda3d.core import LVector4f, LVector3f
-from pandac.PandaModules import *
 import DNAGroup
 import DNAError
 import DNAUtil
@@ -44,9 +43,7 @@ class DNACornice(DNAGroup.DNAGroup):
             LVector3f(0, 0, 0),
             LVector3f(1, pParentXScale/parentZScale,
                       pParentXScale/parentZScale))
-        geomNode = np.find('**/+GeomNode')
-        if geomNode:
-            geomNode.setEffect(DecalEffect.make())
+        np.setEffect(DecalEffect.make())
         node = node.getParent().find('**/*_nd')
         np = node.copyTo(nodePathA, 1)
         np.setPosHprScale(
@@ -59,4 +56,3 @@ class DNACornice(DNAGroup.DNAGroup):
             LVector3f(0, 0, 0),
             LVector3f(1, 1, 1))
         nodePathA.setColor(self.getColor())
-        nodePathA.setPos(nodePathA, 0, -0.01, 0)

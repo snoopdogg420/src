@@ -1,5 +1,4 @@
 from panda3d.core import LVector4f, NodePath
-from pandac.PandaModules import *
 import DNAGroup
 import DNAError
 import DNAUtil
@@ -45,7 +44,6 @@ class DNAWindows(DNAGroup.DNAGroup):
         window.setScale(NodePath(), scale)
         window.setHpr(0, 0, 0)
         window.setPos(x, 0, y)
-        window.setPos(window, 0, -0.01, 0)
 
     def makeFromDGI(self, dgi):
         DNAGroup.DNAGroup.makeFromDGI(self, dgi)
