@@ -29,6 +29,9 @@ class NametagGroup:
         self.chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNormal]
         self.speedChatColor = VBase4(1, 1, 1, 1)
 
+        self.wordWrap = 8
+        self.chatWordWrap = 12
+
         self.nameText = ''
         self.stompChatText = ''
         self.chatPages = []
@@ -80,6 +83,8 @@ class NametagGroup:
         nametag.setNametagColor(self.nametagColor)
         nametag.setChatColor(self.chatColor)
         nametag.setSpeedChatColor(self.speedChatColor)
+        nametag.setWordWrap(self.wordWrap)
+        nametag.setChatWordWrap(self.chatWordWrap)
         nametag.setNameText(self.nameText)
         nametag.setChatText(self.getChatText())
         nametag.setIcon(self.icon)
@@ -199,6 +204,22 @@ class NametagGroup:
 
     def getSpeedChatColor(self):
         return self.speedChatColor
+
+    def setWordWrap(self, wordWrap):
+        self.wordWrap = wordWrap
+        for nametag in self.nametags:
+            nametag.setWordWrap(self.wordWrap)
+
+    def getWordWrap(self):
+        return self.wordWrap
+
+    def setChatWordWrap(self, chatWordWrap):
+        self.chatWordWrap = chatWordWrap
+        for nametag in self.nametags:
+            nametag.setChatWordWrap(self.chatWordWrap)
+
+    def getChatWordWrap(self):
+        return self.chatWordWrap
 
     def setNameText(self, nameText):
         self.nameText = nameText
