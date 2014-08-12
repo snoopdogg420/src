@@ -10,7 +10,7 @@ class DistributedLibraryInterior(DistributedObject):
     def announceGenerate(self):
         DistributedObject.announceGenerate(self)
 
-        self.interior = loader.loadModel('phase_4/models/modules/ttc_bank_interior.bam')
+        self.interior = loader.loadModel('phase_4/models/modules/ttc_library_interior.egg')
         self.interior.reparentTo(render)
 
         doorOrigin = self.interior.find('**/door_origin;+s')
