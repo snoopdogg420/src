@@ -72,6 +72,8 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.accept(
             base.nametagMouseWatcher.getOutEventName() % self.pickerName,
             self.__handleMouseLeave)
+        self.accept('mouse1-down', self.__handleMouseDown)
+        self.accept('mouse1-up', self.__handleMouseUp)
 
     def destroy(self):
         self.ignoreAll()
