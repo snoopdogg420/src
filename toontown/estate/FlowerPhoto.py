@@ -126,7 +126,7 @@ class FlowerPhoto(NodePath):
         center = (bMin + bMax) / 2.0
         actor.setPos(-center[0], -center[1], -center[2])
         attrib = GardenGlobals.PlantAttributes[self.species]
-        if attrib.has_key('photoPos'):
+        if 'photoPos' in attrib:
             self.notify.debug('oldPos = %s' % actor.getPos())
             photoPos = attrib['photoPos']
             self.notify.debug('newPos = %s' % str(photoPos))

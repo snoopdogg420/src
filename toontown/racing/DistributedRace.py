@@ -904,7 +904,7 @@ class DistributedRace(DistributedObject.DistributedObject):
                         dict = self.innerBarricadeDict
                     elif side == 'outersidest':
                         dict = self.outerBarricadeDict
-                    if dict.has_key(segmentInd):
+                    if segmentInd in dict:
                         self.currBldgGroups[side] = dict[segmentInd]
                     for i in self.currBldgGroups[side]:
                         self.buildingGroups[side][i].unstash()
@@ -985,7 +985,7 @@ class DistributedRace(DistributedObject.DistributedObject):
                                 dict = self.outerBarricadeDict
                             else:
                                 self.notify.error('unhandled side')
-                            if dict.has_key(i):
+                            if i in dict:
                                 if bldgGroupIndex not in dict[i]:
                                     dict[i].append(bldgGroupIndex)
                             else:
@@ -1003,7 +1003,7 @@ class DistributedRace(DistributedObject.DistributedObject):
                                 dict = self.outerBarricadeDict
                             else:
                                 self.notify.error('unhandled side')
-                            if dict.has_key(i):
+                            if i in dict:
                                 if bldgGroupIndex not in dict[i]:
                                     dict[i].append(bldgGroupIndex)
                             else:

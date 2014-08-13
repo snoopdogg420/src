@@ -269,7 +269,7 @@ class CogdoMazeGame(DirectObject):
                     self.players.remove(cPlayer)
                     break
 
-        if self.toonId2Player.has_key(player.toon.doId):
+        if player.toon.doId in self.toonId2Player:
             del self.toonId2Player[player.toon.doId]
         self.guiMgr.mazeMapGui.removeToon(player.toon)
 

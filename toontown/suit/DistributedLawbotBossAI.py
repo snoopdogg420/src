@@ -390,14 +390,14 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
         self.__deleteChairs()
 
     def getCannonBallsLeft(self, avId):
-        if self.cannonBallsLeft.has_key(avId):
+        if avId in self.cannonBallsLeft:
             return self.cannonBallsLeft[avId]
         else:
             self.notify.warning('getCannonBalsLeft invalid avId: %d' % avId)
             return 0
 
     def decrementCannonBallsLeft(self, avId):
-        if self.cannonBallsLeft.has_key(avId):
+        if avId in self.cannonBallsLeft:
             self.cannonBallsLeft[avId] -= 1
             if self.cannonBallsLeft[avId] < 0:
                 self.notify.warning('decrementCannonBallsLeft <0 cannonballs for %d' % avId)

@@ -186,7 +186,7 @@ class DistributedPartyCannon(DistributedObject, Cannon):
             else:
                 self.__enableCannonControl()
             self.controllingToonAvId = avId
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             self.toonInsideAvId = avId
             self.notify.debug('enterCannon self.toonInsideAvId=%d' % self.toonInsideAvId)
             toon = base.cr.doId2do[avId]

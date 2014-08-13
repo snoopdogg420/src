@@ -370,7 +370,7 @@ class PartyCogActivity(DirectObject):
 
     def handleToonShifted(self, toon):
         toonId = toon.doId
-        if self.players.has_key(toonId):
+        if toonId in self.players:
             player = self.players[toonId]
             spot = self.activity.getIndex(toonId, player.team)
             pos = self.getPlayerStartPos(player.team, spot)

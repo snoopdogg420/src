@@ -764,7 +764,7 @@ class Movie(DirectObject.DirectObject):
                             adict['target'] = sdict
                 adict['hpbonus'] = ta[TOON_HPBONUS_COL]
                 adict['sidestep'] = ta[TOON_ACCBONUS_COL]
-                if adict.has_key('npcId'):
+                if 'npcId' in adict:
                     adict['sidestep'] = 0
                 adict['battle'] = self.battle
                 adict['playByPlayText'] = self.playByPlayText
@@ -789,7 +789,7 @@ class Movie(DirectObject.DirectObject):
         setCapture = 0
         tp = []
         for ta in self.toonAttackDicts:
-            if ta['track'] == track or track == NPCSOS and ta.has_key('special'):
+            if ta['track'] == track or track == NPCSOS and 'sepcial' in ta:
                 tp.append(ta)
                 if track == SQUIRT:
                     setCapture = 1
@@ -797,11 +797,11 @@ class Movie(DirectObject.DirectObject):
         if track == TRAP:
             sortedTraps = []
             for attack in tp:
-                if not attack.has_key('npcId'):
+                if not 'npcId' in attack:
                     sortedTraps.append(attack)
 
             for attack in tp:
-                if attack.has_key('npcId'):
+                if 'npcId' in attack:
                     sortedTraps.append(attack)
 
             tp = sortedTraps

@@ -129,7 +129,7 @@ def __doSoundsLevel(sounds, delay, hitCount, npcs):
     deathTracks = Parallel()
     for sound in sounds:
         toon = sound['toon']
-        if sound.has_key('npc'):
+        if 'npc' in sound:
             toon = sound['npc']
         level = sound['level']
         targets = sound['target']

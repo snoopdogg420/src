@@ -50,7 +50,7 @@ class DistributedBattleFinal(DistributedBattleBase.DistributedBattleBase):
 
     def setBossCogId(self, bossCogId):
         self.bossCogId = bossCogId
-        if base.cr.doId2do.has_key(bossCogId):
+        if bossCogId in base.cr.doId2do:
             tempBossCog = base.cr.doId2do[bossCogId]
             self.__gotBossCog([tempBossCog])
         else:

@@ -260,7 +260,7 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
         pass
 
     def getToon(self, toonId):
-        if self.air.doId2do.has_key(toonId):
+        if toonId in self.air.doId2do:
             return self.air.doId2do[toonId]
         else:
             self.notify.warning('getToon() - toon: %d not in repository!' % toonId)
