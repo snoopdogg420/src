@@ -19,8 +19,8 @@ class ToontownLoader(Loader.Loader):
         del self.loadingScreen
         Loader.Loader.destroy(self)
 
-    def loadDNAFile(self, dnastore, filename):
-        return loadDNAFile(dnastore, filename)
+    def loadDNAFile(self, dnaStorage, filename):
+        return loadDNAFile(dnaStorage, filename)
 
     def beginBulkLoad(self, name, label, range, gui, tipCategory, zoneId):
         self._loadStartT = globalClock.getRealTime()

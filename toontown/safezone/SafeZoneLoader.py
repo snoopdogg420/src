@@ -83,11 +83,11 @@ class SafeZoneLoader(StateData.StateData):
         if self.safeZoneStorageDNAFile:
             loadDNAFile(self.hood.dnaStore, self.safeZoneStorageDNAFile)
         node = loadDNAFile(self.hood.dnaStore, dnaFile)
-        if node.node().getNumParents() == 1:
+        if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))
             self.geom.reparentTo(hidden)
         else:
-            self.geom = hidden.attachNewNode(node.node())
+            self.geom = hidden.attachNewNode(node)
         self.makeDictionaries(self.hood.dnaStore)
         self.createAnimatedProps(self.nodeList)
         self.holidayPropTransforms = {}

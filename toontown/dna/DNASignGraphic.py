@@ -48,14 +48,14 @@ class DNASignGraphic(DNANode.DNANode):
         self.bDefaultColor = dgi.getBool()
 
     def traverse(self, nodePath, dnaStorage):
-        nodePath.getTop().getNode(0).setEffect(DecalEffect.make())
         node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError.DNAError('DNASignGraphic code ' + self.code + ' not found in storage')
         node = node.copyTo(nodePath, 0)
         node.setScale(self.scale)
         node.setScale(node, self.getParent().scale)
-        node.setPos(self.pos)
-        node.setHpr(self.hpr)
+        node.setPosHpr(self.getParent().pos, self.getParent().hpr)
+        node.setPos(node, 0, -0.1, 0)
+        node.setColor(self.color)
         for child in self.children:
             child.traverse(node, dnaStorage)

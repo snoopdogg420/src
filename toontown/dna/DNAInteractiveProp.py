@@ -20,7 +20,7 @@ class DNAInteractiveProp(DNAAnimProp.DNAAnimProp):
 
     def traverse(self, nodePath, dnaStorage):
         node = None
-        if self.getCode() == "DCS":
+        if self.getCode() == 'DCS':
             node = ModelNode(self.getName())
             node.setPreserveTransform(ModelNode.PTNet)
             node = nodePath.attachNewNode(node, 0)

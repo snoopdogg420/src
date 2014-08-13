@@ -63,9 +63,13 @@ childlessComps = (
 )
 
 class DNALoader:
-    def __init__(self, dnaStorage):
-        self.dnaStorage = dnaStorage
+    def __init__(self):
+        self.dnaStorage = None
         self.prop = None
+
+    def destroy(self):
+        del self.dnaStorage
+        del self.prop
 
     def handleStorageData(self, dgi):
         # Catalog Codes
@@ -82,14 +86,14 @@ class DNALoader:
         for _ in xrange(numTextures):
             code = DNAUtil.dgiExtractString8(dgi)
             filename = DNAUtil.dgiExtractString8(dgi)
-            self.dnaStorage.storeTexture(code, loader.loadTexture(filename))
+            self.dnaStorage.storeTexture(code, TexturePool.loadTexture(filename))
 
         # Fonts
         numFonts = dgi.getUint16()
         for _ in xrange(numFonts):
             code = DNAUtil.dgiExtractString8(dgi)
             filename = DNAUtil.dgiExtractString8(dgi)
-            self.dnaStorage.storeFont(code, loader.loadFont(filename))
+            self.dnaStorage.storeFont(code, FontPool.loadFont(filename))
 
         # Nodes
         self.handleNode(dgi, target = self.dnaStorage.storeNode)
@@ -111,7 +115,7 @@ class DNALoader:
         for _ in xrange(numPoints):
             index = dgi.getUint16()
             pointType = dgi.getUint8()
-            x, y, z = [dgi.getInt32() / 100.0 for i in xrange(3)]
+            x, y, z = (dgi.getInt32() / 100.0 for i in xrange(3))
             graph = dgi.getUint8()
             landmarkBuildingIndex = dgi.getUint8()
             self.dnaStorage.storeSuitPoint(DNASuitPoint.DNASuitPoint(index, pointType, LVector3f(x, y, z), landmarkBuildingIndex))
@@ -131,7 +135,7 @@ class DNALoader:
         for _ in xrange(numCells):
             w = dgi.getUint8()
             h = dgi.getUint8()
-            x, y, z = [dgi.getInt32() / 100.0 for i in xrange(3)]
+            x, y, z = (dgi.getInt32() / 100.0 for i in xrange(3))
             self.dnaStorage.storeBattleCell(DNABattleCell.DNABattleCell(w, h, LVector3f(x, y, z)))
 
     def handleCompData(self, dgi):
@@ -174,13 +178,15 @@ class DNALoader:
             code = DNAUtil.dgiExtractString8(dgi)
             file = DNAUtil.dgiExtractString8(dgi)
             node = DNAUtil.dgiExtractString8(dgi)
-            np = NodePath(loader.loadModel(file))
+            np = loader.loadModel(file)
             np.setTag('DNACode', code)
+            np.setTag('DNARoot', node)
             if node:
                 np = np.find('**/' + node)
             target(np, code)
 
-    def loadDNAFileBase(self, file):
+    def loadDNAFileBase(self, dnaStorage, file):
+        self.dnaStorage = dnaStorage
         dnaFile = open(file, 'rb')
         dnaData = dnaFile.read()
         dg = PyDatagram(dnaData)
@@ -199,17 +205,12 @@ class DNALoader:
         self.handleStorageData(dgi)
         self.handleCompData(dgi)
 
-    def loadDNAFile(self, file):
-        self.loadDNAFileBase(file)
-        graph = NodePath('dna')
-        self.prop.traverse(graph, self.dnaStorage)
-        self.prop = None
-        self.dnaStorage = None
-        return graph
+    def loadDNAFile(self, dnaStorage, file):
+        self.loadDNAFileBase(dnaStorage, file)
+        nodePath = NodePath(PandaNode('dna'))
+        self.prop.traverse(nodePath, self.dnaStorage)
+        return nodePath
 
-    def loadDNAFileAI(self, file):
-        self.loadDNAFileBase(file)
-        prop = self.prop
-        self.prop = None
-        self.dnaStorage = None
-        return prop
+    def loadDNAFileAI(self, dnaStorage, file):
+        self.loadDNAFileBase(dnaStorage, file)
+        return self.prop

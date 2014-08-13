@@ -1,4 +1,4 @@
-from panda3d.core import LVector4f, ModelNode
+from panda3d.core import LVector4f, NodePath, DecalEffect
 import DNANode
 import DNAUtil
 
@@ -28,22 +28,17 @@ class DNASign(DNANode.DNANode):
         self.color = DNAUtil.dgiExtractColor(dgi)
 
     def traverse(self, nodePath, dnaStorage):
-        decNode = nodePath.find('**/sign_decal')
-        if decNode.isEmpty():
-            decNode = nodePath.find('**/*_front')
-        if decNode.isEmpty() or not decNode.getNode(0).isGeomNode():
-            decNode = nodePath.find('**/+GeomNode')
-        node = None
-        if self.code != '':
-            node = dnaStorage.findNode(self.code)
-            node = node.copyTo(decNode, 0)
-            node.setName('sign')
-        else:
-            node = ModelNode('sign')
-            node = decNode.attachNewNode(node, 0)
-        node.setDepthOffset(50)
-        origin = nodePath.find('**/*sign_origin')
-        node.setPosHprScale(origin, self.pos, self.hpr, self.scale)
+        sign = dnaStorage.findNode(self.code)
+        if not sign:
+            sign = NodePath(self.name)
+        signOrigin = nodePath.find('**/*sign_origin')
+        if not signOrigin:
+            signOrigin = nodePath
+        node = sign.copyTo(signOrigin)
+        #node.setDepthOffset(50)
+        node.setPosHprScale(signOrigin, self.pos, self.hpr, self.scale)
+        node.setPos(node, 0, -0.1, 0)
+        node.setColor(self.color)
         for child in self.children:
             child.traverse(node, dnaStorage)
         node.flattenStrong()

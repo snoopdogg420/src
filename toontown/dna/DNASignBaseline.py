@@ -16,9 +16,8 @@ class DNASignBaseline(DNANode.DNANode):
 
     def traverse(self, nodePath, dnaStorage):
         node = nodePath.attachNewNode('baseline', 0)
-        node.setPos(self.pos)
-        node.setHpr(self.hpr)
-        node.setDepthOffset(50)
+        node.setPosHpr(self.pos, self.hpr)
+        node.setPos(node, 0, -0.1, 0)
         if self.data:
             bf = BamFile()
             ss = StringStream()

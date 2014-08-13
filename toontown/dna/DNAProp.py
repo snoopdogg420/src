@@ -37,9 +37,7 @@ class DNAProp(DNANode.DNANode):
             if node is None:
                 return
             node = node.copyTo(nodePath, 0)
-        node.setPos(self.pos)
-        node.setHpr(self.hpr)
-        node.setScale(self.scale)
+        node.setPosHprScale(self.pos, self.hpr, self.scale)
         node.setName(self.name)
         node.setColorScale(self.color, 0)
         for child in self.children:

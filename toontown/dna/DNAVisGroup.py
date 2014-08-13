@@ -70,6 +70,3 @@ class DNAVisGroup(DNAGroup.DNAGroup):
             h = dgi.getUint8()
             x, y, z = [dgi.getInt32() / 100.0 for i in xrange(3)]
             self.addBattleCell(DNABattleCell.DNABattleCell(w, h, LVector3f(x, y, z)))
-
-    def traverse(self, nodePath, dnaStorage):
-        DNAGroup.DNAGroup.traverse(self, nodePath, dnaStorage)

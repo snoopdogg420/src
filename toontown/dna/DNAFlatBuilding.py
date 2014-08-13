@@ -114,7 +114,7 @@ class DNAFlatBuilding(DNANode.DNANode):
         else:
             cameraBarrier = dnaStorage.findNode('wall_camera_barrier')
             if cameraBarrier is None:
-                raise DNAError('DNAFlatBuilding requires that there is a wall_camera_barrier in storage')
+                raise DNAError.DNAError('DNAFlatBuilding requires that there is a wall_camera_barrier in storage')
             cameraBarrier = cameraBarrier.copyTo(internalNode, 0)
             cameraBarrier.setScale((1, 1, DNAFlatBuilding.currentWallHeight))
             internalNode.flattenStrong()

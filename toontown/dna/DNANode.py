@@ -47,10 +47,8 @@ class DNANode(DNAGroup.DNAGroup):
         self.scale = LVector3f(sx, sy, sz)
 
     def traverse(self, nodePath, dnaStorage):
-        node = nodePath.attachNewNode(self.name, 0)
-        node.setPos(self.pos)
-        node.setHpr(self.hpr)
-        node.setScale(self.scale)
-
+        node = PandaNode(self.name)
+        node = nodePath.attachNewNode(node, 0)
+        node.setPosHprScale(self.pos, self.hpr, self.scale)
         for child in self.children:
             child.traverse(node, dnaStorage)

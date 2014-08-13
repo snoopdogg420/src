@@ -67,7 +67,7 @@ class DNALandmarkBuilding(DNANode.DNANode):
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.code)
         if node is None:
-            raise DNAError('DNALandmarkBuilding code ' + self.code + ' not found in DNAStorage')
+            raise DNAError.DNAError('DNALandmarkBuilding code ' + self.code + ' not found in DNAStorage')
         npA = nodePath
         nodePath = node.copyTo(nodePath, 0)
         nodePath.setName(self.getName())

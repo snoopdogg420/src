@@ -1,4 +1,4 @@
-from panda3d.core import LVector4f, DecalEffect
+from panda3d.core import LVector4f, DecalEffect, NodePath
 import DNAGroup
 import DNAError
 import DNAUtil
@@ -70,6 +70,6 @@ class DNADoor(DNAGroup.DNAGroup):
         node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError.DNAError('DNADoor code ' + self.code + ' not found in DNAStorage')
-        doorNode = node.copyTo(frontNode)
+        doorNode = node.copyTo(frontNode, 0)
         block = dnaStorage.getBlock(nodePath.getName())
         DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage, block, self.color)

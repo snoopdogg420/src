@@ -1,6 +1,6 @@
 import DNALandmarkBuilding
 import DNAError
-from DNAUtil import *
+import DNAUtil
 
 class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
     COMPONENT_CODE = 16
@@ -17,13 +17,13 @@ class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
 
     def makeFromDGI(self, dgi):
         DNALandmarkBuilding.DNALandmarkBuilding.makeFromDGI(self, dgi)
-        self.animName = dgiExtractString8(dgi)
+        self.animName = DNAUtil.dgiExtractString8(dgi)
 
     def traverse(self, nodePath, dnaStorage):
         node = dnaStorage.findNode(self.getCode())
         if node is None:
             raise DNAError.DNAError('DNAAnimBuilding code ' + self.getCode() + ' not found in dnastore')
-        node = node.copyTo(nodePath)
+        node = node.copyTo(nodePath, 0)
         node.setName(self.getName())
         node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
         node.setTag('DNAAnim', self.animName)
