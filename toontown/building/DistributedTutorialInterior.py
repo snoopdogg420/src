@@ -25,7 +25,10 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
-        self.setup()
+        if not base.cr.doFindAllInstances(DistributedNPCSpecialQuestGiver.DistributedNPCSpecialQuestGiver):
+            self.acceptOnce('doneTutorialSetup', self.setup)
+        else:
+            self.setup()
 
     def disable(self):
         self.interior.removeNode()

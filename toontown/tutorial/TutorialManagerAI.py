@@ -32,7 +32,6 @@ class TutorialManagerAI(DistributedObjectAI):
         shopZone = self.zoneAllocator.allocate()
         streetZone = self.zoneAllocator.allocate()
         hqZone = self.zoneAllocator.allocate()
-        print shopZone
         self.desc = NPCToons.NPCToonDict.get(20000)
         self.npc = NPCToons.createNPC(self.air, 20000, self.desc, shopZone)
         self.npc.setTutorial(1)
