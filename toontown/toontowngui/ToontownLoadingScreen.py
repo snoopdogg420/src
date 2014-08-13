@@ -37,6 +37,8 @@ class ToontownLoadingScreen:
         ToontownGlobals.DonaldsDreamland : 'phase_3.5/maps/loading/ddl.jpg',
         ToontownGlobals.LullabyLane : 'phase_3.5/maps/loading/ddl_ll.jpg',
         ToontownGlobals.PajamaPlace : 'phase_3.5/maps/loading/ddl_pp.jpg',
+        ToontownGlobals.OutdoorZone : 'phase_3.5/maps/loading/oz.jpg',
+        ToontownGlobals.GolfZone : 'phase_3.5/maps/loading/gz.jpg',
         ToontownGlobals.SellbotHQ : 'phase_3.5/maps/loading/sbhq.jpg',
         ToontownGlobals.CashbotHQ : 'phase_3.5/maps/loading/cbhq.jpg',
         ToontownGlobals.LawbotHQ : 'phase_3.5/maps/loading/lbhq.jpg',
