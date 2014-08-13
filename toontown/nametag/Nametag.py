@@ -4,12 +4,16 @@ from direct.task.Task import Task
 from pandac.PandaModules import *
 
 from otp.otpbase import OTPGlobals
-from toontown.chat import ChatBalloon
+from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.nametag import NametagGlobals
 
 
 class Nametag(FSM, PandaNode, DirectObject):
     TEXT_Y_OFFSET = -0.05
+
+    CHAT_TEXT_GLYPH_SCALE = 1.05
+    CHAT_TEXT_GLYPH_SHIFT = -0.05
+
     NAMETAG_X_PADDING = 0.2
     NAMETAG_Z_PADDING = 0.2
 
@@ -18,40 +22,47 @@ class Nametag(FSM, PandaNode, DirectObject):
         PandaNode.__init__(self, 'nametag')
         DirectObject.__init__(self)
 
-        self.contents = NodePath.anyPath(self).attachNewNode('contents')
-
-        self.avatar = None
-        self.font = None
-        self.chatType = NametagGlobals.CHAT
-        self.chatBalloonType = NametagGlobals.CHAT_BALLOON
         self.active = True
-        self.clickState = NametagGlobals.NORMAL
         self.lastClickState = NametagGlobals.NORMAL
+        self.clickState = NametagGlobals.NORMAL
+        self.pendingClickState = NametagGlobals.NORMAL
+        self.avatar = None
+
         self.nametagHidden = False
         self.chatHidden = False
         self.thoughtHidden = False
 
-        # Foreground, background:
         self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
         self.chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNormal]
         self.speedChatColor = VBase4(1, 1, 1, 1)
 
+        self.chatType = NametagGlobals.CHAT
+        self.chatBalloonType = NametagGlobals.CHAT_BALLOON
+
+        # Create the container of our geometry:
+        self.contents = NodePath.anyPath(self).attachNewNode('contents')
+
+        self.icon = None
+
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
-        self.nameTextNode.setWordwrap(8)
+        self.nameTextNode.setWordwrap(8.0)
         self.nameTextNode.setTextColor(self.nametagColor[self.clickState][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
-        self.chatTextNode.setWordwrap(12)
+        self.chatTextNode.setWordwrap(12.0)
         self.chatTextNode.setTextColor(self.chatColor[self.clickState][0])
-        self.chatTextNode.setGlyphScale(1.05)
-        self.chatTextNode.setGlyphShift(-0.05)
+        self.chatTextNode.setGlyphScale(ChatBalloon.TEXT_GLYPH_SCALE)
+        self.chatTextNode.setGlyphShift(ChatBalloon.TEXT_GLYPH_SHIFT)
 
-        self.icon = None
+        self.font = None
+        self.nameFont = None
+        self.chatFont = None
 
         # Add the tick task:
-        self.tickTask = taskMgr.add(self.tick, self.getUniqueName() + '-tick')
+        self.tickTaskName = self.getUniqueName() + '-tick'
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName)
 
         # Accept the collision events:
         self.pickerName = self.getUniqueName() + '-picker'
@@ -63,9 +74,21 @@ class Nametag(FSM, PandaNode, DirectObject):
             self.__handleMouseLeave)
 
     def destroy(self):
+        self.ignoreAll()
+
         if self.tickTask is not None:
             taskMgr.remove(self.tickTask)
             self.tickTask = None
+
+        self.font = None
+        self.chatFont = None
+        self.nameFont = None
+
+        if self.chatTextNode:
+            self.chatTextNode = None
+
+        if self.nameTextNode:
+            self.nameTextNode = None
 
         if self.icon is not None:
             self.icon.removeAllChildren()
@@ -75,14 +98,7 @@ class Nametag(FSM, PandaNode, DirectObject):
             self.contents.removeNode()
             self.contents = None
 
-        if self.chatTextNode:
-            self.chatTextNode = None
-
-        if self.nameTextNode:
-            self.nameTextNode = None
-
         self.avatar = None
-        self.font = None
 
     def getUniqueName(self):
         return 'Nametag-' + str(id(self))
@@ -108,33 +124,6 @@ class Nametag(FSM, PandaNode, DirectObject):
     def tick(self, task):
         return Task.cont  # Inheritors should override this method.
 
-    def setAvatar(self, avatar):
-        self.avatar = avatar
-
-    def getAvatar(self):
-        return self.avatar
-
-    def setFont(self, font):
-        self.font = font
-        if self.font:
-            self.nameTextNode.setFont(self.font)
-            self.chatTextNode.setFont(self.font)
-
-    def getFont(self):
-        return self.font
-
-    def setChatType(self, chatType):
-        self.chatType = chatType
-
-    def getChatType(self):
-        return self.chatType
-
-    def setChatBalloonType(self, chatBalloonType):
-        self.chatBalloonType = chatBalloonType
-
-    def getChatBalloonType(self):
-        return self.chatBalloonType
-
     def setActive(self, active):
         self.active = active
         if self.active:
@@ -144,6 +133,12 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def getActive(self):
         return self.active
+
+    def setLastClickState(self, lastClickState):
+        self.lastClickState = lastClickState
+
+    def getLastClickState(self):
+        return self.lastClickState
 
     def setClickState(self, clickState):
         self.lastClickState = self.clickState
@@ -156,13 +151,21 @@ class Nametag(FSM, PandaNode, DirectObject):
             self.request('Rollover')
         elif self.clickState == NametagGlobals.DISABLED:
             self.request('Disabled')
-        self.update()
 
     def getClickState(self):
         return self.clickState
 
-    def getLastClickState(self):
-        return self.lastClickState
+    def setPendingClickState(self, pendingClickState):
+        self.pendingClickState = pendingClickState
+
+    def getPendingClickState(self):
+        return self.pendingClickState
+
+    def setAvatar(self, avatar):
+        self.avatar = avatar
+
+    def getAvatar(self):
+        return self.avatar
 
     def hideNametag(self):
         self.nametagHidden = True
@@ -206,6 +209,26 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getSpeedChatColor(self):
         return self.speedChatColor
 
+    def setChatType(self, chatType):
+        self.chatType = chatType
+
+    def getChatType(self):
+        return self.chatType
+
+    def setChatBalloonType(self, chatBalloonType):
+        self.chatBalloonType = chatBalloonType
+
+    def getChatBalloonType(self):
+        return self.chatBalloonType
+
+    def setIcon(self, icon):
+        self.icon = icon
+        if not self.getChatText():
+            self.update()
+
+    def getIcon(self):
+        return self.icon
+
     def setWordWrap(self, wordWrap):
         self.nameTextNode.setWordwrap(wordWrap)
 
@@ -218,18 +241,17 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getChatWordWrap(self):
         return self.chatTextNode.getWordwrap()
 
-    def setIcon(self, icon):
-        self.icon = icon
-        if not self.getChatText():
-            self.update()
+    def setShadow(self, shadow):
+        self.nameTextNode.setShadow(shadow)
 
-    def getIcon(self):
-        return self.icon
+    def getShadow(self):
+        return self.nameTextNode.getShadow()
+
+    def clearShadow(self):
+        self.nameTextNode.clearShadow()
 
     def setNameText(self, nameText):
         self.nameTextNode.setText(nameText)
-        if not self.getChatText():
-            self.update()
 
     def getNameText(self):
         return self.nameTextNode.getText()
@@ -240,14 +262,30 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getChatText(self):
         return self.chatTextNode.getText()
 
-    def setShadow(self, shadow):
-        self.nameTextNode.setShadow(shadow)
+    def setFont(self, font):
+        self.font = font
+        if self.font is not None:
+            self.setNameFont(self.font)
+            self.setChatFont(self.font)
 
-    def getShadow(self):
-        return self.nameTextNode.getShadow()
+    def getFont(self):
+        return self.font
 
-    def clearShadow(self):
-        self.nameTextNode.clearShadow()
+    def setNameFont(self, nameFont):
+        self.nameFont = nameFont
+        if self.nameFont is not None:
+            self.nameTextNode.setFont(self.nameFont)
+
+    def getNameFont(self):
+        return self.nameFont
+
+    def setChatFont(self, chatFont):
+        self.chatFont = chatFont
+        if self.chatFont is not None:
+            self.chatTextNode.setFont(self.chatFont)
+
+    def getChatFont(self):
+        return self.chatFont
 
     def update(self):
         """
@@ -257,20 +295,19 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         if self.getChatText():
             if self.chatBalloonType == NametagGlobals.CHAT_BALLOON:
-                if self.chatHidden:
+                if not self.chatHidden:
+                    self.drawChatBalloon()
                     return
             elif self.chatBalloonType == NametagGlobals.THOUGHT_BALLOON:
-                if self.thoughtHidden:
+                if not self.thoughtHidden:
+                    self.drawChatBalloon()
                     return
-
-            self.drawChatBalloon()
-            return
 
         if self.getNameText() and (not self.nametagHidden):
             self.drawNametag()
 
     def drawChatBalloon(self):
-        if self.font is None:
+        if self.chatFont is None:
             # We can't draw this without a font.
             return
 
@@ -287,7 +324,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
 
-        chatBalloon = ChatBalloon.ChatBalloon(
+        chatBalloon = ChatBalloon(
             model, modelWidth, modelHeight, self.chatTextNode,
             foreground=foreground, background=background)
         chatBalloon.reparentTo(self.contents)
@@ -296,15 +333,15 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.drawCollisions()
 
     def drawNametag(self):
-        if self.font is None:
+        if self.nameFont is None:
             # We can't draw this without a font.
             return
 
-        foreground, background = self.nametagColor[self.clickState]
-
         # Attach the icon:
-        if self.icon:
+        if self.icon is not None:
             self.contents.attachNewNode(self.icon)
+
+        foreground, background = self.nametagColor[self.clickState]
 
         # Set the color of the TextNode:
         self.nameTextNode.setTextColor(foreground)
@@ -339,22 +376,36 @@ class Nametag(FSM, PandaNode, DirectObject):
     def enterNormal(self):
         if self.lastClickState == NametagGlobals.DOWN:
             pass  # TODO: Send a message.
+        # TODO: Set the normal colors.
 
     def enterDown(self):
         base.playSfx(NametagGlobals.clickSound)
+        # TODO: Set the down colors.
 
     def enterRollover(self):
-        base.playSfx(NametagGlobals.rolloverSound)
+        if self.lastClickState == NametagGlobals.DOWN:
+            pass  # TODO: Send a message.
+        else:
+            base.playSfx(NametagGlobals.rolloverSound)
+        # TODO: Set the rollover colors.
 
     def enterDisabled(self):
-        pass
+        pass  # TODO: Set the disabled colors.
 
     def __handleMouseEnter(self, collEntry=None):
-        if self.clickState == NametagGlobals.DISABLED:
-            return
-        self.setClickState(NametagGlobals.ROLLOVER)
+        self.pendingClickState = NametagGlobals.ROLLOVER
+        if self.clickState == NametagGlobals.NORMAL:
+            self.setClickState(NametagGlobals.ROLLOVER)
 
     def __handleMouseLeave(self, collEntry=None):
-        if self.clickState == NametagGlobals.DISABLED:
-            return
-        self.setClickState(NametagGlobals.NORMAL)
+        self.pendingClickState = NametagGlobals.NORMAL
+        if self.clickState == NametagGlobals.ROLLOVER:
+            self.setClickState(NametagGlobals.NORMAL)
+
+    def __handleMouseDown(self):
+        if self.clickState == NametagGlobals.ROLLOVER:
+            self.setClickState(NametagGlobals.DOWN)
+
+    def __handleMouseUp(self):
+        if self.clickState == NametagGlobals.DOWN:
+            self.setClickState(self.pendingClickSate)

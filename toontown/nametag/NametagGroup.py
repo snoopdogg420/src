@@ -9,38 +9,46 @@ from toontown.nametag.Nametag3d import Nametag3d
 class NametagGroup:
     CHAT_TIMEOUT_MIN = 4.0
     CHAT_TIMEOUT_MAX = 12.0
+
     CHAT_STOMP_DELAY = 0.2
 
     def __init__(self):
-        self.nametag2d = Nametag2d()
-        self.nametag3d = Nametag3d()
-
-        self.icon = PandaNode('icon')
-
+        self.active = True
         self.avatar = None
-        self.font = None
-        self.chatType = NametagGlobals.CHAT
-        self.chatBalloonType = NametagGlobals.CHAT_BALLOON
-        self.active = False
+
         self.objectCode = None
-        self.shadow = None
 
         self.nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCNormal]
         self.chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNormal]
         self.speedChatColor = VBase4(1, 1, 1, 1)
 
+        self.chatType = NametagGlobals.CHAT
+        self.chatBalloonType = NametagGlobals.CHAT_BALLOON
+
+        self.shadow = None
+
         self.wordWrap = 8
         self.chatWordWrap = 12
 
         self.nameText = ''
-        self.stompChatText = ''
+
         self.chatPages = []
         self.chatPageIndex = 0
-
         self.chatTimeoutTask = None
         self.chatTimeoutTaskName = self.getUniqueName() + '-timeout'
+
+        self.stompChatText = ''
         self.stompTask = None
         self.stompTaskName = self.getUniqueName() + '-stomp'
+
+        self.font = None
+        self.nameFont = None
+        self.chatFont = None
+
+        self.nametag2d = Nametag2d()
+        self.nametag3d = Nametag3d()
+
+        self.icon = PandaNode('icon')
 
         self.nametags = set()
         self.add(self.nametag2d)
@@ -57,7 +65,10 @@ class NametagGroup:
             self.icon = None
 
         self.avatar = None
+
         self.font = None
+        self.nameFont = None
+        self.chatFont = None
 
         if self.nametag2d:
             self.nametag2d = None
@@ -67,60 +78,13 @@ class NametagGroup:
     def getUniqueName(self):
         return 'NametagGroup-' + str(id(self))
 
-    def add(self, nametag):
-        self.nametags.add(nametag)
-        self.update(nametag)
-
-    def remove(self, nametag):
-        nametag.destroy()
-        self.nametags.remove(nametag)
-
-    def update(self, nametag):
-        nametag.setAvatar(self.avatar)
-        nametag.setFont(self.font)
-        nametag.setChatType(self.chatType)
-        nametag.setChatBalloonType(self.chatBalloonType)
-        nametag.setNametagColor(self.nametagColor)
-        nametag.setChatColor(self.chatColor)
-        nametag.setSpeedChatColor(self.speedChatColor)
-        nametag.setWordWrap(self.wordWrap)
-        nametag.setChatWordWrap(self.chatWordWrap)
-        nametag.setNameText(self.nameText)
-        nametag.setChatText(self.getChatText())
-        nametag.setIcon(self.icon)
-        nametag.update()
-
-    def updateAll(self):
+    def setActive(self, active):
+        self.active = active
         for nametag in self.nametags:
-            self.update(nametag)
+            nametag.setActive(self.active)
 
-    def manage(self, marginManager):
-        pass
-
-    def unmanage(self, marginManager):
-        pass
-
-    def setNametag2d(self, nametag2d):
-        if self.nametag2d:
-            self.remove(self.nametag2d)
-            self.nametag2d = None
-
-        self.nametag2d = nametag2d
-        self.add(self.nametag2d)
-
-    def getNametag2d(self):
-        return self.nametag2d
-
-    def setNametag3d(self, nametag3d):
-        if self.nametag3d:
-            self.remove(self.nametag3d)
-            self.nametag3d = None
-
-        self.nametag3d = nametag3d
-        self.add(self.nametag3d)
-
-    def getNametag3d(self):
-        return self.nametag3d
+    def getActive(self):
+        return self.active
 
     def setAvatar(self, avatar):
         self.avatar = avatar
@@ -130,56 +94,11 @@ class NametagGroup:
     def getAvatar(self):
         return self.avatar
 
-    def setFont(self, font):
-        self.font = font
-        for nametag in self.nametags:
-            nametag.setFont(self.font)
-
-    def getFont(self):
-        return self.font
-
-    def setChatType(self, chatType):
-        self.chatType = chatType
-        for nametag in self.nametags:
-            nametag.setChatType(self.chatType)
-
-    def getChatType(self):
-        return self.chatType
-
-    def setChatBalloonType(self, chatBalloonType):
-        self.chatBalloonType = chatBalloonType
-        for nametag in self.nametags:
-            nametag.setChatBalloonType(self.chatBalloonType)
-
-    def getChatBalloonType(self):
-        return self.chatBalloonType
-
-    def setActive(self, active):
-        self.active = active
-        for nametag in self.nametags:
-            nametag.setActive(self.active)
-
-    def getActive(self):
-        return self.active
-
     def setObjectCode(self, objectCode):
         self.objectCode = objectCode
 
     def getObjectCode(self):
         return self.objectCode
-
-    def setShadow(self, shadow):
-        self.shadow = shadow
-        for nametag in self.nametags:
-            nametag.setShadow(self.shadow)
-
-    def getShadow(self):
-        return self.shadow
-
-    def clearShadow(self):
-        self.shadow = None
-        for nametag in self.nametags:
-            nametag.clearShadow()
 
     def setNametagColor(self, nametagColor):
         self.nametagColor = nametagColor
@@ -205,6 +124,35 @@ class NametagGroup:
     def getSpeedChatColor(self):
         return self.speedChatColor
 
+    def setChatType(self, chatType):
+        self.chatType = chatType
+        for nametag in self.nametags:
+            nametag.setChatType(self.chatType)
+
+    def getChatType(self):
+        return self.chatType
+
+    def setChatBalloonType(self, chatBalloonType):
+        self.chatBalloonType = chatBalloonType
+        for nametag in self.nametags:
+            nametag.setChatBalloonType(self.chatBalloonType)
+
+    def getChatBalloonType(self):
+        return self.chatBalloonType
+
+    def setShadow(self, shadow):
+        self.shadow = shadow
+        for nametag in self.nametags:
+            nametag.setShadow(self.shadow)
+
+    def getShadow(self):
+        return self.shadow
+
+    def clearShadow(self):
+        self.shadow = None
+        for nametag in self.nametags:
+            nametag.clearShadow()
+
     def setWordWrap(self, wordWrap):
         self.wordWrap = wordWrap
         for nametag in self.nametags:
@@ -225,12 +173,25 @@ class NametagGroup:
         self.nameText = nameText
         for nametag in self.nametags:
             nametag.setNameText(self.nameText)
+            nametag.update()
 
     def getNameText(self):
         return self.nameText
 
-    def getStompChatText(self):
-        return self.stompChatText
+    def getNumChatPages(self):
+        return len(self.chatPages)
+
+    def setChatPageIndex(self, chatPageIndex):
+        if chatPageIndex >= self.getNumChatPages():
+            return
+
+        self.chatPageIndex = chatPageIndex
+        for nametag in self.nametags:
+            nametag.setChatText(self.chatPages[self.chatPageIndex])
+            nametag.update()
+
+    def getChatPageIndex(self):
+        return self.chatPageIndex
 
     def setChatText(self, chatText, timeout=False):
         # If we are currently displaying chat text, we need to "stomp" it. In
@@ -284,20 +245,54 @@ class NametagGroup:
         if task is not None:
             return Task.done
 
-    def getNumChatPages(self):
-        return len(self.chatPages)
+    def getStompChatText(self):
+        return self.stompChatText
 
-    def setChatPageIndex(self, chatPageIndex):
-        if chatPageIndex >= self.getNumChatPages():
-            return
-
-        self.chatPageIndex = chatPageIndex
+    def setFont(self, font):
+        self.font = font
         for nametag in self.nametags:
-            nametag.setChatText(self.chatPages[self.chatPageIndex])
-            nametag.update()
+            nametag.setFont(self.font)
 
-    def getChatPageIndex(self):
-        return self.chatPageIndex
+    def getFont(self):
+        return self.font
+
+    def setNameFont(self, nameFont):
+        self.nameFont = nameFont
+        for nametag in self.nametags:
+            nametag.setNameFont(self.nameFont)
+
+    def getNameFont(self):
+        return self.nameFont
+
+    def setChatFont(self, chatFont):
+        self.chatFont = chatFont
+        for nametag in self.nametags:
+            nametag.setChatFont(self.chatFont)
+
+    def getChatFont(self):
+        return self.chatFont
+
+    def setNametag2d(self, nametag2d):
+        if self.nametag2d:
+            self.remove(self.nametag2d)
+            self.nametag2d = None
+
+        self.nametag2d = nametag2d
+        self.add(self.nametag2d)
+
+    def getNametag2d(self):
+        return self.nametag2d
+
+    def setNametag3d(self, nametag3d):
+        if self.nametag3d:
+            self.remove(self.nametag3d)
+            self.nametag3d = None
+
+        self.nametag3d = nametag3d
+        self.add(self.nametag3d)
+
+    def getNametag3d(self):
+        return self.nametag3d
 
     def setIcon(self, icon):
         self.icon = icon
@@ -306,6 +301,41 @@ class NametagGroup:
 
     def getIcon(self):
         return self.icon
+
+    def add(self, nametag):
+        self.nametags.add(nametag)
+        self.update(nametag)
+
+    def remove(self, nametag):
+        nametag.destroy()
+        self.nametags.remove(nametag)
+
+    def update(self, nametag):
+        nametag.setAvatar(self.avatar)
+        nametag.setFont(self.font)
+        nametag.setNameFont(self.nameFont)
+        nametag.setChatFont(self.chatFont)
+        nametag.setChatType(self.chatType)
+        nametag.setChatBalloonType(self.chatBalloonType)
+        nametag.setNametagColor(self.nametagColor)
+        nametag.setChatColor(self.chatColor)
+        nametag.setSpeedChatColor(self.speedChatColor)
+        nametag.setWordWrap(self.wordWrap)
+        nametag.setChatWordWrap(self.chatWordWrap)
+        nametag.setNameText(self.nameText)
+        nametag.setChatText(self.getChatText())
+        nametag.setIcon(self.icon)
+        nametag.update()
+
+    def updateAll(self):
+        for nametag in self.nametags:
+            self.update(nametag)
+
+    def manage(self, marginManager):
+        pass
+
+    def unmanage(self, marginManager):
+        pass
 
     def hideNametag(self):
         for nametag in self.nametags:
