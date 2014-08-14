@@ -387,13 +387,14 @@ class ToonBase(OTPBase.OTPBase):
             NametagGlobals.setClickSound(clickSound)
 
         self.marginManager = None  # NAMETAG TODO
-        self.leftCells = []
-        self.rightCells = []
-        self.bottomCells = []
+        self.leftCells = [None, None, None]  # NAMETAG TODO
+        self.rightCells = [None, None, None]  # NAMETAG TODO
+        self.bottomCells = [None, None, None, None]  # NAMETAG TODO
 
         self.nametagMouseWatcher = NametagMouseWatcher.NametagMouseWatcher()
 
     def setCellsAvailable(self, cell_list, available):
+        return  # NAMETAG TODO
         for cell in cell_list:
             self.marginManager.setCellAvailable(cell, available)
 
