@@ -149,6 +149,8 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         suitDNA = SuitDNA.SuitDNA()
         suitDNA.newSuit('f')
         self.suit.setDNA(suitDNA)
+        self.suit.hideNametag2d()
+        self.suit.hideNametag3d()
         self.suit.loop('neutral')
         self.suit.setPosHpr(-20, 8, 0, 0, 0, 0)
         self.suit.reparentTo(self.interior)
