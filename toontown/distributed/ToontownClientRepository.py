@@ -808,7 +808,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
     def addPetToFriendsMap(self, callback = None):
         doId = base.localAvatar.getPetId()
-        if doId not or doId in self.friendsMap:
+        if doId not in self.friendsMap:
             if callback:
                 callback()
             return
