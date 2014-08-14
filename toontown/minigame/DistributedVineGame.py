@@ -720,7 +720,7 @@ class DistributedVineGame(DistributedMinigame):
                 break
 
         if not curInfo:
-            if not avId in self.endingTracks:
+            if avId not in self.endingTracks:
                 self.makeCameraFollowJumpingToon()
                 if self.localPhysicsNP:
                     pos = self.localPhysicsNP.getPos(render)
@@ -933,7 +933,7 @@ class DistributedVineGame(DistributedMinigame):
         self.setupAttachingToVineCamIval(vineIndex, self.lastJumpFacingRight)
 
     def makeOtherToonJump(self, avId, posX, posZ, velX, velZ):
-        if not avId in self.otherToonPhysics:
+        if avId not in self.otherToonPhysics:
             an = ActorNode('other-physics%s' % avId)
             anp = render.attachNewNode(an)
             base.physicsMgr.attachPhysicalNode(an)
@@ -954,7 +954,7 @@ class DistributedVineGame(DistributedMinigame):
         physObject.setVelocity(velX, 0, velZ)
 
     def makeOtherToonFallFromMidair(self, avId, posX, posZ, velX, velZ):
-        if not avId in self.otherToonPhysics:
+        if avId not in self.otherToonPhysics:
             an = ActorNode('other-physics%s' % avId)
             anp = render.attachNewNode(an)
             base.physicsMgr.attachPhysicalNode(an)
@@ -1497,7 +1497,7 @@ class DistributedVineGame(DistributedMinigame):
 
     def doEndingTrackTask(self, avId):
         taskName = 'VineGameEnding-%s' % avId
-        if not avId in self.endingTracks:
+        if avId not in self.endingTracks:
             taskMgr.doMethodLater(0.5, self.setupEndingTrack, taskName, extraArgs=(avId,))
             self.endingTrackTaskNames.append(taskName)
 

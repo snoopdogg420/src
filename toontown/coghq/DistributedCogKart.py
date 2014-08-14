@@ -187,7 +187,7 @@ class DistributedCogKart(DistributedElevatorExt.DistributedElevatorExt):
             del self.toonRequests[index]
         if avId == 0:
             pass
-        elif not avId in self.cr.doId2do:
+        elif avId not in self.cr.doId2do:
             func = PythonUtil.Functor(self.gotToon, index, avId)
             self.toonRequests[index] = self.cr.relatedObjectMgr.requestObjects([avId], allCallback=func)
         elif not self.isSetup:

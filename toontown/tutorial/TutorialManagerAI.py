@@ -20,9 +20,9 @@ class TutorialManagerAI(DistributedObjectAI):
         self.zoneAllocator = self.air.zoneAllocator
 
         self.currentAllocatedZones = {}
-        
+
         self.timesDone = 0
-        
+
         self.streetZone = 0
         self.hqZone = 0
         self.shopZone = 0
@@ -149,6 +149,8 @@ class TutorialManagerAI(DistributedObjectAI):
         suitTrack = SuitDNA.getSuitDept('f')
         flunky.setupSuitDNA(1, suitType, suitTrack)
         flunky.generateWithRequired(streetZone)
+        flunky.hideNametag2d()
+        flunky.hideNametag3d()
 
         desc = NPCToons.NPCToonDict.get(20001)
         npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)

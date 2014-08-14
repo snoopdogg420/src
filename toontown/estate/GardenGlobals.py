@@ -608,7 +608,7 @@ def getNumBeansRequired(species, variety):
     retval = -1
     if not PlantAttributes.get(species):
         return retval
-    if not 'varieties' in PlantAttributes[species]:
+    if 'varieties' not in PlantAttributes[species]:
         return retval
     if variety >= len(PlantAttributes[species]['varieties']):
         return -1

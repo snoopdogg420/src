@@ -1005,7 +1005,7 @@ class DistributedPetAI(DistributedSmoothNodeAI.DistributedSmoothNodeAI, PetLooke
         return sum / 3.0
 
     def __lockPetMoveTask(self, avId):
-        if not hasattr(self, 'air') or not avId in self.air.doId2do:
+        if not hasattr(self, 'air') or avId not in self.air.doId2do:
             self.notify.warning('avId: %s gone or self deleted!' % avId)
             return Task.done
         av = self.air.doId2do.get(avId)

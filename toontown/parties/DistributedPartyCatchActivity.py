@@ -250,7 +250,7 @@ class DistributedPartyCatchActivity(DistributedPartyActivity, DistributedPartyCa
         base.cr.playGame.getPlace().fsm.request('walk')
 
     def handleToonJoined(self, toonId):
-        if not toonId in self.toonSDs:
+        if toonId not in self.toonSDs:
             toonSD = PartyCatchActivityToonSD(toonId, self)
             self.toonSDs[toonId] = toonSD
             toonSD.load()
@@ -543,7 +543,7 @@ class DistributedPartyCatchActivity(DistributedPartyActivity, DistributedPartyCa
         self.finishDropInterval(generation, objNum)
 
     def showCatch(self, avId, generation, objNum):
-        if not avId in self.toonSDs:
+        if avId not in self.toonSDs:
             return
         isLocal = avId == base.localAvatar.doId
         if generation not in self._id2gen:
@@ -553,7 +553,7 @@ class DistributedPartyCatchActivity(DistributedPartyActivity, DistributedPartyCa
         objName = self._id2gen[generation].droppedObjNames[objNum]
         objType = PartyGlobals.Name2DropObjectType[objName]
         if objType.good:
-            if not obJNum in self._id2gen[generation].droppedObjCaught:
+            if objNum not in self._id2gen[generation].droppedObjCaught:
                 if isLocal:
                     base.playSfx(self.sndGoodCatch)
                 fruit = self.getObjModel(objName)

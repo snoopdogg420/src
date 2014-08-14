@@ -76,7 +76,7 @@ def invertTable(table):
     index = {}
     for key in table.keys():
         value = table[key]
-        if not value in index:
+        if value not in index:
             index[value] = key
 
     return index
@@ -724,7 +724,7 @@ class DistributedTravelGame(DistributedMinigame):
         for index in xrange(len(self.avIdList)):
             avId = self.avIdList[index]
             self.startingVotes[avId] = startingVotesArray[index]
-            if not avId in self.currentVotes:
+            if avId not in self.currentVotes:
                 self.currentVotes[avId] = startingVotesArray[index]
 
         self.notify.debug('starting votes = %s' % self.startingVotes)

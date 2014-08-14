@@ -160,7 +160,7 @@ class CatalogGardenItem(CatalogItem.CatalogItem):
         result = False
         if canPlant < numBeansRequired:
             result = True
-        if not result and self.gardenIndex in GardenGlobals.Specials and'minSkill' in GardenGlobals.Specials[self.gardenIndex]:
+        if not result and self.gardenIndex in GardenGlobals.Specials and 'minSkill' in GardenGlobals.Specials[self.gardenIndex]:
             minSkill = GardenGlobals.Specials[self.gardenIndex]['minSkill']
             if avatar.shovelSkill < minSkill:
                 result = True

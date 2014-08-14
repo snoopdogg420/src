@@ -161,7 +161,7 @@ class CogdoFlyingCameraManager:
                 name = entry.getIntoNode().getName()
                 if name.find('col_') >= 0:
                     np = entry.getIntoNodePath().getParent()
-                    if not np in nodesInBetween:
+                    if np not in nodesInBetween:
                         nodesInBetween[np] = np.getParent()
 
         for np in nodesInBetween.keys():

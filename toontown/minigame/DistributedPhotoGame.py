@@ -464,7 +464,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
             else:
                 quality = 1
                 onCenter = 1
-            if not superParent in centerDict:
+            if superParent not in centerDict:
                 centerDict[superParent] = (onCenter,
                  overB,
                  overT,

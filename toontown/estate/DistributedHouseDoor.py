@@ -57,7 +57,7 @@ class DistributedHouseDoor(DistributedDoor.DistributedDoor):
         self.zoneDoneLoading = 0
 
     def getBuilding(self, allowEmpty = False):
-        if not 'building' in self.__dict__:
+        if 'building' not in self.__dict__:
             if self.doorType == DoorTypes.INT_STANDARD:
                 door = render.find('**/leftDoor;+s')
                 self.building = door.getParent()

@@ -119,7 +119,7 @@ class DistributedDoorAI(DistributedObjectAI.DistributedObjectAI):
                 [self.otherDoor.getZoneId(), self.otherDoor.getDoId()])
 
     def enqueueAvatarIdEnter(self, avatarID):
-        if not avatarID in self.avatarsWhoAreEntering:
+        if avatarID not in self.avatarsWhoAreEntering:
             self.avatarsWhoAreEntering[avatarID] = 1
             self.sendUpdate('avatarEnter', [avatarID])
         self.openDoor(self.fsm)

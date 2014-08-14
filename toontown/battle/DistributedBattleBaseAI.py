@@ -982,7 +982,7 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         if self.toons.count(toonId) == 0:
             self.notify.warning('joinDone() - toon: %d not in toon list' % toonId)
             return
-        if not avId in self.joinResponses:
+        if avId not in self.joinResponses:
             self.notify.debug('joinDone() - no entry for: %d - ignoring: %d' % (avId, toonId))
             return
         jr = self.joinResponses[avId]
@@ -1104,7 +1104,7 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         petId = toon.getPetId()
         zoneId = self.zoneId
         if petId == av:
-            if not toonId in self.pets:
+            if toonId not in self.pets:
 
                 def handleGetPetProxy(success, petProxy, petId = petId, zoneId = zoneId, toonId = toonId):
                     if success:
@@ -1165,7 +1165,7 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
         self.movieHasPlayed = 0
         self.rewardHasPlayed = 0
         for t in self.activeToons:
-            if not t in self.toonAttacks:
+            if t not in self.toonAttacks:
                 self.toonAttacks[t] = getToonAttack(t)
             attack = self.toonAttacks[t]
             if attack[TOON_TRACK_COL] == PASS or attack[TOON_TRACK_COL] == UN_ATTACK:

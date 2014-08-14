@@ -118,7 +118,7 @@ class DistributedVineGameAI(DistributedMinigameAI):
         if not self._playing():
             return
         avId = self.air.getAvatarIdFromSender()
-        if not avId in self.scoreDict:
+        if avId not in self.scoreDict:
             self.notify.warning('PROBLEM: avatar %s called claimTreasure(%s) but he is not in the scoreDict: %s. avIdList is: %s' % (avId,
              treasureNum,
              self.scoreDict,
@@ -199,7 +199,7 @@ class DistributedVineGameAI(DistributedMinigameAI):
             curTime = self.getCurrentGameTime()
             timeLeft = VineGameGlobals.GameDuration - curTime
             self.notify.debug('curTime =%s timeLeft = %s' % (curTime, timeLeft))
-            if not avId in self.scoreDict:
+            if avId not in self.scoreDict:
                 self.notify.warning('PROBLEM: avatar %s called claimTreasure(%s) but he is not in the scoreDict: %s. avIdList is: %s' % (avId,
                  treasureNum,
                  self.scoreDict,

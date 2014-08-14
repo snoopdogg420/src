@@ -217,7 +217,7 @@ def __dropObject(drop, delay, objName, level, alreadyDodged, alreadyTeased, npcs
     toon = drop['toon']
     repeatNPC = 0
     battle = drop['battle']
-    if npc in drop:
+    if 'npc' in drop:
         toon = drop['npc']
         if toon in npcDrops:
             repeatNPC = 1
@@ -379,7 +379,7 @@ def __dropObject(drop, delay, objName, level, alreadyDodged, alreadyTeased, npcs
 
 def __createSuitTrack(drop, delay, level, alreadyDodged, alreadyTeased, target, npcs):
     toon = drop['toon']
-    if npc in drop:
+    if 'npc' in drop:
         toon = drop['npc']
     battle = drop['battle']
     majorObject = level >= 3

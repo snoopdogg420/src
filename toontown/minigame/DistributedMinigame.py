@@ -238,7 +238,7 @@ class DistributedMinigame(DistributedObject.DistributedObject):
         self.notify.debug('difficulty: %s' % self.getDifficulty())
         self.__serverFinished = 0
         for avId in self.remoteAvIdList:
-            if not avId in self.cr.doId2do:
+            if avId not in self.cr.doId2do:
                 self.notify.warning('BASE: toon %s already left or has not yet arrived; waiting for server to abort the game' % avId)
                 return 1
 

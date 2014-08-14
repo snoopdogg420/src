@@ -39,7 +39,7 @@ class DistributedCogHQDoorAI(DistributedDoorAI.DistributedDoorAI):
         avatarID = self.air.getAvatarIdFromSender()
         if avatarID in self.avatarsWhoAreEntering:
             del self.avatarsWhoAreEntering[avatarID]
-        if not avatarID in self.avatarsWhoAreExiting:
+        if avatarID not in self.avatarsWhoAreExiting:
             dept = ToontownGlobals.cogHQZoneId2deptIndex(self.destinationZone)
             self.avatarsWhoAreExiting[avatarID] = 1
             self.sendUpdate('avatarExit', [avatarID])

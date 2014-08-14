@@ -216,7 +216,7 @@ class DistributedPartyDanceActivityBase(DistributedPartyActivity):
         self.finishRules()
 
     def __localEnableControls(self):
-        if not base.localAvatar.doId in self.dancingToonFSMs:
+        if base.localAvatar.doId not in self.dancingToonFSMs:
             self.notify.debug('no dancing FSM for local avatar, not enabling controls')
             return
         self.accept(KeyCodes.PATTERN_MATCH_EVENT, self.__doDanceMove)

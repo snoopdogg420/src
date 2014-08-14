@@ -86,7 +86,7 @@ class TownBattleSOSPetInfoPanel(StateData.StateData):
 
     def enter(self, petProxyId):
         self.petProxyId = petProxyId
-        if not petProxyId in base.cr.doId2do:
+        if petProxyId not in base.cr.doId2do:
             self.notify.warning('petProxyId %s not in doId2do!' % petProxyId)
             return
         self.petProxy = base.cr.doId2do[petProxyId]

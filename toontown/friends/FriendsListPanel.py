@@ -582,49 +582,49 @@ class FriendsListPanel(DirectFrame, StateData.StateData):
         speedChatDouble.sort(compareFriends)
         offlineFriends.sort(compareFriends)
         for friendPair in newFriends:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)
                     self.friends[friendPair] = friendButton
 
         for friendPair in petFriends:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair, ToontownGlobals.ColorNoChat, 0)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)
                     self.friends[friendPair] = friendButton
 
         for friendPair in freeChatDouble:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair, ToontownGlobals.ColorFreeChat, 1)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)
                     self.friends[friendPair] = friendButton
 
         for friendPair in freeChatOneRef:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair, ToontownGlobals.ColorFreeChat, 0)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)
                     self.friends[friendPair] = friendButton
 
         for friendPair in speedChatDouble:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair, ToontownGlobals.ColorSpeedChat, 1)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)
                     self.friends[friendPair] = friendButton
 
         for friendPair in speedChatOneRef:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair, ToontownGlobals.ColorSpeedChat, 0)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)
                     self.friends[friendPair] = friendButton
 
         for friendPair in offlineFriends:
-            if not friendPair in self.friends:
+            if friendPair not in self.friends:
                 friendButton = self.makeFriendButton(friendPair, ToontownGlobals.ColorNoChat, 0)
                 if friendButton:
                     self.scrollList.addItem(friendButton, refresh=0)

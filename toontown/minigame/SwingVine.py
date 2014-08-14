@@ -621,7 +621,7 @@ class SwingVine(NodePath):
         swingInterval.start()
 
     def setupSwingAnim(self, avId):
-        if not avId in self.attachedToons:
+        if avId not in self.attachedToons:
             return
         av = base.cr.doId2do.get(avId)
         if not av:

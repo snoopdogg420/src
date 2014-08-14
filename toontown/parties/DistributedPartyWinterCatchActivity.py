@@ -30,7 +30,7 @@ class DistributedPartyWinterCatchActivity(DistributedPartyCatchActivity):
         return
 
     def handleToonJoined(self, toonId):
-        if not toonId in self.toonSDs:
+        if toonId not in self.toonSDs:
             toonSD = WinterPartyCatchActivityToonSD.WinterPartyCatchActivityToonSD(toonId, self)
             self.toonSDs[toonId] = toonSD
             toonSD.load()

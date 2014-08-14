@@ -77,7 +77,7 @@ def pickSuitAttack(attacks, suitLevel):
         return attackNum
     elif configAttackName == 'sequence':
         for i in xrange(len(attacks)):
-            if not attacks[i] in debugAttackSequence:
+            if  attacks[i] not in debugAttackSequence:
                 debugAttackSequence[attacks[i]] = 1
                 return i
 

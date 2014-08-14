@@ -196,13 +196,13 @@ class MazeMapGui(DirectFrame):
         self._toon2marker[toon] = marker
 
     def removeToon(self, toon):
-        if not toon in self._toon2maker:
+        if toon not in self._toon2marker:
             return
         self._toon2marker[toon].removeNode()
         del self._toon2marker[toon]
 
     def updateToon(self, toon, tX, tY):
-        if not toon in self._toon2maker:
+        if toon not in self._toon2marker:
             return
         x, y = self.tile2gui(tX, tY)
         self._toon2marker[toon].setPos(*self.gui2pos(x, y))

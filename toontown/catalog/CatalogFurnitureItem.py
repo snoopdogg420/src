@@ -89,7 +89,7 @@ ClosetToClothes = {500: 10,
  518: 50}
 ClothesToCloset = {}
 for closetId, maxClothes in ClosetToClothes.items():
-    if not maxClothes in ClothesToCloset:
+    if maxClothes not in ClothesToCloset:
         ClothesToCloset[maxClothes] = (closetId,)
     else:
         ClothesToCloset[maxClothes] += (closetId,)

@@ -184,7 +184,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
             if self.hasActiveGroup(inviteeId):
                 self.sendUpdateToAvatarId(inviteeId, 'postAlreadyInGroup', [])
                 return
-            if not leaderId in self.avIdDict or not self.isInGroup(inviteeId, leaderId):
+            if leaderId not in self.avIdDict or not self.isInGroup(inviteeId, leaderId):
                 self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
                 return
             memberList = self.getGroupMemberList(leaderId)
@@ -419,7 +419,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         self.notify.debug('removeFromGroup leaderId %s memberId %s' % (leaderId, memberId))
         self.notify.debug('Groups %s' % self.groupListDict)
         self.notify.debug('avDict %s' % self.avIdDict)
-        if not leaderId in self.avIdDict:
+        if leaderId not in self.avIdDict:
             self.sendUpdate('postGroupDissolve', [memberId,
              leaderId,
              [],

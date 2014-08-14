@@ -484,9 +484,9 @@ class DistributedPartyTugOfWarActivity(DistributedPartyTeamActivity):
                 for i in xrange(numToons - 1, 0, -1):
                     toon1 = self.toonIds[currTeam][i]
                     toon2 = self.toonIds[currTeam][i - 1]
-                    if not toon1 in self.toonIdsToRightHands:
+                    if toon1 not in self.toonIdsToRightHands:
                         self.notify.warning('Toon in tug of war activity but not properly setup:  %s' % toon1)
-                    elif not toon2 in self.toonIdsToRightHands:
+                    elif toon2 not in self.toonIdsToRightHands:
                         self.notify.warning('Toon in tug of war activity but not properly setup:  %s' % toon2)
                     else:
                         self.notify.debug('Connecting rope between toon %d and toon %d of team %d.' % (i, i - 1, currTeam))
@@ -579,7 +579,7 @@ class DistributedPartyTugOfWarActivity(DistributedPartyTeamActivity):
         if self.activityFSM.state != 'Active':
             return
         toon = self.getAvatar(toonId)
-        if not toonId in self.toonIdsToIsPullingFlags:
+        if toonId not in self.toonIdsToIsPullingFlags:
             if self.getTeam(toonId) == None:
                 self.notify.warning("setAnimState called with toonId (%d) that wasn't in self.toonIds" % toonId)
                 return

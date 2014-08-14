@@ -31,7 +31,7 @@ def doTraps(traps):
         else:
             for target in targets:
                 suitId = target['suit'].doId
-                if not suitId in suitTrapsDict:
+                if suitId not in suitTrapsDict:
                     suitTrapsDict[suitId] = [trap]
                     break
 

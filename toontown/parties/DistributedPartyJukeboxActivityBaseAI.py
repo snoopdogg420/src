@@ -27,7 +27,7 @@ class DistributedPartyJukeboxActivityBaseAI(DistributedPartyActivityAI):
         if not phase:
             self.air.writeServerEvent('suspicious',avId,'Toon supplied invalid phase for song!')
             return
-        if not song[1] in phase:
+        if song[1] not in phase:
             self.air.writeServerEvent('suspicious',avId,'Toon supplied invalid song name!')
             return
         if avId in self.owners:

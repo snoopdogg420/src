@@ -632,7 +632,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         return 1
 
     def attemptSubtractNPCFriend(self, npcFriend):
-        if not npcFriend in self.NPCFriendsDict:
+        if npcFriend not in self.NPCFriendsDict:
             self.notify.warning('attemptSubtractNPCFriend: invalid NPC %s' % npcFriend)
             return 0
         if hasattr(self, 'autoRestockSOS') and self.autoRestockSOS:
@@ -860,7 +860,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                         styleName = style[0]
                         break
 
-                if styleName == 'none' or not styleName in descDict:
+                if styleName == 'none' or styleName not in descDict:
                     self.air.writeServerEvent('suspicious', self.doId, ' tried to remove wrong accessory code %d %d %d' % (geomIdx, texIdx, colorIdx))
                 else:
                     self.air.writeServerEvent('accessory', self.doId, ' removed accessory %s' % descDict[styleName])
@@ -3149,7 +3149,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             return ['badIndex', suitIndex, 0]
         suitName = SuitDNA.suitHeadTypes[suitIndex]
         streetId = ZoneUtil.getBranchZone(self.zoneId)
-        if not streetId in self.air.suitPlanners:
+        if streetId not in self.air.suitPlanners:
             return ['badlocation', suitIndex, 0]
         sp = self.air.suitPlanners[streetId]
         map = sp.getZoneIdToPointMap()
@@ -3165,7 +3165,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def doBuildingTakeover(self, suitIndex):
         streetId = ZoneUtil.getBranchZone(self.zoneId)
-        if not streetId in self.air.suitPlanners:
+        if streetId not in self.air.suitPlanners:
             self.notify.warning('Street %d is not known.' % streetId)
             return ['badlocation', suitIndex, 0]
         sp = self.air.suitPlanners[streetId]
@@ -4200,9 +4200,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                         DistributedToonAI.flagCounts = {}
                     avPairKey = str(min(av.doId, otherAv.doId)) + '+' + str(max(av.doId, otherAv.doId))
                     prevCount = DistributedToonAI.flagCounts.setdefault(avPairKey, [{}, globalClock.getFrameTime(), {}])
-                    if not av.doId in prevCount[2]:
+                    if av.doId not in prevCount[2]:
                         prevCount[2][av.doId] = [None, None]
-                    if not av.doId in prevCount[0]:
+                    if av.doId not in prevCount[0]:
                         prevCount[0][av.doId] = 0
                     self.notify.debug('moving av %s, newPos: %s oldPos: %s' % (av.doId, prevCount[2][av.doId], avPos))
                     if prevCount[2][av.doId][0] == None or prevCount[2][av.doId][1] == None:

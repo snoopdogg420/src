@@ -797,7 +797,7 @@ class Movie(DirectObject.DirectObject):
         if track == TRAP:
             sortedTraps = []
             for attack in tp:
-                if not 'npcId' in attack:
+                if 'npcId' not in attack:
                     sortedTraps.append(attack)
 
             for attack in tp:

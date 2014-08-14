@@ -547,7 +547,7 @@ class DistributedCatchGame(DistributedMinigame):
         objName = self.droppedObjNames[objNum]
         objType = Name2DropObjectType[objName]
         if objType.good:
-            if not objNum in self.droppedObjCaught:
+            if objNum not in self.droppedObjCaught:
                 if isLocal:
                     base.playSfx(self.sndGoodCatch)
                 fruit = self.getObjModel(objName)

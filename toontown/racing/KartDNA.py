@@ -594,7 +594,7 @@ def getAccessDictByType(accessoryOwnedList):
         for accOwnedId in accessoryOwnedList:
             accType = getAccessoryType(accOwnedId)
             if accType != InvalidEntry:
-                if not accType in accessDict:
+                if accType not in accessDict:
                     accessDict[accType] = []
                 accessDict[accType].append(accOwnedId)
 
