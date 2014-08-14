@@ -149,8 +149,6 @@ class TutorialManagerAI(DistributedObjectAI):
         suitTrack = SuitDNA.getSuitDept('f')
         flunky.setupSuitDNA(1, suitType, suitTrack)
         flunky.generateWithRequired(streetZone)
-        flunky.hideNametag2d()
-        flunky.hideNametag3d()
 
         desc = NPCToons.NPCToonDict.get(20001)
         npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
