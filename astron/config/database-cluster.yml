@@ -1,5 +1,5 @@
 daemon:
-    name: Database State Server
+    name: Database Cluster
 
 general:
     eventlogger: 127.0.0.1:7198
@@ -11,6 +11,16 @@ messagedirector:
     connect: 127.0.0.1:7100
 
 roles:
+    - type: database
+      control: 4003
+      generate:
+        min: 100000000
+        max: 399999999
+      backend:
+        type: mongodb
+        server: 127.0.0.1:27017
+        database: test
+
     - type: dbss
       database: 4003
       ranges:
