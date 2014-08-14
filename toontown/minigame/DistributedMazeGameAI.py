@@ -72,7 +72,7 @@ class DistributedMazeGameAI(DistributedMinigameAI):
         if self.gameFSM.getCurrentState() is None or self.gameFSM.getCurrentState().getName() != 'play':
             return
         avId = self.air.getAvatarIdFromSender()
-        if not self.scoreDict.has_key(avId):
+        if avId not in self.scoreDict:
             self.notify.warning('PROBLEM: avatar %s called claimTreasure(%s) but he is not in the scoreDict: %s. avIdList is: %s' % (avId,
              treasureNum,
              self.scoreDict,

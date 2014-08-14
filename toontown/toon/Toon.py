@@ -29,8 +29,8 @@ import types
 def teleportDebug(requestStatus, msg, onlyIfToAv = True):
     if teleportNotify.getDebug():
         teleport = 'teleport'
-        if requestStatus.has_key('how') and requestStatus['how'][:len(teleport)] == teleport:
-            if not onlyIfToAv or requestStatus.has_key('avId') and requestStatus['avId'] > 0:
+        if 'how' in requestStatus and requestStatus['how'][:len(teleport)] == teleport:
+            if not onlyIfToAv or 'avId' in requestStatus and requestStatus['avId'] > 0:
                 teleportNotify.debug(msg)
 
 
@@ -309,7 +309,7 @@ def loadPhaseAnims(phaseStr = 'phase_3', loadFlag = 1):
         for anim in animList:
             if loadFlag:
                 pass
-            elif LegsAnimDict[key].has_key(anim[0]):
+            elif anim[0] in LegsAnimDict[key]:
                 if base.localAvatar.style.legs == key:
                     base.localAvatar.unloadAnims([anim[0]], 'legs', None)
 
@@ -317,7 +317,7 @@ def loadPhaseAnims(phaseStr = 'phase_3', loadFlag = 1):
         for anim in animList:
             if loadFlag:
                 pass
-            elif TorsoAnimDict[key].has_key(anim[0]):
+            elif anim[0] in TorsoAnimDict[key]:
                 if base.localAvatar.style.torso == key:
                     base.localAvatar.unloadAnims([anim[0]], 'torso', None)
 
@@ -326,7 +326,7 @@ def loadPhaseAnims(phaseStr = 'phase_3', loadFlag = 1):
             for anim in animList:
                 if loadFlag:
                     pass
-                elif HeadAnimDict[key].has_key(anim[0]):
+                elif anim[0] in HeadAnimDict[key]:
                     if base.localAvatar.style.head == key:
                         base.localAvatar.unloadAnims([anim[0]], 'head', None)
 

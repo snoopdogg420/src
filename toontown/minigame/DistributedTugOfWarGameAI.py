@@ -211,7 +211,7 @@ class DistributedTugOfWarGameAI(DistributedMinigameAI):
 
     def reportCurrentKeyRate(self, keyRate, force):
         avId = self.air.getAvatarIdFromSender()
-        if not self.side.has_key(avId):
+        if avId not in self.side:
             self.notify.warning('Avatar %s sent reportCurrentKeyRate too early %s' % (avId, self.side))
             return
         self.keyRateDict[avId] = keyRate

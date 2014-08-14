@@ -381,21 +381,12 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
     def cancelAvatarDetailsRequest(self, avatar):
         avId = avatar.doId
-        if self.__queryAvatarMap.has_key(avId):
+        if avId in self.__queryAvatarMap:
             pad = self.__queryAvatarMap.pop(avId)
             pad.delayDelete.destroy()
 
     def __sendGetAvatarDetails(self, avId):
-        #return
-
         self.ttiFriendsManager.d_getAvatarDetails(avId)
-
-        return
-        datagram = PyDatagram()
-        avatar = self.__queryAvatarMap[avId].avatar
-        datagram.addUint16(avatar.getRequestID())
-        datagram.addUint32(avId)
-        self.send(datagram)
 
     def n_handleGetAvatarDetailsResp(self, avId, fields):
         self.notify.info('Query reponse for avId %d' % avId)
@@ -730,17 +721,17 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         return 0
 
     def isFriendOnline(self, doId):
-        return self.friendsOnline.has_key(doId)
+        return doId in self.friendsOnline
 
     def addAvatarToFriendsList(self, avatar):
         self.friendsMap[avatar.doId] = avatar
 
     def identifyFriend(self, doId, source = None):
-        if self.friendsMap.has_key(doId):
+        if doId in self.friendsMap:
             teleportNotify.debug('friend %s in friendsMap' % doId)
             return self.friendsMap[doId]
         avatar = None
-        if self.doId2do.has_key(doId):
+        if doId in self.doId2do:
             teleportNotify.debug('found friend %s in doId2do' % doId)
             avatar = self.doId2do[doId]
         elif self.cache.contains(doId):
@@ -773,7 +764,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         return base.cr.playerFriendsManager.getFriendInfo(pId)
 
     def identifyAvatar(self, doId):
-        if self.doId2do.has_key(doId):
+        if doId in self.doId2do:
             return self.doId2do[doId]
         else:
             return self.identifyFriend(doId)
@@ -784,9 +775,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
                 return 0
 
         if base.wantPets and base.localAvatar.hasPet():
-            print str(self.friendsMap)
-            print str(self.friendsMap.has_key(base.localAvatar.getPetId()))
-            if self.friendsMap.has_key(base.localAvatar.getPetId()) == None:
+            if base.localAvatar.getPetId() not in self.friendsMap:
                 return 0
         return 1
 
@@ -814,12 +803,12 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
     def removePetFromFriendsMap(self):
         doId = base.localAvatar.getPetId()
-        if doId and self.friendsMap.has_key(doId):
+        if doId and doId in self.friendsMap:
             del self.friendsMap[doId]
 
     def addPetToFriendsMap(self, callback = None):
         doId = base.localAvatar.getPetId()
-        if not doId or self.friendsMap.has_key(doId):
+        if doId not or doId in self.friendsMap:
             if callback:
                 callback()
             return
@@ -847,9 +836,9 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
             petId = toon[3]
             handle = FriendHandle.FriendHandle(doId, name, dna, petId)
             self.friendsMap[doId] = handle
-            if self.friendsOnline.has_key(doId):
+            if doId in self.friendsOnline:
                 self.friendsOnline[doId] = handle
-            if self.friendPendingChatSettings.has_key(doId):
+            if doId in self.friendPendingChatSettings:
                 self.notify.debug('calling setCommonAndWL %s' % str(self.friendPendingChatSettings[doId]))
                 handle.setCommonAndWhitelistChatFlags(*self.friendPendingChatSettings[doId])
 
@@ -887,7 +876,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
 
     def handleFriendOnline(self, doId, commonChatFlags, whitelistChatFlags):
         self.notify.debug('Friend %d now online. common=%d whitelist=%d' % (doId, commonChatFlags, whitelistChatFlags))
-        if not self.friendsOnline.has_key(doId):
+        if doId not in self.friendsOnline:
             self.friendsOnline[doId] = self.identifyFriend(doId)
             messenger.send('friendOnline', [doId, commonChatFlags, whitelistChatFlags])
             if not self.friendsOnline[doId]:
@@ -1057,7 +1046,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.deleteObject(doId)
 
     def deleteObject(self, doId, ownerView = False):
-        if self.doId2do.has_key(doId):
+        if doId in self.doId2do:
             obj = self.doId2do[doId]
             del self.doId2do[doId]
             obj.deleteOrDelay()

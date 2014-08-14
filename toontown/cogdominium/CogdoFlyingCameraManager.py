@@ -161,11 +161,11 @@ class CogdoFlyingCameraManager:
                 name = entry.getIntoNode().getName()
                 if name.find('col_') >= 0:
                     np = entry.getIntoNodePath().getParent()
-                    if not nodesInBetween.has_key(np):
+                    if np not in nodesInBetween:
                         nodesInBetween[np] = np.getParent()
 
         for np in nodesInBetween.keys():
-            if self._betweenCamAndToon.has_key(np):
+            if np in self._betweenCamAndToon:
                 del self._betweenCamAndToon[np]
             else:
                 np.setTransparency(True)

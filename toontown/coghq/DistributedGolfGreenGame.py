@@ -355,7 +355,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
         self.arrangeToonHeadPanels()
 
     def removeToonHeadPanel(self, avId):
-        if self.toonPanels.has_key(avId):
+        if avId in self.toonPanels:
             self.toonPanels[avId].destroy()
             del self.toonPanels[avId]
             self.arrangeToonHeadPanels()
@@ -1417,7 +1417,7 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
 
         for entryIndex in xrange(len(scoreList)):
             entry = scoreList[entryIndex]
-            if self.toonPanels.has_key(entry[0]):
+            if entry[0] in self.toonPanels:
                 panel = self.toonPanels[entry[0]]
                 panel.extraData['text'] = TTLocalizer.GolfGreenGamePlayerScore % entry[1]
 
@@ -1470,5 +1470,5 @@ class DistributedGolfGreenGame(BattleBlocker.BattleBlocker):
             keyList.append(key)
 
         for key in keyList:
-            if self.__toonTracks.has_key(key):
+            if key in self.__toonTracks:
                 self.clearToonTrack(key)

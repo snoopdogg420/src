@@ -80,7 +80,7 @@ class DistributedCatchGame(DistributedMinigame):
              'coconut': 0.7,
              'watermelon': 0.6,
              'pineapple': 0.45}
-            if modelScales.has_key(objType.name):
+            if objType.name in modelScales:
                 model.setScale(modelScales[objType.name])
             if objType == Name2DropObjectType['pear']:
                 model.setZ(-.6)
@@ -116,6 +116,8 @@ class DistributedCatchGame(DistributedMinigame):
                 d = SuitDNA.SuitDNA()
                 d.newSuit(type)
                 suit.setDNA(d)
+                suit.hideNametag2d()
+                suit.hideNametag3d()
                 suit.pose('walk', 0)
                 self.suits.append(suit)
 
@@ -545,7 +547,7 @@ class DistributedCatchGame(DistributedMinigame):
         objName = self.droppedObjNames[objNum]
         objType = Name2DropObjectType[objName]
         if objType.good:
-            if not self.droppedObjCaught.has_key(objNum):
+            if objNum not in self.droppedObjCaught:
                 if isLocal:
                     base.playSfx(self.sndGoodCatch)
                 fruit = self.getObjModel(objName)
@@ -575,7 +577,7 @@ class DistributedCatchGame(DistributedMinigame):
             self.fruitsCaught += 1
 
     def finishDropInterval(self, objNum):
-        if self.dropIntervals.has_key(objNum):
+        if objNum in self.dropIntervals:
             self.dropIntervals[objNum].finish()
 
     def scheduleDrops(self):
@@ -784,7 +786,7 @@ class DistributedCatchGame(DistributedMinigame):
             suit.lookAt(stopPos)
 
         def cleanup(self = self, data = data, lerpNP = lerpNP):
-            if data.has_key('suit'):
+            if 'suit' in data:
                 suit = data['suit']
                 suit.reparentTo(hidden)
                 self.suits.append(suit)

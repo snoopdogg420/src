@@ -422,7 +422,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
             return ZoneUtil.getHoodId(status['zoneId']) == self.hood.hoodId
 
     def enterGolfCourse(self, requestStatus):
-        if requestStatus.has_key('curseId'):
+        if 'curseId' in requestStatus:
             self.golfCourseId = requestStatus['courseId']
         else:
             self.golfCourseId = 0
@@ -466,5 +466,5 @@ class OZSafeZoneLoader(SafeZoneLoader):
             keyList.append(key)
 
         for key in keyList:
-            if self.__toonTracks.has_key(key):
+            if key in self.__toonTracks:
                 self.clearToonTrack(key)

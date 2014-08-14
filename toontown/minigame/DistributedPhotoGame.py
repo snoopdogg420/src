@@ -436,7 +436,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
                 newEntry = (entry.getFromNode(), object)
                 distance = Vec3(entry.getSurfacePoint(self.tripod)).lengthSquared()
                 name = entry.getFromNode().getName()
-                if not distDict.has_key(name):
+                if not name in distDict:
                     distDict[name] = distance
                     hitDict[name] = (entry.getFromNode(), object, marker)
                 elif distance < distDict[name]:
@@ -464,7 +464,7 @@ class DistributedPhotoGame(DistributedMinigame, PhotoGameBase.PhotoGameBase):
             else:
                 quality = 1
                 onCenter = 1
-            if not centerDict.has_key(superParent):
+            if superParent not in centerDict:
                 centerDict[superParent] = (onCenter,
                  overB,
                  overT,

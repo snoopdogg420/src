@@ -48,7 +48,7 @@ class PlayerDetailPanel(DirectFrame):
         self.playerInfo = None
         if playerId:
             self.isPlayer = 1
-            if base.cr.playerFriendsManager.playerId2Info.has_key(playerId):
+            if playerId in base.cr.playerFriendsManager.playerId2Info:
                 self.playerInfo = base.cr.playerFriendsManager.playerId2Info[playerId]
                 if not self.playerInfo.onlineYesNo:
                     avId = None

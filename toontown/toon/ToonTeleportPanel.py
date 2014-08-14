@@ -121,7 +121,7 @@ class ToonTeleportPanel(DirectFrame):
         hasManager = hasattr(base.cr, 'playerFriendsManager')
         if self.avId == myId:
             self.fsm.request('self')
-        elif base.cr.doId2do.has_key(self.avId):
+        elif self.avId in base.cr.doId2do:
             self.fsm.request('checkAvailability')
         elif base.cr.isFriend(self.avId):
             if base.cr.isFriendOnline(self.avId):

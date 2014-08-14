@@ -184,7 +184,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
             self.isPlaying = True
         for x in tableStateList:
             if x != 0:
-                if x not in self.tableState and self.cr.doId2do.has_key(x) and x not in self.haveAnimated:
+                if x not in self.tableState and x in self.cr.doId2do and x not in self.haveAnimated:
                     seatIndex = tableStateList.index(x)
                     toon = self.cr.doId2do[x]
                     toon.stopSmooth()
@@ -241,7 +241,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
                 whisper = WhisperPopup(TTLocalizer.RegularCheckersYouWon, OTPGlobals.getInterfaceFont(), WhisperPopup.WTNormal)
             elif winString == 'Find Four':
                 whisper = WhisperPopup('You won a game of Find Four!', OTPGlobals.getInterfaceFont(), WhisperPopup.WTNormal)
-        elif self.cr.doId2do.has_key(avId):
+        elif avId in self.cr.doId2do:
             stateString = self.fsm.getCurrentState().getName()
             if stateString == 'sitting' or stateString == 'observing':
                 base.cr.playGame.getPlace().setState('walk')
@@ -252,7 +252,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
                 whisper = WhisperPopup(av.getName() + TTLocalizer.RegularCheckersGameOf + TTLocalizer.RegularCheckers, OTPGlobals.getInterfaceFont(), WhisperPopup.WTNormal)
             elif winString == 'Find Four':
                 whisper = WhisperPopup(av.getName() + ' has won a game of' + ' Find Four!', OTPGlobals.getInterfaceFont(), WhisperPopup.WTNormal)
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             toon = self.cr.doId2do[avId]
             self.winTrack = Sequence(autoFinish=1)
             if self.outTrack.isPlaying():
@@ -411,7 +411,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
             else:
                 self.inGame = True
                 self.seatPos = index
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             toon = self.cr.doId2do[avId]
             toon.stopSmooth()
             toon.wrtReparentTo(self.tableCloth)
@@ -436,7 +436,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
             return
         if avId in self.haveAnimated:
             self.haveAnimated.remove(avId)
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             if avId == base.localAvatar.getDoId():
                 if self.gameZone:
                     base.cr.removeInterest(self.gameZone)
@@ -644,7 +644,7 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
             keyList.append(key)
 
         for key in keyList:
-            if self.__toonTracks.has_key(key):
+            if key in self.__toonTracks:
                 self.clearToonTrack(key)
 
     def doNothing(self):

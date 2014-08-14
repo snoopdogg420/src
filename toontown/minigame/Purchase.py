@@ -103,7 +103,7 @@ class Purchase(PurchaseBase):
             avId = self.ids[index]
             if self.states[index] != PURCHASE_NO_CLIENT_STATE and self.states[index] != PURCHASE_DISCONNECTED_STATE:
                 if avId != base.localAvatar.doId:
-                    if base.cr.doId2do.has_key(avId):
+                    if avId in base.cr.doId2do:
                         self.avInfoArray.append((avId, headFramePosList[layout[pos]], index))
                         pos = pos + 1
 
@@ -383,7 +383,7 @@ class Purchase(PurchaseBase):
             for i in xrange(len(task.ids)):
                 if task.pointsArray[i] == winningPoints:
                     avId = task.ids[i]
-                    if base.cr.doId2do.has_key(avId):
+                    if avId in base.cr.doId2do:
                         toon = base.cr.doId2do[avId]
                         toon.setAnimState('jump', 1.0)
 
@@ -703,7 +703,7 @@ class Purchase(PurchaseBase):
             return self.metagamePlayAgainResult
         numToons = 0
         for avId in self.ids:
-            if base.cr.doId2do.has_key(avId) and avId not in self.unexpectedExits:
+            if avId in base.cr.doId2do and avId not in self.unexpectedExits:
                 numToons += 1
 
         self.metagamePlayAgainResult = False
@@ -714,7 +714,7 @@ class Purchase(PurchaseBase):
 
     def setupUnexpectedExitHooks(self):
         for avId in self.ids:
-            if base.cr.doId2do.has_key(avId):
+            if avId in base.cr.doId2do:
                 toon = base.cr.doId2do[avId]
                 eventName = toon.uniqueName('disable')
                 self.accept(eventName, self.__handleUnexpectedExit, extraArgs=[avId])

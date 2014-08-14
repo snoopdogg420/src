@@ -343,7 +343,7 @@ for holeId in HoleInfo:
     if type(HoleInfo[holeId]['blockers']) == type(0):
         blockerNum = HoleInfo[holeId]['blockers']
         HoleInfo[holeId]['blockers'] = (blockerNum,)
-    if HoleInfo[holeId].has_key('optionalMovers'):
+    if 'optionalMovers' in HoleInfo[holeId]:
         if type(HoleInfo[holeId]['optionalMovers']) == type(0):
             blockerNum = HoleInfo[holeId]['optionalMovers']
             HoleInfo[holeId]['optionalMovers'] = (blockerNum,)
