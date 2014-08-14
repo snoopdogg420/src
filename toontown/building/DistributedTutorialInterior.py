@@ -14,6 +14,7 @@ from toontown.char import Char
 from toontown.suit import SuitDNA
 from toontown.suit import Suit
 from toontown.quest import QuestParser
+from toontown.toon import DistributedNPCSpecialQuestGiver
 
 class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
