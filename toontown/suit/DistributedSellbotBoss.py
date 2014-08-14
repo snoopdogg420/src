@@ -215,6 +215,7 @@ class DistributedSellbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         self.cagedToon.reparentTo(self.cage)
         self.cagedToon.setPosHpr(0, -2, 0, 180, 0, 0)
         self.cagedToon.loop('neutral')
+        self.cagedToon.setActiveShadow(0)
         touch = CollisionPolygon(
             Point3(-3.0382, 3.0382, -1), Point3(3.0382, 3.0382, -1),
             Point3(3.0382, -3.0382, -1), Point3(-3.0382, -3.0382, -1))
