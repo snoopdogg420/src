@@ -326,10 +326,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
 
-        chatBalloon = ChatBalloon(
+        self.chatBalloon = ChatBalloon(
             model, modelWidth, modelHeight, self.chatTextNode,
             foreground=foreground, background=background)
-        chatBalloon.reparentTo(self.contents)
+        self.chatBalloon.reparentTo(self.contents)
 
         # Finally, draw the collisions:
         self.drawCollisions()

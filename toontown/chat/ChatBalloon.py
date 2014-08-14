@@ -4,6 +4,9 @@ from pandac.PandaModules import *
 class ChatBalloon(NodePath):
     TEXT_X_OFFSET = -0.05
     TEXT_Y_OFFSET = -0.05
+
+    # Proportion of the Z offset based on the original line height, and the new
+    # line height:
     TEXT_Z_OFFSET = -(4.0/33.0)
 
     TEXT_MIN_WIDTH = 2.25
@@ -15,45 +18,70 @@ class ChatBalloon(NodePath):
     CHAT_BALLOON_X_PADDING = 0.65
     CHAT_BALLOON_Z_PADDING = 0.65
 
-    def __init__(self, model, modelWidth, modelHeight, chatTextNode,
+    def __init__(self, model, modelWidth, modelHeight, textNode,
                  foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1)):
         NodePath.__init__(self, 'chatBalloon')
 
+        self.model = model
+        self.modelWidth = modelWidth
+        self.modelHeight = modelHeight
+        self.textNode = textNode
+        self.foreground = foreground
+        self.background = background
+
         # Set the TextNode color:
-        chatTextNode.setTextColor(foreground)
+        self.textNode.setTextColor(foreground)
 
         # Create a chat balloon:
-        chatBalloon = model.copyTo(self)
-        chatBalloon.setColor(background)
-        chatBalloon.setTransparency(background[3] < 1)
+        self.balloon = model.copyTo(self)
+        self.balloon.setColor(background)
+        self.balloon.setTransparency(background[3] < 1)
 
         # Attach the TextNode:
-        chatText = self.attachNewNode(chatTextNode)
-        chatText.setTransparency(foreground[3] < 1)
-        chatText.setAttrib(DepthWriteAttrib.make(0))
+        self.textNodePath = self.attachNewNode(self.textNode)
+        self.textNodePath.setTransparency(foreground[3] < 1)
+        self.textNodePath.setAttrib(DepthWriteAttrib.make(0))
 
         # Resize the chat balloon as necessary:
-        middle = chatBalloon.find('**/middle')
-        top = chatBalloon.find('**/top')
-        chatTextWidth = chatTextNode.getWidth()
-        if chatTextWidth < ChatBalloon.TEXT_MIN_WIDTH:
-            chatTextWidth = ChatBalloon.TEXT_MIN_WIDTH
-        chatTextHeight = chatTextNode.getHeight()
-        if chatTextHeight < ChatBalloon.TEXT_MIN_HEIGHT:
-            chatTextHeight = ChatBalloon.TEXT_MIN_HEIGHT
-        paddedWidth = chatTextWidth + (ChatBalloon.CHAT_BALLOON_X_PADDING*2)
-        chatBalloon.setSx(paddedWidth / modelWidth)
-        paddedHeight = chatTextHeight + (ChatBalloon.CHAT_BALLOON_Z_PADDING*2)
+        middle = self.balloon.find('**/middle')
+        top = self.balloon.find('**/top')
+        textWidth = self.textNode.getWidth()
+        if textWidth < ChatBalloon.TEXT_MIN_WIDTH:
+            textWidth = ChatBalloon.TEXT_MIN_WIDTH
+        paddedWidth = textWidth + (ChatBalloon.CHAT_BALLOON_X_PADDING*2)
+        self.balloon.setSx(paddedWidth / modelWidth)
+        textHeight = textNode.getHeight()
+        if textHeight < ChatBalloon.TEXT_MIN_HEIGHT:
+            textHeight = ChatBalloon.TEXT_MIN_HEIGHT
+        paddedHeight = textHeight + (ChatBalloon.CHAT_BALLOON_Z_PADDING*2)
         middle.setSz(paddedHeight - 1.5)  # Compensate for the top, as well.
         top.setZ(middle, 1)
 
         # Position the TextNode:
-        chatText.setPos(chatBalloon.getBounds().getCenter())
-        chatText.setX(chatText, -(chatTextWidth/2))
-        if chatTextWidth == ChatBalloon.TEXT_MIN_WIDTH:
-            chatText.setX(chatText, (ChatBalloon.TEXT_MIN_WIDTH-chatTextNode.getWidth()) / 2.0)
-        chatText.setY(ChatBalloon.TEXT_Y_OFFSET)
-        chatText.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
-        if chatTextHeight == ChatBalloon.TEXT_MIN_HEIGHT:
-            chatText.setZ(chatText, -((ChatBalloon.TEXT_MIN_HEIGHT-chatTextNode.getHeight()) / 2.0))
-        chatText.setX(chatText, ChatBalloon.TEXT_X_OFFSET)
+        self.textNodePath.setPos(self.balloon.getBounds().getCenter())
+        self.textNodePath.setY(ChatBalloon.TEXT_Y_OFFSET)
+        self.textNodePath.setX(self.textNodePath, -(textWidth/2))
+        if textWidth == ChatBalloon.TEXT_MIN_WIDTH:
+            centerX = (ChatBalloon.TEXT_MIN_WIDTH-self.textNode.getWidth()) / 2
+            self.textNodePath.setX(self.textNodePath, centerX)
+        self.textNodePath.setZ(top, -ChatBalloon.CHAT_BALLOON_Z_PADDING + ChatBalloon.TEXT_Z_OFFSET)
+        if textHeight == ChatBalloon.TEXT_MIN_HEIGHT:
+            centerZ = (ChatBalloon.TEXT_MIN_HEIGHT-self.textNode.getHeight()) / 2
+            self.textNodePath.setZ(self.textNodePath, -centerZ)
+        self.textNodePath.setX(self.textNodePath, ChatBalloon.TEXT_X_OFFSET)
+
+    def setForeground(self, foreground):
+        self.foreground = foreground
+        self.textNode.setTextColor(self.foreground)
+        self.textNodePath.setTransparency(self.foreground[3] < 1)
+
+    def getForeground(self):
+        return self.foreground
+
+    def setBackground(self, background):
+        self.background = background
+        self.balloon.setColor(self.background)
+        self.balloon.setTransparency(self.background[3] < 1)
+
+    def getBackground(self):
+        return self.background
