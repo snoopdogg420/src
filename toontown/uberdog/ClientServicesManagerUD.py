@@ -886,6 +886,26 @@ class LoadAvatarFSM(AvatarOperationFSM):
         self.avatar = fields
         self.demand('SetAvatar')
 
+    def enterSetAvatarTask(self, channel, task):
+        # Finally, grant ownership and shut down.
+        datagram = PyDatagram()
+        datagram.addServerHeader(
+            self.avId,
+            self.csm.air.ourChannel,
+            STATESERVER_OBJECT_SET_OWNER)
+        datagram.addChannel(self.target<<32 | self.avId)
+        self.csm.air.send(datagram)
+
+        # Tell TTIFriendsManager somebody is logging in:
+        self.csm.air.friendsManager.toonOnline(self.avId, self.avatar)
+
+        # Tell the GlobalPartyManager as well:
+        self.csm.air.globalPartyMgr.avatarJoined(self.avId)
+
+        self.csm.air.writeServerEvent('avatarChosen', self.avId, self.target)
+        self.demand('Off')
+        return task.done
+
     def enterSetAvatar(self):
         channel = self.csm.GetAccountConnectionChannel(self.target)
 
@@ -928,23 +948,10 @@ class LoadAvatarFSM(AvatarOperationFSM):
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
 
-        # Finally, grant ownership and shut down.
-        datagram = PyDatagram()
-        datagram.addServerHeader(
-            self.avId,
-            self.csm.air.ourChannel,
-            STATESERVER_OBJECT_SET_OWNER)
-        datagram.addChannel(self.target<<32 | self.avId)
-        self.csm.air.send(datagram)
-
-        # Tell TTIFriendsManager somebody is logging in:
-        self.csm.air.friendsManager.toonOnline(self.avId, self.avatar)
-
-        # Tell the GlobalPartyManager as well:
-        self.csm.air.globalPartyMgr.avatarJoined(self.avId)
-
-        self.csm.air.writeServerEvent('avatarChosen', self.avId, self.target)
-        self.demand('Off')
+        # Eliminate race conditions.
+        taskMgr.doMethodLater(0.2, self.enterSetAvatarTask,
+                              'avatarTask-%s' % self.avId, extraArgs=[channel],
+                              appendTask=True)
 
 class UnloadAvatarFSM(OperationFSM):
     notify = directNotify.newCategory('UnloadAvatarFSM')
