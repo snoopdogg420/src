@@ -231,7 +231,7 @@ class DistributedDivingGame(DistributedMinigame):
         camera.setZ(36)
         camera.setHpr(0,0,0)
         camera.setX(0)
-        base.camLens.setMinFov(45/(4./3.))
+        base.camLens.setMinFov(31/(4./3.))
         camera.setY(-54)
         base.camLens.setFar(1500)
         self.introMovie = self.getIntroMovie()
