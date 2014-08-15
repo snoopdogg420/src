@@ -104,7 +104,7 @@ class InventoryBase(DirectObject.DirectObject):
             return -1
         if not (self.totalProps + amount <= self.toon.getMaxCarry() or level > LAST_REGULAR_GAG_LEVEL):
             return -2
-        if self.toon.getMoney() < level*amount:
+        if self.toon.getMoney() < (level+1)*amount:
             return -3
         self.inventory[track][level] += amount
         self.totalProps += amount
