@@ -60,7 +60,7 @@ class NametagGroup:
         for nametag in list(self.nametags):
             self.remove(nametag)
 
-        if self.icon:
+        if self.icon is not None:
             self.icon.removeAllChildren()
             self.icon = None
 
@@ -70,9 +70,9 @@ class NametagGroup:
         self.nameFont = None
         self.chatFont = None
 
-        if self.nametag2d:
+        if self.nametag2d is not None:
             self.nametag2d = None
-        if self.nametag3d:
+        if self.nametag3d is not None:
             self.nametag3d = None
 
     def getUniqueName(self):
@@ -273,7 +273,7 @@ class NametagGroup:
         return self.chatFont
 
     def setNametag2d(self, nametag2d):
-        if self.nametag2d:
+        if self.nametag2d is not None:
             self.remove(self.nametag2d)
             self.nametag2d = None
 
@@ -284,7 +284,7 @@ class NametagGroup:
         return self.nametag2d
 
     def setNametag3d(self, nametag3d):
-        if self.nametag3d:
+        if self.nametag3d is not None:
             self.remove(self.nametag3d)
             self.nametag3d = None
 
@@ -312,7 +312,7 @@ class NametagGroup:
 
     def update(self, nametag):
         nametag.setAvatar(self.avatar)
-        nametag.setFont(self.font)
+        nametag.font = self.font
         nametag.setNameFont(self.nameFont)
         nametag.setChatFont(self.chatFont)
         nametag.setChatType(self.chatType)
