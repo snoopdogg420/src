@@ -14,6 +14,7 @@ from toontown.ai.FishManagerAI import  FishManagerAI
 from toontown.ai.HolidayManagerAI import HolidayManagerAI
 from toontown.ai.NewsManagerAI import NewsManagerAI
 from toontown.ai.QuestManagerAI import QuestManagerAI
+from toontown.ai.BankManagerAI import BankManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 from toontown.catalog.CatalogManagerAI import CatalogManagerAI
 from toontown.coghq import CountryClubManagerAI
@@ -101,6 +102,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.friendManager = FriendManagerAI(self)
         self.friendManager.generateWithRequired(2)
         self.questManager = QuestManagerAI(self)
+        self.bankManager = BankManagerAI(self)
         self.achievementsManager = AchievementsManagerAI(self)
         self.suitInvasionManager = SuitInvasionManagerAI(self)
         self.trophyMgr = DistributedTrophyMgrAI(self)
