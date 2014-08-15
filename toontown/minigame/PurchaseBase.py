@@ -67,7 +67,9 @@ class PurchaseBase(StateData.StateData):
         if self.toon.getMoney() <= 0:
             return
         ret = self.toon.inventory.addItem(track, level)
-        if ret == -2:
+        if ret == -3:
+            text = TTLocalizer.GagShopNotEnoughJellybeans
+        elif ret == -2:
             text = TTLocalizer.GagShopTooManyProps
         elif ret == -1:
             text = TTLocalizer.GagShopTooManyOfThatGag % TTLocalizer.BattleGlobalAvPropStringsPlural[track][level]
@@ -76,7 +78,7 @@ class PurchaseBase(StateData.StateData):
         else:
             text = TTLocalizer.GagShopYouPurchased % TTLocalizer.BattleGlobalAvPropStringsSingular[track][level]
             self.toon.inventory.updateGUI(track, level)
-            self.toon.setMoney(self.toon.getMoney() - 1)
+            self.toon.setMoney(self.toon.getMoney() - (level + 1))
             messenger.send('boughtGag')
         self.showStatusText(text)
 

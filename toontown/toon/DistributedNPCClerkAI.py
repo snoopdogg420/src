@@ -29,7 +29,6 @@ class DistributedNPCClerkAI(DistributedNPCToonBaseAI):
             self.sendStartMovie(avId)
         else:
             self.sendNoMoneyMovie(avId)
-        return
 
     def sendStartMovie(self, avId):
         self.busy = avId

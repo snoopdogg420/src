@@ -93,35 +93,29 @@ class InventoryBase(DirectObject.DirectObject):
         return self.addItems(track, level, 1)
 
     def addItems(self, track, level, amount):
-        if type(track) == type(''):
+        if isinstance(track, str):
             track = Tracks.index(track)
         max = self.getMax(track, level)
-        unpaid = self.toon.getGameAccess() != ToontownGlobals.AccessFull
-        if hasattr(self.toon, 'experience') and hasattr(self.toon.experience, 'getExpLevel'):
-            if self.toon.experience.getExpLevel(track) >= level and self.toon.hasTrackAccess(track):
-                if self.numItem(track, level) <= max - amount:
-                    if self.totalProps + amount <= self.toon.getMaxCarry() or level > LAST_REGULAR_GAG_LEVEL:
-                        if not (unpaid and Levels[track][level] > UnpaidMaxSkills[track]):
-                            self.inventory[track][level] += amount
-                            self.totalProps += amount
-                            return self.inventory[track][level]
-                        else:
-                            return -3
-                    else:
-                        return -2
-                else:
-                    return -1
-            else:
-                return 0
-        else:
+        if not (hasattr(self.toon, 'experience') and hasattr(self.toon.experience, 'getExpLevel')):
             return 0
+        if not (self.toon.experience.getExpLevel(track) >= level and self.toon.hasTrackAccess(track)):
+            return 0
+        if self.numItem(track, level) > max - amount:
+            return -1
+        if not (self.totalProps + amount <= self.toon.getMaxCarry() or level > LAST_REGULAR_GAG_LEVEL):
+            return -2
+        if self.toon.getMoney() < level*amount:
+            return -3
+        self.inventory[track][level] += amount
+        self.totalProps += amount
+        return self.inventory[track][level]
 
     def addItemWithList(self, track, levelList):
         for level in levelList:
             self.addItem(track, level)
 
     def numItem(self, track, level):
-        if type(track) == type(''):
+        if isinstance(track, str):
             track = Tracks.index(track)
         if track > len(Tracks) - 1 or level > len(Levels) - 1:
             self.notify.warning("%s is using a gag that doesn't exist %s %s!" % (self.toon.doId, track, level))
@@ -220,18 +214,6 @@ class InventoryBase(DirectObject.DirectObject):
         return 1
 
     def validateItemsBasedOnAccess(self, newInventory):
-        if self.toon.getGameAccess() == ToontownGlobals.AccessFull:
-            return 1
-        if type(newInventory) == type('String'):
-            tempInv = self.makeFromNetString(newInventory)
-        else:
-            tempInv = newInventory
-        for track in xrange(len(Tracks)):
-            for level in xrange(len(Levels[track])):
-                if tempInv[track][level] > self.inventory[track][level]:
-                    if Levels[track][level] > UnpaidMaxSkills[track]:
-                        return 0
-
         return 1
 
     def getMinCostOfPurchase(self, newInventory):
