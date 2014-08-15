@@ -233,8 +233,6 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def setIcon(self, icon):
         self.icon = icon
-        if not self.getChatText():
-            self.update()
 
     def getIcon(self):
         return self.icon

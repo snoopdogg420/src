@@ -291,10 +291,8 @@ class PartyPlanner(DirectFrame, FSM):
             nametag2d = self.nametagGroup.getNametag2d()
             nametag2d.hideNametag()
             nametag2d.hideChat()
-            self.nametagGroup.updateAll()
             self.nametagNode = Nametag2d()
             self.nametagNode.hideChat()
-            self.nametagNode.update()
             self.nametagGroup.add(self.nametagNode)
             self.nametagGroup.setNameText(base.cr.partyManager.getPartyPlannerName())
             self.nametagNP = parent.attachNewNode(self.nametagNode)
@@ -303,12 +301,12 @@ class PartyPlanner(DirectFrame, FSM):
             self.chatNode = Nametag2d()
             self.chatNode.hideNametag()
             self.chatNode.showThought()
-            self.chatNode.update()
             self.nametagGroup.add(self.chatNode)
             self.nametagGroup.setChatText(TTLocalizer.PartyPlannerInstructions)
             self.chatNP = parent.attachNewNode(self.chatNode)
             chatPos = self.gui.find('**/step_01_partymanPeteText_locator').getPos()
             self.chatNP.setPosHprScale(chatPos[0], 0, chatPos[2], 0, 0, 0, 0.08, 1, 0.08)
+            self.nametagGroup.updateAll()
 
     def clearNametag(self):
         if self.nametagGroup != None:
