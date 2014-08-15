@@ -5,12 +5,12 @@ class ChatBalloon(NodePath):
     TEXT_X_OFFSET = -0.05
     TEXT_Y_OFFSET = -0.05
 
-    # Proportion of the Z offset based on the original line height, and the new
+    # Proportion of the Z offset based on the default line height, and the new
     # line height:
     TEXT_Z_OFFSET = -(4.0/33.0)
 
-    TEXT_MIN_WIDTH = 2.25
-    TEXT_MIN_HEIGHT = 1.5
+    TEXT_MIN_WIDTH = 1.75
+    TEXT_MIN_HEIGHT = 1.0
 
     TEXT_GLYPH_SCALE = 1.05
     TEXT_GLYPH_SHIFT = -0.05
