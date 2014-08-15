@@ -111,7 +111,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
                 self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
             self.nametag.hideChat()
             self.nametag.hideThought()
-            self.nametag.updateAll()
             nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCToonBuilding]
             self.nametag.setNametagColor(nametagColor)
             self.nametag.setActive(False)
@@ -120,6 +119,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             name = self.cr.playGame.dnaStore.getTitleFromBlockNumber(self.block)
             self.nametag.setNameText(name)
             self.nametag.manage(base.marginManager)
+            self.nametag.updateAll()
 
     def clearNametag(self):
         if self.nametag is not None:

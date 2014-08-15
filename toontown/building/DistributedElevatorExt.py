@@ -45,7 +45,6 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
                 self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
             self.nametag.hideChat()
             self.nametag.hideThought()
-            self.nametag.updateAll()
             nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCSuitBuilding]
             self.nametag.setNametagColor(nametagColor)
             self.nametag.setActive(False)
@@ -57,6 +56,7 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
                 name += TTLocalizer.CogsIncExt
             self.nametag.setNameText(name)
             self.nametag.manage(base.marginManager)
+            self.nametag.updateAll()
 
     def clearNametag(self):
         if self.nametag != None:

@@ -237,7 +237,6 @@ class DistributedHouse(DistributedObject.DistributedObject):
             self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
         self.nametag.hideChat()
         self.nametag.hideThought()
-        self.nametag.updateAll()
         nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCToonBuilding]
         self.nametag.setNametagColor(nametagColor)
         self.nametag.setActive(False)
@@ -245,6 +244,7 @@ class DistributedHouse(DistributedObject.DistributedObject):
         self.nametag.setObjectCode(self.doId)
         self.nametag.setNameText(houseName)
         self.nametag.manage(base.marginManager)
+        self.nametag.updateAll()
 
     def unload(self):
         self.notify.debug('unload')

@@ -203,24 +203,18 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def setNametagColor(self, nametagColor):
         self.nametagColor = nametagColor
-        if not self.getChatText():
-            self.update()
 
     def getNametagColor(self):
         return self.nametagColor
 
     def setChatColor(self, chatColor):
         self.chatColor = chatColor
-        if self.getChatText() and (self.chatType == NametagGlobals.CHAT):
-            self.update()
 
     def getChatColor(self):
         return self.chatColor
 
     def setSpeedChatColor(self, speedChatColor):
         self.speedChatColor = speedChatColor
-        if self.getChatText() and (self.chatType == NametagGlobals.SPEEDCHAT):
-            self.update()
 
     def getSpeedChatColor(self):
         return self.speedChatColor

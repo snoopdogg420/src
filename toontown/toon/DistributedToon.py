@@ -1338,6 +1338,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.speedChatStyleIndex = realIndexToUse
         nameKey, arrowColor, rolloverColor, frameColor = speedChatStyles[realIndexToUse]
         self.nametag.setSpeedChatColor(VBase4(frameColor[0], frameColor[1], frameColor[2], 1))
+        self.nametag.updateAll()
         if self.isLocal():
             messenger.send('SpeedChatStyleChange', [])
 

@@ -128,6 +128,7 @@ class Avatar(Actor, ShadowCaster):
             self.nametag.setNametagColor(nametagColor)
             chatColor = NametagGlobals.ChatColors[NametagGlobals.CCNoChat]
             self.nametag.setChatColor(chatColor)
+        self.nametag.updateAll()
 
     def setCommonChatFlags(self, commonChatFlags):
         self.commonChatFlags = commonChatFlags
@@ -175,6 +176,7 @@ class Avatar(Actor, ShadowCaster):
                 self.nametag.setNametagColor(nametagColor)
                 chatColor = NametagGlobals.ChatColors[NametagGlobals.CCFreeChat]
                 self.nametag.setChatColor(chatColor)
+                self.nametag.updateAll()
             elif playerInfo.isUnderstandable():
                 self.understandable = 1
             else:
@@ -190,6 +192,7 @@ class Avatar(Actor, ShadowCaster):
             self.nametag.setNametagColor(nametagColor)
             chatColor = NametagGlobals.ChatColors[self.playerType]
             self.nametag.setChatColor(chatColor)
+            self.nametag.updateAll()
 
     def isUnderstandable(self):
         return self.understandable
