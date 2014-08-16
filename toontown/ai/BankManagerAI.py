@@ -1,4 +1,5 @@
 from direct.fsm.FSM import FSM
+from toontown.toonbase import ToontownGlobals
 
 class OperationFSM(FSM):
 
@@ -38,6 +39,11 @@ class BankUpdateFSM(OperationFSM):
 
     def enterStart(self, avId, DISLid, money):
         self.target = avId
+
+        money = min(money, ToontownGlobals.maxBankMoney)
+        if money < 0:
+            self.demand('Off')
+            return
 
         self.air.dbInterface.updateObject(
             self.air.dbId,
