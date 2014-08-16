@@ -301,7 +301,6 @@ SCMenuSellbotInvasion = 'SELLBOT INVASION'
 SCMenuFieldOffice = 'FIELD OFFICES'
 SCMenuIdesOfMarch = 'GREEN'
 ScMenuBugs = 'Bugs'
-SCMenuRogerDog = 'roger dog'
 FriendSecretNeedsPasswordWarningTitle = 'Parental Controls'
 FriendSecretNeedsParentLoginWarning = 'To get or enter a True Friend Code, log in with the Parent Account.  You can disable this prompt by changing your True Friend options.'
 FriendSecretNeedsPasswordWarning = 'To get or enter a True Friend Code, you must enter the Parent Account Password.  You can disable this prompt by changing your True Friends options.'
@@ -867,7 +866,7 @@ SuitFaceoffTaunts = {'b': ['Do you have a donation for me?',
         "I'm 'two' much for you.",
         "You don't know who you're facing.",
         'Are you ready to face your doom?',
-        "My eyes are on you"],
+        "My eyes are on you."],
  'dt': ["I'm gonna give you double the trouble.",
         'See if you can stop my double cross.',
         'I serve a mean double-\x04DECKER.',
@@ -1956,7 +1955,6 @@ SpeedChatStaticTextToontown = {100: 'Hi!',
  30509: "What types of bugs have you ran into so far?",
  30510: "Those bugs can get more obnoxious than the Cogs sometimes.",
  30511: "You can report bugs by clicking the Report a Bug button on the Toontown Infinite launcher."}
-
 SpeedChatStaticTextPirates = {50001: 'Aye',
  50002: 'Nay',
  50003: 'Yes',
