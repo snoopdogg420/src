@@ -22,6 +22,12 @@ class BankRetrieveFSM(OperationFSM):
     def __handleRetrieve(self, dclass, fields):
         if dclass == self.air.dclassesByName['AccountAI']:
             money = fields['MONEY']
+            av = self.air.doId2do.get(self.target)
+            if not av:
+                self.demand('Off')
+                return
+
+            av.b_setBankMoney(money)
             self.demand('Off', money)
 
     def enterOff(self, result):
@@ -49,10 +55,13 @@ class BankAddFSM(OperationFSM):
             self.DISLid,
             self.air.dclassesByName['AccountAI'],
             {'MONEY': result + self.money})
-        self.demand('Off')
+        av = self.air.doId2do.get(self.target)
+        if not av:
+            self.demand('Off')
+            return
 
-    def enterOff(self):
-        OperationFSM.enterOff(self)
+        av.b_setBankMoney(result + self.money)
+        self.demand('Off')
 
 class BankTakeFSM(OperationFSM):
 
@@ -75,10 +84,13 @@ class BankTakeFSM(OperationFSM):
             self.DISLid,
             self.air.dclassesByName['AccountAI'],
             {'MONEY': result - self.money})
-        self.demand('Off')
+        av = self.air.doId2do.get(self.target)
+        if not av:
+            self.demand('Off')
+            return
 
-    def enterOff(self):
-        OperationFSM.enterOff(self)
+        av.b_setBankMoney(result - self.money)
+        self.demand('Off')
 
 class BankManagerAI:
 
