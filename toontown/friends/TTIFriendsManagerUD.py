@@ -83,11 +83,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         # Writing this function made me hate Python
 
         def addFriend(dclass, fields, friendId=0, avId=0):
+            avId = int(avId)
             if not (avId or friendId):
                 return
             if dclass == self.air.dclassesByName['DistributedToonUD']:
-                if avId not in self.listResponses:
-                    self.listResponses[avId] = []
                 self.listResponses[avId].append([friendId, fields['setName'][0], fields['setDNAString'][0], fields['setPetId'][0]])
             if len(self.listResponses[avId]) >= len(self.friendsLists[avId]):
                 self.sendUpdateToAvatarId(avId, 'friendList', [self.listResponses[avId]])
@@ -96,8 +95,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 del self.listResponses[avId]
             else:
                 self.friendIndexes[avId] += 1
-                if avId in self.friendIndexes:
-                    self.air.dbInterface.queryObject(self.air.dbId, self.friendsLists[avId][self.friendIndexes[avId]][0], functools.partial(addFriend, avId=avId, friendId=self.friendsLists[avId][self.friendIndexes[avId]][0]))
+                self.air.dbInterface.queryObject(self.air.dbId, self.friendsLists[avId][self.friendIndexes[avId]][0], functools.partial(addFriend, avId=avId, friendId=self.friendsLists[avId][self.friendIndexes[avId]][0]))
 
         def handleAv(dclass, fields, avId=0):
             if not avId:
