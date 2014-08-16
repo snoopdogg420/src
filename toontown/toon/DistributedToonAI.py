@@ -2365,7 +2365,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         overflowMoney = money - self.maxMoney
         if overflowMoney > 0:
             bankMoney = self.bankMoney + overflowMoney
-            self.b_setBankMoney(bankMoney)
+            self.air.bankManager.setMoney(self.doId, bankMoney)
 
     def takeMoney(self, deltaMoney, bUseBank = True):
         totalMoney = self.money
@@ -2375,7 +2375,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             self.notify.warning('Not enough money! AvId: %s Has:%s Charged:%s' % (self.doId, totalMoney, deltaMoney))
             return False
         if bUseBank and deltaMoney > self.money:
-            self.b_setBankMoney(self.bankMoney - (deltaMoney - self.money))
+            self.air.bankManager.setMoney(self.bankMoney - (deltaMoney - self.money))
             self.b_setMoney(0)
         else:
             self.b_setMoney(self.money - deltaMoney)
@@ -2407,21 +2407,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def getTotalMoney(self):
         return self.money + self.bankMoney
 
-    def b_setMaxBankMoney(self, maxMoney):
-        self.d_setMaxBankMoney(maxMoney)
-        self.setMaxBankMoney(maxMoney)
-
-    def d_setMaxBankMoney(self, maxMoney):
-        self.sendUpdate('setMaxBankMoney', [maxMoney])
-
-    def setMaxBankMoney(self, maxMoney):
-        self.maxBankMoney = maxMoney
-
-    def getMaxBankMoney(self):
-        return self.maxBankMoney
-
     def b_setBankMoney(self, money):
-        bankMoney = min(money, self.maxBankMoney)
+        bankMoney = min(money, ToontownGlobals.MaxBankMoney)
         self.setBankMoney(bankMoney)
         self.d_setBankMoney(bankMoney)
 
