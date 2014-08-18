@@ -92,6 +92,8 @@ class NametagGroup:
         return 'NametagGroup-' + str(id(self))
 
     def tick(self, task):
+        if self.avatar == base.localAvatar:
+            return Task.done
         if self.avatar.isHidden() or self.avatar.isEmpty():
             visible3d = False
         else:
