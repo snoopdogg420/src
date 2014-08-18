@@ -8,7 +8,7 @@ class SuitInvasionManagerAI:
     MIN_TIME_INBETWEEN = 10
     MAX_TIME_INBETWEEN = 30
     MIN_TIME_DURING = 3
-    MAX_TIME_DURING = 10
+    MAX_TIME_DURING = 15
 
     def __init__(self, air):
         self.air = air
@@ -37,9 +37,8 @@ class SuitInvasionManagerAI:
         return (currentInvadingSuit, currentInvadingDept, self.isSkelecog,
                 self.isV2, self.isWaiter)
 
-    def newInvasion(self, name='any', dept='any', skelecog=0, v2=0, waiter=0):
-        print 'NEW_INVASION: suit: %s, dept: %s, skelecog: %s, v2: %s, waiter: %s' % (
-                name, dept, skelecog, v2, waiter)
+    def newInvasion(self, name='any', dept='any', skelecog=0, v2=0, waiter=0,
+        invType='regular'):
         if name == 'any' and dept == 'any':
             if not skelecog and not v2 and not waiter:
                 return False
@@ -52,7 +51,8 @@ class SuitInvasionManagerAI:
 
         self.cleanupCurrentSuits()
         self.alertPlayersOfInvasion()
-        self.invasionStarted()
+        if invType != 'mega':
+            self.invasionStarted()
 
         return True
 

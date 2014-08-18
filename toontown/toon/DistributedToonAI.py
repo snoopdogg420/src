@@ -3200,7 +3200,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.notify.warning('cogdoTakeOver {0}, {1}'.format(difficulty, buildingHeight))
         return ['success', difficulty, building.doId]
 
-    def doCogInvasion(self, cogDept, cogType, isSkelecog, isV2, isWaiter):
+    def doCogInvasion(self, cogDept, cogType, isSkelecog, isV2, isWaiter, type='regular'):
         invMgr = self.air.suitInvasionManager
         returnCode = ''
         suitIndex = 0
@@ -3219,7 +3219,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                 department = 'any'
                 cogName = 'any'
 
-            if invMgr.newInvasion(cogName, department, isSkelecog, isV2, isWaiter):
+            if invMgr.newInvasion(cogName, department, isSkelecog, isV2, isWaiter, type):
                 returnCode = 'success'
             else:
                 returnCode = 'fail'
@@ -5103,7 +5103,12 @@ def suit(command, suitIndex, cogType=0, isSkelecog=0, isV2=0, isWaiter=0):
             return 'Successfully spawned Cogdo with difficulty {0}!'.format(suitIndex)
         return "Couldn't spawn Cogdo with difficulty {0}.".format(suitIndex)
     elif command == 'invasion':
-        returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog, isV2, isWaiter)
+        returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog,
+            isV2, isWaiter)
+        return returnCode
+    elif command == 'mega':
+        returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog,
+            isV2, isWaiter, type='mega')
         return returnCode
     elif command == 'invasionend':
         returnCode = 'Ending Invasion..'
