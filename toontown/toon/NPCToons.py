@@ -93,7 +93,7 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     import DistributedNPCFlippyInToonHallAI
     import DistributedNPCScientistAI
     import DistributedSmartNPCAI
-    import DistributedBankerBobNPCAI
+    import DistributedNPCBankerAI
     import DistributedNPCYinAI
     import DistributedNPCYangAI
     canonicalZoneId, name, dnaType, gender, protected, type = desc
@@ -124,7 +124,7 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     elif type == NPC_SMART:
         npc = DistributedSmartNPCAI.DistributedSmartNPCAI(air, npcId)
     elif type == NPC_BANKER:
-        npc = DistributedBankerBobNPCAI.DistributedBankerBobNPCAI(air, npcId)
+        npc = DistributedNPCBankerAI.DistributedNPCBankerAI(air, npcId)
     elif type == NPC_YIN:
         if simbase.air.wantYinYang:
             npc = DistributedNPCYinAI.DistributedNPCYinAI(air, npcId)
