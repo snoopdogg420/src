@@ -63,7 +63,7 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=55)
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
         # Accept the collision events:
         self.pickerName = self.getUniqueName() + '-picker'
