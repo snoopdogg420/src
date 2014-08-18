@@ -18,8 +18,12 @@ class ChatBalloon(NodePath):
     CHAT_BALLOON_X_PADDING = 0.65
     CHAT_BALLOON_Z_PADDING = 0.65
 
+    BUTTON_SCALE = 6
+    BUTTON_SHIFT = (-0.2, 0, 0.6)
+
     def __init__(self, model, modelWidth, modelHeight, textNode,
-                 foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1)):
+                 foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1),
+                 button=None):
         NodePath.__init__(self, 'chatBalloon')
 
         self.model = model
@@ -69,6 +73,13 @@ class ChatBalloon(NodePath):
             centerZ = (ChatBalloon.TEXT_MIN_HEIGHT-self.textNode.getHeight()) / 2
             self.textNodePath.setZ(self.textNodePath, -centerZ)
         self.textNodePath.setX(self.textNodePath, ChatBalloon.TEXT_X_OFFSET)
+
+        # Add a button if one is given:
+        if button is not None:
+            buttonNodePath = button.copyTo(self)
+            buttonNodePath.setPos(self.textNodePath, textWidth, 0, -textHeight)
+            buttonNodePath.setPos(buttonNodePath, ChatBalloon.BUTTON_SHIFT)
+            buttonNodePath.setScale(ChatBalloon.BUTTON_SCALE)
 
     def setForeground(self, foreground):
         self.foreground = foreground

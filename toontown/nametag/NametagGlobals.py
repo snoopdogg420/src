@@ -33,6 +33,8 @@ chatBalloon2dHeight = 0
 thoughtBalloonModel = None
 thoughtBalloonWidth = 0
 thoughtBalloonHeight = 0
+pageButton = (None, None, None, None)
+quitButton = (None, None, None, None)
 
 rolloverSound = None
 clickSound = None
@@ -70,6 +72,16 @@ def setThoughtBalloonModel(model):
     global thoughtBalloonHeight
     thoughtBalloonModel = loader.loadModel(model)
     thoughtBalloonWidth, thoughtBalloonHeight = getModelWidthHeight(thoughtBalloonModel)
+
+
+def setPageButton(normal, down, rollover, disabled):
+    global pageButton
+    pageButton = (normal, down, rollover, disabled)
+
+
+def setQuitButton(normal, down, rollover, disabled):
+    global quitButton
+    quitButton = (normal, down, rollover, disabled)
 
 
 def setRolloverSound(sound):

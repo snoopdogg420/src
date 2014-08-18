@@ -40,6 +40,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         # Create the container of our geometry:
         self.contents = NodePath.anyPath(self).attachNewNode('contents')
 
+        self.button = None
         self.icon = None
 
         # Create our TextNodes:
@@ -233,6 +234,12 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getChatBalloonType(self):
         return self.chatBalloonType
 
+    def setButton(self, button):
+        self.button = button
+
+    def getButton(self):
+        return self.button
+
     def setIcon(self, icon):
         self.icon = icon
 
@@ -344,9 +351,13 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
 
+        button = None
+        if self.button is not None:
+            button = self.button[self.clickState]
+
         self.chatBalloon = ChatBalloon(
             model, modelWidth, modelHeight, self.chatTextNode,
-            foreground=foreground, background=background)
+            foreground=foreground, background=background, button=button)
         self.chatBalloon.reparentTo(self.contents)
 
         # Finally, draw the collisions:

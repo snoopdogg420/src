@@ -2236,7 +2236,14 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         else:
             self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
 
-        # NAMETAG TODO: Handle buttons.
+        if chatFlags & CFPageButton:
+            self.nametag.setButton(NametagGlobals.pageButton)
+        elif chatFlags & CFQuitButton:
+            self.nametag.setButton(NametagGlobals.quitButton)
+        else:
+            self.nametag.setButton(None)
+
+        # NAMETAG TODO: Handle CFReversed.
 
         self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags - CFSpeech, interrupt)

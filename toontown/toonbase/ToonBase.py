@@ -379,6 +379,15 @@ class ToonBase(OTPBase.OTPBase):
         NametagGlobals.setChatBalloon2dModel('phase_3/models/props/chatbox_noarrow.bam')
         NametagGlobals.setThoughtBalloonModel('phase_3/models/props/chatbox_thought_cutout.bam')
 
+        chatButtonGui = loader.loadModel('phase_3/models/gui/chat_button_gui.bam')
+        NametagGlobals.setPageButton(
+            chatButtonGui.find('**/Horiz_Arrow_UP'), chatButtonGui.find('**/Horiz_Arrow_DN'),
+            chatButtonGui.find('**/Horiz_Arrow_Rllvr'), chatButtonGui.find('**/Horiz_Arrow_UP'))
+        NametagGlobals.setQuitButton(
+            chatButtonGui.find('**/CloseBtn_UP'), chatButtonGui.find('**/CloseBtn_DN'),
+            chatButtonGui.find('**/CloseBtn_Rllvr'), chatButtonGui.find('**/CloseBtn_UP'))
+        chatButtonGui.removeNode()
+
         rolloverSound = DirectGuiGlobals.getDefaultRolloverSound()
         if rolloverSound:
             NametagGlobals.setRolloverSound(rolloverSound)

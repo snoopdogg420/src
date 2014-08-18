@@ -48,6 +48,7 @@ class NametagGroup:
         self.nametag2d = Nametag2d()
         self.nametag3d = Nametag3d()
 
+        self.button = None
         self.icon = PandaNode('icon')
 
         self.nametags = set()
@@ -293,6 +294,14 @@ class NametagGroup:
 
     def getNametag3d(self):
         return self.nametag3d
+
+    def setButton(self, button):
+        self.button = button
+        for nametag in self.nametags:
+            nametag.setButton(button)
+
+    def getButton(self):
+        return self.button
 
     def setIcon(self, icon):
         self.icon = icon
