@@ -11,8 +11,13 @@ from toontown.nametag import NametagGlobals
 class Nametag(FSM, PandaNode, DirectObject):
     TEXT_Y_OFFSET = -0.05
 
+    TEXT_WORD_WRAP = 8
+    CHAT_TEXT_WORD_WRAP = 12
+
     NAMETAG_X_PADDING = 0.2
     NAMETAG_Z_PADDING = 0.2
+
+    CHAT_BALLOON_ALPHA = 1.0
 
     def __init__(self):
         FSM.__init__(self, 'nametag')
@@ -45,12 +50,12 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
-        self.nameTextNode.setWordwrap(8)
+        self.nameTextNode.setWordwrap(self.TEXT_WORD_WRAP)
         self.nameTextNode.setTextColor(self.nametagColor[self.clickState][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
-        self.chatTextNode.setWordwrap(12)
+        self.chatTextNode.setWordwrap(self.CHAT_TEXT_WORD_WRAP)
         self.chatTextNode.setTextColor(self.chatColor[self.clickState][0])
         self.chatTextNode.setGlyphScale(ChatBalloon.TEXT_GLYPH_SCALE)
         self.chatTextNode.setGlyphShift(ChatBalloon.TEXT_GLYPH_SHIFT)
@@ -247,12 +252,16 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.icon
 
     def setWordWrap(self, wordWrap):
+        if wordWrap > self.TEXT_WORD_WRAP:
+            wordWrap = self.TEXT_WORD_WRAP
         self.nameTextNode.setWordwrap(wordWrap)
 
     def getWordWrap(self):
         return self.nameTextNode.getWordwrap()
 
     def setChatWordWrap(self, chatWordWrap):
+        if chatWordWrap > self.CHAT_TEXT_WORD_WRAP:
+            chatWordWrap = self.CHAT_TEXT_WORD_WRAP
         self.chatTextNode.setWordwrap(chatWordWrap)
 
     def getChatWordWrap(self):
@@ -350,6 +359,9 @@ class Nametag(FSM, PandaNode, DirectObject):
         foreground, background = self.chatColor[self.clickState]
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
+        if background[3] > self.CHAT_BALLOON_ALPHA:
+            background = VBase4(background[0], background[1], background[2],
+                                self.CHAT_BALLOON_ALPHA)
 
         button = None
         if self.button is not None:

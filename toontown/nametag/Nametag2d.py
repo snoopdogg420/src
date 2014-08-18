@@ -15,6 +15,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
     ARROW_OFFSET = -1.0
     ARROW_SCALE = 1.5
 
+    CHAT_BALLOON_ALPHA = 0.4
+
     def __init__(self):
         Nametag.Nametag.__init__(self)
         MarginVisible.__init__(self)
@@ -23,7 +25,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         self.hideThought()
         self.contents.setScale(Nametag2d.CONTENTS_SCALE)
-        self.setChatWordWrap(Nametag2d.CHAT_TEXT_WORD_WRAP)
 
     def destroy(self):
         Nametag.Nametag.destroy(self)
