@@ -92,6 +92,8 @@ class NametagGroup:
         return 'NametagGroup-' + str(id(self))
 
     def tick(self, task):
+        if not hasattr(base, 'localAvatar'):
+            return Task.cont
         if self.avatar == base.localAvatar:
             return Task.done
         if self.avatar.isHidden() or self.avatar.isEmpty():
