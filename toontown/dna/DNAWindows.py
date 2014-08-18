@@ -39,8 +39,8 @@ class DNAWindows(DNAGroup.DNAGroup):
         node_r = dnaStorage.findNode(stripped + 'r')
         node_l = dnaStorage.findNode(stripped + 'l')
         if (node_r is None) or (node_l is None):
-            raise DNAError('DNAWindows code {0} not found in'
-                           'DNAStorage'.format(code))
+            raise DNAError.DNAError('DNAWindows code %s not found in'
+                           'DNAStorage' % code)
 
         def makeWindow(x, y, z, parentNode, color, scale, hpr, flip=False):
             node = node_r if not flip else node_l
