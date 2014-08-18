@@ -117,7 +117,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             self.nametag.setAvatar(self.getDoorNodePath())
             self.nametag.setObjectCode(self.block)
             name = self.cr.playGame.dnaStore.getTitleFromBlockNumber(self.block)
-            self.nametag.setNameText(name)
+            self.nametag.setText(name)
             self.nametag.manage(base.marginManager)
             self.nametag.updateAll()
 

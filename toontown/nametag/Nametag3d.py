@@ -26,15 +26,6 @@ class Nametag3d(Nametag.Nametag):
     def getChatBalloonHeight(self):
         return NametagGlobals.chatBalloon3dHeight
 
-    def getThoughtBalloonModel(self):
-        return NametagGlobals.thoughtBalloonModel
-
-    def getThoughtBalloonWidth(self):
-        return NametagGlobals.thoughtBalloonWidth
-
-    def getThoughtBalloonHeight(self):
-        return NametagGlobals.thoughtBalloonHeight
-
     def setBillboardOffset(self, billboardOffset):
         self.billboardOffset = billboardOffset
         self.doBillboardEffect()

@@ -169,13 +169,13 @@ class NametagGroup:
     def getChatWordWrap(self):
         return self.chatWordWrap
 
-    def setNameText(self, nameText):
+    def setText(self, nameText):
         self.nameText = nameText
         for nametag in self.nametags:
-            nametag.setNameText(self.nameText)
+            nametag.setText(self.nameText)
             nametag.update()
 
-    def getNameText(self):
+    def getText(self):
         return self.nameText
 
     def getNumChatPages(self):
@@ -322,7 +322,7 @@ class NametagGroup:
         nametag.setSpeedChatColor(self.speedChatColor)
         nametag.setWordWrap(self.wordWrap)
         nametag.setChatWordWrap(self.chatWordWrap)
-        nametag.setNameText(self.nameText)
+        nametag.setText(self.nameText)
         nametag.setChatText(self.getChatText())
         nametag.setIcon(self.icon)
         nametag.update()

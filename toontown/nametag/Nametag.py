@@ -44,12 +44,12 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         # Create our TextNodes:
         self.nameTextNode = TextNode('nameText')
-        self.nameTextNode.setWordwrap(8.0)
+        self.nameTextNode.setWordwrap(8)
         self.nameTextNode.setTextColor(self.nametagColor[self.clickState][0])
         self.nameTextNode.setAlign(TextNode.ACenter)
 
         self.chatTextNode = TextNode('chatText')
-        self.chatTextNode.setWordwrap(12.0)
+        self.chatTextNode.setWordwrap(12)
         self.chatTextNode.setTextColor(self.chatColor[self.clickState][0])
         self.chatTextNode.setGlyphScale(ChatBalloon.TEXT_GLYPH_SCALE)
         self.chatTextNode.setGlyphShift(ChatBalloon.TEXT_GLYPH_SHIFT)
@@ -119,16 +119,16 @@ class Nametag(FSM, PandaNode, DirectObject):
         pass  # Inheritors should override this method.
 
     def getThoughtBalloonModel(self):
-        pass  # Inheritors should override this method.
+        return NametagGlobals.thoughtBalloonModel
 
     def getThoughtBalloonWidth(self):
-        pass  # Inheritors should override this method.
+        return NametagGlobals.thoughtBalloonWidth
 
     def getThoughtBalloonHeight(self):
-        pass  # Inheritors should override this method.
+        return NametagGlobals.thoughtBalloonHeight
 
     def tick(self, task):
-        return Task.cont  # Inheritors should override this method.
+        return Task.done  # Inheritors should override this method.
 
     def setActive(self, active):
         self.active = active
@@ -155,14 +155,7 @@ class Nametag(FSM, PandaNode, DirectObject):
     def setClickState(self, clickState):
         self.lastClickState = self.clickState
         self.clickState = clickState
-        if self.clickState == NametagGlobals.NORMAL:
-            self.request('Normal')
-        elif self.clickState == NametagGlobals.DOWN:
-            self.request('Down')
-        elif self.clickState == NametagGlobals.ROLLOVER:
-            self.request('Rollover')
-        elif self.clickState == NametagGlobals.DISABLED:
-            self.request('Disabled')
+
         if self.chatBalloon is not None:
             foreground, background = self.chatColor[self.clickState]
             if self.chatType == NametagGlobals.SPEEDCHAT:
@@ -173,6 +166,15 @@ class Nametag(FSM, PandaNode, DirectObject):
             foreground, background = self.nametagColor[self.clickState]
             self.setForeground(foreground)
             self.setBackground(background)
+
+        if self.clickState == NametagGlobals.NORMAL:
+            self.request('Normal')
+        elif self.clickState == NametagGlobals.DOWN:
+            self.request('Down')
+        elif self.clickState == NametagGlobals.ROLLOVER:
+            self.request('Rollover')
+        elif self.clickState == NametagGlobals.DISABLED:
+            self.request('Disabled')
 
     def getClickState(self):
         return self.clickState
@@ -258,10 +260,10 @@ class Nametag(FSM, PandaNode, DirectObject):
     def clearShadow(self):
         self.nameTextNode.clearShadow()
 
-    def setNameText(self, nameText):
-        self.nameTextNode.setText(nameText)
+    def setText(self, text):
+        self.nameTextNode.setText(text)
 
-    def getNameText(self):
+    def getText(self):
         return self.nameTextNode.getText()
 
     def setChatText(self, chatText):
@@ -321,7 +323,7 @@ class Nametag(FSM, PandaNode, DirectObject):
                     self.drawChatBalloon()
                     return
 
-        if self.getNameText() and (not self.nametagHidden):
+        if self.getText() and (not self.nametagHidden):
             self.drawNametag()
 
     def drawChatBalloon(self):
@@ -385,6 +387,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.drawCollisions()
 
     def drawCollisions(self):
+        return
         collNode = CollisionNode(self.pickerName)
         collNodePath = self.contents.attachNewNode(collNode)
         collNodePath.setCollideMask(OTPGlobals.PickerBitmask)

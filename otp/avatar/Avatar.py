@@ -250,13 +250,13 @@ class Avatar(Actor, ShadowCaster):
                 return
         self.name = name
         if hasattr(self, 'nametag'):
-            self.nametag.setNameText(name)
+            self.nametag.setText(name)
 
     def setDisplayName(self, str):
         if hasattr(self, 'isDisguised'):
             if self.isDisguised:
                 return
-        self.nametag.setNameText(str)
+        self.nametag.setText(str)
 
     def getFont(self):
         return self.__font

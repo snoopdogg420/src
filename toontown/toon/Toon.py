@@ -2788,7 +2788,7 @@ class Toon(Avatar.Avatar, ToonHead):
                 name = self.getName()
             suitDept = SuitDNA.suitDepts.index(SuitDNA.getSuitDept(suitType))
             suitName = SuitBattleGlobals.SuitAttributes[suitType]['name']
-            self.nametag.setNameText(TTLocalizer.SuitBaseNameWithLevel % {'name': name,
+            self.nametag.setText(TTLocalizer.SuitBaseNameWithLevel % {'name': name,
              'dept': suitName,
              'level': self.cogLevels[suitDept] + 1})
             self.nametag.setWordWrap(9.0)

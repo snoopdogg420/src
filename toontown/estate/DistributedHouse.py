@@ -242,7 +242,7 @@ class DistributedHouse(DistributedObject.DistributedObject):
         self.nametag.setActive(False)
         self.nametag.setAvatar(self.house)
         self.nametag.setObjectCode(self.doId)
-        self.nametag.setNameText(houseName)
+        self.nametag.setText(houseName)
         self.nametag.manage(base.marginManager)
         self.nametag.updateAll()
 

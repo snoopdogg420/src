@@ -54,7 +54,7 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
                 name = TTLocalizer.CogsInc
             else:
                 name += TTLocalizer.CogsIncExt
-            self.nametag.setNameText(name)
+            self.nametag.setText(name)
             self.nametag.manage(base.marginManager)
             self.nametag.updateAll()
 
