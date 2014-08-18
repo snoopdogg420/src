@@ -64,7 +64,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         base.disableMouse()
         base.render.hide()
         base.setBackgroundColor(0.05, 0.15, 0.4)
-        base.setCellsAvailable([base.rightCells[0]], 0)
+        base.setCellsActive([base.rightCells[0]], 0)
         self.__isOpen = 1
         self.__setButtonVisibility()
         self.show()
@@ -98,7 +98,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         gsg = base.win.getGsg()
         if gsg:
             base.render.prepareScene(gsg)
-        base.setCellsAvailable([base.rightCells[0]], 1)
+        base.setCellsActive([base.rightCells[0]], 1)
         self.__isOpen = 0
         self.hide()
         self.hideButton()

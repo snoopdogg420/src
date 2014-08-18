@@ -30,7 +30,7 @@ class GroupPanel(DirectObject.DirectObject):
         return
 
     def cleanup(self):
-        base.setCellsAvailable(base.leftCells, 1)
+        base.setCellsActive(base.leftCells, 1)
         self.quitButton.destroy()
         self.hideButton.destroy()
         self.showButton.destroy()
@@ -103,9 +103,9 @@ class GroupPanel(DirectObject.DirectObject):
         self.__makeGoingToLabel()
         self.accept('updateGroupStatus', self.__checkGroupStatus)
         self.accept('ToonBattleIdUpdate', self.__possibleGroupUpdate)
-        base.setCellsAvailable([base.leftCells[1], base.leftCells[2]], 0)
+        base.setCellsActive([base.leftCells[1], base.leftCells[2]], 0)
         if self.boardingParty.isGroupLeader(localAvatar.doId):
-            base.setCellsAvailable([base.leftCells[0]], 0)
+            base.setCellsActive([base.leftCells[0]], 0)
         self.__addTestNames(self.boardingParty.maxSize)
         self.guiBg.removeNode()
         guiButtons.removeNode()

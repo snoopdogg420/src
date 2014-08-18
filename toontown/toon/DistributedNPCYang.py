@@ -141,7 +141,7 @@ class DistributedNPCYang(DistributedNPCToonBase):
     def popupPickColorGUI(self):
         self.setChatAbsolute('', CFSpeech)
         self.setChatAbsolute(TTLocalizer.YangPickColor, CFSpeech)
-        base.setCellsAvailable(base.bottomCells, 0)
+        base.setCellsActive(base.bottomCells, 0)
 
         self.title = DirectLabel(
             aspect2d, relief=None, text=TTLocalizer.YangTitle,
@@ -172,7 +172,7 @@ class DistributedNPCYang(DistributedNPCToonBase):
 
         self.setChatAbsolute('', CFSpeech)
         self.setChatAbsolute(TTLocalizer.YangEnjoy, CFSpeech|CFTimeout)
-        base.setCellsAvailable(base.bottomCells, 1)
+        base.setCellsActive(base.bottomCells, 1)
 
     def d_requestTransformation(self):
         self.sendUpdate('requestTransformation', [])
@@ -184,7 +184,7 @@ class DistributedNPCYang(DistributedNPCToonBase):
         self.setChatAbsolute(TTLocalizer.YangGoodbye, CFSpeech|CFTimeout)
         self.fsm.request('off')
         base.cr.playGame.getPlace().setState('walk')
-        base.setCellsAvailable(base.bottomCells, 1)
+        base.setCellsActive(base.bottomCells, 1)
 
         if task is not None:
             return task.done

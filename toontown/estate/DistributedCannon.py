@@ -258,8 +258,8 @@ class DistributedCannon(DistributedObject.DistributedObject):
                 base.cr.playGame.getPlace().setState('fishing')
                 base.localAvatar.setTeleportAvailable(0)
                 base.localAvatar.collisionsOff()
-                base.setCellsAvailable([base.bottomCells[3], base.bottomCells[4]], 0)
-                base.setCellsAvailable([base.rightCells[1]], 0)
+                base.setCellsActive([base.bottomCells[3], base.bottomCells[4]], 0)
+                base.setCellsActive([base.rightCells[1]], 0)
                 self.localToonShooting = 1
                 self.__makeGui()
                 camera.reparentTo(self.barrel)
@@ -275,8 +275,8 @@ class DistributedCannon(DistributedObject.DistributedObject):
             else:
                 self.notify.warning('Unknown avatar %d in cannon %d' % (self.avId, self.doId))
         if wasLocalToon and not self.localToonShooting:
-            base.setCellsAvailable([base.bottomCells[3], base.bottomCells[4]], 1)
-            base.setCellsAvailable([base.rightCells[1]], 1)
+            base.setCellsActive([base.bottomCells[3], base.bottomCells[4]], 1)
+            base.setCellsActive([base.rightCells[1]], 1)
 
     def __avatarGone(self):
         self.setMovie(CannonGlobals.CANNON_MOVIE_CLEAR, 0)

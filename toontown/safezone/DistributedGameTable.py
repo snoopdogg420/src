@@ -150,10 +150,10 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         self.fsm.request('chooseMode')
 
     def enterOff(self):
-        base.setCellsAvailable(base.leftCells + base.bottomCells, 0)
+        base.setCellsActive(base.leftCells + base.bottomCells, 0)
 
     def exitOff(self):
-        base.setCellsAvailable(base.bottomCells, 0)
+        base.setCellsActive(base.bottomCells, 0)
 
     def enterChooseMode(self):
         self.enableChoiceButtons()
