@@ -63,7 +63,7 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName)
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=55)
 
         # Accept the collision events:
         self.pickerName = self.getUniqueName() + '-picker'
@@ -387,11 +387,17 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.drawCollisions()
 
     def drawCollisions(self):
-        return
+        if (self.chatBalloon is None) and (self.namePanel is None):
+            return
         collNode = CollisionNode(self.pickerName)
         collNodePath = self.contents.attachNewNode(collNode)
         collNodePath.setCollideMask(OTPGlobals.PickerBitmask)
-        collBox = CollisionBox(*self.contents.getTightBounds())
+        if self.chatBalloon is not None:
+            minPoint, maxPoint = self.chatBalloon.getTightBounds()
+        else:
+            minPoint, maxPoint = self.namePanel.getTightBounds()
+        maxPoint.setY(0.05)
+        collBox = CollisionBox(minPoint, maxPoint)
         collNode.addSolid(collBox)
 
     def enterNormal(self):

@@ -20,7 +20,7 @@ class NametagMouseWatcher:
         self.cTrav.addCollider(self.pickerNodePath, self.pickerHandler)
 
         self.updateRayTask = taskMgr.add(
-            self.updateRay, self.getUniqueName() + '-updateRayTask')
+            self.updateRay, self.getUniqueName() + '-updateRayTask', sort=0)
 
     def getUniqueName(self):
         return 'NametagMouseWatcher-' + str(id(self))
