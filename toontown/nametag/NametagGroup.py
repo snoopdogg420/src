@@ -1,6 +1,7 @@
 from direct.task.Task import Task
 from pandac.PandaModules import *
 
+from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import NametagGlobals
 from toontown.nametag.Nametag2d import Nametag2d
 from toontown.nametag.Nametag3d import Nametag3d
@@ -51,12 +52,23 @@ class NametagGroup:
         self.button = None
         self.icon = PandaNode('icon')
 
+        self.marginManager = None
+        self.visible3d = True
+
         self.nametags = set()
         self.add(self.nametag2d)
         self.add(self.nametag3d)
 
+        # Add the tick task:
+        self.tickTaskName = self.getUniqueName() + '-tick'
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
+
     def destroy(self):
         self.clearChatText()
+
+        if self.tickTask is not None:
+            taskMgr.remove(self.tickTask)
+            self.tickTask = None
 
         for nametag in list(self.nametags):
             self.remove(nametag)
@@ -78,6 +90,18 @@ class NametagGroup:
 
     def getUniqueName(self):
         return 'NametagGroup-' + str(id(self))
+
+    def tick(self, task):
+        if self.avatar.isHidden() or self.avatar.isEmpty():
+            visible3d = False
+        else:
+            visible3d = base.cam.node().isInView(self.avatar.getPos(base.cam))
+        if visible3d != self.visible3d:
+            self.visible3d = visible3d
+            for nametag in self.nametags:
+                if isinstance(nametag, MarginVisible):
+                    nametag.setVisible(not self.visible3d)
+        return Task.cont
 
     def setActive(self, active):
         self.active = active
@@ -338,10 +362,22 @@ class NametagGroup:
             nametag.update()
 
     def manage(self, marginManager):
-        pass
+        if self.marginManager is not None:
+            self.unmanage(self.marginManager)
+        self.marginManager = marginManager
+        for nametag in self.nametags:
+            if isinstance(nametag, MarginVisible):
+                nametag.manage(self.marginManager)
 
     def unmanage(self, marginManager):
-        pass
+        if marginManager != self.marginManager:
+            return
+        if self.marginManager is None:
+            return
+        self.marginManager = marginManager
+        for nametag in self.nametags:
+            if isinstance(nametag, MarginVisible):
+                nametag.unmanage(self.marginManager)
 
     def hideNametag(self):
         for nametag in self.nametags:
