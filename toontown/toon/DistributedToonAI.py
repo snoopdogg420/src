@@ -2346,7 +2346,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.d_setMaxMoney(maxMoney)
         self.setMaxMoney(maxMoney)
         if self.getMoney() > maxMoney:
-            self.b_setBankMoney(self.bankMoney + (self.getMoney() - maxMoney))
+            self.air.bankManager.setMoney(self.bankMoney + (self.getMoney() - maxMoney))
             self.b_setMoney(maxMoney)
 
     def d_setMaxMoney(self, maxMoney):
@@ -4504,7 +4504,7 @@ def money(money):
     Modifies the target's current money value.
     """
     target = spellbook.getTarget()
-    maxBankMoney = target.getMaxBankMoney()
+    maxBankMoney = ToontownGlobals.MaxBankMoney
     if not 0 <= money <= maxBankMoney:
         return 'Money value must be in xrange (0-{0}).'.format(maxBankMoney)
     target.b_setMoney(money)
@@ -4517,16 +4517,11 @@ def bank(command, value):
     """
     command = command.lower()
     target = spellbook.getTarget()
-    if command == 'max':
-        if not 1000 <= value <= 12000:
-            return 'Max bank value must be in xrange (1000-12000).'
-        target.b_setMaxBankMoney(value)
-        return "Set {0}'s max bank money value to {1}!".format(target.getName(), value)
-    elif command == 'transfer':
+    if command == 'transfer':
         if value == 0:
             return 'Invalid bank transfer.'
         bankMoney = target.getBankMoney()
-        maxBankMoney = target.getMaxBankMoney()
+        maxBankMoney = ToontownGlobals.MaxBankMoney
         money = target.getMoney()
         maxMoney = target.getMaxMoney()
         if value > 0:
