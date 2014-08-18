@@ -5,9 +5,9 @@ from direct.interval.IntervalGlobal import *
 from pandac.PandaModules import *
 
 import BoardingGroupShow
-# NAMETAG TODO: from otp.margins.WhisperPopup import *
 from toontown.building import BoardingPartyBase
 from toontown.chat.ChatGlobals import *
+from toontown.chat.WhisperPopup import *
 from toontown.hood import ZoneUtil
 from toontown.toon import BoardingGroupInviterPanels
 from toontown.toon import GroupInvitee

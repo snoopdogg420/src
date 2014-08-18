@@ -1,4 +1,3 @@
-# Yay it works
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import *
 from direct.gui import DirectGuiGlobals
@@ -21,7 +20,6 @@ from otp.avatar import DistributedPlayer
 from otp.avatar import LocalAvatar
 from otp.avatar import PositionExaminer
 from otp.login import LeaveToPayDialog
-# NAMETAG TODO: from otp.margins.WhisperPopup import *
 from otp.otpbase import OTPGlobals
 from toontown.achievements import AchievementGui
 from toontown.battle import Fanfare
@@ -30,6 +28,7 @@ from toontown.catalog import CatalogNotifyDialog
 from toontown.chat import TTTalkAssistant
 from toontown.chat import ToontownChatManager
 from toontown.chat.ChatGlobals import *
+from toontown.chat.WhisperPopup import *
 from toontown.estate import GardenGlobals
 from toontown.nametag.NametagGlobals import *
 from toontown.parties import PartyGlobals

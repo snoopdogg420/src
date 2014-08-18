@@ -30,6 +30,7 @@ from toontown.catalog import CatalogItemList
 from toontown.chat import ResistanceChat
 from toontown.chat import ToonChatGarbler
 from toontown.chat.ChatGlobals import *
+from toontown.chat.WhisperPopup import *
 from toontown.coghq import CogDisguiseGlobals
 from toontown.distributed import DelayDelete
 from toontown.distributed import DelayDelete
@@ -60,7 +61,6 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 
 
-# NAMETAG TODO: from otp.margins.WhisperPopup import *
 if base.wantKarts:
     from toontown.racing.KartDNA import *
 if (__debug__):

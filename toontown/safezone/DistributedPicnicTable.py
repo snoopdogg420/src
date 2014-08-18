@@ -231,7 +231,6 @@ class DistributedPicnicTable(DistributedNode.DistributedNode):
             self.isPlaying = True
 
     def announceWinner(self, winString, avId):
-        return  # NAMETAG TODO
         if avId == base.localAvatar.getDoId():
             sound = Sequence(Wait(2.0), Parallel(SoundInterval(self.winSound), SoundInterval(self.happyDance)))
             sound.start()

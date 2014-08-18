@@ -556,7 +556,6 @@ class DistributedFindFour(DistributedNode.DistributedNode):
             self.winningSequence.loop()
 
     def tie(self):
-        return  # NAMETAG TODO
         self.tieSequence = Sequence(autoFinish=1)
         self.clockNode.stop()
         self.clockNode.hide()

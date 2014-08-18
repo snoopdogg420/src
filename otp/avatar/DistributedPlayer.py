@@ -11,11 +11,11 @@ from otp.avatar.Avatar import teleportNotify
 from otp.chat import ChatGarbler
 from otp.chat import TalkAssistant
 from otp.distributed.TelemetryLimited import TelemetryLimited
-# NAMETAG TODO: from otp.margins.WhisperPopup import WhisperPopup
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from otp.speedchat import SCDecoders
 from toontown.chat.ChatGlobals import *
+from toontown.chat.WhisperPopup import WhisperPopup
 
 
 if base.config.GetBool('want-chatfilter-hacks', 0):
