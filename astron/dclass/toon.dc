@@ -133,8 +133,7 @@ from toontown.estate import DistributedMailbox/AI
 from toontown.estate import DistributedFurnitureManager/AI
 from toontown.estate import DistributedFurnitureItem/AI
 from toontown.estate import DistributedBank/AI
-from toontown.toon import DistributedBankerMgr/AI
-from toontown.toon import DistributedBankerBobNPC/AI
+from toontown.toon import DistributedNPCBanker/AI
 from toontown.estate import DistributedCloset/AI
 from toontown.estate import DistributedTrunk/AI
 from toontown.estate import DistributedPhone/AI
@@ -1826,12 +1825,10 @@ dclass DistributedSmartNPC : DistributedNPCToonBase {
   dismiss(uint32, uint16) broadcast ram;
 };
 
-dclass DistributedBankerBobNPC : DistributedNPCToonBase {
-  setMovie(uint8, uint32, uint32, uint16[], int16) broadcast ram;
+dclass DistributedNPCBanker : DistributedNPCToonBase {
+  setMovie(uint8, uint32, int16) broadcast ram;
   setMovieDone() airecv clsend;
-  chooseQuest(uint16) airecv clsend;
-  chooseTrack(int8) airecv clsend;
-  exitInteraction() clsend;
+  transferMoney(int16) airecv clsend;
 };
 
 dclass DistributedNPCSpecialQuestGiver : DistributedNPCToonBase {
@@ -2134,14 +2131,6 @@ dclass DistributedBank : DistributedFurnitureItem {
 dclass DistributedBankCollectable : DistributedObject {
   requestGrab() airecv clsend;
   grab(uint32) broadcast ram;
-};
-
-dclass DistributedBankerMgr : DistributedObject {
-  enterBank() clsend;
-  avatarEnter() airecv clsend;
-  freeAvatar();
-  setMovie(uint8, uint32, int16) broadcast ram;
-  transferMoney(int16) airecv clsend;
 };
 
 dclass DistributedCloset : DistributedFurnitureItem {
