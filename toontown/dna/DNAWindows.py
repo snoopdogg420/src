@@ -99,5 +99,5 @@ class DNAWindows(DNAGroup.DNAGroup):
             scale += 1.3
         hpr = (0, 0, 0)
         DNAWindows.setupWindows(nodePath, dnaStorage, self.getCode(),
-                                self.getWindowCount(), self.getParent().color, hpr,
+                                self.getWindowCount(), self.getColor(), hpr,
                                 scale)

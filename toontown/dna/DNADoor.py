@@ -72,4 +72,4 @@ class DNADoor(DNAGroup.DNAGroup):
             raise DNAError.DNAError('DNADoor code ' + self.code + ' not found in DNAStorage')
         doorNode = node.copyTo(frontNode, 0)
         block = dnaStorage.getBlock(nodePath.getName())
-        DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage, block, self.color)
+        DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage, block, self.getColor())

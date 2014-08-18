@@ -75,15 +75,16 @@ class Hood(StateData.StateData):
         return
 
     def load(self):
+        files = []
         if self.storageDNAFile:
-            loadDNAFile(self.dnaStore, self.storageDNAFile)
+            files.append(self.storageDNAFile)
         newsManager = base.cr.newsManager
         if newsManager:
             holidayIds = base.cr.newsManager.getDecorationHolidayId()
+            files = []
             for holiday in holidayIds:
                 for storageFile in self.holidayStorageDNADict.get(holiday, []):
-                    loadDNAFile(self.dnaStore, storageFile)
-
+                    files.append(storageFile)
             if ToontownGlobals.HALLOWEEN_COSTUMES not in holidayIds and ToontownGlobals.SPOOKY_COSTUMES not in holidayIds or not self.spookySkyFile:
                 self.sky = loader.loadModel(self.skyFile)
                 self.sky.setTag('sky', 'Regular')
@@ -97,6 +98,8 @@ class Hood(StateData.StateData):
             self.sky.setTag('sky', 'Regular')
             self.sky.setScale(1.0)
             self.sky.setFogOff()
+        dnaBulk = DNABulkLoader(self.dnaStore, tuple(files))
+        dnaBulk.loadDNAFiles()
 
     def unload(self):
         if hasattr(self, 'loader'):
