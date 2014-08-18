@@ -304,13 +304,6 @@ class NametagGroup:
 
     def add(self, nametag):
         self.nametags.add(nametag)
-        self.update(nametag)
-
-    def remove(self, nametag):
-        nametag.destroy()
-        self.nametags.remove(nametag)
-
-    def update(self, nametag):
         nametag.setAvatar(self.avatar)
         nametag.font = self.font
         nametag.setNameFont(self.nameFont)
@@ -327,9 +320,13 @@ class NametagGroup:
         nametag.setIcon(self.icon)
         nametag.update()
 
+    def remove(self, nametag):
+        nametag.destroy()
+        self.nametags.remove(nametag)
+
     def updateAll(self):
         for nametag in self.nametags:
-            self.update(nametag)
+            nametag.update()
 
     def manage(self, marginManager):
         pass
