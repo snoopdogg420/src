@@ -19,6 +19,7 @@ from otp.otpbase import OTPBase
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLauncherGlobals
 from toontown.launcher import ToontownDownloadWatcher
+from toontown.margins.MarginManager import MarginManager
 from toontown.nametag import NametagGlobals
 from toontown.nametag import NametagMouseWatcher
 from toontown.toonbase import TTLocalizer
@@ -27,7 +28,6 @@ from toontown.toonbase import ToontownBattleGlobals
 from toontown.toontowngui import TTDialog
 
 
-# NAMETAG TODO: from otp.margins.MarginManager import MarginManager
 class ToonBase(OTPBase.OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonBase')
 
@@ -395,22 +395,35 @@ class ToonBase(OTPBase.OTPBase):
         if clickSound:
             NametagGlobals.setClickSound(clickSound)
 
-        self.marginManager = None  # NAMETAG TODO
-        self.leftCells = [None, None, None]  # NAMETAG TODO
-        self.rightCells = [None, None, None]  # NAMETAG TODO
-        self.bottomCells = [None, None, None, None]  # NAMETAG TODO
+        self.marginManager = MarginManager()
+        self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
+        self.leftCells = [
+            self.marginManager.addCell(0.25, -0.6, base.a2dTopLeft),
+            self.marginManager.addCell(0.25, -1.0, base.a2dTopLeft),
+            self.marginManager.addCell(0.25, -1.4, base.a2dTopLeft)
+        ]
+        self.bottomCells = [
+            self.marginManager.addCell(0.4, 0.2, base.a2dBottomCenter),
+            self.marginManager.addCell(-0.4, 0.2, base.a2dBottomCenter),
+            self.marginManager.addCell(-1.0, 0.2, base.a2dBottomCenter),
+            self.marginManager.addCell(1.0, 0.2, base.a2dBottomCenter)
+        ]
+        self.rightCells = [
+            self.marginManager.addCell(-0.25, -0.6, base.a2dTopRight),
+            self.marginManager.addCell(-0.25, -1.0, base.a2dTopRight),
+            self.marginManager.addCell(-0.25, -1.4, base.a2dTopRight)
+        ]
 
         self.nametagMouseWatcher = NametagMouseWatcher.NametagMouseWatcher()
 
-    def setCellsAvailable(self, cell_list, available):
-        return  # NAMETAG TODO
-        for cell in cell_list:
-            self.marginManager.setCellAvailable(cell, available)
+    def setCellsActive(self, cells, active):
+        for cell in cells:
+            cell.setActive(active)
+        self.marginManager.reorganize()
 
     def cleanupDownloadWatcher(self):
         self.downloadWatcher.cleanup()
         self.downloadWatcher = None
-        return
 
     def startShow(self, cr, launcherServer = None):
         self.cr = cr
