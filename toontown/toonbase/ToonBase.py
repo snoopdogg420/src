@@ -373,6 +373,8 @@ class ToonBase(OTPBase.OTPBase):
         self.screenshotStr += str
 
     def initNametagGlobals(self):
+        NametagGlobals.setMe(base.cam)
+
         NametagGlobals.setCardModel('phase_3/models/props/panel.bam')
         NametagGlobals.setArrowModel('phase_3/models/props/arrow.bam')
         NametagGlobals.setChatBalloon3dModel('phase_3/models/props/chatbox.bam')

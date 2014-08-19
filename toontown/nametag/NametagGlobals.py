@@ -33,11 +33,14 @@ chatBalloon2dHeight = 0
 thoughtBalloonModel = None
 thoughtBalloonWidth = 0
 thoughtBalloonHeight = 0
+noButton = (None, None, None, None)
 pageButton = (None, None, None, None)
 quitButton = (None, None, None, None)
 
 rolloverSound = None
 clickSound = None
+
+me = None
 
 
 def setCardModel(model):
@@ -92,6 +95,11 @@ def setRolloverSound(sound):
 def setClickSound(sound):
     global clickSound
     clickSound = sound
+
+
+def setMe(nodePath):
+    global me
+    me = nodePath
 
 
 def getModelWidthHeight(model):
