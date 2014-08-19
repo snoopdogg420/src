@@ -42,10 +42,10 @@ class Nametag3d(Nametag.Nametag):
     def tick(self, task):
         distance = self.contents.getPos(base.cam).length()
 
-        if distance < Nametag3d.SCALING_MIN_DISTANCE:
-            distance = Nametag3d.SCALING_MIN_DISTANCE
-        elif distance > Nametag3d.SCALING_MAX_DISTANCE:
-            distance = Nametag3d.SCALING_MAX_DISTANCE
+        if distance < self.SCALING_MIN_DISTANCE:
+            distance = self.SCALING_MIN_DISTANCE
+        elif distance > self.SCALING_MAX_DISTANCE:
+            distance = self.SCALING_MAX_DISTANCE
 
-        self.contents.setScale(math.sqrt(distance) * Nametag3d.SCALING_FACTOR)
+        self.contents.setScale(math.sqrt(distance) * self.SCALING_FACTOR)
         return Task.cont

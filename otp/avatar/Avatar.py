@@ -48,7 +48,9 @@ class Avatar(Actor, ShadowCaster):
         self.__nameVisible = 1
         self.nametag = NametagGroup()
         self.nametag.setAvatar(self)
-        self.nametag.setFont(OTPGlobals.getInterfaceFont())
+        interfaceFont = OTPGlobals.getInterfaceFont()
+        self.nametag.setFont(interfaceFont)
+        self.nametag.setChatFont(interfaceFont)
         self.nametag3d = self.attachNewNode('nametag3d')
         self.nametag3d.setTag('cam', 'nametag')
         self.nametag3d.setLightOff()
@@ -264,6 +266,7 @@ class Avatar(Actor, ShadowCaster):
     def setFont(self, font):
         self.__font = font
         self.nametag.setFont(font)
+        self.nametag.setChatFont(font)
 
     def getStyle(self):
         return self.style
@@ -371,11 +374,11 @@ class Avatar(Actor, ShadowCaster):
             self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
 
         if chatFlags & CFPageButton:
-            self.nametag.setButton(NametagGlobals.pageButton)
+            self.nametag.setChatButton(NametagGlobals.pageButton)
         elif chatFlags & CFQuitButton:
-            self.nametag.setButton(NametagGlobals.quitButton)
+            self.nametag.setChatButton(NametagGlobals.quitButton)
         else:
-            self.nametag.setButton(None)
+            self.nametag.setChatButton(NametagGlobals.noButton)
 
         # NAMETAG TODO: Handle CFReversed.
 

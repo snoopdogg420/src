@@ -27,12 +27,12 @@ class WhisperPopup(PandaNode, MarginVisible):
         self.pendingClickState = NametagGlobals.NORMAL
 
         self.contents = NodePath.anyPath(self).attachNewNode('contents')
-        self.contents.setScale(WhisperPopup.CONTENTS_SCALE)
+        self.contents.setScale(self.CONTENTS_SCALE)
 
         self.whisperColor = ChatGlobals.WhisperColors[self.whisperType]
 
         self.textNode = TextNode('text')
-        self.textNode.setWordwrap(WhisperPopup.TEXT_WORD_WRAP)
+        self.textNode.setWordwrap(self.TEXT_WORD_WRAP)
         self.textNode.setTextColor(self.whisperColor[self.clickState][0])
         self.textNode.setFont(self.font)
         self.textNode.setText(self.text)

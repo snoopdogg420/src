@@ -280,7 +280,9 @@ class PartyPlanner(DirectFrame, FSM):
     def __createNametag(self, parent):
         if self.nametagGroup == None:
             self.nametagGroup = NametagGroup()
-            self.nametagGroup.setFont(OTPGlobals.getInterfaceFont())
+            interfaceFont = OTPGlobals.getInterfaceFont()
+            self.nametagGroup.setFont(interfaceFont)
+            self.nametagGroup.setChatFont(interfaceFont)
             self.nametagGroup.setActive(False)
             self.nametagGroup.setAvatar(self.partyPlannerHead)
             self.nametagGroup.manage(base.marginManager)

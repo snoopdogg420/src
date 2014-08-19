@@ -12,10 +12,10 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
     CHAT_TEXT_WORD_WRAP = 8
 
+    CHAT_BALLOON_ALPHA = 0.4
+
     ARROW_OFFSET = -1.0
     ARROW_SCALE = 1.5
-
-    CHAT_BALLOON_ALPHA = 0.4
 
     def __init__(self):
         Nametag.Nametag.__init__(self)
@@ -24,7 +24,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.arrow = None
 
         self.hideThought()
-        self.contents.setScale(Nametag2d.CONTENTS_SCALE)
+        self.contents.setScale(self.CONTENTS_SCALE)
 
     def destroy(self):
         Nametag.Nametag.destroy(self)
@@ -49,12 +49,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         if (self.avatar is None) or self.avatar.isEmpty():
             return Task.cont
 
-        if hasattr(base, 'localAvatar'):
-            me = base.localAvatar
-        else:
-            me = base.cam
-        location = self.avatar.getPos(me)
-        rotation = me.getQuat(base.cam)
+        location = self.avatar.getPos(NametagGlobals.me)
+        rotation = NametagGlobals.me.getQuat(base.cam)
 
         camSpacePos = rotation.xform(location)
         arrowRadians = math.atan2(camSpacePos[0], camSpacePos[1])
@@ -63,7 +59,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.arrow.setR(arrowDegrees - 90)
         return Task.cont
 
-    def drawChatBalloon(self):
+    def drawChatBalloon(self, model, modelWidth, modelHeight):
         self.setChatText(self.getText() + ': ' + self.getChatText())
 
         # When a chat balloon is active, we need a slightly higher priority in
@@ -74,7 +70,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
             self.arrow.removeNode()
             self.arrow = None
 
-        Nametag.Nametag.drawChatBalloon(self)
+        Nametag.Nametag.drawChatBalloon(self, model, modelWidth, modelHeight)
 
         # Calculate the center of the TextNode:
         left, right, bottom, top = self.chatTextNode.getFrameActual()
@@ -92,6 +88,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         # Add an arrow:
         self.arrow = NametagGlobals.arrowModel.copyTo(self.contents)
-        self.arrow.setZ(Nametag2d.ARROW_OFFSET + self.nameTextNode.getBottom())
-        self.arrow.setScale(Nametag2d.ARROW_SCALE)
+        self.arrow.setZ(self.ARROW_OFFSET + self.textNode.getBottom())
+        self.arrow.setScale(self.ARROW_SCALE)
         self.arrow.setColor(self.nametagColor[0][0])
