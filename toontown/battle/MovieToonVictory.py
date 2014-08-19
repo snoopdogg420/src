@@ -76,7 +76,7 @@ def doToonVictory(localToonActive, toons, rewardToonIds, rewardDicts, deathList,
     track = Sequence()
     if localToonActive == 1:
         track.append(Func(rpanel.show))
-        # NAMETAG TODO: track.append(Func(NametagGlobals.setOnscreenChatForced, 1))
+        track.append(Func(NametagGlobals.setForceOnscreenChat, True))
     camTrack = Sequence()
     endTrack = Sequence()
     danceSound = globalBattleSoundCache.getSound('ENC_Win.ogg')
@@ -121,7 +121,7 @@ def doToonVictory(localToonActive, toons, rewardToonIds, rewardDicts, deathList,
     track.append(Func(skipper.destroy))
     if localToonActive == 1:
         track.append(Func(rpanel.hide))
-        # NAMETAG TODO: track.append(Func(NametagGlobals.setOnscreenChatForced, 0))
+        track.append(Func(NametagGlobals.setForceOnscreenChat, False))
     track.append(endTrack)
     trackdur = track.getDuration()
     soundTrack = SoundInterval(danceSound, duration=trackdur, loop=1)

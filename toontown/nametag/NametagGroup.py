@@ -94,17 +94,23 @@ class NametagGroup:
     def tick(self, task):
         if self.avatar == NametagGlobals.me:
             return Task.done
-        if (not NametagGlobals.want2dNametags) and (not self.getChatText()):
+
+        chatText = self.getChatText()
+        if (not NametagGlobals.want2dNametags) and (not chatText):
             visible3d = True
+        elif chatText and NametagGlobals.forceOnscreenChat:
+            visible3d = False
         elif self.avatar.isHidden() or self.avatar.isEmpty():
             visible3d = False
         else:
             visible3d = base.cam.node().isInView(self.avatar.getPos(base.cam))
+
         if visible3d != self.visible3d:
             self.visible3d = visible3d
             for nametag in self.nametags:
                 if isinstance(nametag, MarginVisible):
                     nametag.setVisible(not self.visible3d)
+
         return Task.cont
 
     def setAvatar(self, avatar):
