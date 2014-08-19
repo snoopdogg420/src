@@ -2243,8 +2243,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         else:
             self.nametag.setChatButton(NametagGlobals.noButton)
 
-        # NAMETAG TODO: Handle CFReversed.
-
         self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags - CFSpeech, interrupt)
 

@@ -380,8 +380,6 @@ class Avatar(Actor, ShadowCaster):
         else:
             self.nametag.setChatButton(NametagGlobals.noButton)
 
-        # NAMETAG TODO: Handle CFReversed.
-
         self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags, interrupt)
 
