@@ -232,7 +232,6 @@ class NametagGroup:
         self.text = text
         for nametag in self.nametags:
             nametag.setText(self.text)
-            nametag.update()
 
     def getText(self):
         return self.text
