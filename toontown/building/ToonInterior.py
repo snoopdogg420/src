@@ -97,7 +97,7 @@ class ToonInterior(Place.Place):
         volume = requestStatus.get('musicVolume', 0.7)
         base.playMusic(self.loader.activityMusic, looping=1, volume=volume)
         self._telemLimiter = TLGatherAllAvs('ToonInterior', RotationLimitToH)
-        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
+        NametagGlobals.setWant2dNametags(True)
         self.fsm.request(requestStatus['how'], [requestStatus])
 
     def exit(self):
@@ -105,7 +105,7 @@ class ToonInterior(Place.Place):
         messenger.send('exitToonInterior')
         self._telemLimiter.destroy()
         del self._telemLimiter
-        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+        NametagGlobals.setWant2dNametags(False)
         self.loader.activityMusic.stop()
 
     def setState(self, state):

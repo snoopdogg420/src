@@ -41,6 +41,7 @@ rolloverSound = None
 clickSound = None
 
 me = None
+want2dNametags = True
 
 
 def setCardModel(model):
@@ -100,6 +101,11 @@ def setClickSound(sound):
 def setMe(nodePath):
     global me
     me = nodePath
+
+
+def setWant2dNametags(value):
+    global want2dNametags
+    want2dNametags = value
 
 
 def getModelWidthHeight(model):

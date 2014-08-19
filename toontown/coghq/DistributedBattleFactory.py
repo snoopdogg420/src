@@ -29,7 +29,7 @@ class DistributedBattleFactory(DistributedLevelBattle.DistributedLevelBattle):
         self.disableCollision()
         self.delayDeleteMembers()
         if self.hasLocalToon():
-            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+            NametagGlobals.setWant2dNametags(False)
             if self.bossBattle:
                 messenger.send('localToonConfrontedForeman')
         self.movie.playReward(ts, self.uniqueName('building-reward'), self.__handleFactoryRewardDone, noSkip=True)
@@ -45,4 +45,4 @@ class DistributedBattleFactory(DistributedLevelBattle.DistributedLevelBattle):
         self.notify.info('exitFactoryReward()')
         self.movie.resetReward(finish=1)
         self._removeMembersKeep()
-        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
+        NametagGlobals.setWant2dNametags(True)

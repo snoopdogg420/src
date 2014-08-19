@@ -31,7 +31,7 @@ class DistributedCountryClubBattle(DistributedLevelBattle.DistributedLevelBattle
         self.disableCollision()
         self.delayDeleteMembers()
         if self.hasLocalToon():
-            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+            NametagGlobals.setWant2dNametags(False)
             if self.bossBattle:
                 messenger.send('localToonConfrontedCountryClubBoss')
         self.movie.playReward(ts, self.uniqueName('building-reward'), self.__handleCountryClubRewardDone)
@@ -47,4 +47,4 @@ class DistributedCountryClubBattle(DistributedLevelBattle.DistributedLevelBattle
         self.notify.debug('exitCountryClubReward()')
         self.movie.resetReward(finish=1)
         self._removeMembersKeep()
-        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
+        NametagGlobals.setWant2dNametags(True)

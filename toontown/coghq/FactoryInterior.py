@@ -83,7 +83,7 @@ class FactoryInterior(BattlePlace.BattlePlace):
         self._telemLimiter = TLGatherAllAvs('FactoryInterior', RotationLimitToH)
 
         def commence(self = self):
-            # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
+            NametagGlobals.setWant2dNametags(True)
             self.fsm.request(requestStatus['how'], [requestStatus])
             base.playMusic(self.music, looping=1, volume=0.8)
             base.transitions.irisIn()
@@ -104,7 +104,7 @@ class FactoryInterior(BattlePlace.BattlePlace):
         self.acceptOnce('localToonConfrontedForeman', handleConfrontedForeman)
 
     def exit(self):
-        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(0)
+        NametagGlobals.setWant2dNametags(False)
         self._telemLimiter.destroy()
         del self._telemLimiter
         if hasattr(base, 'factoryReady'):

@@ -157,7 +157,7 @@ class DistributedBattleFinal(DistributedBattleBase.DistributedBattleBase):
         self.notify.debug('exitReward()')
         self.clearInterval(self.uniqueName('floorReward'), finish=1)
         self._removeMembersKeep()
-        # NAMETAG TODO: NametagGlobals.setMasterArrowsOn(1)
+        NametagGlobals.setWant2dNametags(True)
         for toon in self.toons:
             toon.startSmooth()
 
