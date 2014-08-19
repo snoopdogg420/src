@@ -1020,7 +1020,6 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.accept('friendAvatar', self.__handleFriendAvatar)
         self.accept('avatarDetails', self.__handleAvatarDetails)
         NametagGlobals.setWant2dNametags(False)
-        # NAMETAG TODO: NametagGlobals.setMasterNametagsActive(1)
 
     def exitBattleThree(self):
         self.ignore('clickedNameTag')
@@ -1068,7 +1067,6 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         self.accept('friendAvatar', self.__handleFriendAvatar)
         self.accept('avatarDetails', self.__handleAvatarDetails)
         NametagGlobals.setWant2dNametags(False)
-        # NAMETAG TODO: NametagGlobals.setMasterNametagsActive(1)
 
     def exitBattleFour(self):
         self.ignore('clickedNameTag')
