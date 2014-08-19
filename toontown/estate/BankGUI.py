@@ -70,7 +70,7 @@ class BankGui(DirectFrame):
         jarMoney = base.localAvatar.getMoney()
         maxJarMoney = base.localAvatar.getMaxMoney()
         bankMoney = base.localAvatar.getBankMoney()
-        maxBankMoney = base.localAvatar.getMaxBankMoney()
+        maxBankMoney = ToontownGlobals.MaxBankMoney
         self.__transactionAmount = min(self.__transactionAmount, jarMoney)
         self.__transactionAmount = min(self.__transactionAmount, maxBankMoney - bankMoney)
         self.__transactionAmount = -min(-self.__transactionAmount, maxJarMoney - jarMoney)

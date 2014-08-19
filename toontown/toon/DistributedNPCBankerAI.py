@@ -24,28 +24,55 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
                 self.__handleUnexpectedExit, extraArgs=[avId])
         DistributedNPCToonBaseAI.avatarEnter(self)
 
+    def transferMoney(self, transactionAmount):
+        av = self.air.doId2do.get(self.busy)
+        if not av:
+            return
+
+        av.b_setMoney(av.getMoney() - transactionAmount)
+
+        if transactionAmount != 0:
+            self.air.bankManager.setMoney(self.busy,
+                av.getBankMoney() + transactionAmount)
+
+        self.clearTasks()
+        self.sendDoneMovie()
+
     def sendGUIMovie(self):
+        self.task = self.uniqueName('timeoutMovie')
         taskMgr.doMethodLater(60, self.sendTimeoutMovie,
-                              self.uniqueName('clearMovie'))
+                              self.task)
         self.sendUpdate('setMovie', [BankGlobals.BANK_MOVIE_GUI,
          self.busy,
          ClockDelta.globalClockDelta.getRealNetworkTime()])
 
-    def sendTimeoutMovie(self, task):
+    def sendTimeoutMovie(self, task=None):
         self.pendingAvId = None
         self.sendUpdate('setMovie', [BankGlobals.BANK_MOVIE_TIMEOUT,
          self.busy,
          ClockDelta.globalClockDelta.getRealNetworkTime()])
-        self.sendClearMovie(None)
         self.busy = 0
-        return Task.done
+
+        taskMgr.doMethodLater(5.5, self.sendClearMovie,
+            self.uniqueName('clearMovie'))
+
+        if task is not None:
+            return task.done
 
     def sendClearMovie(self, task):
-        self.busy = 0
         self.sendUpdate('setMovie', [BankGlobals.BANK_MOVIE_CLEAR,
          0,
          ClockDelta.globalClockDelta.getRealNetworkTime()])
-        return Task.done
+        return task.done
+
+    def sendDoneMovie(self):
+        self.sendUpdate('setMovie', [BankGlobals.BANK_MOVIE_DEPOSIT,
+         self.busy,
+         ClockDelta.globalClockDelta.getRealNetworkTime()])
+        self.busy = 0
+
+        taskMgr.doMethodLater(5.5, self.sendClearMovie,
+            self.uniqueName('clearMovie'))
 
     def rejectAvatar(self, avId):
         self.busy = avId
@@ -55,5 +82,9 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
 
     def __handleUnexpectedExit(self, avId):
         self.notify.warning('avatar:' + str(avId) + ' has exited unexpectedly')
-        taskMgr.remove(self.uniqueName('clearMovie'))
-        self.sendClearMovie(None)
+        self.clearTasks()
+        self.sendTimeoutMovie()
+
+    def clearTasks(self):
+        taskMgr.remove(self.task)
+        self.task = None

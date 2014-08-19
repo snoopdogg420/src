@@ -5533,6 +5533,7 @@ STOREOWNER_CONFIRM_LOSS = 'Your closet is full.  You will lose the clothes you w
 STOREOWNER_OK = lOK
 STOREOWNER_CANCEL = lCancel
 STOREOWNER_TROPHY = 'Wow! You collected %s of %s fish. That deserves a trophy and a Laff boost!'
+STOREOWNER_BANKING = 'Welcome to The Toontown Bank! How may I help you?'
 SuitInvasionBegin1 = lToonHQ + ': A Cog Invasion has begun!!!'
 SuitInvasionBegin2 = lToonHQ + ': %s have taken over Toontown!!!'
 SuitInvasionEnd1 = lToonHQ + ': The %s Invasion has ended!!!'
