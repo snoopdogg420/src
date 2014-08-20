@@ -180,7 +180,7 @@ want-yin-yang #f
 
 # Developer options...
 want-dev #f
-want-pstats 0
+want-pstats 1
 want-instant-parties #f
 
 # Temporary...
@@ -191,6 +191,7 @@ hardware-animated-vertices #t
 preload-avatars #t
 sync-video #f
 smooth-lag 0.4
+garbage-collect-states #f
 
 # Egg ObjectTypes...
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }

@@ -86,7 +86,7 @@ class DNALoader:
         for _ in xrange(numTextures):
             code = DNAUtil.dgiExtractString8(dgi)
             filename = DNAUtil.dgiExtractString8(dgi)
-            self.dnaStorage.storeTexture(code, loader.pdnaTexture(filename))
+            self.dnaStorage.storeTexture(code, loader.pdnaTexture(filename, okMissing=True))
 
         # Fonts
         numFonts = dgi.getUint16()

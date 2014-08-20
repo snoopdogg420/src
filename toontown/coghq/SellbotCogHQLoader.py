@@ -10,7 +10,7 @@ import FactoryExterior
 import FactoryInterior
 import SellbotHQExterior
 import SellbotHQBossBattle
-from pandac.PandaModules import DecalEffect
+from pandac.PandaModules import DecalEffect, RigidBodyCombiner, NodePath
 aspectSF = 0.7227
 
 class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
@@ -50,7 +50,10 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
         self.notify.info('loadPlaceGeom: %s' % zoneId)
         zoneId = zoneId - zoneId % 100
         if zoneId == ToontownGlobals.SellbotHQ:
-            self.geom = loader.loadModel(self.cogHQExteriorModelPath)
+            rbc = RigidBodyCombiner('sbhq')
+            self.geom = NodePath(rbc)
+            node = loader.loadModel(self.cogHQExteriorModelPath)
+            node.reparentTo(self.geom)
             dgLinkTunnel = self.geom.find('**/Tunnel1')
             dgLinkTunnel.setName('linktunnel_dg_5316_DNARoot')
             factoryLinkTunnel = self.geom.find('**/Tunnel2')
@@ -60,12 +63,10 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
             cogSignSF = 23
             dgSign = cogSign.copyTo(dgLinkTunnel)
             dgSign.setPosHprScale(0.0, -291.5, 29, 180.0, 0.0, 0.0, cogSignSF, cogSignSF, cogSignSF * aspectSF)
-            dgSign.node().setEffect(DecalEffect.make())
             dgText = DirectGui.OnscreenText(text=TTLocalizer.DaisyGardens[-1], font=ToontownGlobals.getSuitFont(), pos=(0, -0.3), scale=TTLocalizer.SCHQLdgText, mayChange=False, parent=dgSign)
             dgText.setDepthWrite(0)
             factorySign = cogSign.copyTo(factoryLinkTunnel)
             factorySign.setPosHprScale(148.625, -155, 27, -90.0, 0.0, 0.0, cogSignSF, cogSignSF, cogSignSF * aspectSF)
-            factorySign.node().setEffect(DecalEffect.make())
             factoryTypeText = DirectGui.OnscreenText(text=TTLocalizer.Sellbot, font=ToontownGlobals.getSuitFont(), pos=TTLocalizer.SellbotFactoryPosPart1, scale=TTLocalizer.SellbotFactoryScalePart1, mayChange=False, parent=factorySign)
             factoryTypeText.setDepthWrite(0)
             factoryText = DirectGui.OnscreenText(text=TTLocalizer.Factory, font=ToontownGlobals.getSuitFont(), pos=TTLocalizer.SellbotFactoryPosPart2, scale=TTLocalizer.SellbotFactoryScalePart2, mayChange=False, parent=factorySign)
@@ -81,8 +82,9 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
                 door.find('**/doorFrameHoleRight').wrtReparentTo(doorFrame)
                 doorTrigger = door.find('**/door_trigger*')
                 doorTrigger.setY(doorTrigger.getY() - 1.5)  # Fixes the misplaced door trigger.
-                doorFrame.node().setEffect(DecalEffect.make())
-
+                door.setPos(door, 0, -0.3, 0)
+                doorFrame.setPos(doorFrame, 0, -5, 0)
+            rbc.collect()
         elif zoneId == ToontownGlobals.SellbotFactoryExt:
             self.geom = loader.loadModel(self.factoryExteriorModelPath)
             factoryLinkTunnel = self.geom.find('**/tunnel_group2')
@@ -130,6 +132,7 @@ class SellbotCogHQLoader(CogHQLoader.CogHQLoader):
             doorFrame.node().setEffect(DecalEffect.make())
             door.find('**/leftDoor').wrtReparentTo(parent)
             door.find('**/rightDoor').wrtReparentTo(parent)
+            self.geom.flattenStrong()
         else:
             self.notify.warning('loadPlaceGeom: unclassified zone %s' % zoneId)
         CogHQLoader.CogHQLoader.loadPlaceGeom(self, zoneId)

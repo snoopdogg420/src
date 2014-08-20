@@ -20,9 +20,10 @@ class DNABulkLoader:
     def loadDNAFiles(self):
         for file in self.dnaFiles:
             print 'Reading DNA file...', file
-            dnaThread = threading.Thread(target=loadDNABulk, name=file,
-                                         args=(self.dnaStorage, file))
-            dnaThread.start()
+            loadDNABulk(self.dnaStorage, file)
+            #dnaThread = threading.Thread(target=loadDNABulk, name=file,
+            #                             args=(self.dnaStorage, file))
+            #dnaThread.start()
         while DNABulkLoader.dnaLoaded < DNABulkLoader.dnaNeeded:
             pass
 
