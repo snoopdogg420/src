@@ -4,6 +4,7 @@ from otp.otpbase import OTPLocalizer
 from toontown.toonbase import TTLocalizer
 from otp.otpbase import OTPLocalizer
 import types
+import random
 from direct.showbase import PythonUtil
 from pandac.PandaModules import *
 from otp.nametag.NametagConstants import *
@@ -237,8 +238,8 @@ def doSurprise(toon, volume = 1):
 
 
 def doUpset(toon, volume = 1):
-    sfx = None
-    sfx = base.loadSfx('phase_4/audio/sfx/avatar_emotion_very_sad_1.ogg')
+    sfxList = ('phase_4/audio/sfx/avatar_emotion_very_sad_1.ogg', 'phase_4/audio/sfx/avatar_emotion_very_sad.ogg')
+    sfx = base.loadSfx(random.choice(sfxList))
 
     def playSfx(volume = 1):
         base.playSfx(sfx, volume=volume, node=toon)
