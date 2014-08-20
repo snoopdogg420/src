@@ -30,7 +30,7 @@ class NametagMouseWatcher:
         return Task.cont
 
     def getIntoEventName(self):
-        return self.getUniqueName() + '-mouseRay-into-%s'
+        return self.pickerNode.getName() + '-into-%s'
 
     def getOutEventName(self):
-        return self.getUniqueName() + '-mouseRay-out-%s'
+        return self.pickerNode.getName() + '-out-%s'

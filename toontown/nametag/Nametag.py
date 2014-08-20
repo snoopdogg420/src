@@ -350,8 +350,10 @@ class Nametag(FSM, PandaNode, DirectObject):
             button=self.chatButton[self.clickState])
         self.chatBalloon.reparentTo(self.contents)
 
-        # Finally, draw the collisions:
-        self.drawCollisions()
+        # Set up the GeomNode for collisions:
+        geomNode = self.chatBalloon.balloon.find('**/+GeomNode')
+        geomNode.setCollideMask(OTPGlobals.PickerBitmask)
+        geomNode.setName(self.pickerName)
 
     def drawNametag(self):
         if self.font is None:
@@ -388,22 +390,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         sZ = self.textNode.getHeight() + self.PANEL_Z_PADDING
         self.panel.setScale(sX, 1, sZ)
 
-        # Finally, draw the collisions:
-        self.drawCollisions()
-
-    def drawCollisions(self):
-        if (self.chatBalloon is None) and (self.panel is None):
-            return
-        collNode = CollisionNode(self.pickerName)
-        collNodePath = self.contents.attachNewNode(collNode)
-        collNodePath.setCollideMask(OTPGlobals.PickerBitmask)
-        if self.chatBalloon is not None:
-            minPoint, maxPoint = self.chatBalloon.getTightBounds()
-        else:
-            minPoint, maxPoint = self.panel.getTightBounds()
-        maxPoint.setY(0.05)
-        collBox = CollisionBox(minPoint, maxPoint)
-        collNode.addSolid(collBox)
+        # Set up the GeomNode for collisions:
+        geomNode = self.panel.find('**/+GeomNode')
+        geomNode.setCollideMask(OTPGlobals.PickerBitmask)
+        geomNode.setName(self.pickerName)
 
     def enterNormal(self):
         if self.lastClickState == PGButton.SDepressed:
