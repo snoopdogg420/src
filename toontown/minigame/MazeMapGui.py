@@ -83,7 +83,6 @@ class MazeMapGui(DirectFrame):
         self.maskTexture.setWrapU(Texture.WMClamp)
         self.maskTexture.setWrapV(Texture.WMClamp)
         self.maskTexture.load(self._maskImage)
-        #base.graphicsEngine.renderFrame()
         cm = CardMaker('mask_cardMaker')
         cm.setFrame(-1.1, 1.1, -1.1, 1.1)
         mask = self.attachNewNode(cm.generate())

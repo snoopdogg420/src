@@ -35,6 +35,8 @@ class ToonBase(OTPBase.OTPBase):
     def __init__(self):
         OTPBase.OTPBase.__init__(self)
 
+        self.firstLoadDone = False
+
         # First, build a list of all possible resolutions:
         self.resList = []
         displayInfo = self.pipe.getDisplayInformation()
@@ -119,11 +121,14 @@ class ToonBase(OTPBase.OTPBase):
                 NametagGlobals.setMouseWatcher(self.mouseWatcherNode)
             else:
                 self.win.requestProperties(properties)
-                #self.graphicsEngine.renderFrame()
+                self.graphicsEngine.syncFrame()
+                self.graphicsEngine.renderFrame()
 
             self.win.setSort(sort)
-            #self.graphicsEngine.renderFrame()
-            #self.graphicsEngine.renderFrame()
+            self.graphicsEngine.syncFrame()
+            self.graphicsEngine.renderFrame()
+            self.graphicsEngine.syncFrame()
+            self.graphicsEngine.renderFrame()
         self.disableShowbaseMouse()
         self.addCullBins()
         self.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
@@ -364,7 +369,8 @@ class ToonBase(OTPBase.OTPBase):
             if len(self.screenshotStr):
                 strTextLabel = DirectLabel(pos=(0.0, 0.001, 0.9), text=self.screenshotStr, text_scale=0.05, text_fg=VBase4(1.0, 1.0, 1.0, 1.0), text_bg=(0, 0, 0, 0), text_shadow=(0, 0, 0, 1), relief=None)
                 strTextLabel.setBin('gui-popup', 0)
-        #self.graphicsEngine.renderFrame()
+        self.graphicsEngine.syncFrame()
+        self.graphicsEngine.renderFrame()
         self.screenshot(namePrefix=namePrefix, imageComment=ctext + ' ' + self.screenshotStr)
         self.lastScreenShotTime = globalClock.getRealTime()
         if coordOnScreen:
@@ -438,7 +444,6 @@ class ToonBase(OTPBase.OTPBase):
 
     def startShow(self, cr, launcherServer = None):
         self.cr = cr
-        #base.graphicsEngine.renderFrame()
         self.downloadWatcher = ToontownDownloadWatcher.ToontownDownloadWatcher(TTLocalizer.LauncherPhaseNames)
         if launcher.isDownloadComplete():
             self.cleanupDownloadWatcher()

@@ -154,9 +154,7 @@ class AIBase:
         return Task.cont
 
     def __igLoop(self, state):
-        ##self.graphicsEngine.renderFrame()
-        #return Task.done #cont
-        ivalMgr.step()
+        self.graphicsEngine.renderFrame()
         return Task.cont
 
     def shutdown(self):

@@ -5,6 +5,10 @@ class ToontownTransitions(Transitions):
     FadeModelName = 'phase_3/models/misc/fade'
 
     def fadeIn(self, t=0.5, finishIval=None):
+
+        base.graphicsEngine.syncFrame()
+        base.graphicsEngine.renderFrame()
+
         if (t == 0):
             self.noTransitions()
             self.loadFade()

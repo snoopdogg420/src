@@ -1,6 +1,5 @@
 from pandac.PandaModules import *
-from direct.gui.DirectLabel import DirectLabel
-from direct.gui.OnscreenImage import OnscreenImage
+from direct.gui.DirectGui import *
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 from toontown.hood import ZoneUtil
@@ -46,7 +45,7 @@ class ToontownLoadingScreen:
         self.__count = 0
         self.gui = loader.loadModel('phase_3/models/gui/progress-background.bam')
         self.title = DirectLabel(guiId='ToontownLoadingScreenTitle', parent=self.gui, relief=None, pos=(base.a2dRight/5, 0, 0.235), text='', textMayChange=1, text_scale=0.08, text_fg=(0.03, 0.83, 0, 1), text_align=TextNode.ALeft, text_font=ToontownGlobals.getSignFont())
-        self.waitBar = self.waitBar = ToontownWaitBar(guiId='ToontownLoadingScreenWaitBar', parent=self.gui, frameSize=(base.a2dLeft+(base.a2dRight/4.95), base.a2dRight-(base.a2dRight/4.95), -0.03, 0.03), pos=(0, 0, 0.15), text='')
+        self.waitBar = ToontownWaitBar(guiId='ToontownLoadingScreenWaitBar', parent=self.gui, frameSize=(base.a2dLeft+(base.a2dRight/4.95), base.a2dRight-(base.a2dRight/4.95), -0.03, 0.03), pos=(0, 0, 0.15), text='')
         logoScale = 0.5625  # Scale for our locked aspect ratio (2:1).
         self.logo = OnscreenImage(
             image='phase_3/maps/toontown-logo.png',
@@ -89,7 +88,7 @@ class ToontownLoadingScreen:
                 self.toon.reparentTo(self.waitBar)
                 self.waitBar['frameSize'] = (base.a2dLeft+(base.a2dRight/8.15), base.a2dRight-(base.a2dRight/2.57), -0.03, 0.03)
             self.title.reparentTo(base.a2dpBottomLeft, NO_FADE_SORT_INDEX)
-            self.title.setPos(0.24, 0, 0.23)
+            self.title.setPos(0.14, 0, 0.14)
             self.gui.setPos(0, -0.1, 0)
             self.gui.reparentTo(aspect2d, NO_FADE_SORT_INDEX)
             self.gui.setTexture(self.background, 1)

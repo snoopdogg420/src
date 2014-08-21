@@ -10,6 +10,7 @@ from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.DisplayOptions import DisplayOptions
 from otp.nametag import NametagGlobals
 
+# We need to convert this later on to work with the threading-model
 class DisplaySettingsDialog(DirectFrame, StateData.StateData):
     ApplyTimeoutSeconds = 15
     TimeoutCountdownTask = 'DisplaySettingsTimeoutCountdown'

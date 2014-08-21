@@ -107,7 +107,7 @@ logo.setTransparency(TransparencyAttrib.MAlpha)
 logo.setBin('fixed', 20)
 logo.reparentTo(backgroundNodePath)
 backgroundNodePath.find('**/bg').setBin('fixed', 10)
-#base.graphicsEngine.renderFrame()
+#base.graphicsEngine.renderFrame() # We cant render the frame unless we already called run...
 DirectGuiGlobals.setDefaultRolloverSound(base.loadSfx('phase_3/audio/sfx/GUI_rollover.ogg'))
 DirectGuiGlobals.setDefaultClickSound(base.loadSfx('phase_3/audio/sfx/GUI_create_toon_fwd.ogg'))
 DirectGuiGlobals.setDefaultDialogGeom(loader.loadModel('phase_3/models/gui/dialog_box_gui'))
@@ -144,6 +144,7 @@ del music
 base.initNametagGlobals()
 base.cr = cr
 loader.endBulkLoad('init')
+base.firstLoadDone = True # This is temp until I remake ClientStart -Chan
 from otp.friends import FriendManager
 from otp.distributed.OtpDoGlobals import *
 cr.generateGlobalObject(OTP_DO_ID_FRIEND_MANAGER, 'FriendManager')
