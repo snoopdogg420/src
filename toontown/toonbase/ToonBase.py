@@ -18,13 +18,13 @@ from otp.nametag.ChatBalloon import ChatBalloon
 from otp.otpbase import OTPBase
 from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLauncherGlobals
-from otp.panda.Transitions import Transitions
 import shutil
 import tempfile
 from toontown.launcher import ToontownDownloadWatcher
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownAccess
 from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase.ToontownTransitions import ToontownTransitions
 from toontown.toontowngui import TTDialog
 
 import random
@@ -172,7 +172,7 @@ class ToonBase(OTPBase.OTPBase):
         self.loader = ToontownLoader.ToontownLoader(self)
         __builtins__['loader'] = self.loader
         oldLoader.destroy()
-        self.transitions = Transitions(self.loader)
+        self.transitions = ToontownTransitions(self.loader)
         self.accept('PandaPaused', self.disableAllAudio)
         self.accept('PandaRestarted', self.enableAllAudio)
         self.friendMode = self.config.GetBool('switchboard-friends', 0)
