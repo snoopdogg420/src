@@ -440,6 +440,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                     self.dna.headColor = color
                     self.dna.armColor = color
                     self.dna.legColor = color
+                    valid = False
             if not valid:
                 self.b_setDNAString(self.dna.makeNetString())
         return valid
