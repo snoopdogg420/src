@@ -522,7 +522,7 @@ class OTPClientRepository(ClientRepositoryBase):
         dialogClass = OTPGlobals.getGlobalDialogClass()
         self.connectingBox = dialogClass(message=OTPLocalizer.CRConnecting)
         self.connectingBox.show()
-        self.renderFrame()
+        #self.renderFrame()
         self.handler = self.handleConnecting
         self.connect(self.serverList, successCallback=self._sendHello, failureCallback=self.failedToConnect)
 
@@ -648,7 +648,7 @@ class OTPClientRepository(ClientRepositoryBase):
             self.createAccountScreen.exit()
             self.createAccountScreen.unload()
             self.createAccountScreen = None
-            self.renderFrame()
+            #self.renderFrame()
         self.ignore(self.createAccountDoneEvent)
         del self.createAccountDoneEvent
         self.handler = None
@@ -865,7 +865,7 @@ class OTPClientRepository(ClientRepositoryBase):
         dialogClass = OTPGlobals.getGlobalDialogClass()
         self.connectingBox = dialogClass(message=OTPLocalizer.CRConnecting)
         self.connectingBox.show()
-        self.renderFrame()
+        #self.renderFrame()
         self.noShardsWaitTaskName = 'noShardsWait'
 
         def doneWait(task, self = self):
@@ -1752,10 +1752,11 @@ class OTPClientRepository(ClientRepositoryBase):
         launcher.setIsNotNewInstallation()
 
     def renderFrame(self):
-        gsg = base.win.getGsg()
-        if gsg:
-            render2d.prepareScene(gsg)
-        base.graphicsEngine.renderFrame()
+        pass
+        #gsg = base.win.getGsg()
+        #if gsg:
+        #    render2d.prepareScene(gsg)
+        ##base.graphicsEngine.renderFrame()
 
     def resetPeriodTimer(self, secondsRemaining):
         self.periodTimerExpired = 0

@@ -1,8 +1,12 @@
 # Window options...
 window-title Toontown Infinite
 win-origin -1 -1
-icon-filename icon.ico
-cursor-filename phase_3/etc/toonmono.cur
+#icon-filename icon.ico
+#cursor-filename phase_3/etc/toonmono.cur
+assert-abort 1
+notify-level info
+
+threading-model /Draw
 
 # Preferences...
 preferences-filename preferences.gz

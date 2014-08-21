@@ -70,10 +70,10 @@ class ToontownLoader(Loader.Loader):
 
     def loadModel(self, *args, **kw):
         ret = Loader.Loader.loadModel(self, *args, **kw)
-        if ret:
-            gsg = base.win.getGsg()
-            if gsg:
-                ret.prepareScene(gsg)
+        #if ret:
+        #    gsg = base.win.getGsg()
+        #    if gsg:
+        #        ret.prepareScene(gsg)
         self.tick()
         return ret
 
@@ -91,10 +91,10 @@ class ToontownLoader(Loader.Loader):
 
     def pdnaModel(self, *args, **kw):
         ret = Loader.Loader.loadModel(self, *args, **kw)
-        if ret:
-            gsg = base.win.getGsg()
-            if gsg:
-                ret.prepareScene(gsg)
+        #if ret:
+        #    gsg = base.win.getGsg()
+        #    if gsg:
+        #        ret.prepareScene(gsg)
         return ret
 
     def pdnaFont(self, *args, **kw):

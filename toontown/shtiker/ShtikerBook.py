@@ -99,9 +99,9 @@ class ShtikerBook(DirectFrame, StateData.StateData):
             base.setBackgroundColor(Vec4(0, 0, 0, 1))
         else:
             base.setBackgroundColor(ToontownGlobals.DefaultBackgroundColor)
-        gsg = base.win.getGsg()
-        if gsg:
-            base.render.prepareScene(gsg)
+        #gsg = base.win.getGsg()
+        #if gsg:
+        #    base.render.prepareScene(gsg)
         NametagGlobals.setMin2dAlpha(self.oldMin2dAlpha)
         NametagGlobals.setMax2dAlpha(self.oldMax2dAlpha)
         base.setCellsAvailable([base.rightCells[0]], 1)

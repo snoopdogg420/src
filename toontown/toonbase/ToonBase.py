@@ -99,13 +99,13 @@ class ToonBase(OTPBase.OTPBase):
 
             # Store the window sort for later:
             sort = self.win.getSort()
-
+            gsg = None
             if self.win:
                 currentProperties = WindowProperties(self.win.getProperties())
-                gsg = self.win.getGsg()
+                #gsg = self.win.getGsg()
             else:
                 currentProperties = WindowProperties.getDefault()
-                gsg = None
+                #gsg = None
             newProperties = WindowProperties(currentProperties)
             newProperties.addProperties(properties)
             if (gsg is None) or (currentProperties.getFullscreen() != newProperties.getFullscreen()) or (currentProperties.getParentWindow() != newProperties.getParentWindow()):
@@ -118,11 +118,11 @@ class ToonBase(OTPBase.OTPBase):
                 NametagGlobals.setMouseWatcher(self.mouseWatcherNode)
             else:
                 self.win.requestProperties(properties)
-                self.graphicsEngine.renderFrame()
+                #self.graphicsEngine.renderFrame()
 
             self.win.setSort(sort)
-            self.graphicsEngine.renderFrame()
-            self.graphicsEngine.renderFrame()
+            #self.graphicsEngine.renderFrame()
+            #self.graphicsEngine.renderFrame()
         self.disableShowbaseMouse()
         self.addCullBins()
         self.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
@@ -362,7 +362,7 @@ class ToonBase(OTPBase.OTPBase):
             if len(self.screenshotStr):
                 strTextLabel = DirectLabel(pos=(0.0, 0.001, 0.9), text=self.screenshotStr, text_scale=0.05, text_fg=VBase4(1.0, 1.0, 1.0, 1.0), text_bg=(0, 0, 0, 0), text_shadow=(0, 0, 0, 1), relief=None)
                 strTextLabel.setBin('gui-popup', 0)
-        self.graphicsEngine.renderFrame()
+        #self.graphicsEngine.renderFrame()
         self.screenshot(namePrefix=namePrefix, imageComment=ctext + ' ' + self.screenshotStr)
         self.lastScreenShotTime = globalClock.getRealTime()
         if coordOnScreen:
@@ -436,7 +436,7 @@ class ToonBase(OTPBase.OTPBase):
 
     def startShow(self, cr, launcherServer = None):
         self.cr = cr
-        base.graphicsEngine.renderFrame()
+        #base.graphicsEngine.renderFrame()
         self.downloadWatcher = ToontownDownloadWatcher.ToontownDownloadWatcher(TTLocalizer.LauncherPhaseNames)
         if launcher.isDownloadComplete():
             self.cleanupDownloadWatcher()
