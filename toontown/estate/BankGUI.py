@@ -9,28 +9,25 @@ class BankGui(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('BankGui')
 
     def __init__(self, doneEvent, allowWithdraw = 1):
-        DirectFrame.__init__(self, relief=None, geom=DGG.getDefaultDialogGeom(), geom_color=ToontownGlobals.GlobalDialogColor, geom_scale=(1.33, 1, 1.1), pos=(0, 0, 0))
+        backGeom = loader.loadModel('phase_3/models/gui/tt_m_gui_ups_panelBg')
+        DirectFrame.__init__(self, relief=None, geom=backGeom, geom_color=ToontownGlobals.GlobalDialogColor, geom_scale=(1.66, 1, 1.4), pos=(0, 0, 0))
         self.initialiseoptions(BankGui)
         self.doneEvent = doneEvent
         self.__transactionAmount = 0
-        buttons = loader.loadModel('phase_3/models/gui/dialog_box_buttons_gui')
-        jarGui = loader.loadModel('phase_3.5/models/gui/jar_gui')
+        bankGuiModel = loader.loadModel('phase_3/models/gui/bank_GUI')
+        jarGui = bankGuiModel.find('**/jar')
         arrowGui = loader.loadModel('phase_3/models/gui/create_a_toon_gui')
-        bankModel = loader.loadModel('phase_5.5/models/estate/jellybeanBank.bam')
-        bankModel.setDepthWrite(1)
-        bankModel.setDepthTest(1)
-        bankModel.find('**/jellybeans').setDepthWrite(0)
-        bankModel.find('**/jellybeans').setDepthTest(0)
-        okImageList = (buttons.find('**/ChtBx_OKBtn_UP'), buttons.find('**/ChtBx_OKBtn_DN'), buttons.find('**/ChtBx_OKBtn_Rllvr'))
-        cancelImageList = (buttons.find('**/CloseBtn_UP'), buttons.find('**/CloseBtn_DN'), buttons.find('**/CloseBtn_Rllvr'))
+        bankModel = bankGuiModel.find('**/vault')
+        okImageList = (bankGuiModel.find('**/Ok_UP'), bankGuiModel.find('**/Ok_DN'), bankGuiModel.find('**/Ok_RLVR'))
+        cancelImageList = (bankGuiModel.find('**/Cancel_UP'), bankGuiModel.find('**/Cancel_DN'), bankGuiModel.find('**/Cancel_RLVR'))
         arrowImageList = (arrowGui.find('**/CrtATn_R_Arrow_UP'),
          arrowGui.find('**/CrtATn_R_Arrow_DN'),
          arrowGui.find('**/CrtATn_R_Arrow_RLVR'),
          arrowGui.find('**/CrtATn_R_Arrow_UP'))
-        self.cancelButton = DirectButton(parent=self, relief=None, image=cancelImageList, pos=(-0.2, 0, -0.4), text=TTLocalizer.BankGuiCancel, text_scale=0.06, text_pos=(0, -0.1), command=self.__cancel)
-        self.okButton = DirectButton(parent=self, relief=None, image=okImageList, pos=(0.2, 0, -0.4), text=TTLocalizer.BankGuiOk, text_scale=0.06, text_pos=(0, -0.1), command=self.__requestTransaction)
-        self.jarDisplay = DirectLabel(parent=self, relief=None, pos=(-0.4, 0, 0), scale=0.7, text=str(base.localAvatar.getMoney()), text_scale=0.2, text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1), text_pos=(0, -0.1, 0), image=jarGui.find('**/Jar'), text_font=ToontownGlobals.getSignFont())
-        self.bankDisplay = DirectLabel(parent=self, relief=None, pos=(0.4, 0, 0), scale=0.9, text=str(base.localAvatar.getBankMoney()), text_scale=0.2, text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1), text_pos=(0, -0.1, 0), geom=bankModel, geom_scale=0.08, geom_pos=(0, 10, -0.26), geom_hpr=(0, 0, 0), text_font=ToontownGlobals.getSignFont())
+        self.cancelButton = DirectButton(parent=self, relief=None, image=cancelImageList, pos=(-0.2, 0, -0.4), text=TTLocalizer.BankGuiCancel, text_scale=0.06, text_pos=(0, -0.1), image_scale=0.6, command=self.__cancel)
+        self.okButton = DirectButton(parent=self, relief=None, image=okImageList, pos=(0.2, 0, -0.4), text=TTLocalizer.BankGuiOk, text_scale=0.06, text_pos=(0, -0.1), image_scale=0.6, command=self.__requestTransaction)
+        self.jarDisplay = DirectLabel(parent=self, relief=None, pos=(-0.4, 0, 0), scale=0.7, text=str(base.localAvatar.getMoney()), text_scale=0.2, text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1), text_pos=(0, -0.1, 0), image=jarGui, text_font=ToontownGlobals.getSignFont())
+        self.bankDisplay = DirectLabel(parent=self, relief=None, pos=(0.4, 0, 0), scale=0.9, text=str(base.localAvatar.getBankMoney()), text_scale=0.2, text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1), text_pos=(0, -0.1, 0), image=bankModel, image_pos=(0.025, 0, 0),image_scale=0.8, text_font=ToontownGlobals.getSignFont())
         self.depositArrow = DirectButton(parent=self, relief=None, image=arrowImageList, image_scale=(1, 1, 1), image3_color=Vec4(0.6, 0.6, 0.6, 0.25), pos=(0.01, 0, 0.15))
         self.withdrawArrow = DirectButton(parent=self, relief=None, image=arrowImageList, image_scale=(-1, 1, 1), image3_color=Vec4(0.6, 0.6, 0.6, 0.25), pos=(-0.01, 0, -0.15))
         self.depositArrow.bind(DGG.B1PRESS, self.__depositButtonDown)
@@ -46,9 +43,9 @@ class BankGui(DirectFrame):
         else:
             self.depositArrow.setPos(0, 0, 0)
             self.withdrawArrow.hide()
-        buttons.removeNode()
         jarGui.removeNode()
         arrowGui.removeNode()
+        bankGuiModel.removeNode()
         self.__updateTransaction(0)
         return
 

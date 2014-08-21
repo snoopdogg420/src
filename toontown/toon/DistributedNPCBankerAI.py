@@ -12,6 +12,7 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
         self.hq = hq
         self.tutorial = 0
         self.pendingAvId = None
+        self.task = ''
 
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
@@ -39,6 +40,9 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
         self.sendDoneMovie()
 
     def sendGUIMovie(self):
+        if self.task:
+            taskMgr.remove(self.task)
+
         self.task = self.uniqueName('timeoutMovie')
         taskMgr.doMethodLater(60, self.sendTimeoutMovie,
                               self.task)
@@ -71,8 +75,8 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
          ClockDelta.globalClockDelta.getRealNetworkTime()])
         self.busy = 0
 
-        taskMgr.doMethodLater(5.5, self.sendClearMovie,
-            self.uniqueName('clearMovie'))
+        self.task = self.uniqueName('clearMovie')
+        taskMgr.doMethodLater(5.5, self.sendClearMovie, self.task)
 
     def rejectAvatar(self, avId):
         self.busy = avId
