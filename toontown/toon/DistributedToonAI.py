@@ -431,6 +431,15 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                     self.dna.armColor = bodyColors[0]
                     self.dna.legColor = bodyColors[0]
                     valid = False
+                if ((self.dna.getAnimal() != 'cat') and (26 in bodyColors)) or (
+                    (self.dna.getAnimal() != 'bear') and (0 in bodyColors)):
+                    if self.dna.getGender() == 'm':
+                        color = ToonDNA.defaultBoyColorList[0]
+                    else:
+                        color = ToonDNA.defaultGirlColorList[0]
+                    self.dna.headColor = color
+                    self.dna.armColor = color
+                    self.dna.legColor = color
             if not valid:
                 self.b_setDNAString(self.dna.makeNetString())
         return valid
