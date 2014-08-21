@@ -145,11 +145,9 @@ class Avatar(Actor, ShadowCaster):
             reconsiderAllUnderstandable()
 
     def considerUnderstandable(self):
-        speed = 0
         if self.playerType in (NametagGlobals.CCNormal, NametagGlobals.CCFreeChat, NametagGlobals.CCSpeedChat):
             self.setPlayerType(NametagGlobals.CCSpeedChat)
-            speed = 1
-        if hasattr(base, 'localAvatar') and self == base.localAvatar:
+        if hasattr(base, 'localAvatar') and (self == base.localAvatar):
             self.understandable = 1
             self.setPlayerType(NametagGlobals.CCFreeChat)
         elif self.playerType == NametagGlobals.CCSuit:
@@ -381,7 +379,7 @@ class Avatar(Actor, ShadowCaster):
         else:
             self.nametag.setChatButton(NametagGlobals.noButton)
 
-        self.nametag.setChatText(chatString, timeout=bool(chatFlags & CFTimeout))
+        self.nametag.setChatText(chatString, timeout=(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags, interrupt)
 
     def setChatMuted(self, chatString, chatFlags, dialogue = None, interrupt = 1, quiet = 0):
@@ -389,8 +387,9 @@ class Avatar(Actor, ShadowCaster):
 
     def displayTalk(self, chatString):
         if not base.cr.avatarFriendsManager.checkIgnored(self.doId):
+            self.clearChat()
             self.nametag.setChatType(NametagGlobals.CHAT)
-            # TODO: Clear buttons.
+            self.nametag.setChatButton(NametagGlobals.noButton)
             if base.talkAssistant.isThought(chatString):
                 chatString = base.talkAssistant.removeThoughtPrefix(chatString)
                 self.nametag.setChatBalloonType(NametagGlobals.THOUGHT_BALLOON)
@@ -420,12 +419,16 @@ class Avatar(Actor, ShadowCaster):
     def hideName(self):
         nametag3d = self.nametag.getNametag3d()
         nametag3d.hideNametag()
+        nametag3d.showChat()
+        nametag3d.showThought()
         nametag3d.update()
 
     def showName(self):
         if self.__nameVisible and (not self.ghostMode):
             nametag3d = self.nametag.getNametag3d()
             nametag3d.showNametag()
+            nametag3d.showChat()
+            nametag3d.showThought()
             nametag3d.update()
 
     def hideNametag2d(self):
