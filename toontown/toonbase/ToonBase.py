@@ -21,7 +21,6 @@ from otp.otpbase import OTPLauncherGlobals
 from toontown.launcher import ToontownDownloadWatcher
 from toontown.margins.MarginManager import MarginManager
 from toontown.nametag import NametagGlobals
-from toontown.nametag import NametagMouseWatcher
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownAccess
 from toontown.toonbase import ToontownBattleGlobals
@@ -415,8 +414,6 @@ class ToonBase(OTPBase.OTPBase):
             self.marginManager.addCell(-0.25, -1.0, base.a2dTopRight),
             self.marginManager.addCell(-0.25, -1.4, base.a2dTopRight)
         ]
-
-        self.nametagMouseWatcher = NametagMouseWatcher.NametagMouseWatcher()
 
     def setCellsActive(self, cells, active):
         for cell in cells:

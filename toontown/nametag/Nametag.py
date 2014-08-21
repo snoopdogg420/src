@@ -69,14 +69,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.tickTaskName = self.getUniqueName() + '-tick'
         self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
-        # Accept the mouse events:
-        self.pickerName = self.getUniqueName() + '-picker'
-        intoEventName = base.nametagMouseWatcher.getIntoEventName()
-        self.accept(intoEventName % self.pickerName, self.__handleMouseEnter)
-        outEventName = base.nametagMouseWatcher.getOutEventName()
-        self.accept(outEventName % self.pickerName, self.__handleMouseLeave)
-        self.accept('mouse1', self.__handleMouseDown)
-        self.accept('mouse1-up', self.__handleMouseUp)
+        # TODO: Accept the mouse events.
 
     def destroy(self):
         self.ignoreAll()
@@ -350,11 +343,6 @@ class Nametag(FSM, PandaNode, DirectObject):
             button=self.chatButton[self.clickState])
         self.chatBalloon.reparentTo(self.contents)
 
-        # Set up the GeomNode for collisions:
-        geomNode = self.chatBalloon.balloon.find('**/+GeomNode')
-        geomNode.setCollideMask(OTPGlobals.PickerBitmask)
-        geomNode.setName(self.pickerName)
-
     def drawNametag(self):
         if self.font is None:
             # We can't draw this without a font.
@@ -389,11 +377,6 @@ class Nametag(FSM, PandaNode, DirectObject):
         sX = self.textNode.getWidth() + self.PANEL_X_PADDING
         sZ = self.textNode.getHeight() + self.PANEL_Z_PADDING
         self.panel.setScale(sX, 1, sZ)
-
-        # Set up the GeomNode for collisions:
-        geomNode = self.panel.find('**/+GeomNode')
-        geomNode.setCollideMask(OTPGlobals.PickerBitmask)
-        geomNode.setName(self.pickerName)
 
     def enterNormal(self):
         if self.lastClickState == PGButton.SDepressed:
