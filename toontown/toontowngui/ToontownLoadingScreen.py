@@ -1,8 +1,10 @@
 from pandac.PandaModules import *
-from direct.gui.DirectGui import *
+from direct.gui.DirectLabel import DirectLabel
+from direct.gui.OnscreenImage import OnscreenImage
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase import TTLocalizer
 from toontown.hood import ZoneUtil
+from otp.panda.DirectWaitBar import DirectWaitBar
 import random
 
 class ToontownLoadingScreen:
