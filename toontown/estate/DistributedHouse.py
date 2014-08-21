@@ -232,6 +232,7 @@ class DistributedHouse(DistributedObject.DistributedObject):
         else:
             houseName = TTLocalizer.AvatarsHouse % TTLocalizer.GetPossesive(self.name)
         self.nametag = NametagGroup()
+        self.nametag.setNametag3d(None)
         self.nametag.setFont(ToontownGlobals.getBuildingNametagFont())
         if TTLocalizer.BuildingNametagShadow:
             self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
@@ -241,7 +242,6 @@ class DistributedHouse(DistributedObject.DistributedObject):
         self.nametag.setNametagColor(nametagColor)
         self.nametag.setActive(False)
         self.nametag.setAvatar(self.house)
-        self.nametag.setObjectCode(self.doId)
         self.nametag.setText(houseName)
         self.nametag.manage(base.marginManager)
         self.nametag.updateAll()

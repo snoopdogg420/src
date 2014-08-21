@@ -319,6 +319,9 @@ class NametagGroup:
             self.remove(self.nametag2d)
             self.nametag2d = None
 
+        if nametag2d is None:
+            return
+
         self.nametag2d = nametag2d
         self.add(self.nametag2d)
 
@@ -329,6 +332,9 @@ class NametagGroup:
         if self.nametag3d is not None:
             self.remove(self.nametag3d)
             self.nametag3d = None
+
+        if nametag3d is None:
+            return
 
         self.nametag3d = nametag3d
         self.add(self.nametag3d)

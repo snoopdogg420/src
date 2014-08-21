@@ -33,6 +33,9 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
             self.arrow.removeNode()
             self.arrow = None
 
+    def getUniqueName(self):
+        return 'Nametag2d-' + str(id(self))
+
     def getChatBalloonModel(self):
         return NametagGlobals.chatBalloon2dModel
 

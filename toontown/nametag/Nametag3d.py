@@ -14,8 +14,13 @@ class Nametag3d(Nametag.Nametag):
     def __init__(self):
         Nametag.Nametag.__init__(self)
 
+        self.distance = 0
+
         self.billboardOffset = 3
         self.doBillboardEffect()
+
+    def getUniqueName(self):
+        return 'Nametag3d-' + str(id(self))
 
     def getChatBalloonModel(self):
         return NametagGlobals.chatBalloon3dModel
@@ -40,12 +45,20 @@ class Nametag3d(Nametag.Nametag):
         self.contents.setEffect(billboardEffect)
 
     def tick(self, task):
+        if not base.cam.node().isInView(self.avatar.getPos(base.cam)):
+            return Task.cont
+
         distance = self.contents.getPos(base.cam).length()
 
         if distance < self.SCALING_MIN_DISTANCE:
             distance = self.SCALING_MIN_DISTANCE
         elif distance > self.SCALING_MAX_DISTANCE:
             distance = self.SCALING_MAX_DISTANCE
+
+        if distance == self.distance:
+            return Task.cont
+
+        self.distance = distance
 
         self.contents.setScale(math.sqrt(distance) * self.SCALING_FACTOR)
         return Task.cont
