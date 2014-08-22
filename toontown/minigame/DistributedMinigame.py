@@ -154,7 +154,7 @@ class DistributedMinigame(DistributedObject.DistributedObject):
         Toon.loadMinigameAnims()
 
     def onstage(self):
-        self.notify.debug('BASE: onstage')
+        base.localAvatar.laffMeter.hide()
 
         def calcMaxDuration(self = self):
             return (self.getMaxDuration() + MinigameGlobals.rulesDuration) * 1.1
