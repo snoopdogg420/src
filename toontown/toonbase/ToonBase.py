@@ -2,7 +2,6 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
 from direct.showbase.PythonUtil import *
-from direct.showbase.Transitions import Transitions
 import math
 import os
 from pandac.PandaModules import *
@@ -256,43 +255,16 @@ class ToonBase(OTPBase.OTPBase):
         return result
 
     def windowEvent(self, win):
-        OTPBase.OTPBase.windowEvent(self, win)
-        if not config.GetInt('keep-aspect-ratio', 0):
-            return
-        x = max(1, win.getXSize())
-        y = max(1, win.getYSize())
-        maxX = base.pipe.getDisplayWidth()
-        maxY = base.pipe.getDisplayHeight()
-        cwp = win.getProperties()
-        originX = 0
-        originY = 0
-        if cwp.hasOrigin():
-            originX = cwp.getXOrigin()
-            originY = cwp.getYOrigin()
-            if originX > maxX:
-                originX = originX - maxX
-            if originY > maxY:
-                oringY = originY - maxY
-        maxX -= originX
-        maxY -= originY
-        if math.fabs(x - self.oldX) > math.fabs(y - self.oldY):
-            newY = x / self.aspectRatio
-            newX = x
-            if newY > maxY:
-                newY = maxY
-                newX = self.aspectRatio * maxY
+        self.graphicsEngine.syncFrame()
+        self.graphicsEngine.renderFrame()
+        if render.hasMat():
+            OTPBase.OTPBase.windowEvent(self, win)
         else:
-            newX = self.aspectRatio * y
-            newY = y
-            if newX > maxX:
-                newX = maxX
-                newY = maxX / self.aspectRatio
-        wp = WindowProperties()
-        wp.setSize(newX, newY)
-        base.win.requestProperties(wp)
-        base.cam.node().getLens().setFilmSize(newX, newY)
-        self.oldX = newX
-        self.oldY = newY
+            self.notify.info('Failed to perform windowEvent.')
+        if base.win.isClosed():
+            self.notify.info('Normal exit.')
+            self.destroy()
+            sys.exit()
 
     def setCursorAndIcon(self):
         iconPath = '/phase_3/etc/icon.ico'
