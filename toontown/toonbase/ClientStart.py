@@ -47,7 +47,6 @@ loadPrcFileData('toonBase Settings Load Display', 'load-display %s' % loadDispla
 loadPrcFileData('toonBase Settings Aux Display', 'aux-display pandagl')
 loadPrcFileData('toonBase Settings Aux Display', 'aux-display pandadx9')
 
-
 class game:
     name = 'toontown'
     process = 'client'

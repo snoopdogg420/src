@@ -79,6 +79,8 @@ class ToontownLoadingScreen:
                 from toontown.toon import Toon
                 self.toon = Toon.Toon()
                 self.toon.setDNA(base.localAvatarStyle)
+                # NAMETAG TODO: self.toon.nametag.setNametag2d(None)
+                # NAMETAG TODO: self.toon.nametag.setNametagd(None)
                 self.toon.loop('bored', fromFrame=135, toFrame=135)
                 self.toon.getGeomNode().setDepthWrite(1)
                 self.toon.getGeomNode().setDepthTest(1)

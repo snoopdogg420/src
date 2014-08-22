@@ -628,12 +628,8 @@ class MakeAToon(StateData.StateData):
         if self.ns.getDoneStatus() == 'last':
             self.ns.hideAll()
             self.goToLastShop()
-        elif self.ns.getDoneStatus() == 'paynow':
-            self.doneStatus = 'paynow'
-            base.transitions.fadeOut(finishIval=EventInterval(self.doneEvent))
-        else:
-            self.doneStatus = 'created'
-            base.transitions.fadeOut(finishIval=EventInterval(self.doneEvent))
+        self.doneStatus = 'cancel' # This needs to be 'created' but for some reason it crashes the game.
+        base.transitions.fadeOut(finishIval=EventInterval(self.doneEvent))
 
     def __handleNext(self):
         messenger.send('next')
