@@ -3,8 +3,8 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.showbase.ShadowPlacer import ShadowPlacer
 from otp.otpbase import OTPGlobals
 from ShadowPlacer import ShadowPlacer
-globalDropShadowFlag = 1
 
+globalDropShadowFlag = 1
 def setGlobalDropShadowFlag(flag):
     global globalDropShadowFlag
     if flag != globalDropShadowFlag:
@@ -13,7 +13,6 @@ def setGlobalDropShadowFlag(flag):
 
 
 globalDropShadowGrayLevel = 0.5
-
 def setGlobalDropShadowGrayLevel(grayLevel):
     global globalDropShadowGrayLevel
     if grayLevel != globalDropShadowGrayLevel:

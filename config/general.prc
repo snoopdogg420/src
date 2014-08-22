@@ -3,13 +3,10 @@ window-title Toontown Infinite
 win-origin -1 -1
 #icon-filename icon.ico
 #cursor-filename phase_3/etc/toonmono.cur
-assert-abort 1
-notify-level info
-
-threading-model /Draw
 
 # Preferences...
 preferences-filename preferences.gz
+notify-level info
 
 # Audio...
 audio-library-name p3fmod_audio
@@ -196,6 +193,7 @@ preload-avatars #t
 sync-video #f
 smooth-lag 0.4
 garbage-collect-states #f
+threading-model /Draw
 
 # Egg ObjectTypes...
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }

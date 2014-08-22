@@ -150,8 +150,6 @@ class ToonBase(OTPBase.OTPBase):
         candidateInactive = TextProperties()
         candidateInactive.setTextColor(0.3, 0.3, 0.7, 1)
         tpm.setProperties('candidate_inactive', candidateInactive)
-        self.transitions.IrisModelName = 'phase_3/models/misc/iris'
-        self.transitions.FadeModelName = 'phase_3/models/misc/fade'
         self.exitFunc = self.userExit
         if __builtins__.has_key('launcher') and launcher:
             launcher.setPandaErrorCode(11)
@@ -297,27 +295,15 @@ class ToonBase(OTPBase.OTPBase):
         self.oldY = newY
 
     def setCursorAndIcon(self):
-        tempdir = tempfile.mkdtemp()
-        atexit.register(shutil.rmtree, tempdir)
-        vfs = VirtualFileSystem.getGlobalPtr()
-
-        searchPath = DSearchPath()
+        iconPath = '/phase_3/etc/icon.ico'
+        cursorPath = '/phase_3/etc/toonmono.cur'
         if __debug__:
-            searchPath.appendDirectory(Filename('resources/phase_3/etc'))
-        searchPath.appendDirectory(Filename('/phase_3/etc'))
-
-        for filename in ['toonmono.cur', 'icon.ico']:
-            p3filename = Filename(filename)
-            found = vfs.resolveFilename(p3filename, searchPath)
-            if not found:
-                return # Can't do anything past this point.
-
-            with open(os.path.join(tempdir, filename), 'wb') as f:
-                f.write(vfs.readFile(p3filename, False))
-
+            iconPath = '../resources/phase_3/etc/icon.ico'
+            cursorPath = '../resources/phase_3/etc/toonmono.cur'
         wp = WindowProperties()
-        wp.setCursorFilename(Filename.fromOsSpecific(os.path.join(tempdir, 'toonmono.cur')))
-        wp.setIconFilename(Filename.fromOsSpecific(os.path.join(tempdir, 'icon.ico')))
+        wp.setCursorFilename(cursorPath)
+        wp.setIconFilename(iconPath)
+        self.graphicsEngine.syncFrame()
         self.win.requestProperties(wp)
 
     def addCullBins(self):
