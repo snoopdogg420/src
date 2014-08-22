@@ -261,7 +261,7 @@ class ToonBase(OTPBase.OTPBase):
             OTPBase.OTPBase.windowEvent(self, win)
         else:
             self.notify.info('Failed to perform windowEvent.')
-        if base.win.isClosed():
+        if win.isClosed():
             self.notify.info('Normal exit.')
             self.destroy()
             sys.exit()
