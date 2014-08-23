@@ -126,7 +126,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.fishingRod = 0
         self.fishingTrophies = []
         self.trackArray = []
-        self.emoteAccess = [0] * 25
+        self.emoteAccess = [0] * 26
         self.maxBankMoney = ToontownGlobals.DefaultMaxBankMoney
         self.gardenSpecials = []
         self.houseId = 0
@@ -2018,17 +2018,14 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.sendUpdate('setEmoteAccess', [bits])
 
     def setEmoteAccess(self, bits):
-        if len(bits) == 20:
-            bits.extend([0,
-             0,
-             0,
-             0,
-             0])
+        maxBitCount = len(self.emoteAccess)
+        bits = bits[:maxBitCount]
+        bitCount = len(bits)
+        if bitCount < maxBitCount:
+            bits.extend([0] * (maxBitCount-bitCount))
             self.b_setEmoteAccess(bits)
-        elif len(bits) != len(self.emoteAccess):
-            self.notify.warning('New emote access list must be the same size as the old one.')
-            return
-        self.emoteAccess = bits
+        else:
+            self.emoteAccess = bits
 
     def getEmoteAccess(self):
         return self.emoteAccess
