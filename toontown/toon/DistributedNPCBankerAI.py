@@ -90,5 +90,7 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
         self.sendTimeoutMovie()
 
     def clearTasks(self):
-        taskMgr.remove(self.task)
+        if self.task:
+            taskMgr.remove(self.task)
+
         self.task = None
