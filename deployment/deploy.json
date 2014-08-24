@@ -1,8 +1,7 @@
 {
-  "bucket-name": "infinitedl",
-  "distribution-id": "E1L00DOX82Q1JC",
-  "access-key-id": "",
-  "access-key": "",
+  "ftp-address": "184.171.166.75",
+  "ftp-username": "ttidownload",
+  "ftp-password": "",
   "platform": "win32",
   "distribution": "test",
   "branch": "master",

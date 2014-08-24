@@ -84,7 +84,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             self.notify.debug('Creating a building manager AI in zone' + str(self.zoneId))
         self.buildingMgr = self.air.buildingManagers.get(self.zoneId)
         if self.buildingMgr:
-            (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks, bankBlocks, animBldgBlocks) = self.buildingMgr.getDNABlockLists()
+            (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks, bankBlocks, libraryBlocks, animBldgBlocks) = self.buildingMgr.getDNABlockLists()
             for currBlock in blocks:
                 bldg = self.buildingMgr.getBuilding(currBlock)
                 bldg.setSuitPlannerExt(self)
@@ -251,7 +251,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         while startPoint == None and len(blockNumbers) > 0:
             bn = random.choice(blockNumbers)
             blockNumbers.remove(bn)
-            if self.buildingSideDoors.has_key(bn):
+            if bn in self.buildingSideDoors:
                 for doorPoint in self.buildingSideDoors[bn]:
                     points = self.dnaStore.getAdjacentPoints(doorPoint)
                     i = points.getNumPoints() - 1

@@ -38,13 +38,13 @@ def doSquirts(squirts):
             if 1:
                 target = squirt['target'][0]
                 suitId = target['suit'].doId
-                if suitSquirtsDict.has_key(suitId):
+                if suitId in suitSquirtsDict:
                     suitSquirtsDict[suitId].append(squirt)
                 else:
                     suitSquirtsDict[suitId] = [squirt]
         else:
             suitId = squirt['target']['suit'].doId
-            if suitSquirtsDict.has_key(suitId):
+            if suitId in suitSquirtsDict:
                 suitSquirtsDict[suitId].append(squirt)
             else:
                 suitSquirtsDict[suitId] = [squirt]

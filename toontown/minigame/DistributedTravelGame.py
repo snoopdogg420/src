@@ -76,7 +76,7 @@ def invertTable(table):
     index = {}
     for key in table.keys():
         value = table[key]
-        if not index.has_key(value):
+        if value not in index:
             index[value] = key
 
     return index
@@ -724,7 +724,7 @@ class DistributedTravelGame(DistributedMinigame):
         for index in xrange(len(self.avIdList)):
             avId = self.avIdList[index]
             self.startingVotes[avId] = startingVotesArray[index]
-            if not self.currentVotes.has_key(avId):
+            if avId not in self.currentVotes:
                 self.currentVotes[avId] = startingVotesArray[index]
 
         self.notify.debug('starting votes = %s' % self.startingVotes)
@@ -776,7 +776,7 @@ class DistributedTravelGame(DistributedMinigame):
         retval = 0
         if hasattr(self, 'scrollList'):
             selectedIndex = self.scrollList.getSelectedIndex()
-            if self.indexToVotes.has_key(selectedIndex):
+            if selectedIndex in self.indexToVotes:
                 retval = self.indexToVotes[selectedIndex]
         return retval
 
@@ -821,7 +821,7 @@ class DistributedTravelGame(DistributedMinigame):
         if not self.hasLocalToon:
             return
         self.notify.debug('setAvatarChose: avatar: ' + str(avId) + ' choose a number')
-    
+
     def setAvatarVotes(self, avId, votes):
         if not self.hasLocalToon:
             return

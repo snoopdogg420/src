@@ -70,7 +70,7 @@ class DistributedVineGame(DistributedMinigame):
 
     def getClimbDir(self, avId):
         retval = 0
-        if self.toonInfo.has_key(avId):
+        if avId in self.toonInfo:
             retval = self.toonInfo[avId][5]
         return retval
 
@@ -325,7 +325,7 @@ class DistributedVineGame(DistributedMinigame):
         newVelZ = velZ
         newFallingInfo = fallingInfo
         oldInfo = None
-        if self.toonInfo.has_key(avId):
+        if avId in self.toonInfo:
             oldInfo = self.toonInfo[avId]
             if vineIndex == None:
                 newVineIndex = oldInfo[0]
@@ -720,7 +720,7 @@ class DistributedVineGame(DistributedMinigame):
                 break
 
         if not curInfo:
-            if not self.endingTracks.has_key(avId):
+            if avId not in self.endingTracks:
                 self.makeCameraFollowJumpingToon()
                 if self.localPhysicsNP:
                     pos = self.localPhysicsNP.getPos(render)
@@ -933,7 +933,7 @@ class DistributedVineGame(DistributedMinigame):
         self.setupAttachingToVineCamIval(vineIndex, self.lastJumpFacingRight)
 
     def makeOtherToonJump(self, avId, posX, posZ, velX, velZ):
-        if not self.otherToonPhysics.has_key(avId):
+        if avId not in self.otherToonPhysics:
             an = ActorNode('other-physics%s' % avId)
             anp = render.attachNewNode(an)
             base.physicsMgr.attachPhysicalNode(an)
@@ -954,7 +954,7 @@ class DistributedVineGame(DistributedMinigame):
         physObject.setVelocity(velX, 0, velZ)
 
     def makeOtherToonFallFromMidair(self, avId, posX, posZ, velX, velZ):
-        if not self.otherToonPhysics.has_key(avId):
+        if avId not in self.otherToonPhysics:
             an = ActorNode('other-physics%s' % avId)
             anp = render.attachNewNode(an)
             base.physicsMgr.attachPhysicalNode(an)
@@ -1497,7 +1497,7 @@ class DistributedVineGame(DistributedMinigame):
 
     def doEndingTrackTask(self, avId):
         taskName = 'VineGameEnding-%s' % avId
-        if not self.endingTracks.has_key(avId):
+        if avId not in self.endingTracks:
             taskMgr.doMethodLater(0.5, self.setupEndingTrack, taskName, extraArgs=(avId,))
             self.endingTrackTaskNames.append(taskName)
 
@@ -1505,7 +1505,7 @@ class DistributedVineGame(DistributedMinigame):
         self.notify.debug('cameraPos = %s' % base.camera.getPos())
 
     def setupEndingTrack(self, avId):
-        if self.endingTracks.has_key(avId):
+        if avId in self.endingTracks:
             self.notify.warning('setupEndingTrack duplicate call avId=%d' % avId)
             return
         if len(self.vines) == 0:

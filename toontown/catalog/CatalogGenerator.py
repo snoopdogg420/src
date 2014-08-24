@@ -1776,7 +1776,7 @@ class CatalogGenerator:
         return
 
     def __recordScheduleItem(self, sched, weekCode, maybeWeekCode, item):
-        if not sched.has_key(item):
+        if item not in sched:
             sched[item] = [[], []]
         if weekCode != None:
             sched[item][0].append(weekCode)

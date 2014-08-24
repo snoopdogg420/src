@@ -38,7 +38,7 @@ def doDrops(drops):
         targets = drop['target']
         if len(targets) == 1:
             suitId = targets[0]['suit'].doId
-            if suitDropsDict.has_key(suitId):
+            if suitId in suitDropsDict:
                 suitDropsDict[suitId].append((drop, targets[0]))
             else:
                 suitDropsDict[suitId] = [(drop, targets[0])]
@@ -47,7 +47,7 @@ def doDrops(drops):
         else:
             for target in targets:
                 suitId = target['suit'].doId
-                if suitDropsDict.has_key(suitId):
+                if suitId in suitDropsDict:
                     otherDrops = suitDropsDict[suitId]
                     alreadyInList = 0
                     for oDrop in otherDrops:
@@ -217,9 +217,9 @@ def __dropObject(drop, delay, objName, level, alreadyDodged, alreadyTeased, npcs
     toon = drop['toon']
     repeatNPC = 0
     battle = drop['battle']
-    if drop.has_key('npc'):
+    if 'npc' in drop:
         toon = drop['npc']
-        if npcDrops.has_key(toon):
+        if toon in npcDrops:
             repeatNPC = 1
         else:
             npcDrops[toon] = 1
@@ -379,7 +379,7 @@ def __dropObject(drop, delay, objName, level, alreadyDodged, alreadyTeased, npcs
 
 def __createSuitTrack(drop, delay, level, alreadyDodged, alreadyTeased, target, npcs):
     toon = drop['toon']
-    if drop.has_key('npc'):
+    if 'npc' in drop:
         toon = drop['npc']
     battle = drop['battle']
     majorObject = level >= 3

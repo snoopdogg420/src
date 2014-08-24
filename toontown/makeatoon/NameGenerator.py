@@ -10,7 +10,7 @@ from direct.directnotify import DirectNotifyGlobal
 
 class NameGenerator:
     text = TextNode('text')
-    if game.name != 'uberDog': # Hacky... this is for the sandbox server which throws IOErrors when reading fonts.
+    if game.name == 'client':  # The server should never load fonts.
         text.setFont(ToontownGlobals.getInterfaceFont())
     notify = DirectNotifyGlobal.directNotify.newCategory('NameGenerator')
     boyTitles = []

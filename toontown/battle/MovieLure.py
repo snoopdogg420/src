@@ -129,7 +129,7 @@ def __createFishingPoleMultiTrack(lure, dollar, dollarName):
 
 def __createMagnetMultiTrack(lure, magnet, pos, hpr, scale, isSmallMagnet = 1, npcs = []):
     toon = lure['toon']
-    if lure.has_key('npc'):
+    if 'npc' in lure:
         toon = lure['npc']
     battle = lure['battle']
     sidestep = lure['sidestep']
@@ -189,7 +189,7 @@ def __createMagnetMultiTrack(lure, magnet, pos, hpr, scale, isSmallMagnet = 1, n
 
 def __createHypnoGogglesMultiTrack(lure, npcs = []):
     toon = lure['toon']
-    if lure.has_key('npc'):
+    if 'npc' in lure:
         toon = lure['npc']
     targets = lure['target']
     battle = lure['battle']

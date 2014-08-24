@@ -452,7 +452,7 @@ class DistributedGolfHoleAI(DistributedPhysicsWorldAI.DistributedPhysicsWorldAI,
 
     def parseLocators(self, objectCollection, optional = 0):
         if optional and objectCollection.getNumPaths():
-            if self.holeInfo.has_key('optionalMovers'):
+            if 'optionalMovers' in self.holeInfo:
                 for optionalMoverId in self.holeInfo['optionalMovers']:
                     searchStr = 'optional_mover_' + str(optionalMoverId)
                     for objIndex in xrange(objectCollection.getNumPaths()):

@@ -90,6 +90,7 @@ from toontown.building import DistributedPetshopInterior/AI
 from toontown.building import DistributedKartShopInterior/AI
 from toontown.building import DistributedBankInterior/AI
 from toontown.building import DistributedBankCollectable/AI
+from toontown.building import DistributedLibraryInterior/AI
 from toontown.building import DistributedDoor/AI
 from toontown.building import DistributedAnimDoor/AI
 from toontown.estate import DistributedHouseDoor/AI
@@ -485,7 +486,7 @@ dclass DistributedToon : DistributedPlayer {
   setTunnelOut(int16, int16/10, int16/10, int16/10, int16/10, int16/100, int32/100) ownsend broadcast;
   setAnimState(char [0-1024], int16/1000, int16) broadcast ram ownsend airecv;
   setEmoteState(int16, int16/1000, int16) broadcast ram ownsend;
-  setEmoteAccess(uint8[] = [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]) required ownrecv db;
+  setEmoteAccess(uint8[] = [1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]) required ownrecv db;
   setCustomMessages(uint16[] = []) required ownrecv db;
   setSleepAutoReply(uint32) broadcast clsend ownrecv;
   setResistanceMessages(pair16 [] = []) required ownrecv db;
@@ -1770,6 +1771,10 @@ dclass DistributedKartShopInterior : DistributedObject {
 dclass DistributedBankInterior : DistributedObject {
   setZoneIdAndBlock(uint32, uint16) required broadcast ram;
   setState(string, int16) broadcast ram;
+};
+
+dclass DistributedLibraryInterior : DistributedObject {
+  setZoneIdAndBlock(uint32, uint16) required broadcast ram;
 };
 
 dclass DistributedDoor : DistributedObject {
