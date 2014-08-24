@@ -57,26 +57,3 @@ class DistributedBankInteriorAI(DistributedObjectAI):
     def openedTask(self, task):
         self.sendUpdate('setState', ['vaultOpen', 0])
         return Task.done
-
-
-@magicWord(types=[str], category=CATEGORY_ADMINISTRATOR)
-def vault(name):
-    for bankInterior in simbase.air.doFindAll('DistributedBankInteriorAI'):
-        if name in ('open', 'close'):
-            if name == 'open':
-                name = 'vaultOpening'
-            elif name == 'close':
-                name = 'vaultClosing'
-            bankInterior.sendUpdate('setState', [name, globalClockDelta.getRealNetworkTime()])
-            if name == 'vaultOpening':
-                taskMgr.doMethodLater(5, bankInterior.openedTask, bankInterior.uniqueName('openedTask'))
-            elif name == 'vaultClosing':
-                taskMgr.doMethodLater(5, bankInterior.closedTask, bankInterior.uniqueName('closedTask'))
-
-
-@magicWord(category=CATEGORY_ADMINISTRATOR)
-def collectable():
-    for bankInterior in simbase.air.doFindAll('DistributedBankInteriorAI'):
-        if not bankInterior.bankCollectable:
-            bankInterior.bankCollectable = DistributedBankCollectableAI(simbase.air)
-            bankInterior.bankCollectable.generateWithRequired(bankInterior.zoneId)
