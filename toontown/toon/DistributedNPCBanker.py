@@ -51,7 +51,10 @@ class DistributedNPCBanker(DistributedNPCToonBase):
 
         self.resetClerk()
         if mode == BankGlobals.BANK_MOVIE_CLEAR:
-            self.setChatAbsolute('', CFSpeech | CFTimeout)
+            if not avId:
+                self.setChatAbsolute('', CFSpeech | CFTimeout)
+            if isLocalToon:
+                self.freeAvatar()
         elif mode == BankGlobals.BANK_MOVIE_TIMEOUT:
             if isLocalToon:
                 self.cleanupBankingGUI()

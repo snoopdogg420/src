@@ -17,6 +17,7 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
         if self.busy:
+            self.sendClearMovie(av=avId)
             return
 
         self.busy = avId
@@ -63,11 +64,13 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
         if task is not None:
             return task.done
 
-    def sendClearMovie(self, task):
+    def sendClearMovie(self, task=None, av=0):
         self.sendUpdate('setMovie', [BankGlobals.BANK_MOVIE_CLEAR,
-         0,
+         av,
          ClockDelta.globalClockDelta.getRealNetworkTime()])
-        return task.done
+
+        if task is not None:
+            return task.done
 
     def sendDoneMovie(self):
         self.sendUpdate('setMovie', [BankGlobals.BANK_MOVIE_DEPOSIT,
