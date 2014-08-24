@@ -166,6 +166,9 @@ pajama-place-building-chance 100.0
 # Cog battles...
 base-xp-multiplier 1.0
 
+# Economy...
+want-personal-bank #f
+
 # Picnic table board games...
 want-game-tables #t
 want-checkers #t

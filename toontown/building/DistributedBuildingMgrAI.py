@@ -5,8 +5,9 @@ from toontown.building import DistributedBuildingAI
 from toontown.building import GagshopBuildingAI
 from toontown.building import HQBuildingAI
 from toontown.building import KartShopBuildingAI
-from toontown.building import LibraryBuildingAI
 from toontown.building import PetshopBuildingAI
+from toontown.building import BankBuildingAI
+from toontown.building import LibraryBuildingAI
 from toontown.hood import ZoneUtil
 # from toontown.building import DistributedAnimBuildingAI
 
@@ -61,6 +62,8 @@ class DistributedBuildingMgrAI:
                 continue
             if isinstance(building, KartShopBuildingAI.KartShopBuildingAI):
                 continue
+            if isinstance(building, BankBuildingAI.BankBuildingAI):
+                continue
             if isinstance(building, LibraryBuildingAI.LibraryBuildingAI):
                 continue
             if not building.isSuitBlock():
@@ -92,6 +95,7 @@ class DistributedBuildingMgrAI:
         gagshopBlocks = []
         petshopBlocks = []
         kartshopBlocks = []
+        bankBlocks = []
         libraryBlocks = []
         animBldgBlocks = []
         for i in xrange(self.dnaStore.getNumBlockNumbers()):
@@ -106,6 +110,8 @@ class DistributedBuildingMgrAI:
                     petshopBlocks.append(blockNumber)
             elif buildingType == 'kartshop':
                 kartshopBlocks.append(blockNumber)
+            elif buildingType == 'bank':
+                bankBlocks.append(blockNumber)
             elif buildingType == 'library':
                 libraryBlocks.append(blockNumber)
             elif buildingType == 'animbldg':
@@ -113,12 +119,12 @@ class DistributedBuildingMgrAI:
             else:
                 blocks.append(blockNumber)
         return (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks,
-                libraryBlocks, animBldgBlocks)
+                bankBlocks, libraryBlocks, animBldgBlocks)
 
     def findAllLandmarkBuildings(self):
         backups = simbase.backups.load('blockinfo', (self.air.districtId, self.branchId), default={})
         (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks,
-         libraryBlocks, animBldgBlocks) = self.getDNABlockLists()
+         bankBlocks, libraryBlocks, animBldgBlocks) = self.getDNABlockLists()
         for blockNumber in blocks:
             self.newBuilding(blockNumber, backup=backups.get(blockNumber, None))
         for blockNumber in animBldgBlocks:
@@ -131,6 +137,8 @@ class DistributedBuildingMgrAI:
             self.newPetshopBuilding(block)
         for block in kartshopBlocks:
             self.newKartShopBuilding(block)
+        for block in bankBlocks:
+            self.newBankBuilding(block)
         for block in libraryBlocks:
             self.newLibraryBuilding(block)
 
@@ -199,6 +207,16 @@ class DistributedBuildingMgrAI:
         exteriorZoneId = ZoneUtil.getTrueZoneId(exteriorZoneId, self.branchId)
         interiorZoneId = (self.branchId - (self.branchId%100)) + 500 + blockNumber
         building = KartShopBuildingAI.KartShopBuildingAI(
+            self.air, exteriorZoneId, interiorZoneId, blockNumber)
+        self.__buildings[blockNumber] = building
+        return building
+
+    def newBankBuilding(self, blockNumber):
+        dnaStore = self.air.dnaStoreMap[self.canonicalBranchId]
+        exteriorZoneId = dnaStore.getZoneFromBlockNumber(blockNumber)
+        exteriorZoneId = ZoneUtil.getTrueZoneId(exteriorZoneId, self.branchId)
+        interiorZoneId = (self.branchId - (self.branchId%100)) + 500 + blockNumber
+        building = BankBuildingAI.BankBuildingAI(
             self.air, exteriorZoneId, interiorZoneId, blockNumber)
         self.__buildings[blockNumber] = building
         return building

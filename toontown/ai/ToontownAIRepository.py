@@ -15,6 +15,7 @@ from toontown.ai.FishManagerAI import  FishManagerAI
 from toontown.ai.HolidayManagerAI import HolidayManagerAI
 from toontown.ai.NewsManagerAI import NewsManagerAI
 from toontown.ai.QuestManagerAI import QuestManagerAI
+from toontown.ai import BankManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 from toontown.catalog.CatalogManagerAI import CatalogManagerAI
 from toontown.coghq import CountryClubManagerAI
@@ -110,6 +111,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.cogSuitMgr = CogSuitManagerAI.CogSuitManagerAI(self)
         self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
         self.cogPageManager = CogPageManagerAI.CogPageManagerAI()
+        self.bankManager = BankManagerAI.BankManagerAI(self)
         if self.wantFishing:
             self.fishManager = FishManagerAI(self)
         if self.wantHousing:
