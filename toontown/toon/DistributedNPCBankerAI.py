@@ -31,7 +31,8 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
         if not av:
             return
 
-        av.b_setMoney(av.getMoney() - transactionAmount)
+        money = min(av.getMoney() - transactionAmount, 10000)
+        av.b_setMoney(money)
 
         if transactionAmount != 0:
             self.air.bankManager.setMoney(self.busy,
