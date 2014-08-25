@@ -115,7 +115,10 @@ def setForceOnscreenChat(value):
 
 
 def getModelWidthHeight(model):
-    minPoint, maxPoint = model.getTightBounds()
+    tightBounds = model.getTightBounds()
+    if tightBounds is None:
+        return None
+    minPoint, maxPoint = tightBounds
     width = maxPoint.getX() - minPoint.getX()
     height = maxPoint.getZ() - minPoint.getZ()
     return (width, height)
