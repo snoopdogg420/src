@@ -60,6 +60,11 @@ class Nametag3d(Nametag.Nametag):
             bottom = -height/2
             top = height/2
 
+            bottom+=Nametag.Nametag.PANEL_Z_PADDING/2
+            top+=Nametag.Nametag.PANEL_Z_PADDING/2
+            left-=Nametag.Nametag.PANEL_X_PADDING/2
+            right+=Nametag.Nametag.PANEL_X_PADDING/2
+
             self.setClickRegion(left, right, bottom, top)
 
         if self.chatBalloon is not None:
