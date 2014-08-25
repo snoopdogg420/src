@@ -78,7 +78,7 @@ class PurchaseBase(StateData.StateData):
         else:
             text = TTLocalizer.GagShopYouPurchased % TTLocalizer.BattleGlobalAvPropStringsSingular[track][level]
             self.toon.inventory.updateGUI(track, level)
-            self.toon.setMoney(self.toon.getMoney() - (level + 1))
+            self.toon.setMoney(self.toon.getMoney() - 1)
             messenger.send('boughtGag')
         self.showStatusText(text)
 
