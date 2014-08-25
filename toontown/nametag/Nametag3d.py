@@ -69,27 +69,37 @@ class Nametag3d(Nametag.Nametag):
             height *= self.scale
 
             padding = ChatBalloon.ChatBalloon.BALLOON_X_PADDING*self.scale
-
             left = padding
-            right = width + (padding*3)
-            # TODO: Finish height values for the region
-            bottom = 0
-            top = height
+            right = width + padding
+
+            scaledModelHeight = self.getChatBalloonHeight()*self.scale
+            bottom = scaledModelHeight - height
+            top = scaledModelHeight
+
             self.setClickRegion(left, right, bottom, top)
 
     def tick(self, task):
+        # TODO: Fix this so that it uses the correct camera position
         if not base.cam.node().isInView(self.avatar.getPos(base.cam)):
             return Task.cont
 
         distance = self.contents.getPos(base.cam).length()
 
+        distanceLimit = False
+
         if distance < self.SCALING_MIN_DISTANCE:
             distance = self.SCALING_MIN_DISTANCE
+            distanceLimit = True
         elif distance > self.SCALING_MAX_DISTANCE:
             distance = self.SCALING_MAX_DISTANCE
+            distanceLimit = True
 
-        if distance == self.distance:
-            return Task.cont
+        if not distanceLimit:
+            if distance == self.distance:
+                return Task.cont
+        else:
+            # TODO: Check if nametag has moved
+            pass
 
         self.distance = distance
 
