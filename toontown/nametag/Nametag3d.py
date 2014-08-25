@@ -5,6 +5,8 @@ from pandac.PandaModules import *
 from toontown.nametag import Nametag
 from toontown.nametag import NametagGlobals
 
+from toontown.chat import ChatBalloon
+
 
 class Nametag3d(Nametag.Nametag):
     SCALING_MIN_DISTANCE = 1
@@ -15,6 +17,8 @@ class Nametag3d(Nametag.Nametag):
         Nametag.Nametag.__init__(self)
 
         self.distance = 0
+
+        self.type = '3d'
 
         self.billboardOffset = 3
         self.doBillboardEffect()
@@ -44,6 +48,35 @@ class Nametag3d(Nametag.Nametag):
             Point3(0, 0, 0))
         self.contents.setEffect(billboardEffect)
 
+    def updateClickRegion(self):
+        # TODO: Finish nametag panel regions.
+        if self.panel is not None:
+            modelWidthHeight = NametagGlobals.getModelWidthHeight(self.contents)
+            if modelWidthHeight is None:
+                return Task.cont
+            width, height = modelWidthHeight
+            left = -width/2
+            right = width/2
+            bottom = -height/2
+            top = height/2
+
+            self.setClickRegion(left, right, bottom, top)
+
+        if self.chatBalloon is not None:
+            width = self.chatBalloon.width
+            height = self.chatBalloon.height
+            width *= self.scale
+            height *= self.scale
+
+            padding = ChatBalloon.ChatBalloon.BALLOON_X_PADDING*self.scale
+
+            left = padding
+            right = width + (padding*3)
+            # TODO: Finish height values for the region
+            bottom = 0
+            top = height
+            self.setClickRegion(left, right, bottom, top)
+
     def tick(self, task):
         if not base.cam.node().isInView(self.avatar.getPos(base.cam)):
             return Task.cont
@@ -60,5 +93,9 @@ class Nametag3d(Nametag.Nametag):
 
         self.distance = distance
 
-        self.contents.setScale(math.sqrt(distance) * self.SCALING_FACTOR)
+        self.scale = math.sqrt(distance) * self.SCALING_FACTOR
+        self.contents.setScale(self.scale)
+
+        self.updateClickRegion()
+
         return Task.cont
