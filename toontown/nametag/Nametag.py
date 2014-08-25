@@ -2,6 +2,7 @@ from direct.fsm.FSM import FSM
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from pandac.PandaModules import *
+from direct.gui.DirectGui import *
 
 from otp.otpbase import OTPGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
@@ -31,6 +32,8 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.icon = None
         self.chatBalloon = None
         self.chatButton = NametagGlobals.noButton
+
+        self.type = None
 
         self.font = None
         self.chatFont = None
@@ -69,7 +72,16 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.tickTaskName = self.getUniqueName() + '-tick'
         self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
-        # TODO: Accept the mouse events.
+        # Create the click region:
+        self.regionName = self.getUniqueName() + '-region'
+        self.region = MouseWatcherRegion(self.regionName, 0, 0, 0, 0)
+        base.mouseWatcherNode.addRegion(self.region)
+
+        # Accept the mouse events:
+        self.accept(base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName), self.__handleMouseEnter)
+        self.accept(base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName), self.__handleMouseLeave)
+        self.accept(base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName), self.__handleMouseDown)
+        self.accept(base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName), self.__handleMouseUp)
 
     def destroy(self):
         self.ignoreAll()
@@ -118,6 +130,9 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def tick(self, task):
         return Task.done  # Inheritors should override this method.
+
+    def updateClickRegion(self):
+        pass  # Inheritors should override this method.
 
     def setAvatar(self, avatar):
         self.avatar = avatar
@@ -324,6 +339,8 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.getText() and (not self.nametagHidden):
             self.drawNametag()
 
+        self.updateClickRegion()
+
     def drawChatBalloon(self, model, modelWidth, modelHeight):
         if self.chatFont is None:
             # We can't draw this without a font.
@@ -394,20 +411,73 @@ class Nametag(FSM, PandaNode, DirectObject):
     def enterDisabled(self):
         pass
 
-    def __handleMouseEnter(self, collEntry=None):
+    def __handleMouseEnter(self, region, extra):
         self.pendingClickState = PGButton.SRollover
         if self.clickState == PGButton.SReady:
             self.setClickState(PGButton.SRollover)
 
-    def __handleMouseLeave(self, collEntry=None):
+    def __handleMouseLeave(self, region, extra):
         self.pendingClickState = PGButton.SReady
         if self.clickState == PGButton.SRollover:
             self.setClickState(PGButton.SReady)
 
-    def __handleMouseDown(self):
+    def __handleMouseDown(self, region, button):
         if self.clickState == PGButton.SRollover:
             self.setClickState(PGButton.SDepressed)
 
-    def __handleMouseUp(self):
+    def __handleMouseUp(self, region, button):
         if self.clickState == PGButton.SDepressed:
             self.setClickState(self.pendingClickState)
+
+    def setClickRegion(self, left, right, bottom, top):
+        if not self.active:
+            self.region.setActive(False)
+            return Task.cont
+
+        if self.type is None:
+            return Task.cont
+
+        # Get a transform matrix to position the points correctly according to
+        # the nametag node:
+        transform = NodePath.anyPath(self).getNetTransform()
+
+        # Get the inverse of the camera transform matrix:
+        # Needed so that the camera transform will not be applied to the region
+        # points twice.
+        camTransform = base.cam.getNetTransform()
+        camTransform = camTransform.getInverse()
+
+        # Compose the inverse of the camera transform and the nametag node
+        # transform:
+        transform = camTransform.compose(transform)
+        transform = transform.setQuat(Quat())
+
+        # Get the actual matrix of the transform above:
+        mat = transform.getMat()
+
+        # Transform the specified points to the new matrix:
+        camSpaceTopLeft = mat.xformPoint(Point3(left, 0, top))
+        camSpaceBottomRight = mat.xformPoint(Point3(right, 0, bottom))
+
+        # The region is 3d and we must project it onto the lens:
+        if self.type == '3d':
+            lens = base.cam.node().getLens()
+
+            screenSpaceTopLeft = Point2()
+            screenSpaceBottomRight = Point2()
+
+            if not (lens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
+                    lens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
+                # The region is not on screen:
+                self.region.setActive(False)
+                return
+        # The region is 2d so we don't need to project it:
+        else:
+            screenSpaceTopLeft = Point2(camSpaceTopLeft[0], camSpaceTopLeft[2])
+            screenSpaceBottomRight = Point2(camSpaceBottomRight[0], camSpaceBottomRight[2])
+
+        left, top = screenSpaceTopLeft
+        right, bottom = screenSpaceBottomRight
+
+        self.region.setFrame(left, right, bottom, top)
+        self.region.setActive(True)
