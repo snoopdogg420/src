@@ -59,8 +59,9 @@ class DistributedNPCBankerAI(DistributedNPCToonBaseAI):
          ClockDelta.globalClockDelta.getRealNetworkTime()])
         self.busy = 0
 
+        self.task = self.uniqueName('clearMovie')
         taskMgr.doMethodLater(5.5, self.sendClearMovie,
-            self.uniqueName('clearMovie'))
+            self.task)
 
         if task is not None:
             return task.done
