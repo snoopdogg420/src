@@ -143,7 +143,7 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
             self.air.writeServerEvent('suspicious', avId, 'DistributedNPCTailorAI.setDNA: invalid dna: %s' % blob)
             return
         if avId in self.air.doId2do:
-            av = self.air.doId2do[avId]
+            av = self.air.doId2do.get(avId)
             if finished == 2 and which > 0:
                 if self.freeClothes or av.takeMoney(self.jbCost, bUseBank = True):
                     av.b_setDNAString(blob)
