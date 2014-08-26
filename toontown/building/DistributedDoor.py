@@ -408,15 +408,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         if self.doorType == DoorTypes.INT_STANDARD:
             otherNP = render.find('**/door_origin')
         elif self.doorType == DoorTypes.EXT_STANDARD:
-            if hasattr(self, 'tempDoorNodePath'):
-                return self.tempDoorNodePath
-            else:
-                posHpr = self.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(self.block)
-                otherNP = NodePath('doorOrigin')
-                if posHpr:
-                    otherNP.setPos(posHpr.getPos())
-                    otherNP.setHpr(posHpr.getHpr())
-                self.tempDoorNodePath = otherNP
+            otherNP = self.getBuilding().find('**/*door_origin')
         elif self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
             otherNP = building.find('**/door_origin_' + str(self.doorIndex))
