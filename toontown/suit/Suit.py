@@ -428,6 +428,9 @@ class Suit(Avatar.Avatar):
             for head in SuitGlobals.suitProperties[dna.name][SuitGlobals.HEADS_INDEX]:
                 self.generateHead(head)
 
+            self.flattenStrong()
+            self.postFlatten()
+
             self.setHeight(SuitGlobals.suitProperties[dna.name][SuitGlobals.HEIGHT_INDEX])
 
         self.setName(SuitBattleGlobals.SuitAttributes[dna.name]['name'])
@@ -562,6 +565,7 @@ class Suit(Avatar.Avatar):
                 headPart.setTexture(headTex, 1)
             if self.headColor:
                 headPart.setColor(self.headColor)
+            headPart.flattenStrong()
             self.headParts.append(headPart)
         headModel.removeNode()
 
