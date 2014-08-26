@@ -49,10 +49,9 @@ class Nametag3d(Nametag.Nametag):
         self.contents.setEffect(billboardEffect)
 
     def updateClickRegion(self):
-        # TODO: Finish nametag panel regions.
         if self.panel is not None:
             modelWidthHeight = NametagGlobals.getModelWidthHeight(self.contents)
-            if modelWidthHeight is None:
+            if modelWidthHeight is (0, 0):
                 return Task.cont
             width, height = modelWidthHeight
             left = -width/2
@@ -77,9 +76,9 @@ class Nametag3d(Nametag.Nametag):
             left = padding
             right = width + padding
 
-            scaledModelHeight = self.getChatBalloonHeight()*self.scale
-            bottom = scaledModelHeight - height
-            top = scaledModelHeight
+            scaledModelHeight = self.chatBalloon.modelHeight*self.scale
+            bottom = scaledModelHeight-(2.35*self.scale)
+            top = bottom+height
 
             self.setClickRegion(left, right, bottom, top)
 
