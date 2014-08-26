@@ -61,6 +61,9 @@ class ChatBalloon(NodePath):
         middle.setSz(paddedHeight - 1.5)  # Compensate for the top, as well.
         top.setZ(middle, 1)
 
+        self.width = paddedWidth
+        self.height = paddedHeight
+
         # Position the TextNode:
         self.textNodePath.setPos(self.balloon.getBounds().getCenter())
         self.textNodePath.setY(self.TEXT_Y_OFFSET)
