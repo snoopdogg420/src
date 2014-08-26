@@ -48,7 +48,7 @@ def executeHttpRequest(url, **extras):
         request.add_header('X-CSM-' + k, v)
     try:
         return urllib2.urlopen(request).read()
-    except urllib2.HTTPError:
+    except:
         return None
 
 
@@ -896,9 +896,6 @@ class LoadAvatarFSM(AvatarOperationFSM):
             STATESERVER_OBJECT_SET_OWNER)
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
-
-        # Tell TTIFriendsManager somebody is logging in:
-        self.csm.air.friendsManager.toonOnline(self.avId, self.avatar)
 
         # Tell the GlobalPartyManager as well:
         self.csm.air.globalPartyMgr.avatarJoined(self.avId)
