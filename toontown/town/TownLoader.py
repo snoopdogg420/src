@@ -214,11 +214,10 @@ class TownLoader(StateData.StateData):
             np = npl.getPath(i)
             np.setTag('transformIndex', `i`)
             self.holidayPropTransforms[i] = np.getNetTransform()
-
-        self.notify.info('skipping self.geom.flattenMedium')
         gsg = base.win.getGsg()
         if gsg:
             self.geom.prepareScene(gsg)
+        self.geom.flattenMedium()
         self.geom.setName('town_top_level')
 
     def reparentLandmarkBlockNodes(self):
