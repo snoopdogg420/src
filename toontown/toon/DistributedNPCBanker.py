@@ -87,7 +87,7 @@ class DistributedNPCBanker(DistributedNPCToonBase):
 
     def popupBankingGUI(self, task):
         self.accept('bankDone', self.__handleBankingDone)
-        self.bankGUI = BankGUI.BankGui('bankDone')
+        self.bankGUI = BankGUI.BankGUI('bankDone')
         return task.done
 
     def cleanupBankingGUI(self):

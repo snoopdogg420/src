@@ -1,29 +1,41 @@
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
+from direct.gui.DirectGui import *
 from direct.task.Task import Task
+from pandac.PandaModules import *
 
-class BankGui(DirectFrame):
-    notify = DirectNotifyGlobal.directNotify.newCategory('BankGui')
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
+
+class BankGUI(DirectFrame):
+    notify = DirectNotifyGlobal.directNotify.newCategory('BankGUI')
 
     def __init__(self, doneEvent, allowWithdraw = 1):
         backGeom = loader.loadModel('phase_3/models/gui/tt_m_gui_ups_panelBg')
         DirectFrame.__init__(self, relief=None, geom=backGeom, geom_color=ToontownGlobals.GlobalDialogColor, geom_scale=(1.66, 1, 1.4), pos=(0, 0, 0))
-        self.initialiseoptions(BankGui)
+        self.initialiseoptions(BankGUI)
         self.doneEvent = doneEvent
         self.__transactionAmount = 0
         bankGuiModel = loader.loadModel('phase_3/models/gui/bank_GUI')
         jarGui = bankGuiModel.find('**/jar')
         arrowGui = loader.loadModel('phase_3/models/gui/create_a_toon_gui')
         bankModel = bankGuiModel.find('**/vault')
-        okImageList = (bankGuiModel.find('**/Ok_UP'), bankGuiModel.find('**/Ok_DN'), bankGuiModel.find('**/Ok_RLVR'))
-        cancelImageList = (bankGuiModel.find('**/Cancel_UP'), bankGuiModel.find('**/Cancel_DN'), bankGuiModel.find('**/Cancel_RLVR'))
-        arrowImageList = (arrowGui.find('**/CrtATn_R_Arrow_UP'),
-         arrowGui.find('**/CrtATn_R_Arrow_DN'),
-         arrowGui.find('**/CrtATn_R_Arrow_RLVR'),
-         arrowGui.find('**/CrtATn_R_Arrow_UP'))
+        okImageList = (
+            bankGuiModel.find('**/Ok_UP'),
+            bankGuiModel.find('**/Ok_DN'),
+            bankGuiModel.find('**/Ok_RLVR')
+        )
+        cancelImageList = (
+            bankGuiModel.find('**/Cancel_UP'),
+            bankGuiModel.find('**/Cancel_DN'),
+            bankGuiModel.find('**/Cancel_RLVR')
+        )
+        arrowImageList = (
+            arrowGui.find('**/CrtATn_R_Arrow_UP'),
+            arrowGui.find('**/CrtATn_R_Arrow_DN'),
+            arrowGui.find('**/CrtATn_R_Arrow_RLVR'),
+            arrowGui.find('**/CrtATn_R_Arrow_UP')
+        )
         self.cancelButton = DirectButton(parent=self, relief=None, image=cancelImageList, pos=(-0.2, 0, -0.4), text=TTLocalizer.BankGuiCancel, text_scale=0.06, text_pos=(0, -0.1), image_scale=0.6, command=self.__cancel)
         self.okButton = DirectButton(parent=self, relief=None, image=okImageList, pos=(0.2, 0, -0.4), text=TTLocalizer.BankGuiOk, text_scale=0.06, text_pos=(0, -0.1), image_scale=0.6, command=self.__requestTransaction)
         self.jarDisplay = DirectLabel(parent=self, relief=None, pos=(-0.4, 0, 0), scale=0.7, text=str(base.localAvatar.getMoney()), text_scale=0.2, text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1), text_pos=(0, -0.1, 0), image=jarGui, text_font=ToontownGlobals.getSignFont())
@@ -47,18 +59,20 @@ class BankGui(DirectFrame):
         arrowGui.removeNode()
         bankGuiModel.removeNode()
         self.__updateTransaction(0)
-        return
 
     def destroy(self):
         taskMgr.remove(self.taskName('runCounter'))
         self.ignore(localAvatar.uniqueName('moneyChange'))
         self.ignore(localAvatar.uniqueName('bankMoneyChange'))
+
         DirectFrame.destroy(self)
 
     def __cancel(self):
         messenger.send(self.doneEvent, [0])
 
     def __requestTransaction(self):
+        self.ignore(localAvatar.uniqueName('moneyChange'))
+        self.ignore(localAvatar.uniqueName('bankMoneyChange'))
         messenger.send(self.doneEvent, [self.__transactionAmount])
 
     def __updateTransaction(self, amount):
@@ -86,22 +100,21 @@ class BankGui(DirectFrame):
             self.withdrawArrow['state'] = DGG.NORMAL
         self.jarDisplay['text'] = str(newJarMoney)
         self.bankDisplay['text'] = str(newBankMoney)
-        return (hitLimit,
-         newJarMoney,
-         newBankMoney,
-         self.__transactionAmount)
+        return (hitLimit, newJarMoney, newBankMoney, self.__transactionAmount)
 
     def __runCounter(self, task):
         if task.time - task.prevTime < task.delayTime:
             return Task.cont
-        else:
-            task.delayTime = max(0.05, task.delayTime * 0.75)
-            task.prevTime = task.time
-            hitLimit, jar, bank, trans = self.__updateTransaction(task.delta)
-            if hitLimit:
-                return Task.done
-            else:
-                return Task.cont
+
+        task.delayTime /= 2
+        task.prevTime = task.time
+        if task.delayTime < 0.005:
+            task.amount *= 1.1
+        hitLimit = self.__updateTransaction(int(task.amount))[0]
+        if hitLimit:
+            return Task.done
+
+        return Task.cont
 
     def __depositButtonUp(self, event):
         messenger.send('wakeup')
@@ -109,11 +122,12 @@ class BankGui(DirectFrame):
 
     def __depositButtonDown(self, event):
         messenger.send('wakeup')
+
         task = Task(self.__runCounter)
-        task.delayTime = 0.4
+        task.delayTime = 0.2
         task.prevTime = 0.0
-        task.delta = 1
-        hitLimit, jar, bank, trans = self.__updateTransaction(task.delta)
+        task.amount = 1.0
+        hitLimit = self.__updateTransaction(int(task.amount))[0]
         if not hitLimit:
             taskMgr.add(task, self.taskName('runCounter'))
 
@@ -123,11 +137,12 @@ class BankGui(DirectFrame):
 
     def __withdrawButtonDown(self, event):
         messenger.send('wakeup')
+
         task = Task(self.__runCounter)
-        task.delayTime = 0.4
+        task.delayTime = 0.2
         task.prevTime = 0.0
-        task.delta = -1
-        hitLimit, jar, bank, trans = self.__updateTransaction(task.delta)
+        task.amount = -1.0
+        hitLimit = self.__updateTransaction(int(task.amount))[0]
         if not hitLimit:
             taskMgr.add(task, self.taskName('runCounter'))
 
