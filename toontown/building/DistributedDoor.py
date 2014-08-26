@@ -22,6 +22,8 @@ if __debug__:
 
 
 class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
+    deferFor = 1
+
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.openSfx = base.loadSfx('phase_3.5/audio/sfx/Door_Open_1.ogg')
@@ -411,8 +413,9 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
             else:
                 posHpr = self.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(self.block)
                 otherNP = NodePath('doorOrigin')
-                otherNP.setPos(posHpr.getPos())
-                otherNP.setHpr(posHpr.getHpr())
+                if posHpr:
+                    otherNP.setPos(posHpr.getPos())
+                    otherNP.setHpr(posHpr.getHpr())
                 self.tempDoorNodePath = otherNP
         elif self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
@@ -628,8 +631,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
 
     def exitDoorEnterOpening(self, ts):
         doorFrameHoleLeft = self.findDoorNode('doorFrameHoleLeft')
-        if doorFrameHoleLeft is None:
-            return
         if doorFrameHoleLeft.isEmpty():
             self.notify.warning('enterOpening(): did not find flatDoors')
             return
