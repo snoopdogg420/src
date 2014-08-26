@@ -191,14 +191,12 @@ class ClearListOperation(OperationFSM):
 class TTIFriendsManagerUD(DistributedObjectGlobalUD):
     notify = directNotify.newCategory('TTIFriendsManagerUD')
 
-
     def announceGenerate(self):
         DistributedObjectGlobalUD.announceGenerate(self)
         self.onlineToons = []
         self.tpRequests = {}
         self.operations = []
         self.secret2avId = {}
-
 
     # -- Friends list --
     def requestFriendsList(self):
@@ -208,12 +206,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         self.operations.append(newOperation)
         newOperation.demand('Start')
 
-
     def sendFriendsList(self, sender, friendsList):
         self.sendUpdateToAvatarId(sender, 'friendList', [friendsList])
         if sender not in self.onlineToons:
             self.toonOnline(sender, friendsList)
-
 
     # -- Remove Friend --
     def removeFriend(self, friendId):
@@ -230,7 +226,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         self.operations.append(newOperation)
         newOperation.demand('Start')
 
-
     # -- Avatar Info --
     def requestAvatarInfo(self, friendIdList):
         avId = self.air.getAvatarIdFromSender()
@@ -238,7 +233,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
             friendIds = friendIdList)
         self.operations.append(newOperation)
         newOperation.demand('Start')
-
 
     def getAvatarDetails(self, avId):
         senderId = self.air.getAvatarIdFromSender()
@@ -260,7 +254,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
             self.sendUpdateToAvatarId(senderId, 'friendDetails', [avId, inventory, trackAccess, trophies, hp, maxHp, defaultShard, lastHood, dnaString, experience, trackBonusLevel])
         self.air.dbInterface.queryObject(self.air.dbId, avId, handleToon)
 
-
     # -- Toon Online/Offline --
     def toonOnline(self, doId, friendsList):
         self.onlineToons.append(doId)
@@ -278,10 +271,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 self.sendUpdateToAvatarId(doId, 'friendOnline', [friendId, 0, 0])
             self.sendUpdateToAvatarId(friendId, 'friendOnline', [doId, 0, 0])
 
-
     def goingOffline(self, avId):
         self.toonOffline(avId)
-
 
     def toonOffline(self, doId):
         if doId not in self.onlineToons:
@@ -298,13 +289,11 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 self.onlineToons.remove(doId)
         self.air.dbInterface.queryObject(self.air.dbId, doId, handleToon)
 
-
     # -- Clear List --
     def clearList(self, doId):
         newOperation = ClearListOperation(self, self.air, doId)
         self.operations.append(newOperation)
         newOperation.demand('Start')
-
 
     # -- Teleport and Whispers --
     def routeTeleportQuery(self, toId):
@@ -312,7 +301,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         self.tpRequests[fromId] = toId
         self.sendUpdateToAvatarId(toId, 'teleportQuery', [fromId])
         taskMgr.doMethodLater(5, self.giveUpTeleportQuery, 'tp-query-timeout-%d' % fromId, extraArgs=[fromId, toId])
-
 
     def giveUpTeleportQuery(self, fromId, toId):
         # The client didn't respond to the query within the set time,
@@ -322,7 +310,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
             self.sendUpdateToAvatarId(fromId, 'teleportResponse', [toId, 0, 0, 0, 0])
             self.notify.warning('Teleport request that was sent by %d to %d timed out.' % (fromId, toId))
 
-
     def routeTeleportResponse(self, toId, available, shardId, hoodId, zoneId):
         # Here is where the toId and fromId swap (because we are now sending it back)
         fromId = self.air.getAvatarIdFromSender()
@@ -330,7 +317,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         # We got the query response, so no need to give up!
         if taskMgr.hasTaskNamed('tp-query-timeout-%d' % toId):
             taskMgr.remove('tp-query-timeout-%d' % toId)
-
 
         if toId not in self.tpRequests:
             return
@@ -340,7 +326,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         self.sendUpdateToAvatarId(toId, 'teleportResponse', [fromId, available, shardId, hoodId, zoneId])
         del self.tpRequests[toId]
 
-
     def whisperSCTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
         self.sendUpdateToAvatarId(toId, 'setWhisperSCFrom', [fromId, msgIndex])
@@ -349,17 +334,14 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         fromId = self.air.getAvatarIdFromSender()
         self.sendUpdateToAvatarId(toId, 'setWhisperSCCustomFrom', [fromId, msgIndex])
 
-
     def whisperSCEmoteTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
         self.sendUpdateToAvatarId(toId, 'setWhisperSCEmoteFrom', [fromId, msgIndex])
-
 
     def sendTalkWhisper(self, toId, message):
         fromId = self.air.getAvatarIdFromSender()
         self.sendUpdateToAvatarId(toId, 'receiveTalkWhisper', [fromId, message])
         self.air.writeServerEvent('whisper-said', fromId, toId, message)
-
 
     # -- Secret Friends --
     def requestSecret(self):
@@ -372,7 +354,6 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
                 secret += ' '
         self.secret2avId[secret] = avId
         self.sendUpdateToAvatarId(avId, 'requestSecretResponse', [1, secret])
-
 
     def submitSecret(self, secret):
         requester = self.air.getAvatarIdFromSender()
