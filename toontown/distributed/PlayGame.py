@@ -142,22 +142,23 @@ class PlayGame(StateData.StateData):
 
     def loadDnaStoreTutorial(self):
         self.dnaStore = DNAStorage()
-        loadDNAFile(self.dnaStore, 'phase_3.5/dna/storage_tutorial.dna')
-        loadDNAFile(self.dnaStore, 'phase_3.5/dna/storage_interior.dna')
+        files = ('phase_3.5/dna/storage_tutorial.pdna', 'phase_3.5/dna/storage_interior.pdna')
+        dnaBulk = DNABulkLoader(self.dnaStore, files)
+        dnaBulk.loadDNAFiles()
 
     def loadDnaStore(self):
         if not hasattr(self, 'dnaStore'):
             self.dnaStore = DNAStorage()
-            loadDNAFile(self.dnaStore, 'phase_4/dna/storage.dna')
+            files = ('phase_4/dna/storage.pdna', 'phase_3.5/dna/storage_interior.pdna')
+            dnaBulk = DNABulkLoader(self.dnaStore, files)
+            dnaBulk.loadDNAFiles()
             self.dnaStore.storeFont('humanist', ToontownGlobals.getInterfaceFont())
             self.dnaStore.storeFont('mickey', ToontownGlobals.getSignFont())
             self.dnaStore.storeFont('suit', ToontownGlobals.getSuitFont())
-            loadDNAFile(self.dnaStore, 'phase_3.5/dna/storage_interior.dna')
 
     def unloadDnaStore(self):
         if hasattr(self, 'dnaStore'):
-            self.dnaStore.resetNodes()
-            self.dnaStore.resetTextures()
+            self.dnaStore.cleanup()
             del self.dnaStore
             ModelPool.garbageCollect()
             TexturePool.garbageCollect()
@@ -169,7 +170,7 @@ class PlayGame(StateData.StateData):
             self.hood.exit()
             self.hood.unload()
             self.hood = None
-        return
+        base.cr.cache.flush()
 
     def enterStart(self):
         pass
@@ -199,12 +200,7 @@ class PlayGame(StateData.StateData):
         return
 
     def _destroyHood(self):
-        self.ignore(self.hoodDoneEvent)
-        self.hood.exit()
-        self.hood.unload()
-        self.hood = None
-        base.cr.cache.flush()
-        return
+        self.unload()
 
     def enterQuietZone(self, requestStatus):
         self.acceptOnce(self.quietZoneDoneEvent, self.handleQuietZoneDone)
@@ -272,7 +268,8 @@ class PlayGame(StateData.StateData):
         if hoodId == ToontownGlobals.Tutorial:
             self.loadDnaStoreTutorial()
         else:
-            self.loadDnaStore()
+            if not hasattr(self, 'dnaStore'):
+                self.loadDnaStore()
         hoodClass = self.getHoodClassByNumber(canonicalHoodId)
         self.hood = hoodClass(self.fsm, self.hoodDoneEvent, self.dnaStore, hoodId)
         self.hood.load()

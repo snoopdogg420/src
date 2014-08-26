@@ -110,4 +110,4 @@ class BattlePlace(Place.Place):
         phase = ToontownGlobals.streetPhaseMap[hoodId]
         if hoodId == zoneId:
             zoneId = 'sz'
-        return 'phase_%s/dna/%s_%s.dna' % (phase, hood, zoneId)
+        return 'phase_%s/dna/%s_%s.pdna' % (phase, hood, zoneId)

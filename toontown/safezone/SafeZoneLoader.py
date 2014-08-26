@@ -81,7 +81,8 @@ class SafeZoneLoader(StateData.StateData):
         self.holidayPropTransforms = {}
         self.animPropDict = {}'''
         if self.safeZoneStorageDNAFile:
-            loadDNAFile(self.hood.dnaStore, self.safeZoneStorageDNAFile)
+            dnaBulk = DNABulkLoader(self.hood.dnaStore, (self.safeZoneStorageDNAFile,))
+            dnaBulk.loadDNAFiles()
         node = loadDNAFile(self.hood.dnaStore, dnaFile)
         if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))
