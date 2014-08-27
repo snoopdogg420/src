@@ -2568,6 +2568,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         np = NodePath(self.nametag.getNameIcon())
         if np.isEmpty():
             return
+        self.gmIcon.flattenStrong()
         self.gmIcon.reparentTo(np)
         self.gmIcon.setScale(1.6)
         self.gmIcon.setZ(2.05)

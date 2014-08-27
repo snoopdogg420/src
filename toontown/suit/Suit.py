@@ -187,11 +187,11 @@ def loadModels():
     global Preloaded
     if not Preloaded:
         print 'Preloading suits...'
-        for x, y in enumerate(SuitParts):
-            Preloaded[SuitParts[x]] = NodePath(SuitParts[x])
-            body = loader.loadModel(y)
-            body.flattenMedium()
-            body.instanceTo(Preloaded[SuitParts[x]])
+        for filepath in SuitParts:
+            Preloaded[filepath] = NodePath(filepath)
+            part = loader.loadModel(filepath)
+            part.flattenMedium()
+            part.instanceTo(Preloaded[filepath])
 
 def loadTutorialSuit():
     loader.loadModel('phase_3.5/models/char/suitC-mod')
@@ -425,9 +425,6 @@ class Suit(Avatar.Avatar):
 
             for head in SuitGlobals.suitProperties[dna.name][SuitGlobals.HEADS_INDEX]:
                 self.generateHead(head)
-
-            self.flattenStrong()
-            self.postFlatten()
 
             self.setHeight(SuitGlobals.suitProperties[dna.name][SuitGlobals.HEIGHT_INDEX])
 
