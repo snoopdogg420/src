@@ -97,11 +97,10 @@ class SafeZoneLoader(StateData.StateData):
             np = npl.getPath(i)
             np.setTag('transformIndex', `i`)
             self.holidayPropTransforms[i] = np.getNetTransform()
-
-        self.geom.flattenMedium()
         gsg = base.win.getGsg()
         if gsg:
             self.geom.prepareScene(gsg)
+        self.geom.flattenMedium()
 
     def makeDictionaries(self, dnaStore):
         self.nodeList = []

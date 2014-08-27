@@ -194,7 +194,7 @@ def loadModels():
             body.instanceTo(Preloaded[SuitParts[x]])
 
 def loadTutorialSuit():
-    loader.loadModelNode('phase_3.5/models/char/suitC-mod')
+    loader.loadModel('phase_3.5/models/char/suitC-mod')
     loadDialog(1)
 
 def loadSuits(level):
@@ -243,7 +243,7 @@ def loadSuitAnims(suit, flag = 1):
         filePrefix = ModelDict[bodyType][0]
         animName = filePrefix + anim[1]
         if flag:
-            loader.loadModelNode(animName)
+            loader.loadModel(animName)
         else:
             loader.unloadModel(animName)
 
