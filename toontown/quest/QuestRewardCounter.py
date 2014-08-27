@@ -123,7 +123,6 @@ class QuestRewardCounter:
             anyChanged = 1
         if self.maxMoney != av.maxMoney:
             self.notify.info('Changed avatar %d to have maxMoney %d instead of %d' % (av.doId, self.maxMoney, av.maxMoney))
-            av.b_setMaxMoney(self.maxMoney)
             anyChanged = 1
         if self.questCarryLimit != av.questCarryLimit:
             self.notify.info('Changed avatar %d to have questCarryLimit %d instead of %d' % (av.doId, self.questCarryLimit, av.questCarryLimit))

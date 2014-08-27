@@ -22,7 +22,6 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         self.questChoiceGui = None
         self.trackChoiceGui = None
         self.cr = cr
-        return
 
     def announceGenerate(self):
         self.setAnimState('neutral', 0.9, None, None)
@@ -33,8 +32,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         else:
             self.notify.warning('announceGenerate: Could not find npc_origin_' + str(self.posIndex))
         DistributedNPCToonBase.announceGenerate(self)
-        self.cr.doId2do[self.doId] = self
-        return
+        messenger.send('doneTutorialSetup')
 
     def delayDelete(self):
         DistributedNPCToonBase.delayDelete(self)
@@ -43,7 +41,6 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
             self.curQuestMovie = None
             curQuestMovie.timeout(fFinish=1)
             curQuestMovie.cleanup()
-        return
 
     def disable(self):
         self.cleanupMovie()
@@ -63,7 +60,6 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         if self.trackChoiceGui:
             self.trackChoiceGui.destroy()
             self.trackChoiceGui = None
-        return
 
     def allowedToTalk(self):
         if base.cr.isPaid():
@@ -238,18 +234,15 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         self.acceptOnce(self.uniqueName('doneChatPage'), self.finishMovie, extraArgs=[av, isLocalToon])
         self.clearChat()
         self.setPageChat(avId, 0, fullString, 1)
-        return
 
     def sendChooseQuest(self, questId):
         if self.questChoiceGui:
             self.questChoiceGui.destroy()
             self.questChoiceGui = None
         self.sendUpdate('chooseQuest', [questId])
-        return
 
     def sendChooseTrack(self, trackId):
         if self.trackChoiceGui:
             self.trackChoiceGui.destroy()
             self.trackChoiceGui = None
         self.sendUpdate('chooseTrack', [trackId])
-        return

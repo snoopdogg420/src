@@ -526,6 +526,10 @@ class DistributedTargetGame(DistributedMinigame):
         self.environModel.removeNode()
         del self.environModel
         self.fogOver.delete()
+        open = self.umbrella.find('**/open_umbrella')
+        open.hide()
+        closed = self.umbrella.find('**/closed_umbrella')
+        closed.hide()
         self.umbrella.removeNode()
         del self.umbrella
         for umbrella in self.remoteUmbrellas:
@@ -725,7 +729,6 @@ class DistributedTargetGame(DistributedMinigame):
 
         rubberBands = []
         self.targetsPlaced = []
-        return
 
     def handleDisabledAvatar(self, avId):
         self.notify.debug('handleDisabledAvatar')

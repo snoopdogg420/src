@@ -78,7 +78,7 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
         self.notify.debug('postgroupInfo')
         isMyGroup = 0
         removedMemberIdList = []
-        if self.groupListDict.has_key(leaderId):
+        if leaderId in self.groupListDict:
             oldGroupEntry = self.groupListDict[leaderId]
         else:
             oldGroupEntry = [[], [], []]
@@ -104,7 +104,7 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
         if newGroupEntry[0] == [0] or not newGroupEntry[0]:
             dgroup = self.groupListDict.pop(leaderId)
             for memberId in dgroup[0]:
-                if self.avIdDict.has_key(memberId):
+                if memberId in self.avIdDict:
                     self.avIdDict.pop(memberId)
 
         if isMyGroup:
@@ -339,16 +339,16 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
         isMyGroup = 0
         if localAvatar.doId == quitterId or localAvatar.doId == leaderId:
             isMyGroup = 1
-        if self.groupListDict.has_key(leaderId):
+        if leaderId in self.groupListDict:
             if leaderId == localAvatar.doId:
                 isMyGroup = 1
-                if self.avIdDict.has_key(leaderId):
+                if leaderId in self.avIdDict:
                     self.avIdDict.pop(leaderId)
             dgroup = self.groupListDict.pop(leaderId)
             for memberId in memberList:
                 if memberId == localAvatar.doId:
                     isMyGroup = 1
-                if self.avIdDict.has_key(memberId):
+                if memberId in self.avIdDict:
                     self.avIdDict.pop(memberId)
 
         if isMyGroup:
@@ -431,7 +431,7 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
         place = base.cr.playGame.getPlace()
         if place:
             if not place.getState() == 'elevator':
-                if self.avIdDict.has_key(localAvatar.doId):
+                if localAvatar.doId in self.avIdDict:
                     leaderId = self.avIdDict[localAvatar.doId]
                     self.sendUpdate('requestLeave', [leaderId])
 

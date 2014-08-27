@@ -60,8 +60,8 @@ roles:
       bind: 0.0.0.0:7599
       version: "infinite-dev"
       client:
-       relocate: true
-       add_interest: enabled
+        relocate: true
+        add_interest: enabled
       channels:
         min: 1000004001
         max: 1000005000

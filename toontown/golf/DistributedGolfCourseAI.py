@@ -350,7 +350,7 @@ class DistributedGolfCourseAI(DistributedObjectAI.DistributedObjectAI, FSM):
         for avId in self.avIdList:
             av = simbase.air.doId2do.get(avId)
             if av:
-                if self.avStateDict.has_key(avId) and not self.avStateDict[avId] == EXITED:
+                if avId in self.avStateDict and not self.avStateDict[avId] == EXITED:
                     retval.append(avId)
 
         return retval
@@ -565,7 +565,7 @@ class DistributedGolfCourseAI(DistributedObjectAI.DistributedObjectAI, FSM):
         return
 
     def incrementEndingHistory(self, avId, historyIndex):
-        if self.endingHistory.has_key(avId) and GolfGlobals.TrophyRequirements.has_key(historyIndex):
+        if avId in self.endingHistory and historyIndex in GolfGlobals.TrophyRequirements:
             maximumAmount = GolfGlobals.TrophyRequirements[historyIndex][-1]
             if self.endingHistory[avId][historyIndex] < maximumAmount:
                 self.endingHistory[avId][historyIndex] += 1
@@ -874,7 +874,7 @@ class DistributedGolfCourseAI(DistributedObjectAI.DistributedObjectAI, FSM):
 
     def getTotalScore(self, avId):
         retval = 0
-        if self.scores.has_key(avId):
+        if avId in self.scores:
             for holeScore in self.scores[avId]:
                 retval += holeScore
 

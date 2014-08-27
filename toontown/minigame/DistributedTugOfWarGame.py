@@ -326,10 +326,10 @@ class DistributedTugOfWarGame(DistributedMinigame):
         if self.suit:
             self.suit.reparentTo(hidden)
         for avId in self.avIdList:
-            if self.dropShadowDict.has_key(avId):
+            if avId in self.dropShadowDict:
                 self.dropShadowDict[avId].reparentTo(hidden)
 
-        if self.dropShadowDict.has_key(self.suitId):
+        if self.suitId in self.dropShadowDict:
             self.dropShadowDict[self.suitId].reparentTo(hidden)
         return
 
@@ -1025,6 +1025,8 @@ class DistributedTugOfWarGame(DistributedMinigame):
             d = SuitDNA.SuitDNA()
             d.newSuit(self.suitType)
             self.suit.setDNA(d)
+            self.suit.hideNametag2d()
+            self.suit.hideNametag3d()
             self.suit.reparentTo(render)
             self.suit.setPos(self.origSuitPosHpr[0])
             self.suit.setHpr(self.origSuitPosHpr[1])

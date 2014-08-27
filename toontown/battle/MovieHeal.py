@@ -170,7 +170,7 @@ def __healTickle(heal, hasInteractivePropHealBonus):
 
 def __healJoke(heal, hasInteractivePropHealBonus):
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:
@@ -261,7 +261,7 @@ def __healSmooch(heal, hasInteractivePropHealBonus):
 
 def __healDance(heal, hasInteractivePropHealBonus):
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:
@@ -344,7 +344,7 @@ def __healSprinkle(heal, hasInteractivePropHealBonus):
 
 def __healJuggle(heal, hasInteractivePropHealBonus):
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:
@@ -392,7 +392,7 @@ def __healDive(heal, hasInteractivePropHealBonus):
     splash = Splash.Splash(render)
     splash.reparentTo(render)
     npcId = 0
-    if heal.has_key('npcId'):
+    if 'npcId' in heal:
         npcId = heal['npcId']
         toon = NPCToons.createLocalNPC(npcId)
         if toon == None:

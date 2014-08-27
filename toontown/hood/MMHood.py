@@ -11,11 +11,11 @@ class MMHood(ToonHood.ToonHood):
         self.id = MinniesMelodyland
         self.townLoaderClass = MMTownLoader.MMTownLoader
         self.safeZoneLoaderClass = MMSafeZoneLoader.MMSafeZoneLoader
-        self.storageDNAFile = 'phase_6/dna/storage_MM.dna'
-        self.holidayStorageDNADict = {WINTER_DECORATIONS: ['phase_6/dna/winter_storage_MM.dna'],
-         WACKY_WINTER_DECORATIONS: ['phase_6/dna/winter_storage_MM.dna'],
-         HALLOWEEN_PROPS: ['phase_6/dna/halloween_props_storage_MM.dna'],
-         SPOOKY_PROPS: ['phase_6/dna/halloween_props_storage_MM.dna']}
+        self.storageDNAFile = 'phase_6/dna/storage_MM.pdna'
+        self.holidayStorageDNADict = {WINTER_DECORATIONS: ['phase_6/dna/winter_storage_MM.pdna'],
+         WACKY_WINTER_DECORATIONS: ['phase_6/dna/winter_storage_MM.pdna'],
+         HALLOWEEN_PROPS: ['phase_6/dna/halloween_props_storage_MM.pdna'],
+         SPOOKY_PROPS: ['phase_6/dna/halloween_props_storage_MM.pdna']}
         self.skyFile = 'phase_6/models/props/MM_sky'
         self.spookySkyFile = 'phase_6/models/props/MM_sky'
         self.titleColor = (1.0, 0.5, 0.5, 1.0)

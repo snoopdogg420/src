@@ -117,7 +117,7 @@ class DistributedBank(DistributedFurnitureItem.DistributedFurnitureItem):
     def showBankGui(self):
         if self.bankGui:
             self.bankGui.destroy()
-        self.bankGui = BankGUI.BankGui(self.bankGuiDoneEvent)
+        self.bankGui = BankGUI.BankGUI(self.bankGuiDoneEvent)
         self.accept(self.bankGuiDoneEvent, self.__handleBankDone)
 
     def setMovie(self, mode, avId, timestamp):

@@ -70,7 +70,7 @@ class DistributedTwoDGameAI(DistributedMinigameAI):
                 enemyType = enemiesPool[enemyIndex][0]
                 self.enemyHealthTable[i] += [ToonBlitzGlobals.EnemyBaseHealth]
                 self.enemyHealthTable[i][j] *= self.numPlayers
-                if ToonBlitzGlobals.EnemyHealthMultiplier.has_key(enemyType):
+                if enemyType in ToonBlitzGlobals.EnemyHealthMultiplier:
                     self.enemyHealthTable[i][j] *= ToonBlitzGlobals.EnemyHealthMultiplier[enemyType]
 
             self.treasureTakenTable += [[]]

@@ -19,6 +19,8 @@ from toontown.nametag.Nametag import Nametag
 
 
 class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
+    deferFor = 1
+
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.openSfx = base.loadSfx('phase_3.5/audio/sfx/Door_Open_1.ogg')
@@ -406,14 +408,7 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
         if self.doorType == DoorTypes.INT_STANDARD:
             otherNP = render.find('**/door_origin')
         elif self.doorType == DoorTypes.EXT_STANDARD:
-            if hasattr(self, 'tempDoorNodePath'):
-                return self.tempDoorNodePath
-            else:
-                posHpr = self.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(self.block)
-                otherNP = NodePath('doorOrigin')
-                otherNP.setPos(posHpr.getPos())
-                otherNP.setHpr(posHpr.getHpr())
-                self.tempDoorNodePath = otherNP
+            otherNP = self.getBuilding().find('**/*door_origin')
         elif self.doorType in self.specialDoorTypes:
             building = self.getBuilding()
             otherNP = building.find('**/door_origin_' + str(self.doorIndex))
@@ -628,8 +623,6 @@ class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
 
     def exitDoorEnterOpening(self, ts):
         doorFrameHoleLeft = self.findDoorNode('doorFrameHoleLeft')
-        if doorFrameHoleLeft is None:
-            return
         if doorFrameHoleLeft.isEmpty():
             self.notify.warning('enterOpening(): did not find flatDoors')
             return

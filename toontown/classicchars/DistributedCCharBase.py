@@ -168,7 +168,7 @@ class DistributedCCharBase(DistributedChar.DistributedChar):
         return turnTracks
 
     def setChat(self, category, msg, avId):
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             avatar = self.cr.doId2do[avId]
             chatter = CCharChatter.getChatter(self.getName(), self.getCCChatter())
             if category >= len(chatter):

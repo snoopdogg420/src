@@ -105,7 +105,7 @@ want-vine-game #t
 want-ice-game #t
 want-thief-game #t
 want-2d-game #t
-want-photo-game #t
+want-photo-game #f
 want-travel-game #f
 force-minigame 0
 
@@ -165,6 +165,9 @@ pajama-place-building-chance 100.0
 
 # Cog battles...
 base-xp-multiplier 1.0
+
+# Economy...
+want-personal-bank #f
 
 # Picnic table board games...
 want-game-tables #t

@@ -804,7 +804,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         for toonId in self.involvedToons:
             toon = self.cr.doId2do.get(toonId)
             if toon:
-                if self.cannons.has_key(index):
+                if index in self.cannons:
                     cannon = self.cannons[index]
                     cannonSeq = cannon.generateCannonAppearTrack(toon)
                     multiCannons.append(cannonSeq)
@@ -1681,7 +1681,7 @@ class DistributedLawbotBoss(DistributedBossCog.DistributedBossCog, FSM.FSM):
         index = 0
         self.involvedToons.sort()
         for toonId in self.involvedToons:
-            if self.cannons.has_key(index):
+            if index in self.cannons:
                 cannon = self.cannons[index]
                 toon = self.cr.doId2do.get(toonId)
                 self.notify.debug('cannonId = %d' % cannon.doId)

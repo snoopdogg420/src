@@ -14,6 +14,7 @@ from toontown.char import Char
 from toontown.suit import SuitDNA
 from toontown.suit import Suit
 from toontown.quest import QuestParser
+from toontown.toon import DistributedNPCSpecialQuestGiver
 
 class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
@@ -25,7 +26,10 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
-        self.setup()
+        if not base.cr.doFindAllInstances(DistributedNPCSpecialQuestGiver.DistributedNPCSpecialQuestGiver):
+            self.acceptOnce('doneTutorialSetup', self.setup)
+        else:
+            self.setup()
 
     def disable(self):
         self.interior.removeNode()
@@ -85,7 +89,7 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         self.interior = loader.loadModel('phase_3.5/models/modules/toon_interior_tutorial')
         self.interior.reparentTo(render)
         dnaStore = DNAStorage()
-        node = loader.loadDNAFile(self.cr.playGame.hood.dnaStore, 'phase_3.5/dna/tutorial_street.dna')
+        node = loader.loadDNAFile(self.cr.playGame.hood.dnaStore, 'phase_3.5/dna/tutorial_street.pdna')
         self.street = render.attachNewNode(node)
         self.street.flattenMedium()
         self.street.setPosHpr(-17, 42, -0.5, 180, 0, 0)
@@ -145,6 +149,8 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         suitDNA = SuitDNA.SuitDNA()
         suitDNA.newSuit('f')
         self.suit.setDNA(suitDNA)
+        self.suit.hideNametag2d()
+        self.suit.hideNametag3d()
         self.suit.loop('neutral')
         self.suit.setPosHpr(-20, 8, 0, 0, 0, 0)
         self.suit.reparentTo(self.interior)

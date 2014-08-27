@@ -169,7 +169,7 @@ class DistributedDivingGame(DistributedMinigame):
         else:
             spawnerId = int(name[2])
             spawnId = int(name[3:len(name)])
-            if self.spawners[spawnerId].fishArray.has_key(spawnId):
+            if spawnId in self.spawners[spawnerId].fishArray:
                 self.sendUpdate('handleFishCollision', [avId,
                  spawnId,
                  spawnerId,
@@ -231,7 +231,7 @@ class DistributedDivingGame(DistributedMinigame):
         camera.setZ(36)
         camera.setHpr(0,0,0)
         camera.setX(0)
-        base.camLens.setMinFov(45/(4./3.))
+        base.camLens.setMinFov(31/(4./3.))
         camera.setY(-54)
         base.camLens.setFar(1500)
         self.introMovie = self.getIntroMovie()
@@ -710,7 +710,7 @@ class DistributedDivingGame(DistributedMinigame):
             self.localLerp.finish()
             self.localLerp = Sequence(Func(toonSD.fsm.request, 'freeze'), Wait(3.0), Func(toonSD.fsm.request, 'normal'))
             self.localLerp.start(ts)
-        if self.spawners[spawnerId].fishArray.has_key(spawnId):
+        if spawnId in self.spawners[spawnerId].fishArray:
             fish = self.spawners[spawnerId].fishArray[spawnId]
             endX = self.spawners[spawnerId].position.getX()
             if fish.name == 'clown':
@@ -763,7 +763,7 @@ class DistributedDivingGame(DistributedMinigame):
     def fishRemove(self, code):
         spawnId = int(code[1:len(code)])
         spawnerId = int(code[0])
-        if self.spawners[spawnerId].fishArray.has_key(spawnId):
+        if spawnId in self.spawners[spawnerId].fishArray:
             fish = self.spawners[spawnerId].fishArray[spawnId]
             fish.specialLerp.finish()
             fish.moveLerp.finish()

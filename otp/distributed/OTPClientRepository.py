@@ -907,7 +907,7 @@ class OTPClientRepository(ClientRepositoryBase):
         self.stopHeartbeat()
         self.stopReaderPollTask()
         if (self.bootedIndex is not None) and (self.bootedIndex in OTPLocalizer.CRBootedReasons):
-            message = OTPLocalizer.CRBootedReasons[self.bootedIndex] % {'name': '???'}
+            message = OTPLocalizer.CRBootedReasons[self.bootedIndex]
         elif self.bootedText is not None:
             message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
         else:
@@ -915,6 +915,8 @@ class OTPClientRepository(ClientRepositoryBase):
         reconnect = 1
         if self.bootedIndex in (152, 127):
             reconnect = 0
+        if self.bootedIndex == 152:
+            message = message % {'name': self.bootedText}
         self.launcher.setDisconnectDetails(self.bootedIndex, message)
         style = OTPDialog.Acknowledge
         if reconnect and self.loginInterface.supportsRelogin():

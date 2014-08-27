@@ -17,7 +17,24 @@ from toontown.shtiker.OptionsPage import speedChatStyles
 from toontown.toonbase import TTLocalizer
 from toontown.parties.PartyGlobals import ActivityIds, DecorationIds
 from toontown.toonbase import ToontownGlobals
-scStructure = [[OTPLocalizer.SCMenuHello,
+scStructure = [
+ [OTPLocalizer.SCMenuTesting,
+  [OTPLocalizer.SCMenuBugs,
+   30506,
+   30507,
+   30508,
+   30509,
+   30510,
+   30511
+  ],
+  30500,
+  30501,
+  30502,
+  30503,
+  30504,
+  30505
+ ],
+ [OTPLocalizer.SCMenuHello,
   {100: 0},
   {101: 0},
   {102: 0},

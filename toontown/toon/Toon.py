@@ -32,8 +32,8 @@ from toontown.toonbase import ToontownGlobals
 def teleportDebug(requestStatus, msg, onlyIfToAv = True):
     if teleportNotify.getDebug():
         teleport = 'teleport'
-        if requestStatus.has_key('how') and requestStatus['how'][:len(teleport)] == teleport:
-            if not onlyIfToAv or requestStatus.has_key('avId') and requestStatus['avId'] > 0:
+        if 'how' in requestStatus and requestStatus['how'][:len(teleport)] == teleport:
+            if not onlyIfToAv or 'avId' in requestStatus and requestStatus['avId'] > 0:
                 teleportNotify.debug(msg)
 
 
@@ -124,7 +124,8 @@ Phase4AnimList = (('sit', 'sit'),
  ('scientistJealous', 'scientistJealous'),
  ('scientistEmcee', 'scientistEmcee'),
  ('scientistWork', 'scientistWork'),
- ('scientistGame', 'scientistGame'))
+ ('scientistGame', 'scientistGame'),
+ ('taunt', 'taunt'))
 Phase5AnimList = (('water-gun', 'water-gun'),
  ('hold-bottle', 'hold-bottle'),
  ('firehose', 'firehose'),
@@ -312,7 +313,7 @@ def loadPhaseAnims(phaseStr = 'phase_3', loadFlag = 1):
         for anim in animList:
             if loadFlag:
                 pass
-            elif LegsAnimDict[key].has_key(anim[0]):
+            elif anim[0] in LegsAnimDict[key]:
                 if base.localAvatar.style.legs == key:
                     base.localAvatar.unloadAnims([anim[0]], 'legs', None)
 
@@ -320,7 +321,7 @@ def loadPhaseAnims(phaseStr = 'phase_3', loadFlag = 1):
         for anim in animList:
             if loadFlag:
                 pass
-            elif TorsoAnimDict[key].has_key(anim[0]):
+            elif anim[0] in TorsoAnimDict[key]:
                 if base.localAvatar.style.torso == key:
                     base.localAvatar.unloadAnims([anim[0]], 'torso', None)
 
@@ -329,7 +330,7 @@ def loadPhaseAnims(phaseStr = 'phase_3', loadFlag = 1):
             for anim in animList:
                 if loadFlag:
                     pass
-                elif HeadAnimDict[key].has_key(anim[0]):
+                elif anim[0] in HeadAnimDict[key]:
                     if base.localAvatar.style.head == key:
                         base.localAvatar.unloadAnims([anim[0]], 'head', None)
 
@@ -1658,12 +1659,15 @@ class Toon(Avatar.Avatar, ToonHead):
         Emote.globalEmote.releaseAll(self, 'exitSwim')
 
     def startBobSwimTask(self):
-        swimBob = getattr(self, 'swimBob', None)
-        if swimBob:
-            swimBob.finish()
-        self.getGeomNode().setZ(4.0)
+        if getattr(self, 'swimBob', None):
+            self.swimBob.finish()
+            self.swimBob = None
         self.nametag3d.setZ(5.0)
-        self.swimBob = Sequence(self.getGeomNode().posInterval(1, (0, -3, 3), blendType='easeInOut'), self.getGeomNode().posInterval(1, (0, -3, 4), blendType='easeInOut'))
+        geomNode = self.getGeomNode()
+        geomNode.setZ(4.0)
+        self.swimBob = Sequence(
+            geomNode.posInterval(1, Point3(0, -3, 3), startPos=Point3(0, -3, 4), blendType='easeInOut'),
+            geomNode.posInterval(1, Point3(0, -3, 4), startPos=Point3(0, -3, 3), blendType='easeInOut'))
         self.swimBob.loop()
 
     def stopBobSwimTask(self):

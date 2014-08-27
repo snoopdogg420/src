@@ -154,7 +154,7 @@ class DistributedMinigame(DistributedObject.DistributedObject):
         Toon.loadMinigameAnims()
 
     def onstage(self):
-        self.notify.debug('BASE: onstage')
+        base.localAvatar.laffMeter.hide()
 
         def calcMaxDuration(self = self):
             return (self.getMaxDuration() + MinigameGlobals.rulesDuration) * 1.1
@@ -238,7 +238,7 @@ class DistributedMinigame(DistributedObject.DistributedObject):
         self.notify.debug('difficulty: %s' % self.getDifficulty())
         self.__serverFinished = 0
         for avId in self.remoteAvIdList:
-            if not self.cr.doId2do.has_key(avId):
+            if avId not in self.cr.doId2do:
                 self.notify.warning('BASE: toon %s already left or has not yet arrived; waiting for server to abort the game' % avId)
                 return 1
 
@@ -291,7 +291,7 @@ class DistributedMinigame(DistributedObject.DistributedObject):
         self.frameworkFSM.request('frameworkWaitServerFinish')
 
     def getAvatar(self, avId):
-        if self.cr.doId2do.has_key(avId):
+        if avId in self.cr.doId2do:
             return self.cr.doId2do[avId]
         else:
             self.notify.warning('BASE: getAvatar: No avatar in doId2do with id: ' + str(avId))

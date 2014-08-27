@@ -41,7 +41,7 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
 
     def avatarEnter(self):
         avId = self.air.getAvatarIdFromSender()
-        if not self.air.doId2do.has_key(avId):
+        if avId not in self.air.doId2do:
             self.notify.warning('Avatar: %s not found' % avId)
             return
         if self.isBusy():
@@ -142,8 +142,8 @@ class DistributedNPCTailorAI(DistributedNPCToonBaseAI):
         if not testDNA.isValidNetString(blob):
             self.air.writeServerEvent('suspicious', avId, 'DistributedNPCTailorAI.setDNA: invalid dna: %s' % blob)
             return
-        if self.air.doId2do.has_key(avId):
-            av = self.air.doId2do[avId]
+        if avId in self.air.doId2do:
+            av = self.air.doId2do.get(avId)
             if finished == 2 and which > 0:
                 if self.freeClothes or av.takeMoney(self.jbCost, bUseBank = True):
                     av.b_setDNAString(blob)

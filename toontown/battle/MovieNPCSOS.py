@@ -278,7 +278,7 @@ def doNPCTeleports(attacks):
     arrivals = Sequence()
     departures = Parallel()
     for attack in attacks:
-        if attack.has_key('npcId'):
+        if 'npcId' in attack:
             npcId = attack['npcId']
             npc = NPCToons.createLocalNPC(npcId)
             if npc != None:

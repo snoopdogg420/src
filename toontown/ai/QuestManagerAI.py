@@ -81,12 +81,12 @@ class QuestManagerAI:
                 # If there is another part to this quest then give them that.
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
                     self.nextQuest(av, npc, questId)
+                    self.openTutorialDoors(avId, npc)
                     break
                 else:
                     # The toon has completed this quest. Give them a reward!
                     npc.completeQuest(avId, questId, rewardId)
                     self.completeQuest(av, questId)
-                self.openTutorialDoors(avId, npc)
                 break
         else:
             # They haven't completed any quests so we have to give them choices.

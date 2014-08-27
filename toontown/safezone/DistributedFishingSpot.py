@@ -33,6 +33,9 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
     angleMax = 30.0
 
     def __init__(self, cr):
+        if hasattr(self, 'fishInit'):
+            return
+        self.fishInit = 1
         DistributedObject.DistributedObject.__init__(self, cr)
         self.lastAvId = 0
         self.lastFrame = 0
@@ -115,6 +118,9 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
         return
 
     def delete(self):
+        if hasattr(self, 'fishDeleted'):
+            return
+        self.fishDeleted = 1
         del self.pond
         del self.fsm
         if self.nodePath:
@@ -974,6 +980,7 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
     def enterReward(self, code, itemDesc1, itemDesc2, itemDesc3):
         self.__placeAvatar()
         self.bob.reparentTo(self.angleNP)
+        self.waterLevel = FishingTargetGlobals.getWaterLevel(self.area)
         self.bob.setZ(self.waterLevel)
         self.__showLineReeling()
         self.castTrack.pause()

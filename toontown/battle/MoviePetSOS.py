@@ -93,7 +93,7 @@ def __healJuggle(heal):
     petProxyId = heal['petId']
     pet = Pet.Pet()
     gender = 0
-    if base.cr.doId2do.has_key(petProxyId):
+    if petProxyId in base.cr.doId2do:
         petProxy = base.cr.doId2do[petProxyId]
         if petProxy == None:
             return

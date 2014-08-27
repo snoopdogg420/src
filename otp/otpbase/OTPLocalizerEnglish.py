@@ -300,7 +300,7 @@ SCMenuWinter = 'WINTER'
 SCMenuSellbotInvasion = 'SELLBOT INVASION'
 SCMenuFieldOffice = 'FIELD OFFICES'
 SCMenuIdesOfMarch = 'GREEN'
-SCMenuRogerDog = 'roger dog'
+ScMenuBugs = 'Bugs'
 FriendSecretNeedsPasswordWarningTitle = 'Parental Controls'
 FriendSecretNeedsParentLoginWarning = 'To get or enter a True Friend Code, log in with the Parent Account.  You can disable this prompt by changing your True Friend options.'
 FriendSecretNeedsPasswordWarning = 'To get or enter a True Friend Code, you must enter the Parent Account Password.  You can disable this prompt by changing your True Friends options.'
@@ -467,7 +467,8 @@ EmoteList = ['Wave',
  'Cry',
  'Delighted',
  'Furious',
- 'Laugh']
+ 'Laugh',
+ 'Taunt']
 EmoteWhispers = ['%s waves.',
  '%s is happy.',
  '%s is sad.',
@@ -492,7 +493,8 @@ EmoteWhispers = ['%s waves.',
  '%s is crying.',
  '%s is delighted.',
  '%s is furious.',
- '%s is laughing.']
+ '%s is laughing.',
+ '%s taunts you.']
 EmoteFuncDict = {'Wave': 0,
  'Happy': 1,
  'Sad': 2,
@@ -518,14 +520,7 @@ EmoteFuncDict = {'Wave': 0,
  'Delighted': 22,
  'Furious': 23,
  'Laugh': 24,
- 'Sing Note G1': 25,
- 'Sing Note A': 26,
- 'Sing Note B': 27,
- 'Sing Note C': 28,
- 'Sing Note D': 29,
- 'Sing Note E': 30,
- 'Sing Note F': 31,
- 'Sing Note G2': 32}
+ 'Taunt': 25}
 SuitBrushOffs = {'f': ["I'm late for a meeting."],
  'p': ['Push off.'],
  'ym': ['Yes Man says NO.'],
@@ -866,7 +861,7 @@ SuitFaceoffTaunts = {'b': ['Do you have a donation for me?',
         "I'm 'two' much for you.",
         "You don't know who you're facing.",
         'Are you ready to face your doom?',
-        "My eyes are on you"],
+        "My eyes are on you."],
  'dt': ["I'm gonna give you double the trouble.",
         'See if you can stop my double cross.',
         'I serve a mean double-\x04DECKER.',
@@ -899,7 +894,7 @@ SpeedChatStaticTextToontown = {100: 'Hi!',
  103: 'Hey!',
  104: 'Howdy!',
  105: 'Hi everybody!',
- 106: 'Welcome to Toontown!',
+ 106: 'Welcome to Toontown Infinite!',
  107: "What's up?",
  108: 'How are you doing?',
  109: 'Hello?',
@@ -1942,7 +1937,19 @@ SpeedChatStaticTextToontown = {100: 'Hi!',
  30418: "It's the Boss!",
  30450: "It's easy to be green!",
  30451: 'Visit Green Bean Jeans and you can be green too!',
- 30452: "It's on Oak Street in Daisy Gardens."}
+ 30452: "It's on Oak Street in Daisy Gardens.",
+ 30500: "Welcome to Toontown Infinite!",
+ 30501: "The Possibilities are Infinite.",
+ 30502: "Are you livestreaming?",
+ 30503: "I'm livestreaming right now!",
+ 30504: "I can't wait until the next Toontown Infinite update!",
+ 30505: "Did you know the TTI team works overtime to make the experience the best it can be?",
+ 30506: "I can't stand that bug!",
+ 30507: "Have you found any bugs yet?",
+ 30508: "I hope that bug gets fixed soon.",
+ 30509: "What types of bugs have you ran into so far?",
+ 30510: "Those bugs can get more obnoxious than the Cogs sometimes.",
+ 30511: "You can report bugs by clicking the Report a Bug button on the Toontown Infinite launcher."}
 SpeedChatStaticTextPirates = {50001: 'Aye',
  50002: 'Nay',
  50003: 'Yes',

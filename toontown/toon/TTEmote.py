@@ -1,17 +1,15 @@
-from direct.directnotify import DirectNotifyGlobal
+import Toon, ToonDNA
 from direct.interval.IntervalGlobal import *
+from otp.otpbase import OTPLocalizer
+from toontown.toonbase import TTLocalizer
+from otp.otpbase import OTPLocalizer
+import types
+import random
 from direct.showbase import PythonUtil
 from pandac.PandaModules import *
-import types
-
-import Toon, ToonDNA
 from otp.avatar import Emote
-from otp.otpbase import OTPLocalizer
-from toontown.chat.ChatGlobals import *
+from direct.directnotify import DirectNotifyGlobal
 from toontown.nametag.NametagGlobals import *
-from toontown.toonbase import TTLocalizer
-
-
 EmoteSleepIndex = 4
 EmoteClear = -1
 
@@ -76,7 +74,7 @@ def doSleep(toon, volume = 1):
         toon.openEyes()
         toon.startBlink()
         toon.setPlayRate(1, 'neutral')
-        if toon.nametag.getChatText() == TTLocalizer.ToonSleepString:
+        if toon.nametag.getChat() == TTLocalizer.ToonSleepString:
             toon.clearChat()
         toon.lerpLookAt(Point3(0, 1, 0), time=0.25)
 
@@ -206,11 +204,14 @@ def doCringe(toon, volume = 1):
     return (track, duration, None)
 
 
-def doResistanceSalute(toon, volume = 1):
-    playRate = 0.75
-    duration = 10.0 / 24.0 * (1 / playRate) * 2
-    animTrack = Sequence(Func(toon.setChatAbsolute, OTPLocalizer.CustomSCStrings[4020], CFSpeech | CFTimeout), Func(toon.setPlayRate, playRate, 'victory'), ActorInterval(toon, 'victory', playRate=playRate, startFrame=0, endFrame=9), ActorInterval(toon, 'victory', playRate=playRate, startFrame=9, endFrame=0))
-    track = Sequence(animTrack, duration=0)
+def doResistanceSalute(toon, volume=1):
+    track = Sequence(
+        Func(toon.setChatAbsolute, OTPLocalizer.CustomSCStrings[4020], CFSpeech|CFTimeout),
+        Func(toon.setPlayRate, 0.75, 'victory'),
+        Func(toon.pingpong, 'victory', fromFrame=0, toFrame=9),
+        Func(toon.setPlayRate, 1, 'victory')
+    )
+    duration = 20 / toon.getFrameRate('victory')
     return (track, duration, None)
 
 
@@ -240,8 +241,8 @@ def doSurprise(toon, volume = 1):
 
 
 def doUpset(toon, volume = 1):
-    sfx = None
-    sfx = base.loadSfx('phase_4/audio/sfx/avatar_emotion_very_sad_1.ogg')
+    sfxList = ('phase_4/audio/sfx/avatar_emotion_very_sad_1.ogg', 'phase_4/audio/sfx/avatar_emotion_very_sad.ogg')
+    sfx = base.loadSfx(random.choice(sfxList))
 
     def playSfx(volume = 1):
         base.playSfx(sfx, volume=volume, node=toon)
@@ -311,6 +312,18 @@ def doLaugh(toon, volume = 1):
     track = Sequence(Func(toon.blinkEyes), Func(toon.showLaughMuzzle), Func(playAnim), Func(playSfx, volume))
     exitTrack = Sequence(Func(toon.hideLaughMuzzle), Func(toon.blinkEyes), Func(stopAnim))
     return (track, 2, exitTrack)
+
+
+def doTaunt(toon, volume=1):
+    sfx = base.loadSfx('phase_4/audio/sfx/avatar_emotion_taunt.ogg')
+
+    track = Sequence(
+        Func(toon.blinkEyes),
+        Func(toon.play, 'taunt'),
+        Func(base.playSfx, sfx, volume=volume, node=toon)
+    )
+    duration = toon.getDuration('taunt')
+    return (track, duration, None)
 
 
 def getSingingNote(toon, note, volume = 1):
@@ -461,7 +474,8 @@ EmoteFunc = [[doWave, 0],
  [doUpset, 0],
  [doDelighted, 0],
  [doFurious, 0],
- [doLaugh, 0]]
+ [doLaugh, 0],
+ [doTaunt, 0]]
 
 class TTEmote(Emote.Emote):
     notify = DirectNotifyGlobal.directNotify.newCategory('TTEmote')
@@ -488,7 +502,8 @@ class TTEmote(Emote.Emote):
          21,
          22,
          23,
-         24]
+         24,
+         25]
         self.headEmotes = [2,
          17,
          18,
