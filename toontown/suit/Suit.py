@@ -188,22 +188,21 @@ def loadModels():
     if not Preloaded:
         print 'Preloading suits...'
         for x, y in enumerate(SuitParts):
-            Preloaded[SuitParts[x]] = loader.loadModel(y)
-        print 'Done preloading suits'
+            Preloaded[SuitParts[x]] = NodePath(SuitParts[x])
+            body = loader.loadModel(y)
+            body.flattenMedium()
+            body.instanceTo(Preloaded[SuitParts[x]])
 
 def loadTutorialSuit():
     loader.loadModelNode('phase_3.5/models/char/suitC-mod')
     loadDialog(1)
 
-
 def loadSuits(level):
     loadDialog(level)
-
 
 def unloadSuits(level):
     #loadSuitModelsAndAnims(level, flag=0)
     unloadDialog(level)
-
 
 def loadSuitModelsAndAnims(level, flag = 0):
     for key in ModelDict.keys():
@@ -213,7 +212,6 @@ def loadSuitModelsAndAnims(level, flag = 0):
             Preloaded[filepath] = loader.loadModel(filepath)
             filepath = 'phase_' + str(phase) + model + 'heads'
             Preloaded[filepath] = loader.loadModel(filepath)
-
 
 def cogExists(filePrefix):
     searchPath = DSearchPath()
