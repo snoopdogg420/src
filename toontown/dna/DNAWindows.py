@@ -50,6 +50,7 @@ class DNAWindows(DNAGroup.DNAGroup):
             window.setHpr(hpr)
             window.setPos(x, 0, z)
             window.setEffect(DecalEffect.make())
+            window.flattenStrong()
 
         offset = lambda: random.random() % 0.0375
         if windowCount == 1:

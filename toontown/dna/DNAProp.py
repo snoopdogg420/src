@@ -40,5 +40,7 @@ class DNAProp(DNANode.DNANode):
         node.setPosHprScale(self.pos, self.hpr, self.scale)
         node.setName(self.name)
         node.setColorScale(self.color, 0)
+        if 'trolley' not in self.code:
+            node.flattenMedium()
         for child in self.children:
             child.traverse(node, dnaStorage)
