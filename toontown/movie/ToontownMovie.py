@@ -1,15 +1,15 @@
 from otp.movie.Movie import Movie
 from otp.nametag.NametagGroup import *
-from toontown.toon import Toon, ToonDNA
 from toontown.suit import Suit, SuitDNA
+from toontown.toon import Toon, ToonDNA
 
 
 class ToontownMovie(Movie):
     def __init__(self):
         Movie.__init__(self)
 
-        self.toons = []
-        self.suits = []
+        self.toons = set()
+        self.suits = set()
 
     def createToon(self, name='', dna=None):
         toon = Toon.Toon()
@@ -18,16 +18,16 @@ class ToontownMovie(Movie):
         toon.setPickable(0)
         toon.setPlayerType(NametagGroup.CCNonPlayer)
 
-        if dna is None:
+        if not isinstance(dna, ToonDNA.ToonDNA):
             dna = ToonDNA.ToonDNA()
-            dna.newToonRandom()
+            dna.newToonRandom(seed=dna)
 
         toon.setDNA(dna)
 
         toon.animFSM.request('neutral')
         toon.reparentTo(render)
 
-        self.toons.append(toon)
+        self.toons.add(toon)
         return toon
 
     def createSuit(self, name='', dna=None):
@@ -42,16 +42,19 @@ class ToontownMovie(Movie):
 
         suit.setDNA(dna)
 
+        suit.loop('neutral')
         suit.reparentTo(render)
 
-        self.suits.append(suit)
+        self.suits.add(suit)
         return suit
 
     def cleanup(self):
         Movie.cleanup(self)
 
-        for toon in self.toons:
+        for toon in list(self.toons):
             toon.delete()
+            self.toons.remove(toon)
 
-        for suit in self.suits:
+        for suit in list(self.suits):
             suit.delete()
+            self.suits.remove(suit)

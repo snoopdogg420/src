@@ -1,3 +1,4 @@
+from direct.distributed.ClockDelta import *
 from direct.task.Task import Task
 
 
@@ -5,21 +6,36 @@ class Movie:
     def __init__(self):
         self.tracks = {}
 
+        self.doneTaskName = self.getUniqueName() + '-done'
+        self.doneTask = None
+
+    def getUniqueName(self):
+        return 'Movie-' + str(id(self))
+
     def setup(self):
         pass  # Inheritors should override this method.
 
     def start(self, timestamp):
+        if self.doneTask is not None:
+            taskMgr.remove(self.doneTask)
+            self.doneTask = None
+
         self.setup()
 
         for track in self.tracks.values():
-            track.start(timestamp)
+            track.start(globalClockDelta.localElapsedTime(timestamp))
 
-        taskMgr.doMethodLater(
-            self.getDuration(), self.__handleMovieDone, 'Movie-done')
+        self.doneTask = taskMgr.doMethodLater(
+            self.getDuration(), self.__handleMovieDone,
+            self.getUniqueName() + '-done')
 
     def stop(self):
+        if self.doneTask is not None:
+            taskMgr.remove(self.doneTask)
+            self.doneTask = None
+
         for track in self.tracks.values():
-            track.stop()
+            track.pause()
 
         self.cleanup()
 
@@ -28,6 +44,7 @@ class Movie:
 
     def add(self, track):
         self.tracks[track.getName()] = track
+        track.setMovie(self)
 
     def get(self, name):
         return self.tracks.get(name)
@@ -36,5 +53,5 @@ class Movie:
         return max([track.getDuration() for track in self.tracks])
 
     def __handleMovieDone(self, task):
-        self.cleanup()
+        self.stop()
         return Task.done
