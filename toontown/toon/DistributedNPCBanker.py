@@ -1,10 +1,10 @@
 from pandac.PandaModules import *
 from DistributedNPCToonBase import *
-from toontown.nametag.NametagConstants import *
+from otp.nametag.NametagConstants import *
 from toontown.estate import BankGUI, BankGlobals
 from direct.interval.IntervalGlobal import *
 from direct.distributed.ClockDelta import *
-from toontown.nametag.NametagConstants import *
+from otp.nametag.NametagConstants import *
 from toontown.toonbase import TTLocalizer
 
 class DistributedNPCBanker(DistributedNPCToonBase):

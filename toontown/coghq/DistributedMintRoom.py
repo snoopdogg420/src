@@ -9,7 +9,7 @@ import MintRoomBase, MintRoom
 import FactoryEntityCreator
 import MintRoomSpecs
 from otp.level import LevelSpec, LevelConstants
-from toontown.nametag.NametagConstants import *
+from otp.nametag.NametagConstants import *
 from toontown.toonbase import TTLocalizer
 if __dev__:
     from otp.level import EditorGlobals
