@@ -28,6 +28,8 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.avatar = None
         self.active = True
 
+        self.frame = None
+
         self.panel = None
         self.icon = None
         self.chatBalloon = None
@@ -115,6 +117,10 @@ class Nametag(FSM, PandaNode, DirectObject):
             self.panel = None
 
         self.avatar = None
+
+        if self.frame is not None:
+            self.frame.destroy()
+            self.frame = None
 
     def getUniqueName(self):
         return 'Nametag-' + str(id(self))
@@ -395,6 +401,9 @@ class Nametag(FSM, PandaNode, DirectObject):
         sZ = self.textNode.getHeight() + self.PANEL_Z_PADDING
         self.panel.setScale(sX, 1, sZ)
 
+        self.panelWidth = sX
+        self.panelHeight = sZ
+
     def enterNormal(self):
         if self.lastClickState == PGButton.SDepressed:
             pass  # TODO: Send a message.
@@ -432,6 +441,9 @@ class Nametag(FSM, PandaNode, DirectObject):
     def setClickRegion(self, left, right, bottom, top):
         if not self.active:
             self.region.setActive(False)
+            if self.frame is not None:
+                self.frame.destroy()
+                self.frame = None
             return Task.cont
 
         if self.type is None:
@@ -461,14 +473,11 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         # The region is 3d and we must project it onto the lens:
         if self.type == '3d':
-            lens = base.cam.node().getLens()
-
             screenSpaceTopLeft = Point2()
             screenSpaceBottomRight = Point2()
 
-            if not (lens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
-                    lens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
-                # The region is not on screen:
+            if not (base.camLens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
+                    base.camLens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
                 self.region.setActive(False)
                 return
         # The region is 2d so we don't need to project it:
@@ -479,5 +488,12 @@ class Nametag(FSM, PandaNode, DirectObject):
         left, top = screenSpaceTopLeft
         right, bottom = screenSpaceBottomRight
 
+        print (left, right)
+
         self.region.setFrame(left, right, bottom, top)
         self.region.setActive(True)
+
+        if self.frame is not None:
+            self.frame.destroy()
+            self.frame = None
+        self.frame = DirectFrame(frameColor=(1, 0, 0, 0.25), parent=render2d, frameSize=(left, right, bottom, top))

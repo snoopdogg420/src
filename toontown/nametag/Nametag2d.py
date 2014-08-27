@@ -23,6 +23,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         self.arrow = None
 
+        self.type = '2d'
+
         self.hideThought()
         self.contents.setScale(self.CONTENTS_SCALE)
 
@@ -44,6 +46,9 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
     def getChatBalloonHeight(self):
         return NametagGlobals.chatBalloon2dHeight
+
+    def updateClickRegion(self):
+        self.setClickRegion(-0.1, 0.1, -0.1, 0.1)
 
     def tick(self, task):
         if (self.getCell() is None) or (self.arrow is None):
@@ -84,6 +89,9 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         # Translate the chat balloon along the inverse:
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
+        # Set the click region:
+        self.updateClickRegion()
+
     def drawNametag(self):
         Nametag.Nametag.drawNametag(self)
 
@@ -94,3 +102,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.arrow.setZ(self.ARROW_OFFSET + self.textNode.getBottom())
         self.arrow.setScale(self.ARROW_SCALE)
         self.arrow.setColor(self.nametagColor[0][0])
+
+        left, right, bottom, top =  self.textNode.getFrameActual()
+        self.updateClickRegion()

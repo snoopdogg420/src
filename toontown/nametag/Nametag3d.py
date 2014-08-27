@@ -17,6 +17,7 @@ class Nametag3d(Nametag.Nametag):
         Nametag.Nametag.__init__(self)
 
         self.distance = 0
+        self.scale = 1
 
         self.type = '3d'
 
@@ -50,31 +51,22 @@ class Nametag3d(Nametag.Nametag):
 
     def updateClickRegion(self):
         if self.panel is not None:
-            modelWidthHeight = NametagGlobals.getModelWidthHeight(self.contents)
-            if modelWidthHeight is (0, 0):
-                return Task.cont
-            width, height = modelWidthHeight
+            width = self.panelWidth * self.scale
+            height = self.panelHeight * self.scale
+
             left = -width/2
             right = width/2
             bottom = -height/2
             top = height/2
 
-            bottom+=Nametag.Nametag.PANEL_Z_PADDING/2
-            top+=Nametag.Nametag.PANEL_Z_PADDING/2
-            left-=Nametag.Nametag.PANEL_X_PADDING/2
-            right+=Nametag.Nametag.PANEL_X_PADDING/2
-
             self.setClickRegion(left, right, bottom, top)
 
         if self.chatBalloon is not None:
-            width = self.chatBalloon.width
-            height = self.chatBalloon.height
-            width *= self.scale
-            height *= self.scale
+            width = self.chatBalloon.width * self.scale
+            height = self.chatBalloon.height * self.scale
 
-            padding = ChatBalloon.ChatBalloon.BALLOON_X_PADDING*self.scale
-            left = padding
-            right = width + padding
+            left = 0
+            right = width
 
             scaledModelHeight = self.chatBalloon.modelHeight*self.scale
             bottom = scaledModelHeight-(2.35*self.scale)
@@ -83,27 +75,16 @@ class Nametag3d(Nametag.Nametag):
             self.setClickRegion(left, right, bottom, top)
 
     def tick(self, task):
-        # TODO: Fix this so that it uses the correct camera position
-        if not base.cam.node().isInView(self.avatar.getPos(base.cam)):
-            return Task.cont
-
         distance = self.contents.getPos(base.cam).length()
-
-        distanceLimit = False
 
         if distance < self.SCALING_MIN_DISTANCE:
             distance = self.SCALING_MIN_DISTANCE
-            distanceLimit = True
         elif distance > self.SCALING_MAX_DISTANCE:
             distance = self.SCALING_MAX_DISTANCE
-            distanceLimit = True
 
-        if not distanceLimit:
-            if distance == self.distance:
-                return Task.cont
-        else:
-            # TODO: Check if nametag has moved
-            pass
+        if distance == self.distance:
+            self.updateClickRegion()
+            return Task.cont
 
         self.distance = distance
 
