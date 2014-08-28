@@ -15,6 +15,7 @@ model-cache-models #f
 model-cache-textures #f
 default-model-extension .bam
 texture-anisotropic-degree 16
+text-minfilter linear
 
 # Server...
 server-force-ssl #t
