@@ -66,7 +66,7 @@ class DistributedLaserFieldAI(BattleBlockerAI.BattleBlockerAI, NodePath, BasicEn
 
     def registerBlocker(self):
         BattleBlockerAI.BattleBlockerAI.registerBlocker(self)
-        self.hideSuits()
+        taskMgr.doMethodLater(1, self.hideSuits, 'hide-suits')
 
     def delete(self):
         taskMgr.remove(self.detectName)
@@ -178,7 +178,7 @@ class DistributedLaserFieldAI(BattleBlockerAI.BattleBlockerAI, NodePath, BasicEn
         self.playedSound = 1
         self.switchFire()
 
-    def hideSuits(self):
+    def hideSuits(self, taskName):
         suits = self.level.planner.battleCellId2suits.get(self.cellId)
         suitArray = []
         for suit in suits:
