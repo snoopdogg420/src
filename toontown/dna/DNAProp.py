@@ -32,7 +32,6 @@ class DNAProp(DNANode.DNANode):
         elif node.find('**/water1*').isEmpty():
             node.flattenStrong()
         elif not node.find('**/water').isEmpty():
-            print 'Found some water!'
             water = node.find('**/water')
             water.setTransparency(1)
             water.setColor(1, 1, 1, 0.8)
