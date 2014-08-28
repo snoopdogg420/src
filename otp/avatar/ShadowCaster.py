@@ -1,7 +1,7 @@
 from pandac.PandaModules import *
 from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
-from direct.showbase.ShadowPlacer import ShadowPlacer
+from otp.avatar.ShadowPlacer import ShadowPlacer
 from otp.otpbase import OTPGlobals
 globalDropShadowFlag = 1
 
@@ -56,7 +56,7 @@ class ShadowCaster:
         dropShadow.flattenMedium()
         dropShadow.setBillboardAxis(2)
         dropShadow.setColor(0.0, 0.0, 0.0, globalDropShadowGrayLevel, 1)
-        self.shadowPlacer = ShadowPlacer(base.shadowTrav, dropShadow, OTPGlobals.WallBitmask, OTPGlobals.FloorBitmask)
+        self.shadowPlacer = ShadowPlacer(dropShadow)#(base.shadowTrav, dropShadow, OTPGlobals.WallBitmask, OTPGlobals.FloorBitmask)
         self.dropShadow = dropShadow
         if not globalDropShadowFlag:
             self.dropShadow.hide()

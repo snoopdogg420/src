@@ -178,44 +178,44 @@ def loadModels():
     global Preloaded
     if not Preloaded:
         print 'Preloading avatars...'
-        
+
         for key in LegDict.keys():
             fileRoot = LegDict[key]
-            
+
             Preloaded[fileRoot+'-1000'] = NodePath('leg-1000')
             leg1000 = loader.loadModel('phase_3' + fileRoot + '1000')
             leg1000.flattenMedium()
             leg1000.instanceTo(Preloaded[fileRoot+'-1000'])
-            
+
             Preloaded[fileRoot+'-500'] = NodePath('leg-500')
             leg500 = loader.loadModel('phase_3' + fileRoot + '500')
             leg500.flattenMedium()
             leg500.instanceTo(Preloaded[fileRoot+'-500'])
-            
+
             Preloaded[fileRoot+'-250'] = NodePath('leg-250')
             leg250 = loader.loadModel('phase_3' + fileRoot + '250')
             leg250.flattenMedium()
             leg250.instanceTo(Preloaded[fileRoot+'-250'])
-            
+
         for key in TorsoDict.keys():
             fileRoot = TorsoDict[key]
-            
+
             Preloaded[fileRoot+'-1000'] = NodePath('torso-1000')
             torso1000 = loader.loadModel('phase_3' + fileRoot + '1000')
             torso1000.flattenMedium()
             torso1000.instanceTo(Preloaded[fileRoot+'-1000'])
-            
+
             if len(key) > 1:
                 Preloaded[fileRoot+'-500'] = NodePath('torso-500')
                 torso500 = loader.loadModel('phase_3' + fileRoot + '500')
                 torso500.flattenMedium()
                 torso500.instanceTo(Preloaded[fileRoot+'-500'])
-                
+
                 Preloaded[fileRoot+'-250'] = NodePath('torso-250')
                 torso250 = loader.loadModel('phase_3' + fileRoot + '250')
                 torso250.flattenMedium()
                 torso250.instanceTo(Preloaded[fileRoot+'-250'])
-                
+
 def loadBasicAnims():
     loadPhaseAnims()
 
@@ -628,12 +628,12 @@ class Toon(Avatar.Avatar, ToonHead):
 
     def setLODs(self):
         self.setLODNode()
-        levelOneIn = base.config.GetInt('lod1-in', 500)
+        levelOneIn = base.config.GetInt('lod1-in', 20)
         levelOneOut = base.config.GetInt('lod1-out', 0)
-        levelTwoIn = base.config.GetInt('lod2-in', 700)
-        levelTwoOut = base.config.GetInt('lod2-out', 500)
-        levelThreeIn = base.config.GetInt('lod3-in', 1000)
-        levelThreeOut = base.config.GetInt('lod3-out', 700)
+        levelTwoIn = base.config.GetInt('lod2-in', 80)
+        levelTwoOut = base.config.GetInt('lod2-out', 20)
+        levelThreeIn = base.config.GetInt('lod3-in', 280)
+        levelThreeOut = base.config.GetInt('lod3-out', 80)
         self.addLOD(1000, levelOneIn, levelOneOut)
         self.addLOD(500, levelTwoIn, levelTwoOut)
         self.addLOD(250, levelThreeIn, levelThreeOut)
