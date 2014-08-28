@@ -1,4 +1,4 @@
-from direct.interval.IntervalGlobal import *
+from direct.interval.IntervalGlobal import Sequence, Func, Wait
 
 from otp.movie.MovieEvent import MovieEvent
 from otp.nametag.NametagConstants import CFSpeech
@@ -6,8 +6,6 @@ from otp.nametag.NametagConstants import CFSpeech
 
 class MovieTalkEvent(MovieEvent):
     def __init__(self, avatar, message, chatFlags=CFSpeech, timePerWord=0.55):
-        MovieEvent.__init__(self)
-
         self.avatar = avatar
         self.message = message
         self.chatFlags = chatFlags

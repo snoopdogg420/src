@@ -1,5 +1,5 @@
 from otp.movie.Movie import Movie
-from otp.nametag.NametagGroup import *
+from otp.nametag.NametagGroup import NametagGroup
 from toontown.suit import Suit, SuitDNA
 from toontown.toon import Toon, ToonDNA
 
@@ -25,7 +25,7 @@ class ToontownMovie(Movie):
         toon.setDNA(dna)
 
         toon.animFSM.request('neutral')
-        toon.reparentTo(render)
+        toon.reparentTo(hidden)
 
         self.toons.add(toon)
         return toon
@@ -43,7 +43,7 @@ class ToontownMovie(Movie):
         suit.setDNA(dna)
 
         suit.loop('neutral')
-        suit.reparentTo(render)
+        suit.reparentTo(hidden)
 
         self.suits.add(suit)
         return suit

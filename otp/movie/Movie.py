@@ -1,4 +1,4 @@
-from direct.distributed.ClockDelta import *
+from direct.distributed.ClockDelta import globalClockDelta
 from direct.task.Task import Task
 
 
@@ -44,7 +44,6 @@ class Movie:
 
     def add(self, track):
         self.tracks[track.getName()] = track
-        track.setMovie(self)
 
     def get(self, name):
         return self.tracks.get(name)

@@ -1,4 +1,4 @@
-from direct.interval.IntervalGlobal import *
+from direct.interval.IntervalGlobal import Sequence
 
 
 class MovieTrack(Sequence):
