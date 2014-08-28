@@ -23,7 +23,7 @@ class Movie:
         self.setup()
 
         for track in self.tracks.values():
-            track.start(globalClockDelta.localElapsedTime(timestamp))
+            track.start(globalClockDelta.localElapsedTime(timestamp, bits=32))
 
         self.doneTask = taskMgr.doMethodLater(
             self.getDuration(), self.__handleMovieDone,
@@ -49,7 +49,7 @@ class Movie:
         return self.tracks.get(name)
 
     def getDuration(self):
-        return max([track.getDuration() for track in self.tracks])
+        return max([track.getDuration() for track in self.tracks.values()])
 
     def __handleMovieDone(self, task):
         self.stop()
