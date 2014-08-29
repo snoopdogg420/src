@@ -645,8 +645,6 @@ class Toon(Avatar.Avatar, ToonHead):
         self.generateToonTorso()
         self.generateToonColor()
         self.parentToonParts()
-        self.flattenMedium()
-        self.postFlatten()
         self.rescaleToon()
         self.resetHeight()
         self.setupToonNodes()
