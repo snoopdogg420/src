@@ -20,6 +20,7 @@ from toontown.building import ToonInterior
 from toontown.hood import QuietZoneState
 from toontown.hood import ZoneUtil
 from direct.interval.IntervalGlobal import *
+from toontown.dna.DNAParser import DNABulkLoader
 
 class TownLoader(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('TownLoader')
@@ -32,7 +33,7 @@ class TownLoader(StateData.StateData):
         TheBrrrgh : 'phase_9/audio/bgm/encntr_suit_tb.ogg',
         DonaldsDreamland : 'phase_9/audio/bgm/encntr_suit_ddl.ogg'
     }
-    
+
     def __init__(self, hood, parentFSMState, doneEvent):
         StateData.StateData.__init__(self, doneEvent)
         self.hood = hood
@@ -193,10 +194,9 @@ class TownLoader(StateData.StateData):
 
     def createHood(self, dnaFile, loadStorage = 1):
         if loadStorage:
-            loader.loadDNAFile(self.hood.dnaStore, 'phase_5/dna/storage_town.dna')
-            self.notify.debug('done loading %s' % 'phase_5/dna/storage_town.dna')
-            loader.loadDNAFile(self.hood.dnaStore, self.townStorageDNAFile)
-            self.notify.debug('done loading %s' % self.townStorageDNAFile)
+            files = ('phase_5/dna/storage_town.pdna', self.townStorageDNAFile)
+            dnaBulk = DNABulkLoader(self.hood.dnaStore, files)
+            dnaBulk.loadDNAFiles()
         node = loader.loadDNAFile(self.hood.dnaStore, dnaFile)
         self.notify.debug('done loading %s' % dnaFile)
         if node.getNumParents() == 1:
@@ -214,11 +214,10 @@ class TownLoader(StateData.StateData):
             np = npl.getPath(i)
             np.setTag('transformIndex', `i`)
             self.holidayPropTransforms[i] = np.getNetTransform()
-
-        self.notify.info('skipping self.geom.flattenMedium')
         gsg = base.win.getGsg()
         if gsg:
             self.geom.prepareScene(gsg)
+        self.geom.flattenLight()
         self.geom.setName('town_top_level')
 
     def reparentLandmarkBlockNodes(self):
@@ -258,6 +257,7 @@ class TownLoader(StateData.StateData):
                 else:
                     groupName = '%s' % zoneId
                 groupNode.setName(groupName)
+            groupNode.flattenMedium()
             self.nodeDict[zoneId] = []
             self.nodeList.append(groupNode)
             self.zoneDict[zoneId] = groupNode
@@ -281,7 +281,7 @@ class TownLoader(StateData.StateData):
                 nextZoneId = ZoneUtil.getTrueZoneId(nextZoneId, self.zoneId)
                 visNode = self.zoneDict[nextZoneId]
                 self.nodeDict[zoneId].append(visNode)
-                
+
         self.hood.dnaStore.resetPlaceNodes()
         self.hood.dnaStore.resetDNAGroups()
         self.hood.dnaStore.resetDNAVisGroups()

@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 import StringIO
 import copy
+import ftplib
 import json
 import os
 import shutil
@@ -15,9 +16,6 @@ import bz2
 # We have some dependencies that aren't in the standard Python library. Notify
 # the user if they are missing one:
 try:
-    import boto
-    from boto.cloudfront import CloudFrontConnection
-    from boto.s3.key import Key
     import requests
 except ImportError, e:
     print 'Missing dependency:', e.message[16:]
@@ -52,24 +50,19 @@ if sys.platform == 'win32':
 else:
     pythonPath = '/usr/bin/python2'
 
-# Collect our Amazon Web Services credentials:
-bucketName = deployData['bucket-name']
-distributionId = deployData['distribution-id']
-if not distributionId:
-    print 'Missing distribution ID.'
-    sys.exit(1)
-accessKeyId = deployData['access-key-id']
-if not accessKeyId:
-    print 'Missing access key ID.'
-    sys.exit(1)
-accessKey = deployData['access-key']
-if not accessKey:
-    print 'Missing access key.'
+# Collect our FTP credentials:
+ftpAddress = deployData['ftp-address']
+ftpUsername = deployData['ftp-username']
+if not ftpUsername:
+    print 'Missing FTP username.'
+ftpPassword = deployData['ftp-password']
+if not ftpPassword:
+    print 'Missing FTP password.'
     sys.exit(1)
 
 # Ensure that the platform we're building for is supported:
 platform = deployData['platform']
-if platform not in ('win32', 'linux', 'darwin'):  # Supported platforms
+if platform not in ('win32', 'linux2', 'darwin'):  # Supported platforms
     print 'Unsupported platform:', platform
     sys.exit(2)
 
@@ -263,11 +256,13 @@ os.mkdir('dist')
 # need to be updated using 'git diff'. We need to do this because two
 # compilations of the same multifile will never have the same hash:
 updatedFiles = []
-request = requests.get('http://' + bucketName + '.s3.amazonaws.com/' +
-                       deployToken + '/patcher.xml')
-root = ElementTree.fromstring(request.text)
+request = requests.get('http://' + ftpAddress + '/' + deployToken + '/patcher.xml')
+try:
+    root = ElementTree.fromstring(request.text)
+except:
+    root = None
 os.chdir('../../resources')
-if root.tag == 'patcher':  # We have a patcher file
+if root and (root.tag == 'patcher'):  # We have a patcher file
     resourcesRevision = root.find('resources-revision')
     if resourcesRevision is not None:
         resourcesRevision = resourcesRevision.text
@@ -307,7 +302,7 @@ for directory in localRoot.findall('directory'):
     # If we haven't pushed a patcher previously, we can assume this is the
     # first time deploying this distribution. Therefore, let's upload
     # everything:
-    if root.tag != 'patcher':
+    if (not root) or (root.tag != 'patcher'):
         for child in directory.getchildren():
             filepath = child.get('name')
             if directoryName:
@@ -354,30 +349,20 @@ for filepath in updatedFiles:
     print 'Compressing {0}...'.format(filepath)
     compressFile(os.path.join('build', filepath))
 
-print 'Uploading files to cdn.toontowninfinite.com...'
-connection = boto.connect_s3(accessKeyId, accessKey)
-bucket = connection.get_bucket(bucketName)
-
-invalidations = []
+print 'Uploading files to download.toontowninfinite.com...'
+ftp = ftplib.FTP(ftpAddress, ftpUsername, ftpPassword)
+ftp.cwd(deployToken)
 
 print 'Uploading... patcher.xml'
-key = Key(bucket)
-key.key = deployToken + '/patcher.xml'
-invalidations.append(key.key)
-key.set_contents_from_filename('dist/patcher.xml')
-key.make_public()
+with open('dist/patcher.xml', 'rb') as f:
+    ftp.storbinary('STOR patcher.xml', f)
+
 
 for filepath in updatedFiles:
     filepath = os.path.splitext(filepath)[0] + '.bz2'
     print 'Uploading... ' + filepath
-    key = Key(bucket)
-    key.key = deployToken + '/' + filepath
-    invalidations.append(key.key)
-    key.set_contents_from_filename('dist/' + filepath)
-    key.make_public()
-
-connection = CloudFrontConnection(accessKeyId, accessKey)
-connection.create_invalidation_request(distributionId, invalidations)
+    with open('dist/' + filepath, 'rb') as f:
+        ftp.storbinary('STOR ' + filepath, f)
 
 print 'Done uploading files.'
 

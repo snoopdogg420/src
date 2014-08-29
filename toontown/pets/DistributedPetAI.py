@@ -1005,7 +1005,7 @@ class DistributedPetAI(DistributedSmoothNodeAI.DistributedSmoothNodeAI, PetLooke
         return sum / 3.0
 
     def __lockPetMoveTask(self, avId):
-        if not hasattr(self, 'air') or not self.air.doId2do.has_key(avId):
+        if not hasattr(self, 'air') or avId not in self.air.doId2do:
             self.notify.warning('avId: %s gone or self deleted!' % avId)
             return Task.done
         av = self.air.doId2do.get(avId)
@@ -1013,7 +1013,7 @@ class DistributedPetAI(DistributedSmoothNodeAI.DistributedSmoothNodeAI, PetLooke
         self.distList.append(dist)
         if len(self.distList) > 3:
             self.distList.pop(0)
-        if self.movieDistSwitch.has_key(self.movieMode):
+        if self.movieMode in self.movieDistSwitch:
             dist_Callable = self.movieDistSwitch.get(self.movieMode)
             movieDist = dist_Callable(av.getStyle().getLegSize())
         else:

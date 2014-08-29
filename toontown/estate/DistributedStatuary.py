@@ -43,10 +43,10 @@ class DistributedStatuary(DistributedLawnDecor.DistributedLawnDecor):
         self.plantType = GardenGlobals.PlantAttributes[typeIndex]['plantType']
         self.modelPath = GardenGlobals.PlantAttributes[typeIndex]['model']
         self.pinballScore = None
-        if GardenGlobals.PlantAttributes[typeIndex].has_key('pinballScore'):
+        if 'pinballScore' in GardenGlobals.PlantAttributes[typeIndex]:
             self.pinballScore = GardenGlobals.PlantAttributes[typeIndex]['pinballScore']
         self.worldScale = 1.0
-        if GardenGlobals.PlantAttributes[typeIndex].has_key('worldScale'):
+        if 'worldScale' in GardenGlobals.PlantAttributes[typeIndex]:
             self.worldScale = GardenGlobals.PlantAttributes[typeIndex]['worldScale']
         return
 

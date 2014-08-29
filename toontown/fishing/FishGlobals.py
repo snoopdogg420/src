@@ -741,7 +741,7 @@ for genus, speciesList in __fishDict.items():
                 if subZones:
                     pondZones.extend(subZones)
                 for pondZone in pondZones:
-                    if __pondInfoDict.has_key(pondZone):
+                    if pondZone in __pondInfoDict:
                         rodDict = __pondInfoDict[pondZone]
                     else:
                         rodDict = copy.deepcopy(__emptyRodDict)

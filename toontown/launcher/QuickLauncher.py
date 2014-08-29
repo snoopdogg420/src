@@ -302,13 +302,13 @@ class QuickLauncher(LauncherBase):
                 name, value = args
                 dict[name] = int(value)
 
-        if dict.has_key('secretsNeedsParentPassword') and 1:
+        if 'secretsNeedsParentPassword' in dict and 1:
             self.secretNeedsParentPasswordKey = dict['secretsNeedsParentPassword']
             self.notify.info('secretNeedsParentPassword = %d' % self.secretNeedsParentPasswordKey)
         else:
             self.notify.warning('no secretNeedsParentPassword token in webAcctParams')
 
-        if dict.has_key('chatEligible'):
+        if 'chatEligible' in dict:
             self.chatEligibleKey = dict['chatEligible']
             self.notify.info('chatEligibleKey = %d' % self.chatEligibleKey)
         else:

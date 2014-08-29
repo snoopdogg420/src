@@ -28,8 +28,12 @@ DNA2Furniture = {
     'bookcase': 1120,
     'bookcase_low': 1130,
     'ending_table': 1200,
-    'jellybeanBank': 1300,
+    'jellybeanBank': 1300
 }
+
+if not simbase.config.GetBool('want-personal-bank', False):
+    DNA2Furniture['jellybeanBank'] = None
+
 
 class DNAFurnitureReaderAI:
     # This object processes the house_interior*.dna files and produces a

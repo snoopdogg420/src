@@ -50,6 +50,11 @@ class WhisperPopup(MarginPopup, ClickablePopup):
         clickState = self.getClickState() if self.active else 0
         fgColor, bgColor = WHISPER_COLORS[wt][clickState]
 
+        if self.innerNP:
+            self.innerNP.removeNode()
+            self.innerNP = NodePath.anyPath(self).attachNewNode('innerNP')
+            self.innerNP.setScale(self.SCALE_2D)
+
         balloon = NametagGlobals.speechBalloon2d.generate(
             self.text, self.font, textColor=fgColor, balloonColor=bgColor,
             wordWrap=self.WORDWRAP)

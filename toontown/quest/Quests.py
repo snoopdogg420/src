@@ -111,15 +111,11 @@ def npcMatches(toNpcId, npc):
     return toNpcId == npc.getNpcId() or toNpcId == Any or toNpcId == ToonHQ and npc.getHq() or toNpcId == ToonTailor and npc.getTailor()
 
 
-def calcRecoverChance(numberNotDone, baseChance, cap = 1):
-    chance = baseChance
+def calcRecoverChance(numberNotDone, chance, cap = 1):
     avgNum2Kill = 1.0 / (chance / 100.0)
-    if numberNotDone >= avgNum2Kill * 1.5 and cap:
-        chance = 1000
-    elif numberNotDone > avgNum2Kill * 0.5:
-        diff = float(numberNotDone - avgNum2Kill * 0.5)
-        luck = 1.0 + abs(diff / (avgNum2Kill * 0.5))
-        chance *= luck
+    diff = float(numberNotDone - avgNum2Kill * 0.5)
+    luck = 1.0 + abs(diff / (avgNum2Kill * 0.5))
+    chance *= luck
     return chance
 
 
@@ -270,13 +266,13 @@ class Quest:
         self.check(item >= ToontownBattleGlobals.MIN_LEVEL_INDEX and item <= ToontownBattleGlobals.MAX_LEVEL_INDEX, 'invalid gag item: %s' % item)
 
     def checkDeliveryItem(self, item):
-        self.check(ItemDict.has_key(item), 'invalid delivery item: %s' % item)
+        self.check(item in ItemDict, 'invalid delivery item: %s' % item)
 
     def checkNumItems(self, num):
         self.check(1, 'invalid num items: %s' % num)
 
     def checkRecoveryItem(self, item):
-        self.check(ItemDict.has_key(item), 'invalid recovery item: %s' % item)
+        self.check(item in ItemDict, 'invalid recovery item: %s' % item)
 
     def checkPercentChance(self, chance):
         self.check(chance > 0 and chance <= 100, 'invalid percent chance: %s' % chance)
@@ -446,9 +442,12 @@ class NewbieQuest:
         newbieHp = self.getNewbieLevel()
         num = 0
         for av in avList:
-            avatar = simbase.air.doId2do.get(av)
+            if game.process == 'client':
+                avatar = base.cr.doId2do.get(av)
+            else:
+                avatar = simbase.air.doId2do.get(av)
             if avatar is None:
-                avatar = av
+                continue
             if avatar.getDoId() != avId and avatar.getMaxHp() <= newbieHp:
                 num += 1
 
@@ -2048,10 +2047,10 @@ QuestDict = {
     175: (TT_TIER, Cont, (PhoneQuest,), Same, ToonHQ, 100, NA, TTLocalizer.QuestDialogDict[175]),
     164: (TT_TIER + 1, Start, (VisitQuest,), Any, 2001, NA, 165, TTLocalizer.QuestDialogDict[164]),
     165: (TT_TIER + 1, Start, (CogQuest, Anywhere, 4, Any), 2001, Same, NA, (166, 167, 168, 169), TTLocalizer.QuestDialogDict[165]),
-    166: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 'c'), Same, Same, NA, (170, 171, 172), TTLocalizer.QuestDialogDict[166]),
-    167: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 'l'), Same, Same, NA, (170, 171, 172), TTLocalizer.QuestDialogDict[167]),
-    168: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 's'), Same, Same, NA, (170, 171, 172), TTLocalizer.QuestDialogDict[168]),
-    169: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 'm'), Same, Same, NA, (170, 171, 172), TTLocalizer.QuestDialogDict[169]),
+    166: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 'c'), Same, Same, NA, 170, TTLocalizer.QuestDialogDict[166]),
+    167: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 'l'), Same, Same, NA, 170, TTLocalizer.QuestDialogDict[167]),
+    168: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 's'), Same, Same, NA, 170, TTLocalizer.QuestDialogDict[168]),
+    169: (TT_TIER + 1, Cont, (CogTrackQuest, Anywhere, 4, 'm'), Same, Same, NA, 170, TTLocalizer.QuestDialogDict[169]),
     170: (TT_TIER + 1, Cont, (VisitQuest,), Same, 2005, NA, 400, TTLocalizer.QuestDialogDict[170]),
     171: (TT_TIER + 1, Cont, (VisitQuest,), Same, 2311, NA, 400, TTLocalizer.QuestDialogDict[171]),
     172: (TT_TIER + 1, Cont, (VisitQuest,), Same, 2119, NA, 400, TTLocalizer.QuestDialogDict[172]),
@@ -3408,7 +3407,7 @@ Tier2QuestsDict = {}
 for questId, questDesc in QuestDict.items():
     if questDesc[QuestDictStartIndex] == Start:
         tier = questDesc[QuestDictTierIndex]
-        if Tier2QuestsDict.has_key(tier):
+        if tier in Tier2QuestsDict:
             Tier2QuestsDict[tier].append(questId)
         else:
             Tier2QuestsDict[tier] = [questId]
@@ -3767,7 +3766,7 @@ def chooseBestQuests(tier, currentNpc, av):
 
 
 def questExists(id):
-    return QuestDict.has_key(id)
+    return id in QuestDict
 
 
 def getQuest(id):
@@ -4000,7 +3999,7 @@ class MaxMoneyReward(Reward):
         return self.reward[0]
 
     def sendRewardAI(self, av):
-        av.b_setMaxMoney(self.getAmount())
+        return
 
     def countReward(self, qrc):
         qrc.maxMoney = self.getAmount()
@@ -4666,7 +4665,7 @@ def getNumRewardsInTier(tier):
 
 
 def rewardTierExists(tier):
-    return RequiredRewardTrackDict.has_key(tier)
+    return tier in RequiredRewardTrackDict
 
 
 def getOptionalRewardsInTier(tier):
@@ -4680,22 +4679,22 @@ def getRewardIdFromTrackId(trackId):
 RequiredRewardTrackDict = {
     TT_TIER: (100,),
     TT_TIER + 1: (400,),
-    TT_TIER + 2: (100, 801, 200, 802, 803, 101, 804, 805, 102, 806, 807, 100, 808, 809, 101, 810, 811, 500, 812, 813, 700, 814, 815, 300),
+    TT_TIER + 2: (100, 801, 200, 802, 803, 101, 804, 805, 102, 806, 807, 100, 808, 809, 101, 810, 811, 500, 812, 813, 814, 815, 300),
     TT_TIER + 3: (900,),
     DD_TIER: (400,),
-    DD_TIER + 1: (100, 801, 802, 201, 803, 804, 101, 805, 806, 102, 807, 808, 100, 809, 810, 101, 811, 812, 701, 813, 814, 815, 301),
+    DD_TIER + 1: (100, 801, 802, 201, 803, 804, 101, 805, 806, 102, 807, 808, 100, 809, 810, 101, 811, 812, 813, 814, 815, 301),
     DD_TIER + 2: (900,),
-    DG_TIER: (100, 202, 101, 102, 100, 101, 501, 702, 302),
+    DG_TIER: (100, 202, 101, 102, 100, 101, 501, 302),
     MM_TIER: (400,),
-    MM_TIER + 1: (100, 801, 802, 203, 803, 804, 101, 805, 806, 102, 807, 808, 100, 809, 810, 101, 811, 812, 703, 813, 814, 815, 303),
+    MM_TIER + 1: (100, 801, 802, 203, 803, 804, 101, 805, 806, 102, 807, 808, 100, 809, 810, 101, 811, 812, 813, 814, 815, 303),
     MM_TIER + 2: (900,),
     BR_TIER: (400,),
-    BR_TIER + 1: (100, 801, 802, 704, 803, 804, 101, 805, 806, 502, 807, 808, 102, 809, 810, 204, 811, 812, 100, 813, 814, 101, 815, 304),
+    BR_TIER + 1: (100, 801, 802, 803, 804, 101, 805, 806, 502, 807, 808, 102, 809, 810, 204, 811, 812, 100, 813, 814, 101, 815, 304),
     BR_TIER + 2: (900,),
-    DL_TIER: (100, 205, 101, 102, 705, 103, 305),
-    DL_TIER + 1: (100, 206, 101, 102, 706, 103),
+    DL_TIER: (100, 205, 101, 102, 103, 305),
+    DL_TIER + 1: (100, 206, 101, 102, 103),
     DL_TIER + 2: (100, 101, 102, 103),
-    DL_TIER + 3: (100, 101, 102, 102, 707, 207),
+    DL_TIER + 3: (100, 101, 102, 102, 207),
     ELDER_TIER: () }
 
 OptionalRewardTrackDict = {
@@ -4720,7 +4719,7 @@ OptionalRewardTrackDict = {
     ELDER_TIER: (1000, 1000, 610, 611, 612, 613, 614, 615, 616, 617, 618, 2961, 2962, 2963, 2964, 2965, 2966, 2967, 2968, 2969, 2970, 2971) }
 
 def isRewardOptional(tier, rewardId):
-    return OptionalRewardTrackDict.has_key(tier) and rewardId in OptionalRewardTrackDict[tier]
+    return tier in OptionalRewardTrackDict and rewardId in OptionalRewardTrackDict[tier]
 
 
 def getItemName(itemId):

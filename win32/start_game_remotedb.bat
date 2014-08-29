@@ -18,3 +18,4 @@ echo Gameserver: %TTI_GAMESERVER%
 echo ===============================
 
 %PPYTHON_PATH% -m toontown.toonbase.ClientStartRemoteDB
+pause

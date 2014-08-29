@@ -77,7 +77,7 @@ class PlayerInfoPanel(AvatarPanelBase.AvatarPanelBase):
             logoImageName = GAME_LOGO_NAMES['Default']
             if not self.playerInfo.onlineYesNo:
                 logoImageName = GAME_LOGO_NAMES['Default']
-            elif GAME_LOGO_NAMES.has_key(self.playerInfo.location):
+            elif self.playerInfo.location in GAME_LOGO_NAMES:
                 logoImageName = GAME_LOGO_NAMES[self.playerInfo.location]
             model = loader.loadModel(GAME_LOGO_FILE)
             logoImage = model.find('**/' + logoImageName)

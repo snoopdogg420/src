@@ -674,17 +674,17 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
         print entry
 
     def flyBallFinishedFlying(self, sequence):
-        if self.flyBallTracks.has_key(sequence):
+        if sequence in self.flyBallTracks:
             del self.flyBallTracks[sequence]
 
     def __finishFlyBallTrack(self, sequence):
-        if self.flyBallTracks.has_key(sequence):
+        if sequence in self.flyBallTracks:
             flyBallTrack = self.flyBallTracks[sequence]
             del self.flyBallTracks[sequence]
             flyBallTrack.finish()
 
     def flyBallFinishedSplatting(self, sequence):
-        if self.splatTracks.has_key(sequence):
+        if sequence in self.splatTracks:
             del self.splatTracks[sequence]
 
     def __flyBallHit(self, entry):
@@ -694,7 +694,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
             return
         sequence = int(entry.getFromNodePath().getNetTag('pieSequence'))
         self.__finishFlyBallTrack(sequence)
-        if self.splatTracks.has_key(sequence):
+        if sequence in self.splatTracks:
             splatTrack = self.splatTracks[sequence]
             del self.splatTracks[sequence]
             splatTrack.finish()
@@ -715,7 +715,7 @@ class DistributedGolfSpot(DistributedObject.DistributedObject, FSM.FSM):
          throwerId))
         if flyBallCode == ToontownGlobals.PieCodeBossCog and self.avId == localAvatar.doId and self.lastHitSequenceNum != self.__flyBallSequenceNum:
             self.lastHitSequenceNum = self.__flyBallSequenceNum
-            self.boss.d_ballHitBoss(1)
+            self.boss.d_ballHitBoss(2)
         elif flyBallCode == ToontownGlobals.PieCodeToon and self.avId == localAvatar.doId and self.lastHitSequenceNum != self.__flyBallSequenceNum:
             self.lastHitSequenceNum = self.__flyBallSequenceNum
             avatarDoId = entry.getIntoNodePath().getNetTag('avatarDoId')

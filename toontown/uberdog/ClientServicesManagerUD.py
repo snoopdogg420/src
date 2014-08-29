@@ -48,7 +48,7 @@ def executeHttpRequest(url, **extras):
         request.add_header('X-CSM-' + k, v)
     try:
         return urllib2.urlopen(request).read()
-    except urllib2.HTTPError:
+    except:
         return None
 
 
@@ -351,13 +351,14 @@ class LoginAccountFSM(OperationFSM):
 
     def enterCreateAccount(self):
         self.account = {
-            'ACCOUNT_AV_SET': [0]*6,
+            'ACCOUNT_AV_SET': [0] * 6,
             'ESTATE_ID': 0,
             'ACCOUNT_AV_SET_DEL': [],
             'CREATED': time.ctime(time.mktime(time.gmtime())),
             'LAST_LOGIN': time.ctime(time.mktime(time.gmtime())),
             'ACCOUNT_ID': str(self.userId),
-            'ACCESS_LEVEL': self.accessLevel
+            'ACCESS_LEVEL': self.accessLevel,
+            'MONEY': 0
         }
         self.csm.air.dbInterface.createObject(
             self.csm.air.dbId,
@@ -886,6 +887,23 @@ class LoadAvatarFSM(AvatarOperationFSM):
         self.avatar = fields
         self.demand('SetAvatar')
 
+    def enterSetAvatarTask(self, channel, task):
+        # Finally, grant ownership and shut down.
+        datagram = PyDatagram()
+        datagram.addServerHeader(
+            self.avId,
+            self.csm.air.ourChannel,
+            STATESERVER_OBJECT_SET_OWNER)
+        datagram.addChannel(self.target<<32 | self.avId)
+        self.csm.air.send(datagram)
+
+        # Tell the GlobalPartyManager as well:
+        self.csm.air.globalPartyMgr.avatarJoined(self.avId)
+
+        self.csm.air.writeServerEvent('avatarChosen', self.avId, self.target)
+        self.demand('Off')
+        return task.done
+
     def enterSetAvatar(self):
         channel = self.csm.GetAccountConnectionChannel(self.target)
 
@@ -908,7 +926,8 @@ class LoadAvatarFSM(AvatarOperationFSM):
         # Activate the avatar on the DBSS:
         self.csm.air.sendActivate(
             self.avId, 0, 0, self.csm.air.dclassesByName['DistributedToonUD'],
-            {'setAdminAccess': [self.account.get('ACCESS_LEVEL', 100)]})
+            {'setAdminAccess': [self.account.get('ACCESS_LEVEL', 100)],
+             'setBankMoney': [self.account.get('MONEY', 0)]})
 
         # Next, add them to the avatar channel:
         datagram = PyDatagram()
@@ -928,23 +947,10 @@ class LoadAvatarFSM(AvatarOperationFSM):
         datagram.addChannel(self.target<<32 | self.avId)
         self.csm.air.send(datagram)
 
-        # Finally, grant ownership and shut down.
-        datagram = PyDatagram()
-        datagram.addServerHeader(
-            self.avId,
-            self.csm.air.ourChannel,
-            STATESERVER_OBJECT_SET_OWNER)
-        datagram.addChannel(self.target<<32 | self.avId)
-        self.csm.air.send(datagram)
-
-        # Tell TTIFriendsManager somebody is logging in:
-        self.csm.air.friendsManager.toonOnline(self.avId, self.avatar)
-
-        # Tell the GlobalPartyManager as well:
-        self.csm.air.globalPartyMgr.avatarJoined(self.avId)
-
-        self.csm.air.writeServerEvent('avatarChosen', self.avId, self.target)
-        self.demand('Off')
+        # Eliminate race conditions.
+        taskMgr.doMethodLater(0.2, self.enterSetAvatarTask,
+                              'avatarTask-%s' % self.avId, extraArgs=[channel],
+                              appendTask=True)
 
 class UnloadAvatarFSM(OperationFSM):
     notify = directNotify.newCategory('UnloadAvatarFSM')

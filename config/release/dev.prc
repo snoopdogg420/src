@@ -6,6 +6,7 @@ model-path ../resources
 
 # Server...
 server-version infinite-dev
+client-agents 1
 server-force-ssl #f
 
 # DClass files (in reverse order)...
@@ -32,6 +33,7 @@ want-find-four #f
 
 # Optional...
 want-yin-yang #t
+want-chestnut-park-construction #t
 
 # Developer options...
 want-instant-parties #t

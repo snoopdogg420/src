@@ -218,7 +218,7 @@ class DistributedTrolley(DistributedObject.DistributedObject):
                 else:
                     self.notify.warning("Can't board the trolley because it doesn't exist")
                     self.sendUpdate('requestExit')
-            if self.cr.doId2do.has_key(avId):
+            if avId in self.cr.doId2do:
                 toon = self.cr.doId2do[avId]
                 toon.stopSmooth()
                 toon.wrtReparentTo(self.trolleyCar)
@@ -256,7 +256,7 @@ class DistributedTrolley(DistributedObject.DistributedObject):
     def emptySlot(self, index, avId, timestamp):
         if avId == 0:
             pass
-        elif self.cr.doId2do.has_key(avId):
+        elif avId in self.cr.doId2do:
             toon = self.cr.doId2do[avId]
             toon.setHpr(self.trolleyCar, 90, 0, 0)
             toon.wrtReparentTo(render)
@@ -402,5 +402,5 @@ class DistributedTrolley(DistributedObject.DistributedObject):
             keyList.append(key)
 
         for key in keyList:
-            if self.__toonTracks.has_key(key):
+            if key in self.__toonTracks:
                 self.clearToonTrack(key)

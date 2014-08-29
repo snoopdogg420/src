@@ -50,17 +50,29 @@ DogMuzzleDict = {'dls': '/models/char/dogMM_Shorts-headMuzzles-',
 
 PreloadHeads = {}
 
-def loadModels():
+def preloadToonHeads():
     global PreloadHeads
     if not PreloadHeads:
         print 'Preloading Toon heads...'
         for key in HeadDict.keys():
             fileRoot = HeadDict[key]
-            PreloadHeads['phase_3' + fileRoot + '1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
-            PreloadHeads['phase_3' + fileRoot + '500'] = loader.loadModel('phase_3' + fileRoot + '500')
-            PreloadHeads['phase_3' + fileRoot + '250'] = loader.loadModel('phase_3' + fileRoot + '250')
-
-loadModels()
+            
+            PreloadHeads['phase_3' + fileRoot + '1000'] = NodePath('head-1000')
+            head1000 = loader.loadModel('phase_3' + fileRoot + '1000')
+            head1000.flattenMedium()
+            head1000.instanceTo(PreloadHeads['phase_3' + fileRoot + '1000'])
+            
+            PreloadHeads['phase_3' + fileRoot + '500'] = NodePath('head-500')
+            head500 = loader.loadModel('phase_3' + fileRoot + '500')
+            head500.flattenMedium()
+            head500.instanceTo(PreloadHeads['phase_3' + fileRoot + '500'])
+            
+            PreloadHeads['phase_3' + fileRoot + '250'] = NodePath('head-250')
+            head250 = loader.loadModel('phase_3' + fileRoot + '250')
+            head250.flattenMedium()
+            head250.instanceTo(PreloadHeads['phase_3' + fileRoot + '250'])
+            
+preloadToonHeads()
 
 class ToonHead(Actor.Actor):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonHead')
@@ -394,7 +406,8 @@ class ToonHead(Actor.Actor):
                     self.__copy = copy
         else:
             for lod in lods:
-                self.loadModel('phase_3' + filePrefix + lod, 'head', lod, copy)
+                filepath = 'phase_3' + filePrefix + lod
+                self.loadModel(PreloadHeads[filepath], 'head', lod, True)
                 if not forGui:
                     pLoaded = self.loadPumpkin(headStyle[1], lod, copy)
                     self.loadSnowMan(headStyle[1], lod, copy)

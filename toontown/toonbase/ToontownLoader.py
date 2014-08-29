@@ -89,6 +89,20 @@ class ToontownLoader(Loader.Loader):
             self.tick()
         return ret
 
+    def pdnaModel(self, *args, **kw):
+        ret = Loader.Loader.loadModel(self, *args, **kw)
+        if ret:
+            gsg = base.win.getGsg()
+            if gsg:
+                ret.prepareScene(gsg)
+        return ret
+
+    def pdnaFont(self, *args, **kw):
+        return Loader.Loader.loadFont(self, *args, **kw)
+
+    def pdnaTexture(self, texturePath, alphaPath = None, okMissing = False):
+        return Loader.Loader.loadTexture(self, texturePath, alphaPath, okMissing=okMissing)
+
     def loadSfx(self, soundPath):
         ret = Loader.Loader.loadSfx(self, soundPath)
         self.tick()

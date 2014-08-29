@@ -1,5 +1,5 @@
 from toontown.classicchars import DistributedGoofySpeedwayAI
-from toontown.dna.DNAParser import DNAGroup, DNAVisGroup, DNAData
+from toontown.dna.DNAParser import DNAGroup, DNAVisGroup
 from toontown.hood import HoodAI
 from toontown.hood import ZoneUtil
 from toontown.racing import RaceGlobals
@@ -103,7 +103,7 @@ class GSHoodAI(HoodAI.HoodAI):
         for zoneId in self.getZoneTable():
             dnaData = self.air.dnaDataMap.get(zoneId, None)
             zoneId = ZoneUtil.getTrueZoneId(zoneId, self.zoneId)
-            if isinstance(dnaData, DNAData):
+            if dnaData.getName() == 'root':
                 area = ZoneUtil.getCanonicalZoneId(zoneId)
                 (foundRacingPads, foundRacingPadGroups) = self.findRacingPads(dnaData, zoneId, area, padType='racing_pad')
                 (foundViewingPads, foundViewingPadGroups) = self.findRacingPads(dnaData, zoneId, area, padType='viewing_pad')
@@ -130,7 +130,7 @@ class GSHoodAI(HoodAI.HoodAI):
     def createLeaderBoards(self):
         self.leaderBoards = []
         dnaData = self.air.dnaDataMap[self.zoneId]
-        if isinstance(dnaData, DNAData):
+        if dnaData.getName() == 'root':
             self.leaderBoards = self.findLeaderBoards(dnaData, self.zoneId)
         for leaderBoard in self.leaderBoards:
             if not leaderBoard:

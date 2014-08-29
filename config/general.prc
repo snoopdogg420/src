@@ -15,10 +15,12 @@ model-cache-models #f
 model-cache-textures #f
 default-model-extension .bam
 texture-anisotropic-degree 16
+text-minfilter linear
 
 # Server...
 server-force-ssl #t
 server-port 7199
+client-agents 8
 server-timezone US/Eastern
 
 # Database...
@@ -104,7 +106,7 @@ want-vine-game #t
 want-ice-game #t
 want-thief-game #t
 want-2d-game #t
-want-photo-game #t
+want-photo-game #f
 want-travel-game #f
 force-minigame 0
 
@@ -165,6 +167,9 @@ pajama-place-building-chance 100.0
 # Cog battles...
 base-xp-multiplier 1.0
 
+# Economy...
+want-personal-bank #f
+
 # Picnic table board games...
 want-game-tables #t
 want-checkers #t
@@ -186,10 +191,26 @@ want-instant-parties #f
 want-old-fireworks #t
 
 # Performance
-hardware-animated-vertices #t
-preload-avatars #t
 sync-video #f
 smooth-lag 0.4
+support-stencil #f
+framebuffer-stencil #f
+textures-power-2 none
+gl-finish #f
+gl-force-no-error #t
+gl-check-errors #f
+gl-force-no-flush #t
+gl-force-no-scissor #t
+texture-magfilter linear
+texture-minfilter linear
+lock-to-one-cpu #f
+support-threads #t
+gl-immutable-texture-storage #f
+gl-dump-compiled-shaders #f
+show-buffers #f
+garbage-collect-states #f
+framebuffer-multisample #f
+multisamples 0
 
 # Egg ObjectTypes...
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }

@@ -5,6 +5,10 @@ from toontown.toonbase import TTLocalizer
 from toontown.hood import ZoneUtil
 import random
 
+
+LOADING_SCREEN_SORT_INDEX = 4000
+
+
 class ToontownLoadingScreen:
 
     defaultTex = 'phase_3.5/maps/loading/default.jpg'
@@ -33,6 +37,8 @@ class ToontownLoadingScreen:
         ToontownGlobals.DonaldsDreamland : 'phase_3.5/maps/loading/ddl.jpg',
         ToontownGlobals.LullabyLane : 'phase_3.5/maps/loading/ddl_ll.jpg',
         ToontownGlobals.PajamaPlace : 'phase_3.5/maps/loading/ddl_pp.jpg',
+        ToontownGlobals.OutdoorZone : 'phase_3.5/maps/loading/oz.jpg',
+        ToontownGlobals.GolfZone : 'phase_3.5/maps/loading/gz.jpg',
         ToontownGlobals.SellbotHQ : 'phase_3.5/maps/loading/sbhq.jpg',
         ToontownGlobals.CashbotHQ : 'phase_3.5/maps/loading/cbhq.jpg',
         ToontownGlobals.LawbotHQ : 'phase_3.5/maps/loading/lbhq.jpg',
@@ -44,7 +50,7 @@ class ToontownLoadingScreen:
         self.__count = 0
         self.gui = loader.loadModel('phase_3/models/gui/progress-background.bam')
         self.title = DirectLabel(guiId='ToontownLoadingScreenTitle', parent=self.gui, relief=None, pos=(base.a2dRight/5, 0, 0.235), text='', textMayChange=1, text_scale=0.08, text_fg=(0.03, 0.83, 0, 1), text_align=TextNode.ALeft, text_font=ToontownGlobals.getSignFont())
-        self.waitBar = self.waitBar = DirectWaitBar(guiId='ToontownLoadingScreenWaitBar', parent=self.gui, frameSize=(base.a2dLeft+(base.a2dRight/4.95), base.a2dRight-(base.a2dRight/4.95), -0.03, 0.03), pos=(0, 0, 0.15), text='')
+        self.waitBar = DirectWaitBar(guiId='ToontownLoadingScreenWaitBar', parent=self.gui, frameSize=(base.a2dLeft+(base.a2dRight/4.95), base.a2dRight-(base.a2dRight/4.95), -0.03, 0.03), pos=(0, 0, 0.15), text='')
         logoScale = 0.5625  # Scale for our locked aspect ratio (2:1).
         self.logo = OnscreenImage(
             image='phase_3/maps/toontown-logo.png',
@@ -86,18 +92,18 @@ class ToontownLoadingScreen:
                 self.toon.setPos(base.a2dBottomRight.getX()/1.25, 0, -0.034)
                 self.toon.reparentTo(self.waitBar)
                 self.waitBar['frameSize'] = (base.a2dLeft+(base.a2dRight/8.15), base.a2dRight-(base.a2dRight/2.57), -0.03, 0.03)
-            self.title.reparentTo(base.a2dpBottomLeft, NO_FADE_SORT_INDEX)
+            self.title.reparentTo(base.a2dpBottomLeft, LOADING_SCREEN_SORT_INDEX)
             self.title.setPos(0.24, 0, 0.23)
             self.gui.setPos(0, -0.1, 0)
-            self.gui.reparentTo(aspect2d, NO_FADE_SORT_INDEX)
+            self.gui.reparentTo(aspect2d, LOADING_SCREEN_SORT_INDEX)
             self.gui.setTexture(self.background, 1)
             if loadingScreenTex == self.defaultTex:
-                self.logo.reparentTo(base.a2dpTopCenter, NO_FADE_SORT_INDEX)
+                self.logo.reparentTo(base.a2dpTopCenter, LOADING_SCREEN_SORT_INDEX)
         else:
-            self.title.reparentTo(base.a2dpBottomLeft, NO_FADE_SORT_INDEX)
+            self.title.reparentTo(base.a2dpBottomLeft, LOADING_SCREEN_SORT_INDEX)
             self.gui.reparentTo(hidden)
             self.logo.reparentTo(hidden)
-        self.waitBar.reparentTo(base.a2dpBottomCenter, NO_FADE_SORT_INDEX)
+        self.waitBar.reparentTo(base.a2dpBottomCenter, LOADING_SCREEN_SORT_INDEX)
         self.waitBar.update(self.__count)
 
     def end(self):

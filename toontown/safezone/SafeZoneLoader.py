@@ -76,12 +76,9 @@ class SafeZoneLoader(StateData.StateData):
         self.fsm.request(stateName, [requestStatus])
 
     def createSafeZone(self, dnaFile):
-        '''self.geom = NodePath('')
-        self.nodeList = []
-        self.holidayPropTransforms = {}
-        self.animPropDict = {}'''
         if self.safeZoneStorageDNAFile:
-            loadDNAFile(self.hood.dnaStore, self.safeZoneStorageDNAFile)
+            dnaBulk = DNABulkLoader(self.hood.dnaStore, (self.safeZoneStorageDNAFile,))
+            dnaBulk.loadDNAFiles()
         node = loadDNAFile(self.hood.dnaStore, dnaFile)
         if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))
@@ -96,11 +93,10 @@ class SafeZoneLoader(StateData.StateData):
             np = npl.getPath(i)
             np.setTag('transformIndex', `i`)
             self.holidayPropTransforms[i] = np.getNetTransform()
-
-        self.geom.flattenMedium()
         gsg = base.win.getGsg()
         if gsg:
             self.geom.prepareScene(gsg)
+        self.geom.flattenMedium()
 
     def makeDictionaries(self, dnaStore):
         self.nodeList = []
@@ -110,6 +106,7 @@ class SafeZoneLoader(StateData.StateData):
             groupNode = self.geom.find('**/' + groupFullName)
             if groupNode.isEmpty():
                 self.notify.error('Could not find visgroup')
+            groupNode.flattenMedium()
             self.nodeList.append(groupNode)
 
         self.removeLandmarkBlockNodes()

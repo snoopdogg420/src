@@ -173,12 +173,12 @@ class DistributedMinigameAI(DistributedObjectAI.DistributedObjectAI):
 
     def gameOver(self):
         self.notify.debug('BASE: gameOver')
-        
+
         if simbase.air.wantAchievements:
             for avId in self.avIdList:
                 av = self.air.doId2do.get(avId)
                 self.air.achievementsManager.toonPlayedMinigame(av)
-            
+
         self.frameworkFSM.request('frameworkWaitClientsExit')
 
     def enterFrameworkOff(self):
@@ -340,7 +340,7 @@ class DistributedMinigameAI(DistributedObjectAI.DistributedObjectAI):
             votesToUse = self.currentVotes
         votesArray = []
         for avId in self.avIdList:
-            if votesToUse.has_key(avId):
+            if avId in votesToUse:
                 votesArray.append(votesToUse[avId])
             else:
                 self.notify.warning('votesToUse=%s does not have avId=%d' % (votesToUse, avId))
@@ -438,7 +438,7 @@ class DistributedMinigameAI(DistributedObjectAI.DistributedObjectAI):
     def getStartingVotes(self):
         retval = []
         for avId in self.avIdList:
-            if self.startingVotes.has_key(avId):
+            if avId in self.startingVotes:
                 retval.append(self.startingVotes[avId])
             else:
                 self.notify.warning('how did this happen? avId=%d not in startingVotes %s' % (avId, self.startingVotes))

@@ -21,6 +21,7 @@ from direct.gui import DirectLabel
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs
 from toontown.quest import Quests
 from toontown.battle import BattleParticles
+from toontown.dna.DNAParser import DNABulkLoader
 
 class Playground(Place.Place):
     notify = DirectNotifyGlobal.directNotify.newCategory('Playground')
@@ -645,7 +646,8 @@ class Playground(Place.Place):
         Place.Place.exitTeleportOut(self)
 
     def createPlayground(self, dnaFile):
-        loader.loadDNAFile(self.loader.dnaStore, self.safeZoneStorageDNAFile)
+        dnaBulk = DNABulkLoader(self.loader.dnaStore, (self.safeZoneStorageDNAFile,))
+        dnaBulk.loadDNAFiles()
         node = loader.loadDNAFile(self.loader.dnaStore, dnaFile)
         if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))

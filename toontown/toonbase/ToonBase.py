@@ -26,6 +26,7 @@ from toontown.toonbase import ToontownAccess
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toontowngui import TTDialog
 
+import random
 
 class ToonBase(OTPBase.OTPBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonBase')
@@ -146,7 +147,7 @@ class ToonBase(OTPBase.OTPBase):
         self.transitions.IrisModelName = 'phase_3/models/misc/iris'
         self.transitions.FadeModelName = 'phase_3/models/misc/fade'
         self.exitFunc = self.userExit
-        if __builtins__.has_key('launcher') and launcher:
+        if 'launcher' in __builtins__ and launcher:
             launcher.setPandaErrorCode(11)
         globalClock.setMaxDt(0.2)
         if self.config.GetBool('want-particles', 1) == 1:
@@ -442,7 +443,15 @@ class ToonBase(OTPBase.OTPBase):
         else:
             self.acceptOnce('launcherAllPhasesComplete', self.cleanupDownloadWatcher)
         gameServer = os.environ.get('TTI_GAMESERVER', 'localhost')
+        # Get the base port.
         serverPort = base.config.GetInt('server-port', 7199)
+
+        # Get the number of client-agents.
+        clientagents = base.config.GetInt('client-agents', 4) - 1
+
+        # Get a new port.
+        serverPort += (random.randint(0, clientagents) * 100)
+
         serverList = []
         for name in gameServer.split(';'):
             url = URLSpec(name, 1)
