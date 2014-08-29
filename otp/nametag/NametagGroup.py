@@ -47,7 +47,7 @@ class NametagGroup:
 
         self.visible3d = True # Is a 3D nametag visible, or do we need a 2D popup?
 
-        self.tickTask = taskMgr.add(self.__tickTask, self.getUniqueId(), sort=45)
+        self.tickTask = taskMgr.add(self.__tickTask, self.getUniqueId(), sort=45, taskChain='nametag-chain')
 
         self.stompTask = None
         self.stompText = None

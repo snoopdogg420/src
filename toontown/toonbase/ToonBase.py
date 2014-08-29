@@ -8,6 +8,7 @@ import os
 from pandac.PandaModules import *
 from sys import platform
 import sys
+from direct.task import *
 
 import ToontownGlobals
 import ToontownLoader
@@ -123,6 +124,7 @@ class ToonBase(OTPBase.OTPBase):
             self.win.setSort(sort)
             self.graphicsEngine.renderFrame()
             self.graphicsEngine.renderFrame()
+        taskMgr.setupTaskChain('nametag-chain', numThreads=1, frameSync=True, threadPriority=TPNormal)
         self.disableShowbaseMouse()
         self.addCullBins()
         self.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
