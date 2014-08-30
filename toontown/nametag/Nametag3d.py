@@ -106,9 +106,6 @@ class Nametag3d(Nametag.Nametag):
     def setClickRegion(self, left, right, bottom, top):
         if not self.active:
             self.region.setActive(False)
-            if self.frame is not None:
-                self.frame.destroy()
-                self.frame = None
             return Task.cont
 
         # Get a transform matrix to position the points correctly according to
@@ -136,6 +133,7 @@ class Nametag3d(Nametag.Nametag):
         screenSpaceTopLeft = Point2()
         screenSpaceBottomRight = Point2()
 
+        # Project the converted points onto the lens:
         lens = base.camLens
         if not (lens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
                 lens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
@@ -146,8 +144,3 @@ class Nametag3d(Nametag.Nametag):
 
         self.region.setFrame(left, right, bottom, top)
         self.region.setActive(True)
-
-        if self.frame is not None:
-            self.frame.destroy()
-            self.frame = None
-        self.frame = DirectFrame(frameColor=(1, 0, 0, 0.25), parent=render2d, frameSize=(left, right, bottom, top))
