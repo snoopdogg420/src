@@ -2,7 +2,6 @@ from direct.fsm.FSM import FSM
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from pandac.PandaModules import *
-from direct.gui.DirectGui import *
 
 from otp.otpbase import OTPGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
@@ -34,8 +33,6 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.icon = None
         self.chatBalloon = None
         self.chatButton = NametagGlobals.noButton
-
-        self.type = None
 
         self.font = None
         self.chatFont = None
@@ -439,61 +436,4 @@ class Nametag(FSM, PandaNode, DirectObject):
             self.setClickState(self.pendingClickState)
 
     def setClickRegion(self, left, right, bottom, top):
-        if not self.active:
-            self.region.setActive(False)
-            if self.frame is not None:
-                self.frame.destroy()
-                self.frame = None
-            return Task.cont
-
-        if self.type is None:
-            return Task.cont
-
-        # Get a transform matrix to position the points correctly according to
-        # the nametag node:
-        transform = NodePath.anyPath(self).getNetTransform()
-
-        # Get the inverse of the camera transform matrix:
-        # Needed so that the camera transform will not be applied to the region
-        # points twice.
-        camTransform = base.cam.getNetTransform()
-        camTransform = camTransform.getInverse()
-
-        # Compose the inverse of the camera transform and the nametag node
-        # transform:
-        transform = camTransform.compose(transform)
-        transform = transform.setQuat(Quat())
-
-        # Get the actual matrix of the transform above:
-        mat = transform.getMat()
-
-        # Transform the specified points to the new matrix:
-        camSpaceTopLeft = mat.xformPoint(Point3(left, 0, top))
-        camSpaceBottomRight = mat.xformPoint(Point3(right, 0, bottom))
-
-        # The region is 3d and we must project it onto the lens:
-        if self.type == '3d':
-            screenSpaceTopLeft = Point2()
-            screenSpaceBottomRight = Point2()
-
-            if not (base.camLens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
-                    base.camLens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
-                self.region.setActive(False)
-                return
-        # The region is 2d so we don't need to project it:
-        else:
-            screenSpaceTopLeft = Point2(camSpaceTopLeft[0], camSpaceTopLeft[2])
-            screenSpaceBottomRight = Point2(camSpaceBottomRight[0], camSpaceBottomRight[2])
-
-        left, top = screenSpaceTopLeft
-        right, bottom = screenSpaceBottomRight
-
-        print (left, right)
-
-        self.region.setFrame(left, right, bottom, top)
-        self.region.setActive(True)
-
-        if self.frame is not None:
-            self.frame.destroy()
-            self.frame = None
-        self.frame = DirectFrame(frameColor=(1, 0, 0, 0.25), parent=render2d, frameSize=(left, right, bottom, top))
+        pass # Inheritors should override this method.

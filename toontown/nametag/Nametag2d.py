@@ -1,6 +1,7 @@
 from direct.task.Task import Task
 import math
 from pandac.PandaModules import *
+from direct.gui.DirectGui import *
 
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import Nametag
@@ -22,8 +23,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         MarginVisible.__init__(self)
 
         self.arrow = None
-
-        self.type = '2d'
 
         self.hideThought()
         self.contents.setScale(self.CONTENTS_SCALE)
@@ -105,3 +104,48 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         left, right, bottom, top =  self.textNode.getFrameActual()
         self.updateClickRegion()
+
+    def setClickRegion(self, left, right, bottom, top):
+        return Task.cont
+        if not self.active:
+            self.region.setActive(False)
+            if self.frame is not None:
+                self.frame.destroy()
+                self.frame = None
+            return Task.cont
+
+        # Get a transform matrix to position the points correctly according to
+        # the nametag node:
+        transform = self.contents.getNetTransform()
+
+        # Get the inverse of the camera transform matrix:
+        # Needed so that the camera transform will not be applied to the region
+        # points twice.
+        camTransform = base.cam.getNetTransform()
+        camTransform = camTransform.getInverse()
+
+        # Compose the inverse of the camera transform and the nametag node
+        # transform:
+        transform = camTransform.compose(transform)
+        transform = transform.setQuat(Quat())
+
+        # Get the actual matrix of the transform above:
+        mat = transform.getMat()
+
+        # Transform the specified points to the new matrix:
+        camSpaceTopLeft = mat.xformPoint(Point3(left, 0, top))
+        camSpaceBottomRight = mat.xformPoint(Point3(right, 0, bottom))
+
+        screenSpaceTopLeft = Point2(camSpaceTopLeft[0], camSpaceTopLeft[2])
+        screenSpaceBottomRight = Point2(camSpaceBottomRight[0], camSpaceBottomRight[2])
+
+        left, top = screenSpaceTopLeft
+        right, bottom = screenSpaceBottomRight
+
+        self.region.setFrame(left, right, bottom, top)
+        self.region.setActive(True)
+
+        if self.frame is not None:
+            self.frame.destroy()
+            self.frame = None
+        self.frame = DirectFrame(frameColor=(1, 0, 0, 0.25), parent=render2d, frameSize=(left, right, bottom, top))

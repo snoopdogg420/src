@@ -1,6 +1,7 @@
 from direct.task.Task import Task
 import math
 from pandac.PandaModules import *
+from direct.gui.DirectGui import *
 
 from toontown.nametag import Nametag
 from toontown.nametag import NametagGlobals
@@ -18,8 +19,6 @@ class Nametag3d(Nametag.Nametag):
 
         self.distance = 0
         self.scale = 1
-
-        self.type = '3d'
 
         self.billboardOffset = 3
         self.doBillboardEffect()
@@ -51,25 +50,34 @@ class Nametag3d(Nametag.Nametag):
 
     def updateClickRegion(self):
         if self.panel is not None:
-            width = self.panelWidth * self.scale
-            height = self.panelHeight * self.scale
+            width = self.panelWidth
+            height = self.panelHeight
 
-            left = -width/2
-            right = width/2
-            bottom = -height/2
-            top = height/2
+            leftD = -width/2
+            rightD = width/2
+            bottomD = -height/2
+            topD = height/2
+
+            xCenter = (self.textNode.getLeft()+self.textNode.getRight())/2
+            yCenter = (self.textNode.getTop()+self.textNode.getBottom())/2
+
+            left = xCenter + leftD
+            right = xCenter + rightD
+            bottom = yCenter + bottomD
+            top = yCenter + topD
 
             self.setClickRegion(left, right, bottom, top)
 
         if self.chatBalloon is not None:
-            width = self.chatBalloon.width * self.scale
-            height = self.chatBalloon.height * self.scale
+            width = self.chatBalloon.width
+            height = self.chatBalloon.height
 
-            left = 0
-            right = width
+            left = self.chatBalloon.center[0]-(width/2)
+            right = left+width
 
-            scaledModelHeight = self.chatBalloon.modelHeight*self.scale
-            bottom = scaledModelHeight-(2.35*self.scale)
+            # Calculate the bottom of the region based on constants:
+            # 2.4 is equal to the padded height of a one line message
+            bottom = self.chatBalloon.modelHeight-2.4
             top = bottom+height
 
             self.setClickRegion(left, right, bottom, top)
@@ -94,3 +102,52 @@ class Nametag3d(Nametag.Nametag):
         self.updateClickRegion()
 
         return Task.cont
+
+    def setClickRegion(self, left, right, bottom, top):
+        if not self.active:
+            self.region.setActive(False)
+            if self.frame is not None:
+                self.frame.destroy()
+                self.frame = None
+            return Task.cont
+
+        # Get a transform matrix to position the points correctly according to
+        # the nametag node:
+        transform = self.contents.getNetTransform()
+
+        # Get the inverse of the camera transform matrix:
+        # Needed so that the camera transform will not be applied to the region
+        # points twice.
+        camTransform = base.cam.getNetTransform()
+        camTransform = camTransform.getInverse()
+
+        # Compose the inverse of the camera transform and the nametag node
+        # transform:
+        transform = camTransform.compose(transform)
+        transform = transform.setQuat(Quat())
+
+        # Get the actual matrix of the transform above:
+        mat = transform.getMat()
+
+        # Transform the specified points to the new matrix:
+        camSpaceTopLeft = mat.xformPoint(Point3(float(left), 0, float(top)))
+        camSpaceBottomRight = mat.xformPoint(Point3(float(right), 0, float(bottom)))
+
+        screenSpaceTopLeft = Point2()
+        screenSpaceBottomRight = Point2()
+
+        lens = base.camLens
+        if not (lens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
+                lens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
+            self.region.setActive(False)
+            return Task.cont
+        left, top = screenSpaceTopLeft
+        right, bottom = screenSpaceBottomRight
+
+        self.region.setFrame(left, right, bottom, top)
+        self.region.setActive(True)
+
+        if self.frame is not None:
+            self.frame.destroy()
+            self.frame = None
+        self.frame = DirectFrame(frameColor=(1, 0, 0, 0.25), parent=render2d, frameSize=(left, right, bottom, top))
