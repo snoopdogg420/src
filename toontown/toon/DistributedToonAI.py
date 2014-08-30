@@ -4399,7 +4399,6 @@ def maxToon(missingTrack=None):
     # Complete their quests:
     invoker.b_setQuests([])
     invoker.b_setRewardHistory(Quests.ELDER_TIER, [])
-    # TODO: Set quest history and rewards.
 
     # Max their money:
     invoker.b_setMoney(invoker.getMaxMoney())
