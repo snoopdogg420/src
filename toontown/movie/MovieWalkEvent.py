@@ -1,14 +1,14 @@
 from direct.interval.IntervalGlobal import Sequence, Parallel, Func, Wait
 from direct.task.Task import Task
-from pandac.PandaModules import ClockObject
+from pandac.PandaModules import ClockObject, Mat3, Vec3, Point3
 
 from otp.movie.MovieEvent import MovieEvent
 from otp.otpbase import OTPGlobals
 
 
-class MovieRotateWalkEvent(MovieEvent):
-    def __init__(self, avatar, duration, speed=OTPGlobals.ToonRotateSpeed,
-                 animName='walk', animPlayRate=1, sfx=None):
+class MovieWalkEvent(MovieEvent):
+    def __init__(self, avatar, duration, speed=OTPGlobals.ToonForwardSpeed,
+                 animName='run', animPlayRate=1, sfx=None):
         self.avatar = avatar
         self.duration = duration
         self.speed = speed
@@ -19,24 +19,24 @@ class MovieRotateWalkEvent(MovieEvent):
         self.stepTaskName = self.getUniqueName() + '-step'
 
     def getUniqueName(self):
-        return 'MovieRotateWalkEvent-' + str(id(self))
+        return 'MovieWalkEvent-' + str(id(self))
 
     def construct(self):
         track = Sequence()
 
-        # Construct the rotate track:
-        rotateTrack = Parallel()
+        # Construct the walk track:
+        walkTrack = Parallel()
         if self.animName is not None:
-            rotateTrack.append(
+            walkTrack.append(
                 Func(self.avatar.setPlayRate, self.animPlayRate, self.animName)
             )
-            rotateTrack.append(Func(self.avatar.loop, self.animName))
+            walkTrack.append(Func(self.avatar.loop, self.animName))
         if self.sfx is not None:
-            rotateTrack.append(
+            walkTrack.append(
                 Func(base.playSfx, self.sfx, looping=1, node=self.avatar)
             )
-        rotateTrack.append(Func(taskMgr.add, self.step, self.stepTaskName, 25))
-        track.append(rotateTrack)
+        walkTrack.append(Func(taskMgr.add, self.step, self.stepTaskName, 25))
+        track.append(walkTrack)
 
         # Wait the duration, and then stop the step task:
         track.append(Wait(self.duration))
@@ -51,7 +51,10 @@ class MovieRotateWalkEvent(MovieEvent):
         return track
 
     def step(self, task):
-        step = ClockObject.getGlobalClock().getDt() * self.speed
-        self.avatar.setH(self.avatar.getH() + step)
+        distance = ClockObject.getGlobalClock().getDt() * self.speed
+
+        rotMat = Mat3.rotateMatNormaxis(self.avatar.getH(), Vec3.up())
+        step = Vec3(rotMat.xform(Vec3.forward() * distance))
+        self.avatar.setFluidPos(Point3(self.avatar.getPos() + step))
 
         return Task.cont
