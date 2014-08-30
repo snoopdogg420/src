@@ -274,10 +274,9 @@ class DisguisePage(ShtikerPage.ShtikerPage):
             self.promoteButton['extraArgs'] = [index]
             if base.localAvatar.cogLevels[index] == ToontownGlobals.MaxCogSuitLevel:
                 self.promoteButton['state'] = DGG.DISABLED
-                self.promoteButton.hide()
             else:
                 self.promoteButton['state'] = DGG.NORMAL
-                self.promoteButton.show()
+            self.promoteButton.show()
 
     def sendPromotionRequest(self, dept):
         self.promoteButton.hide()
