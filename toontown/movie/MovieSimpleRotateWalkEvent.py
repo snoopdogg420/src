@@ -28,9 +28,7 @@ class MovieSimpleRotateWalkEvent(MovieEvent):
             rotateTrack.append(
                 Func(self.avatar.setPlayRate, self.animPlayRate, self.animName)
             )
-            rotateTrack.append(
-                Func(self.avatar.loop, self.animName)
-            )
+            rotateTrack.append(Func(self.avatar.loop, self.animName))
         if self.sfx is not None:
             rotateTrack.append(
                 Func(base.playSfx, self.sfx, looping=1, node=self.avatar)
@@ -40,13 +38,9 @@ class MovieSimpleRotateWalkEvent(MovieEvent):
 
         # Finally, clean up what is necessary:
         if self.animName is not None:
-            track.append(
-                Func(self.avatar.setPlayRate, 1, self.animName)
-            )
+            track.append(Func(self.avatar.setPlayRate, 1, self.animName))
         if self.sfx is not None:
-            track.append(
-                Func(self.sfx.stop)
-            )
+            track.append(Func(self.sfx.stop))
 
         return track
 
