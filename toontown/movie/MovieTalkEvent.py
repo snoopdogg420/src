@@ -5,7 +5,8 @@ from otp.nametag.NametagConstants import CFSpeech
 
 
 class MovieTalkEvent(MovieEvent):
-    def __init__(self, avatar, message, duration, chatFlags=CFSpeech, stompTime=0.2):
+    def __init__(self, avatar, message, duration, chatFlags=CFSpeech,
+                 stompTime=0.2):
         self.avatar = avatar
         self.message = message
         self.duration = duration
@@ -15,7 +16,9 @@ class MovieTalkEvent(MovieEvent):
     def construct(self):
         track = Sequence()
 
-        track.append(Func(self.avatar.setChatAbsolute, self.message, self.chatFlags))
+        track.append(
+            Func(self.avatar.setChatAbsolute, self.message, self.chatFlags)
+        )
         track.append(Wait(self.duration))
         track.append(Func(self.avatar.clearChat))
 

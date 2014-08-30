@@ -17,8 +17,7 @@ class Movie:
 
     def start(self, timestamp):
         if self.doneTask is not None:
-            taskMgr.remove(self.doneTask)
-            self.doneTask = None
+            self.stop()
 
         self.setup()
 
