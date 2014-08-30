@@ -3186,7 +3186,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             if cogDept >= 0 and cogDept < len(SuitDNA.suitDepts):
                 department = SuitDNA.suitDepts[cogDept]
                 suitsInDept = SuitDNA.getSuitsInDept(cogDept)
-                if cogType >= 0 and cogType < len(suitsInDept)+1:
+                if cogType >= 0 and cogType < len(suitsInDept):
                     cogName = suitsInDept[cogType]
                     suitIndex = SuitDNA.suitHeadTypes.index(cogName)
                 else:

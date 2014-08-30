@@ -153,7 +153,7 @@ def getRandomSuitByDept(dept):
 
 def getSuitsInDept(dept):
     start = dept * suitsPerDept
-    end = start-1 + suitsPerDept
+    end = start + suitsPerDept
     return suitHeadTypes[start:end]
 
 class SuitDNA(AvatarDNA.AvatarDNA):
