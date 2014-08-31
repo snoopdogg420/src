@@ -90,7 +90,8 @@ class Nametag3d(Nametag.Nametag):
             distance = self.SCALING_MAX_DISTANCE
 
         if distance == self.distance:
-            self.updateClickRegion()
+            if self.active or (self.getChatButton() != NametagGlobals.noButton):
+                self.updateClickRegion()
             return Task.cont
 
         self.distance = distance
@@ -98,7 +99,7 @@ class Nametag3d(Nametag.Nametag):
         self.scale = math.sqrt(distance) * self.SCALING_FACTOR
         self.contents.setScale(self.scale)
 
-        if self.active:
+        if self.active or (self.getChatButton() != NametagGlobals.noButton):
             self.updateClickRegion()
 
         return Task.cont

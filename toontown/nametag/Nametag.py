@@ -353,12 +353,17 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.getText() and (not self.nametagHidden):
             self.drawNametag()
 
-        self.updateClickRegion()
+        if self.active or (self.getChatButton() != NametagGlobals.noButton):
+            self.updateClickRegion()
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
         if self.chatFont is None:
             # We can't draw this without a font.
             return
+
+        # If we have a chat balloon button, we must override the click state:
+        if self.getChatButton() != NametagGlobals.noButton:
+            self.clickState = self.pendingClickState
 
         foreground, background = self.chatColor[self.clickState]
         if self.chatType == NametagGlobals.SPEEDCHAT:
@@ -378,6 +383,11 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.font is None:
             # We can't draw this without a font.
             return
+
+        # If we are not active, we must ensure that we have the correct click
+        # state:
+        if not self.active:
+            self.clickState = PGButton.SInactive
 
         # Attach the icon:
         if self.icon is not None:
@@ -430,7 +440,7 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def __handleMouseEnter(self, region, extra):
         self.pendingClickState = PGButton.SRollover
-        if self.clickState == PGButton.SReady:
+        if (self.clickState == PGButton.SReady) or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton)):
             self.setClickState(PGButton.SRollover)
 
     def __handleMouseLeave(self, region, extra):
