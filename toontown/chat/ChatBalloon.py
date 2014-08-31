@@ -87,6 +87,9 @@ class ChatBalloon(NodePath):
             buttonNodePath.setPos(buttonNodePath, ChatBalloon.BUTTON_SHIFT)
             buttonNodePath.setScale(ChatBalloon.BUTTON_SCALE)
 
+        # Finally, enable anti-aliasing:
+        self.setAntialias(AntialiasAttrib.MMultisample)
+
     def setForeground(self, foreground):
         self.foreground = foreground
         self.textNode.setTextColor(self.foreground)
