@@ -52,6 +52,9 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.clickState = NametagGlobals.NORMAL
         self.pendingClickState = NametagGlobals.NORMAL
 
+        self.clickEvent = ''
+        self.clickExtraArgs = []
+
         # Create the container of our geometry:
         self.contents = NodePath.anyPath(self).attachNewNode('contents')
 
@@ -314,6 +317,10 @@ class Nametag(FSM, PandaNode, DirectObject):
     def clearShadow(self):
         self.textNode.clearShadow()
 
+    def setClickEvent(self, event, extraArgs=[]):
+        self.clickEvent = event
+        self.clickExtraArgs = extraArgs
+
     def update(self):
         self.contents.node().removeAllChildren()
 
@@ -405,14 +412,14 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def enterNormal(self):
         if self.lastClickState == PGButton.SDepressed:
-            pass  # TODO: Send a message.
+            messenger.send(self.clickEvent, self.clickExtraArgs)
 
     def enterDown(self):
         base.playSfx(NametagGlobals.clickSound)
 
     def enterRollover(self):
         if self.lastClickState == PGButton.SDepressed:
-            pass  # TODO: Send a message.
+            messenger.send(self.clickEvent, self.clickExtraArgs)
         else:
             base.playSfx(NametagGlobals.rolloverSound)
 

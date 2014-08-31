@@ -125,6 +125,10 @@ class NametagGroup:
         self.active = active
         for nametag in self.nametags:
             nametag.setActive(self.active)
+            if self.active:
+                nametag.setClickEvent(self.getUniqueName())
+            else:
+                nametag.setClickEvent('')
 
     def getActive(self):
         return self.active
@@ -346,6 +350,11 @@ class NametagGroup:
         self.nametags.add(nametag)
         nametag.setAvatar(self.avatar)
         nametag.setActive(self.active)
+        if self.active:
+            nametag.setClickEvent(self.getUniqueName())
+        else:
+            nametag.setClickEvent('')
+        nametag.setChatButton(self.chatButton)
         nametag.setFont(self.font)
         nametag.setChatFont(self.chatFont)
         nametag.setChatType(self.chatType)
