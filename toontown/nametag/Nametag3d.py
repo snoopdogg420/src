@@ -1,12 +1,11 @@
+from direct.gui.DirectGui import *
 from direct.task.Task import Task
 import math
 from pandac.PandaModules import *
-from direct.gui.DirectGui import *
-
-from toontown.nametag import Nametag
-from toontown.nametag import NametagGlobals
 
 from toontown.chat import ChatBalloon
+from toontown.nametag import Nametag
+from toontown.nametag import NametagGlobals
 
 
 class Nametag3d(Nametag.Nametag):
@@ -106,7 +105,7 @@ class Nametag3d(Nametag.Nametag):
     def setClickRegion(self, left, right, bottom, top):
         if not self.active:
             self.region.setActive(False)
-            return Task.cont
+            return
 
         # Get a transform matrix to position the points correctly according to
         # the nametag node:
@@ -138,7 +137,7 @@ class Nametag3d(Nametag.Nametag):
         if not (lens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
                 lens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
             self.region.setActive(False)
-            return Task.cont
+            return
         left, top = screenSpaceTopLeft
         right, bottom = screenSpaceBottomRight
 

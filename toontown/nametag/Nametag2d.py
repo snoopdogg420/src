@@ -106,13 +106,13 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.updateClickRegion()
 
     def setClickRegion(self, left, right, bottom, top):
-        return Task.cont
+        return
         if not self.active:
             self.region.setActive(False)
             if self.frame is not None:
                 self.frame.destroy()
                 self.frame = None
-            return Task.cont
+            return
 
         # Get a transform matrix to position the points correctly according to
         # the nametag node:
