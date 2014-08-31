@@ -179,10 +179,12 @@ class DNALoader:
             file = DNAUtil.dgiExtractString8(dgi)
             node = DNAUtil.dgiExtractString8(dgi)
             np = NodePath(loader.pdnaModel(file))
+            if node:
+                newNode = np.find('**/' + node).copyTo(NodePath())
+                np.removeNode()
+                np = newNode
             np.setTag('DNACode', code)
             np.setTag('DNARoot', node)
-            if node:
-                np = np.find('**/' + node)
             target(np, code)
 
     def loadDNAFileBase(self, dnaStorage, file):
