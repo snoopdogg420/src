@@ -94,3 +94,6 @@ class WhisperPopup(PandaNode, MarginVisible):
         MarginVisible.unmanage(self, marginManager)
 
         self.destroy()
+
+    def setClickable(self, senderName, fromId, isPlayer=0):
+        pass  # NAMETAG TODO
