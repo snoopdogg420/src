@@ -98,15 +98,12 @@ class Nametag3d(Nametag.Nametag):
         self.scale = math.sqrt(distance) * self.SCALING_FACTOR
         self.contents.setScale(self.scale)
 
-        self.updateClickRegion()
+        if self.active:
+            self.updateClickRegion()
 
         return Task.cont
 
     def setClickRegion(self, left, right, bottom, top):
-        if not self.active:
-            self.region.setActive(False)
-            return
-
         # Get a transform matrix to position the points correctly according to
         # the nametag node:
         transform = self.contents.getNetTransform()

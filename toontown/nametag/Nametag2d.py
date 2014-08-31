@@ -108,7 +108,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
     def setClickRegion(self, left, right, bottom, top):
         return
         if not self.active:
-            self.region.setActive(False)
             if self.frame is not None:
                 self.frame.destroy()
                 self.frame = None

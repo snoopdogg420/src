@@ -146,8 +146,10 @@ class Nametag(FSM, PandaNode, DirectObject):
     def setActive(self, active):
         self.active = active
         if self.active:
+            self.region.setActive(True)
             self.setClickState(PGButton.SReady)
         else:
+            self.region.setActive(False)
             self.setClickState(PGButton.SInactive)
 
     def getActive(self):
