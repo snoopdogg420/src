@@ -1,19 +1,22 @@
+from direct.fsm.FSM import FSM
 from pandac.PandaModules import *
 
 from toontown.chat import ChatGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import NametagGlobals
+from direct.showbase.DirectObject import DirectObject
 
-
-class WhisperPopup(PandaNode, MarginVisible):
+class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
     CONTENTS_SCALE = 0.25
 
     TEXT_WORD_WRAP = 8
 
     def __init__(self, text, font, whisperType, timeout=10):
+        FSM.__init__(self, 'whisper')
         PandaNode.__init__(self, 'whisper')
         MarginVisible.__init__(self)
+        DirectObject.__init__(self)
 
         self.text = text
         self.font = font
@@ -44,6 +47,17 @@ class WhisperPopup(PandaNode, MarginVisible):
 
         self.timeoutTaskName = self.getUniqueName() + '-timeout'
         self.timeoutTask = None
+
+        # Create the click region:
+        self.regionName = self.getUniqueName() + '-region'
+        self.region = MouseWatcherRegion(self.regionName, 0, 0, 0, 0)
+        base.mouseWatcherNode.addRegion(self.region)
+
+        # Accept the mouse events:
+        self.accept(base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName), self.__handleMouseEnter)
+        self.accept(base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName), self.__handleMouseLeave)
+        self.accept(base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName), self.__handleMouseDown)
+        self.accept(base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName), self.__handleMouseUp)
 
         self.update()
 
@@ -84,6 +98,8 @@ class WhisperPopup(PandaNode, MarginVisible):
         # Translate the chat balloon along the inverse:
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
+        self.updateClickRegion()
+
     def manage(self, marginManager):
         MarginVisible.manage(self, marginManager)
 
@@ -97,3 +113,109 @@ class WhisperPopup(PandaNode, MarginVisible):
 
     def setClickable(self, senderName, fromId, isPlayer=0):
         pass  # NAMETAG TODO
+
+    def setLastClickState(self, lastClickState):
+        self.lastClickState = lastClickState
+
+    def getLastClickState(self):
+        return self.lastClickState
+
+    def setClickState(self, clickState):
+        self.lastClickState = self.clickState
+        self.clickState = clickState
+
+        if self.chatBalloon is not None:
+            foreground, background = self.chatColor[self.clickState]
+            if self.chatType == NametagGlobals.SPEEDCHAT:
+                background = self.speedChatColor
+            self.chatBalloon.setForeground(foreground)
+            self.chatBalloon.setBackground(background)
+        elif self.panel is not None:
+            foreground, background = self.nametagColor[self.clickState]
+            self.setForeground(foreground)
+            self.setBackground(background)
+
+        if self.clickState == PGButton.SReady:
+            self.request('Normal')
+        elif self.clickState == PGButton.SDepressed:
+            self.request('Down')
+        elif self.clickState == PGButton.SRollover:
+            self.request('Rollover')
+        elif self.clickState == PGButton.SInactive:
+            self.request('Disabled')
+
+    def getClickState(self):
+        return self.clickState
+
+    def setPendingClickState(self, pendingClickState):
+        self.pendingClickState = pendingClickState
+
+    def getPendingClickState(self):
+        return self.pendingClickState
+
+    def enterNormal(self):
+        if self.lastClickState == PGButton.SDepressed:
+            messenger.send(self.clickEvent, self.clickExtraArgs)
+
+    def enterDown(self):
+        base.playSfx(NametagGlobals.clickSound)
+
+    def enterRollover(self):
+        if self.lastClickState == PGButton.SDepressed:
+            messenger.send(self.clickEvent, self.clickExtraArgs)
+        else:
+            base.playSfx(NametagGlobals.rolloverSound)
+
+    def enterDisabled(self):
+        pass
+
+    def __handleMouseEnter(self, region, extra):
+        self.pendingClickState = PGButton.SRollover
+        if (self.clickState == PGButton.SReady) or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton)):
+            self.setClickState(PGButton.SRollover)
+
+    def __handleMouseLeave(self, region, extra):
+        self.pendingClickState = PGButton.SReady
+        if self.clickState == PGButton.SRollover:
+            self.setClickState(PGButton.SReady)
+
+    def __handleMouseDown(self, region, button):
+        if self.clickState == PGButton.SRollover:
+            self.setClickState(PGButton.SDepressed)
+
+    def __handleMouseUp(self, region, button):
+        if self.clickState == PGButton.SDepressed:
+            self.setClickState(self.pendingClickState)
+
+    def updateClickRegion(self):
+        if self.chatBalloon is not None:
+            width = self.chatBalloon.width
+            height = self.chatBalloon.height
+
+            left = -(width/2)
+            right = width/2
+            bottom = -(height/2)
+            top = height/2
+
+            self.setClickRegion(left, right, bottom, top)
+
+    def setClickRegion(self, left, right, bottom, top):
+        # Get a transform matrix to position the points correctly according to
+        # the nametag node:
+        transform = self.contents.getNetTransform()
+
+        # Get the actual matrix of the transform above:
+        mat = transform.getMat()
+
+        # Transform the specified points to the new matrix:
+        camSpaceTopLeft = mat.xformPoint(Point3(left, 0, top))
+        camSpaceBottomRight = mat.xformPoint(Point3(right, 0, bottom))
+
+        screenSpaceTopLeft = Point2(camSpaceTopLeft[0], camSpaceTopLeft[2])
+        screenSpaceBottomRight = Point2(camSpaceBottomRight[0], camSpaceBottomRight[2])
+
+        left, top = screenSpaceTopLeft
+        right, bottom = screenSpaceBottomRight
+
+        self.region.setFrame(left, right, bottom, top)
+        self.region.setActive(True)
