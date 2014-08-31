@@ -27,8 +27,6 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.avatar = None
         self.active = True
 
-        self.frame = None
-
         self.panel = None
         self.icon = None
         self.chatBalloon = None
@@ -118,10 +116,6 @@ class Nametag(FSM, PandaNode, DirectObject):
             self.panel = None
 
         self.avatar = None
-
-        if self.frame is not None:
-            self.frame.destroy()
-            self.frame = None
 
     def getUniqueName(self):
         return 'Nametag-' + str(id(self))

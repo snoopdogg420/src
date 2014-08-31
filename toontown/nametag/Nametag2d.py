@@ -30,7 +30,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
     def destroy(self):
         Nametag.Nametag.destroy(self)
 
-        if self.arrow:
+        if self.arrow is not None:
             self.arrow.removeNode()
             self.arrow = None
 
@@ -47,7 +47,35 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         return NametagGlobals.chatBalloon2dHeight
 
     def updateClickRegion(self):
-        self.setClickRegion(-0.1, 0.1, -0.1, 0.1)
+        if self.chatBalloon is not None:
+            width = self.chatBalloon.width
+            height = self.chatBalloon.height
+
+            left = -(width/2)
+            right = width/2
+            bottom = -(height/2)
+            top = height/2
+
+            self.setClickRegion(left, right, bottom, top)
+
+        if self.panel is not None:
+            height = self.panelHeight
+            width = self.panelWidth
+
+            leftD = -width/2
+            rightD = width/2
+            bottomD = -height/2
+            topD = height/2
+
+            xCenter = (self.textNode.getLeft()+self.textNode.getRight())/2
+            yCenter = (self.textNode.getTop()+self.textNode.getBottom())/2
+
+            left = xCenter + leftD
+            right = xCenter + rightD
+            bottom = yCenter + bottomD
+            top = yCenter + topD
+
+            self.setClickRegion(left, right, bottom, top)
 
     def tick(self, task):
         if (self.getCell() is None) or (self.arrow is None):
@@ -64,6 +92,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         arrowDegrees = (arrowRadians/math.pi) * 180
 
         self.arrow.setR(arrowDegrees - 90)
+
+        self.updateClickRegion()
         return Task.cont
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
@@ -88,9 +118,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         # Translate the chat balloon along the inverse:
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
-        # Set the click region:
-        self.updateClickRegion()
-
     def drawNametag(self):
         Nametag.Nametag.drawNametag(self)
 
@@ -103,30 +130,11 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.arrow.setColor(self.nametagColor[0][0])
 
         left, right, bottom, top =  self.textNode.getFrameActual()
-        self.updateClickRegion()
 
     def setClickRegion(self, left, right, bottom, top):
-        return
-        if not self.active:
-            if self.frame is not None:
-                self.frame.destroy()
-                self.frame = None
-            return
-
         # Get a transform matrix to position the points correctly according to
         # the nametag node:
         transform = self.contents.getNetTransform()
-
-        # Get the inverse of the camera transform matrix:
-        # Needed so that the camera transform will not be applied to the region
-        # points twice.
-        camTransform = base.cam.getNetTransform()
-        camTransform = camTransform.getInverse()
-
-        # Compose the inverse of the camera transform and the nametag node
-        # transform:
-        transform = camTransform.compose(transform)
-        transform = transform.setQuat(Quat())
 
         # Get the actual matrix of the transform above:
         mat = transform.getMat()
@@ -143,8 +151,3 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         self.region.setFrame(left, right, bottom, top)
         self.region.setActive(True)
-
-        if self.frame is not None:
-            self.frame.destroy()
-            self.frame = None
-        self.frame = DirectFrame(frameColor=(1, 0, 0, 0.25), parent=render2d, frameSize=(left, right, bottom, top))
