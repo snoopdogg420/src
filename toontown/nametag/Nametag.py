@@ -174,6 +174,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.font = font
         if self.font is not None:
             self.textNode.setFont(self.font)
+        self.update()
 
     def getFont(self):
         return self.font
@@ -182,6 +183,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.chatFont = chatFont
         if self.chatFont is not None:
             self.chatTextNode.setFont(self.chatFont)
+        self.update()
 
     def getChatFont(self):
         return self.chatFont
