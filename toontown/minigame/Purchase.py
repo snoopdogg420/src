@@ -1,16 +1,19 @@
-from PurchaseBase import *
-from toontown.nametag.Nametag2d import *
-from toontown.nametag import NametagGlobals
-from direct.task.Task import Task
-from toontown.toon import ToonHead
-from toontown.toonbase import ToontownTimer
-from direct.gui import DirectGuiGlobals as DGG
 from direct.directnotify import DirectNotifyGlobal
+from direct.gui import DirectGuiGlobals as DGG
 from direct.showbase.PythonUtil import Functor
-from toontown.minigame import TravelGameGlobals
-from toontown.distributed import DelayDelete
-from toontown.toonbase import ToontownGlobals
+from direct.task.Task import Task
+
 import MinigameGlobals
+from PurchaseBase import *
+from toontown.distributed import DelayDelete
+from toontown.minigame import TravelGameGlobals
+from toontown.nametag import NametagGlobals
+from toontown.nametag.NametagFloat2d import *
+from toontown.toon import ToonHead
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase import ToontownTimer
+
+
 COUNT_UP_RATE = 0.15
 COUNT_UP_DURATION = 0.5
 DELAY_BEFORE_COUNT_UP = 1.0
@@ -743,21 +746,20 @@ class PurchaseHeadFrame(DirectFrame):
         self.headModel = ToonHead.ToonHead()
         self.headModel.setupHead(self.av.style, forGui=1)
         self.headModel.reparentTo(self.head)
-        self.tag2Node = Nametag2d()
+        self.tag2Node = NametagFloat2d()
         self.tag2Node.hideChat()
         self.tag2Node.hideThought()
         self.tag2Node.update()
         self.av.nametag.add(self.tag2Node)
         self.tag2 = self.attachNewNode(self.tag2Node)
         self.tag2.setPosHprScale(-0.22, 10.0, 0.12, 0, 0, 0, 0.046, 0.046, 0.046)
-        self.tag1Node = Nametag2d()
+        self.tag1Node = NametagFloat2d()
         self.tag1Node.hideNametag()
         self.tag1Node.update()
         self.av.nametag.add(self.tag1Node)
         self.tag1 = self.attachNewNode(self.tag1Node)
         self.tag1.setPosHprScale(-0.15, 0, -0.1, 0, 0, 0, 0.046, 0.046, 0.046)
         self.hide()
-        return
 
     def destroy(self):
         DirectFrame.destroy(self)

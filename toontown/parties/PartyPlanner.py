@@ -14,7 +14,7 @@ from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
 from toontown.friends.FriendsListPanel import determineFriendName
 from toontown.nametag.Nametag import Nametag
-from toontown.nametag.Nametag2d import *
+from toontown.nametag.NametagFloat2d import *
 from toontown.nametag.NametagGlobals import *
 from toontown.nametag.NametagGroup import NametagGroup
 from toontown.parties import PartyGlobals
@@ -293,14 +293,14 @@ class PartyPlanner(DirectFrame, FSM):
             nametag2d = self.nametagGroup.getNametag2d()
             nametag2d.hideNametag()
             nametag2d.hideChat()
-            self.nametagNode = Nametag2d()
+            self.nametagNode = NametagFloat2d()
             self.nametagNode.hideChat()
             self.nametagGroup.add(self.nametagNode)
             self.nametagGroup.setText(base.cr.partyManager.getPartyPlannerName())
             self.nametagNP = parent.attachNewNode(self.nametagNode)
             nametagPos = self.gui.find('**/step_01_partymanPeteNametag_locator').getPos()
             self.nametagNP.setPosHprScale(nametagPos[0], 0, nametagPos[2], 0, 0, 0, 0.1, 1, 0.1)
-            self.chatNode = Nametag2d()
+            self.chatNode = NametagFloat2d()
             self.chatNode.hideNametag()
             self.chatNode.showThought()
             self.nametagGroup.add(self.chatNode)

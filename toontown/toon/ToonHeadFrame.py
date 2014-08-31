@@ -1,10 +1,12 @@
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
+
 import ToonHead
 from toontown.distributed import DelayDelete
-from toontown.toonbase import ToontownGlobals
 from toontown.nametag.Nametag import Nametag
-from toontown.nametag.Nametag2d import Nametag2d
+from toontown.nametag.NametagFloat2d import NametagFloat2d
+from toontown.toonbase import ToontownGlobals
+
 
 class ToonHeadFrame(DirectFrame):
 
@@ -19,13 +21,13 @@ class ToonHeadFrame(DirectFrame):
         self.headModel.startBlink()
         self.headModel.setupHead(self.av.style, forGui=1)
         self.headModel.reparentTo(self.head)
-        self.tag1Node = Nametag2d()
+        self.tag1Node = NametagFloat2d()
         self.tag1Node.hideNametag()
         self.tag1Node.showThought()
         self.av.nametag.add(self.tag1Node)
         self.tag1 = self.attachNewNode(self.tag1Node)
         self.tag1.setPosHprScale(-0.16, 0, -0.09, 0, 0, 0, 0.055, 0.055, 0.055)
-        self.tag2Node = Nametag2d()
+        self.tag2Node = NametagFloat2d()
         self.tag2Node.hideChat()
         self.av.nametag.add(self.tag2Node)
         self.tag2 = self.attachNewNode(self.tag2Node)
