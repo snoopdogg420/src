@@ -25,9 +25,9 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
 
         self.active = False
 
-        self.lastClickState = NametagGlobals.NORMAL
-        self.clickState = NametagGlobals.NORMAL
-        self.pendingClickState = NametagGlobals.NORMAL
+        self.lastClickState = PGButton.SReady
+        self.clickState = PGButton.SReady
+        self.pendingClickState = PGButton.SReady
 
         self.contents = NodePath.anyPath(self).attachNewNode('contents')
         self.contents.setScale(self.CONTENTS_SCALE)

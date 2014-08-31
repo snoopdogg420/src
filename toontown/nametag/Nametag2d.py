@@ -129,8 +129,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.arrow.setScale(self.ARROW_SCALE)
         self.arrow.setColor(self.nametagColor[0][0])
 
-        left, right, bottom, top =  self.textNode.getFrameActual()
-
     def setClickRegion(self, left, right, bottom, top):
         # Get a transform matrix to position the points correctly according to
         # the nametag node:

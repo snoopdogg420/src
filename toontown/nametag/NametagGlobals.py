@@ -17,11 +17,6 @@ SPEEDCHAT = 1
 CHAT_BALLOON = 0
 THOUGHT_BALLOON = 1
 
-NORMAL = 0
-DOWN = 1
-ROLLOVER = 2
-DISABLED = 3
-
 cardModel = None
 arrowModel = None
 chatBalloon3dModel = None

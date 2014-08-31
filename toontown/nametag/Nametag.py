@@ -47,9 +47,9 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.chatHidden = False
         self.thoughtHidden = False
 
-        self.lastClickState = NametagGlobals.NORMAL
-        self.clickState = NametagGlobals.NORMAL
-        self.pendingClickState = NametagGlobals.NORMAL
+        self.lastClickState = PGButton.SReady
+        self.clickState = PGButton.SReady
+        self.pendingClickState = PGButton.SReady
 
         self.clickEvent = ''
         self.clickExtraArgs = []
