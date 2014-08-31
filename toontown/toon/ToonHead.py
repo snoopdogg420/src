@@ -56,22 +56,16 @@ def preloadToonHeads():
         print 'Preloading Toon heads...'
         for key in HeadDict.keys():
             fileRoot = HeadDict[key]
-            
-            PreloadHeads['phase_3' + fileRoot + '1000'] = NodePath('head-1000')
-            head1000 = loader.loadModel('phase_3' + fileRoot + '1000')
-            head1000.flattenMedium()
-            head1000.instanceTo(PreloadHeads['phase_3' + fileRoot + '1000'])
-            
-            PreloadHeads['phase_3' + fileRoot + '500'] = NodePath('head-500')
-            head500 = loader.loadModel('phase_3' + fileRoot + '500')
-            head500.flattenMedium()
-            head500.instanceTo(PreloadHeads['phase_3' + fileRoot + '500'])
-            
-            PreloadHeads['phase_3' + fileRoot + '250'] = NodePath('head-250')
-            head250 = loader.loadModel('phase_3' + fileRoot + '250')
-            head250.flattenMedium()
-            head250.instanceTo(PreloadHeads['phase_3' + fileRoot + '250'])
-            
+
+            PreloadHeads['phase_3' + fileRoot + '1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            PreloadHeads['phase_3' + fileRoot + '1000'].flattenMedium()
+
+            PreloadHeads['phase_3' + fileRoot + '500'] = loader.loadModel('phase_3' + fileRoot + '500')
+            PreloadHeads['phase_3' + fileRoot + '500'].flattenMedium()
+
+            PreloadHeads['phase_3' + fileRoot + '250'] = loader.loadModel('phase_3' + fileRoot + '250')
+            PreloadHeads['phase_3' + fileRoot + '250'].flattenMedium()
+
 preloadToonHeads()
 
 class ToonHead(Actor.Actor):

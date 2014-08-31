@@ -182,39 +182,27 @@ def loadModels():
         for key in LegDict.keys():
             fileRoot = LegDict[key]
 
-            Preloaded[fileRoot+'-1000'] = NodePath('leg-1000')
-            leg1000 = loader.loadModel('phase_3' + fileRoot + '1000')
-            leg1000.flattenMedium()
-            leg1000.instanceTo(Preloaded[fileRoot+'-1000'])
+            Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            Preloaded[fileRoot+'-1000'].flattenMedium()
 
-            Preloaded[fileRoot+'-500'] = NodePath('leg-500')
-            leg500 = loader.loadModel('phase_3' + fileRoot + '500')
-            leg500.flattenMedium()
-            leg500.instanceTo(Preloaded[fileRoot+'-500'])
+            Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
+            Preloaded[fileRoot+'-500'].flattenMedium()
 
-            Preloaded[fileRoot+'-250'] = NodePath('leg-250')
-            leg250 = loader.loadModel('phase_3' + fileRoot + '250')
-            leg250.flattenMedium()
-            leg250.instanceTo(Preloaded[fileRoot+'-250'])
+            Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
+            Preloaded[fileRoot+'-250'].flattenMedium()
 
         for key in TorsoDict.keys():
             fileRoot = TorsoDict[key]
 
-            Preloaded[fileRoot+'-1000'] = NodePath('torso-1000')
-            torso1000 = loader.loadModel('phase_3' + fileRoot + '1000')
-            torso1000.flattenMedium()
-            torso1000.instanceTo(Preloaded[fileRoot+'-1000'])
+            Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
+            Preloaded[fileRoot+'-1000'].flattenMedium()
 
             if len(key) > 1:
-                Preloaded[fileRoot+'-500'] = NodePath('torso-500')
-                torso500 = loader.loadModel('phase_3' + fileRoot + '500')
-                torso500.flattenMedium()
-                torso500.instanceTo(Preloaded[fileRoot+'-500'])
+                Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
+                Preloaded[fileRoot+'-500'].flattenMedium()
 
-                Preloaded[fileRoot+'-250'] = NodePath('torso-250')
-                torso250 = loader.loadModel('phase_3' + fileRoot + '250')
-                torso250.flattenMedium()
-                torso250.instanceTo(Preloaded[fileRoot+'-250'])
+                Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
+                Preloaded[fileRoot+'-250'].flattenMedium()
 
 def loadBasicAnims():
     loadPhaseAnims()
