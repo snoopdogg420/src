@@ -58,9 +58,7 @@ class DNADoor(DNAGroup.DNAGroup):
         doorTrigger.setName('door_trigger_' + block)
 
         if not dnaStore.getDoorPosHprFromBlockNumber(block):
-            store = NodePath('door-%s' % block)
-            store.setPosHprScale(doorNodePath, (0, 0, 0), (0, 0, 0), (1, 1, 1))
-            dnaStore.storeBlockDoor(block, store)
+            dnaStore.storeBlockDoor(block, doorOrigin)
 
         doorNodePath.flattenMedium()
 

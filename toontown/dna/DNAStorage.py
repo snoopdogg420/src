@@ -288,8 +288,6 @@ class DNAStorage:
         self.blockZones = {}
 
     def resetBlockDoors(self):
-        for door in self.blockDoors:
-            self.blockDoors[door].removeNode()
         self.blockDoors = {}
 
     def cleanup(self):
