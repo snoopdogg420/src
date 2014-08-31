@@ -11,7 +11,7 @@ from toontown.nametag import NametagGlobals
 class Nametag3d(Nametag.Nametag):
     SCALING_MIN_DISTANCE = 1
     SCALING_MAX_DISTANCE = 50
-    SCALING_FACTOR = 0.06
+    SCALING_FACTOR = 0.065
 
     def __init__(self):
         Nametag.Nametag.__init__(self)
