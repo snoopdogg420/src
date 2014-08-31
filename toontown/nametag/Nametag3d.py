@@ -76,7 +76,7 @@ class Nametag3d(Nametag.Nametag):
 
             # Calculate the bottom of the region based on constants:
             # 2.4 is equal to the padded height of a one line message
-            bottom = self.chatBalloon.modelHeight-2.4
+            bottom = NametagGlobals.chatBalloon3dHeight-2.4
             top = bottom+height
 
             self.setClickRegion(left, right, bottom, top)
