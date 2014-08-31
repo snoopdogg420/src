@@ -257,7 +257,6 @@ class Avatar(Actor, ShadowCaster):
             if self.isDisguised:
                 return
         self.nametag.setText(str)
-        self.nametag.updateAll()
 
     def getFont(self):
         return self.__font
