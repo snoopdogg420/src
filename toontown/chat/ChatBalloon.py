@@ -65,8 +65,8 @@ class ChatBalloon(NodePath):
         self.height = paddedHeight
 
         # Position the TextNode:
-        center = self.balloon.getBounds().getCenter()
-        self.textNodePath.setPos(center)
+        self.center = self.balloon.getBounds().getCenter()
+        self.textNodePath.setPos(self.center)
         self.textNodePath.setY(self.TEXT_Y_OFFSET)
         self.textNodePath.setX(self.textNodePath, -(textWidth/2))
         if textWidth == self.TEXT_MIN_WIDTH:
@@ -77,8 +77,6 @@ class ChatBalloon(NodePath):
             centerZ = (ChatBalloon.TEXT_MIN_HEIGHT-self.textNode.getHeight()) / 2
             self.textNodePath.setZ(self.textNodePath, -centerZ)
         self.textNodePath.setX(self.textNodePath, self.TEXT_X_OFFSET)
-
-        self.center = center
 
         # Add a button if one is given:
         if self.button is not None:
