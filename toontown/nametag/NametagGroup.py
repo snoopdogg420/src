@@ -18,6 +18,7 @@ class NametagGroup:
         self.objectCode = None
 
         self.chatButton = NametagGlobals.noButton
+        self.chatReversed = False
 
         self.font = None
         self.chatFont = None
@@ -142,6 +143,14 @@ class NametagGroup:
 
     def getChatButton(self):
         return self.chatButton
+
+    def setChatReversed(self, reversed):
+        self.chatReversed = reversed
+        for nametag in self.nametags:
+            nametag.setChatReversed(reversed)
+
+    def getChatReversed(self):
+        return self.chatReversed
 
     def setFont(self, font):
         self.font = font

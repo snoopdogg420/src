@@ -33,6 +33,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.icon = None
         self.chatBalloon = None
         self.chatButton = NametagGlobals.noButton
+        self.chatReversed = False
 
         self.font = None
         self.chatFont = None
@@ -169,6 +170,12 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def getChatButton(self):
         return self.chatButton
+
+    def setChatReversed(self, reversed):
+        self.chatReversed = reversed
+
+    def getChatReversed(self):
+        return self.chatReversed
 
     def setFont(self, font):
         self.font = font
@@ -376,6 +383,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.chatBalloon = ChatBalloon(
             model, modelWidth, modelHeight, self.chatTextNode,
             foreground=foreground, background=background,
+            reversed=self.chatReversed,
             button=self.chatButton[self.clickState])
         self.chatBalloon.reparentTo(self.contents)
 

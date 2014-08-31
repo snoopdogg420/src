@@ -378,6 +378,11 @@ class Avatar(Actor, ShadowCaster):
         else:
             self.nametag.setChatButton(NametagGlobals.noButton)
 
+        if chatFlags & CFReversed:
+            self.nametag.setChatReversed(True)
+        else:
+            self.nametag.setChatReversed(False)
+
         self.nametag.setChatText(chatString, timeout=(chatFlags & CFTimeout))
         self.playCurrentDialogue(dialogue, chatFlags, interrupt)
 

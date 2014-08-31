@@ -22,7 +22,7 @@ class ChatBalloon(NodePath):
 
     def __init__(self, model, modelWidth, modelHeight, textNode,
                  foreground=VBase4(0, 0, 0, 1), background=VBase4(1, 1, 1, 1),
-                 button=None):
+                 reversed=False, button=None):
         NodePath.__init__(self, 'chatBalloon')
 
         self.model = model
@@ -60,6 +60,10 @@ class ChatBalloon(NodePath):
         paddedHeight = textHeight + (self.BALLOON_Z_PADDING*2)
         middle.setSz(paddedHeight - 1.5)  # Compensate for the top, as well.
         top.setZ(middle, 1)
+
+        if reversed:
+            self.balloon.setSx(-self.balloon.getSx())
+            self.balloon.setTwoSided(True)  # Render the backface of the balloon.
 
         self.width = paddedWidth
         self.height = paddedHeight
