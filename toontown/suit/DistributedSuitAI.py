@@ -44,7 +44,14 @@ class DistributedSuitAI(DistributedSuitBaseAI.DistributedSuitBaseAI):
         self.attemptingTakeover = 0
         self.buildingDestination = None
         self.buildingDestinationIsCogdo = False
-        return
+
+    def delete(self):
+        del self.bldgTrack
+        del self.branchId
+        del self.buildingDestination
+        del self.buildingDestinationIsCogdo
+
+        DistributedSuitBaseAI.DistributedSuitBaseAI.delete(self)
 
     def stopTasks(self):
         taskMgr.remove(self.taskName('flyAwayNow'))

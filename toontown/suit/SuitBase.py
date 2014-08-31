@@ -26,7 +26,8 @@ class SuitBase:
         return
 
     def delete(self):
-        pass
+        if hasattr(self, 'legList'):
+            del self.legList
 
     def getStyleName(self):
         if hasattr(self, 'dna') and self.dna:
