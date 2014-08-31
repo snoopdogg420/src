@@ -1,15 +1,18 @@
-import Toon, ToonDNA
+from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
-from otp.otpbase import OTPLocalizer
-from toontown.toonbase import TTLocalizer
-from otp.otpbase import OTPLocalizer
-import types
-import random
 from direct.showbase import PythonUtil
 from pandac.PandaModules import *
+import random
+import types
+
+import Toon, ToonDNA
 from otp.avatar import Emote
-from direct.directnotify import DirectNotifyGlobal
+from otp.otpbase import OTPLocalizer
+from toontown.chat.ChatGlobals import *
 from toontown.nametag.NametagGlobals import *
+from toontown.toonbase import TTLocalizer
+
+
 EmoteSleepIndex = 4
 EmoteClear = -1
 
@@ -74,7 +77,7 @@ def doSleep(toon, volume = 1):
         toon.openEyes()
         toon.startBlink()
         toon.setPlayRate(1, 'neutral')
-        if toon.nametag.getChat() == TTLocalizer.ToonSleepString:
+        if toon.nametag.getChatText() == TTLocalizer.ToonSleepString:
             toon.clearChat()
         toon.lerpLookAt(Point3(0, 1, 0), time=0.25)
 
