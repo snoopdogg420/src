@@ -4566,11 +4566,11 @@ def maxFishTank(maxFishTank):
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
 def name(name=''):
     """
-    Modify the invoker's name.
+    Modify the target's name.
     """
-    invoker = spellbook.getInvoker()
-    _name = invoker.getName()
-    invoker.b_setName(name)
+    target = spellbook.getInvoker()
+    _name = target.getName()
+    target.b_setName(name)
     if name:
         return "Set {0}'s name to {1}!".format(_name, name)
     else:
