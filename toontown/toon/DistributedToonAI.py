@@ -4298,33 +4298,34 @@ def cheesyEffect(value, hood=0, expire=0):
         return 'Invalid cheesy effect value: {0}'.format(value)
     if (hood != 0) and (not 1000 <= hood < ToontownGlobals.DynamicZonesBegin):
         return 'Invalid hood ID: {0}'.format(hood)
-    target = spellbook.getTarget()
-    target.b_setCheesyEffect(value, hood, expire)
-    return "Set {0}'s cheesy effect to {1}!".format(target.getName(), value)
+    invoker = spellbook.getInvoker()
+    invoker.b_setCheesyEffect(value, hood, expire)
+    return "Set {0}'s cheesy effect to {1}!".format(invoker.getName(), value)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def hp(hp):
     """
-    Modify the target's current HP.
+    Modify the invoker's current HP.
     """
-    target = spellbook.getTarget()
-    maxHp = target.getMaxHp()
+    invoker = spellbook.getInvoker()
+    maxHp = invoker.getMaxHp()
     if not -1 <= hp <= maxHp:
         return 'HP must be in xrange (-1-{0}).'.format(maxHp)
-    target.b_setHp(hp)
-    return "Set {0}'s HP to {1}!".format(target.getName(), hp)
+    invoker.b_setHp(hp)
+    return "Set {0}'s HP to {1}!".format(invoker.getName(), hp)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def maxHp(maxHp):
     """
-    Modify the target's max HP.
+    Modify the invoker's max HP.
     """
     if not 15 <= maxHp <= ToontownGlobals.MaxHpLimit:
-        return 'HP must be in xrange (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
-    target = spellbook.getTarget()
-    target.b_setMaxHp(maxHp)
-    target.toonUp(maxHp - target.getHp())
-    return "Set {0}'s max HP to {1}!".format(target.getName(), maxHp)
+        return 'HP must be in range (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
+    invoker = spellbook.getTarget()
+    invoker.b_setHp(maxHp)
+    invoker.b_setMaxHp(maxHp)
+    invoker.toonUp(maxHp - invoker.getHp())
+    return "Set {0}'s max HP to {1}!".format(invoker.getName(), maxHp)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str])
 def maxToon(missingTrack=None):
@@ -4462,8 +4463,8 @@ def unites(value=99):
     """
     Restock all resistance messages.
     """
-    target = spellbook.getTarget()
-    target.restockAllResistanceMessages(value)
+    invoker = spellbook.getInvoker()
+    invoker.restockAllResistanceMessages(value)
     return 'Restocked {0} unites!'.format(value)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
@@ -4548,11 +4549,11 @@ def maxFishTank(maxFishTank):
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
 def name(name=''):
     """
-    Modify the target's name.
+    Modify the invoker's name.
     """
-    target = spellbook.getTarget()
-    _name = target.getName()
-    target.b_setName(name)
+    invoker = spellbook.getInvoker()
+    _name = invoker.getName()
+    invoker.b_setName(name)
     if name:
         return "Set {0}'s name to {1}!".format(_name, name)
     else:
@@ -4683,13 +4684,13 @@ def badName():
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def tickets(tickets):
     """
-    Set the target's racing tickets value.
+    Set the invoker's racing tickets value.
     """
     if not 0 <= tickets <= 99999:
         return 'Racing tickets value must be in xrange (0-99999).'
-    target = spellbook.getTarget()
-    target.b_setTickets(tickets)
-    return "Set {0}'s tickets to {1}!".format(target.getName(), tickets)
+    invoker = spellbook.getInvoker()
+    invoker.b_setTickets(tickets)
+    return "Set {0}'s tickets to {1}!".format(invoker.getName(), tickets)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
 def cogIndex(index):
@@ -4980,23 +4981,23 @@ def trophyScore(value):
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, int])
 def givePies(pieType, numPies=0):
     """
-    Give the target (numPies) of (pieType) pies.
+    Give the invoker (numPies) of (pieType) pies.
     """
-    target = spellbook.getTarget()
+    invoker = spellbook.getInvoker()
     if pieType == -1:
-        target.b_setNumPies(0)
-        return "Removed {0}'s pies.".format(target.getName())
+        invoker.b_setNumPies(0)
+        return "Removed {0}'s pies.".format(invoker.getName())
     if pieType == 6:
         return 'Invalid pie type!'
     if not 0 <= pieType <= 7:
         return 'Pie type must be in xrange (0-7).'
     if not -1 <= numPies <= 99:
         return 'Pie count out of range (-1-99).'
-    target.b_setPieType(pieType)
+    invoker.b_setPieType(pieType)
     if numPies >= 0:
-        target.b_setNumPies(numPies)
+        invoker.b_setNumPies(numPies)
     else:
-        target.b_setNumPies(ToontownGlobals.FullPies)
+        invoker.b_setNumPies(ToontownGlobals.FullPies)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def trackBonus(trackIndex):
