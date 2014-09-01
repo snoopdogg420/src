@@ -432,6 +432,8 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         return
 
     def b_teleportGreeting(self, avId):
+        if hasattr(self, 'ghostMode') and self.ghostMode:
+            return
         self.d_teleportGreeting(avId)
         self.teleportGreeting(avId)
 
