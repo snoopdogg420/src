@@ -27,6 +27,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.hideThought()
         self.contents.setScale(self.CONTENTS_SCALE)
 
+        self.actualChatText = ''
+
     def destroy(self):
         Nametag.Nametag.destroy(self)
 
@@ -45,6 +47,11 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
     def getChatBalloonHeight(self):
         return NametagGlobals.chatBalloon2dHeight
+
+    def setChatText(self, chatText):
+        Nametag.Nametag.setChatText(self, chatText)
+
+        self.actualChatText = chatText
 
     def updateClickRegion(self):
         if self.chatBalloon is not None:
@@ -106,7 +113,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         return Task.cont
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
-        self.setChatText(self.getText() + ': ' + self.getChatText())
+        self.chatTextNode.setText(self.getText() + ': ' + self.actualChatText)
 
         # When a chat balloon is active, we need a slightly higher priority in
         # the margin system:
