@@ -2109,16 +2109,14 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             self.removeFancyNametag()
             Avatar.Avatar.setDisplayName(self, str)
 
-    def setFancyNametag(self, name = None):
-        if name == None:
+    def setFancyNametag(self, name=None):
+        if name is None:
             name = self.getName()
-        if self.getNametagStyle() == 100:
-            self.setFont(ToontownGlobals.getToonFont())
+        if self.getNametagStyle() >= len(TTLocalizer.NametagFonts):
+            self.nametag.setFont(ToontownGlobals.getToonFont())
         else:
-            self.setFont(ToontownGlobals.getNametagFont(self.getNametagStyle()))
+            self.nametag.setFont(ToontownGlobals.getNametagFont(self.getNametagStyle()))
         Avatar.Avatar.setDisplayName(self, name)
-        self.setFont(ToontownGlobals.getToonFont())
-        return
 
     def removeFancyNametag(self):
         self.nametag.clearShadow()

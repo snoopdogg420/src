@@ -605,7 +605,7 @@ dclass DistributedToon : DistributedPlayer {
   logMessage(char [0-1024]) ownsend airecv;
   forceLogoutWithNotify() ownrecv;
   setPinkSlips(uint8 = 0) required ownrecv db;
-  setNametagStyle(uint8 = 0) broadcast required ram db;
+  setNametagStyle(uint8 = 0) required broadcast ownrecv db;
   setMail(simpleMail []) ownrecv;
   setNumMailItems(uint32) airecv;
   setSimpleMailNotify(uint8) ownrecv airecv;

@@ -14,34 +14,40 @@ MinnieFont = 'phase_3/models/fonts/MinnieFont'
 FancyFont = 'phase_3/models/fonts/Comedy'
 BuildingNametagFont = 'phase_3/models/fonts/MickeyFont'
 BuildingNametagShadow = None
-NametagFonts = ('phase_3/models/fonts/AnimGothic',
- 'phase_3/models/fonts/Aftershock',
- 'phase_3/models/fonts/JiggeryPokery',
- 'phase_3/models/fonts/Ironwork',
- 'phase_3/models/fonts/HastyPudding',
- 'phase_3/models/fonts/Comedy',
- 'phase_3/models/fonts/Humanist',
- 'phase_3/models/fonts/Portago',
- 'phase_3/models/fonts/Musicals',
- 'phase_3/models/fonts/Scurlock',
- 'phase_3/models/fonts/Danger',
- 'phase_3/models/fonts/Alie',
- 'phase_3/models/fonts/OysterBar',
- 'phase_3/models/fonts/RedDogSaloon')
-NametagFontNames = ('Member',
- 'Shivering',
- 'Wonky',
- 'Fancy',
- 'Silly',
- 'Zany',
- 'Practical',
- 'Nautical',
- 'Whimsical',
- 'Spooky',
- 'Action',
- 'Poetic',
- 'Boardwalk',
- 'Western')
+NametagFonts = (
+    'phase_3/models/fonts/ImpressBT.ttf',
+    'phase_3/models/fonts/AnimGothic.bam',
+    'phase_3/models/fonts/Aftershock.bam',
+    'phase_3/models/fonts/JiggeryPokery.bam',
+    'phase_3/models/fonts/Ironwork.bam',
+    'phase_3/models/fonts/HastyPudding.bam',
+    'phase_3/models/fonts/Comedy.bam',
+    'phase_3/models/fonts/Humanist.bam',
+    'phase_3/models/fonts/Portago.bam',
+    'phase_3/models/fonts/Musicals.bam',
+    'phase_3/models/fonts/Scurlock.bam',
+    'phase_3/models/fonts/Danger.bam',
+    'phase_3/models/fonts/Alie.bam',
+    'phase_3/models/fonts/OysterBar.bam',
+    'phase_3/models/fonts/RedDogSaloon.bam'
+)
+NametagFontNames = (
+    'Default',
+    'Plain',
+    'Shivering',
+    'Wonky',
+    'Fancy',
+    'Silly',
+    'Zany',
+    'Practical',
+    'Nautical',
+    'Whimsical',
+    'Spooky',
+    'Action',
+    'Poetic',
+    'Boardwalk',
+    'Western'
+)
 NametagLabel = ' Nametag'
 UnpaidNameTag = 'Basic'
 ScreenshotPath = 'screenshots/'
