@@ -363,7 +363,7 @@ class Avatar(Actor, ShadowCaster):
 
         if chatFlags & CFQuicktalker:
             self.nametag.setChatType(NametagGlobals.SPEEDCHAT)
-        elif chatFlags & CFSpeech:
+        else:
             self.nametag.setChatType(NametagGlobals.CHAT)
 
         if chatFlags & CFThought:
