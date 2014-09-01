@@ -35,6 +35,11 @@ WhisperColors = {
         ((0.0, 0.0, 0.0, 1.0), (0.8, 0.3, 0.6, 0.6))   # Disabled
     ),
     # TODO: WTBattleSOS
-    # TODO: WTEmote
+    WTEmote: (
+        ((0.0, 0.0, 0.0, 1.0), (0.9, 0.5, 0.1, 0.6)),  # Normal
+        ((1.0, 0.5, 0.5, 1.0), (1.0, 1.0, 1.0, 0.8)),  # Click
+        ((0.0, 0.0, 0.0, 1.0), (0.9, 0.6, 0.2, 0.6)),  # Rollover
+        ((0.0, 0.0, 0.0, 1.0), (0.9, 0.6, 0.1, 0.6))   # Disabled
+    )
     # TODO: WTToontownBoardingGroup
 }
