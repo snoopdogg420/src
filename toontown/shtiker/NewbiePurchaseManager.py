@@ -48,7 +48,6 @@ class NewbiePurchaseManager(PurchaseManager.PurchaseManager):
             del self.movie
 
     def playMovie(self):
-        return #Clerk clara gone!
         self.movie = QuestParser.NPCMoviePlayer('gag_intro', base.localAvatar, self.npc)
         self.movie.setVar('backToPlaygroundButton', self.purchase.backToPlayground)
         self.movie.setVar('playAgainButton', self.purchase.playAgain)
