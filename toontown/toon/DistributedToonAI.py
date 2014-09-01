@@ -4568,7 +4568,7 @@ def name(name=''):
     """
     Modify the target's name.
     """
-    target = spellbook.getInvoker()
+    target = spellbook.getTarget()
     _name = target.getName()
     target.b_setName(name)
     if name:
