@@ -4360,6 +4360,18 @@ def maxToon(missingTrack=None):
     invoker.b_setMaxHp(ToontownGlobals.MaxHpLimit)
     invoker.toonUp(invoker.getMaxHp() - invoker.hp)
 
+    # Unlock all of the emotes:
+    emotes = list(invoker.getEmoteAccess())
+    for emoteId in OTPLocalizer.EmoteFuncDict.values():
+        if emoteId >= len(emotes):
+            continue
+        # The following emotions are ignored because they are unable to be
+        # obtained:
+        if emoteId in (17, 18, 19):
+            continue
+        emotes[emoteId] = 1
+    invoker.b_setEmoteAccess(emotes)
+
     # Max out their Cog suits:
     suitDeptCount = len(SuitDNA.suitDepts)
     cogParts = []
@@ -4403,7 +4415,11 @@ def maxToon(missingTrack=None):
 
     # Max their money:
     invoker.b_setMoney(invoker.getMaxMoney())
-    invoker.b_setBankMoney(12000)
+    invoker.b_setBankMoney(10000)
+
+    # Finally, unlock all of their pet phrases:
+    if simbase.wantPets:
+        invoker.b_setPetTrickPhrases(range(7))
 
     return 'Maxed your Toon!'
 
@@ -4432,7 +4448,8 @@ def unlocks():
     invoker.b_setEmoteAccess(emotes)
 
     # Finally, unlock all of their pet phrases:
-    invoker.b_setPetTrickPhrases(range(7))
+    if simbase.wantPets:
+        invoker.b_setPetTrickPhrases(range(7))
 
     return 'Unlocked teleport access, emotions, and pet trick phrases!'
 
@@ -4443,7 +4460,7 @@ def sos(count, name):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 100:
-        return 'Your SOS count must be in xrange (0-100).'
+        return 'Your SOS count must be in range (0-100).'
     for npcId, npcName in TTLocalizer.NPCToonNames.items():
         if name.lower() == npcName.lower():
             if npcId not in NPCToons.npcFriends:
@@ -4474,7 +4491,7 @@ def fires(count):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 255:
-        return 'Your fire count must be in xrange (0-255).'
+        return 'Your fire count must be in range (0-255).'
     invoker.b_setPinkSlips(count)
     return 'You were given {0} fires.'.format(count)
 
