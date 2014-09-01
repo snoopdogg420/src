@@ -144,11 +144,13 @@ class Piejectile(DirectObject, FlyingGag):
         self.race.effectManager.addSplatEffect(spawner=self.targetKart, parent=self.targetKart)
         taskMgr.remove(self.splatTaskName)
         self.removeNode()
+        self.remove()
 
     def splat(self, optional = None):
         self.race.effectManager.addSplatEffect(spawner=self)
         taskMgr.remove(self.splatTaskName)
         self.removeNode()
+        self.remove()
 
     def __updatePhysics(self, task):
         if self.deleting:
