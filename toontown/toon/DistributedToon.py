@@ -2250,7 +2250,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             chatString = base.talkAssistant.removeThoughtPrefix(chatString)
         else:
             self.nametag.setChatBalloonType(NametagGlobals.CHAT_BALLOON)
-        self.nametag.setChatText(chatString, True)
+        self.nametag.setChatText(chatString, timeout=(flags & CFTimeout))
         if base.toonChatSounds:
             self.playCurrentDialogue(None, flags, interrupt=1)
 
