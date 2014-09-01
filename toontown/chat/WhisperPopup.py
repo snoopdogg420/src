@@ -24,10 +24,16 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         self.timeout = timeout
 
         self.active = False
+        self.senderName = ''
+        self.fromId = 0
+        self.isPlayer = 0
 
-        self.lastClickState = PGButton.SReady
-        self.clickState = PGButton.SReady
-        self.pendingClickState = PGButton.SReady
+        self.lastClickState = PGButton.SInactive
+        self.clickState = PGButton.SInactive
+        self.pendingClickState = PGButton.SInactive
+
+        self.clickEvent = ''
+        self.clickExtraArgs = []
 
         self.contents = NodePath.anyPath(self).attachNewNode('contents')
         self.contents.setScale(self.CONTENTS_SCALE)
@@ -98,7 +104,8 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         # Translate the chat balloon along the inverse:
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
-        self.updateClickRegion()
+        # Update the click region if necessary:
+        self.considerUpdateClickRegion()
 
     def manage(self, marginManager):
         MarginVisible.manage(self, marginManager)
@@ -112,7 +119,14 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         self.destroy()
 
     def setClickable(self, senderName, fromId, isPlayer=0):
-        pass  # NAMETAG TODO
+        self.senderName = senderName
+        self.fromId = fromId
+        self.isPlayer = isPlayer
+        self.active = True
+        self.clickEvent = 'clickedWhisper'
+        self.clickExtraArgs = [self.fromId, self.isPlayer]
+        self.region.setActive(True)
+        self.setClickState(PGButton.SReady)
 
     def setLastClickState(self, lastClickState):
         self.lastClickState = lastClickState
@@ -125,15 +139,9 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         self.clickState = clickState
 
         if self.chatBalloon is not None:
-            foreground, background = self.chatColor[self.clickState]
-            if self.chatType == NametagGlobals.SPEEDCHAT:
-                background = self.speedChatColor
+            foreground, background = self.whisperColor[self.clickState]
             self.chatBalloon.setForeground(foreground)
             self.chatBalloon.setBackground(background)
-        elif self.panel is not None:
-            foreground, background = self.nametagColor[self.clickState]
-            self.setForeground(foreground)
-            self.setBackground(background)
 
         if self.clickState == PGButton.SReady:
             self.request('Normal')
@@ -171,7 +179,7 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
 
     def __handleMouseEnter(self, region, extra):
         self.pendingClickState = PGButton.SRollover
-        if (self.clickState == PGButton.SReady) or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton)):
+        if self.clickState == PGButton.SReady:
             self.setClickState(PGButton.SRollover)
 
     def __handleMouseLeave(self, region, extra):
@@ -199,6 +207,12 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
 
             self.setClickRegion(left, right, bottom, top)
 
+    def considerUpdateClickRegion(self):
+        if self.active and (self.getCell() is not None):
+            self.updateClickRegion()
+        else:
+            self.region.setActive(False)
+
     def setClickRegion(self, left, right, bottom, top):
         # Get a transform matrix to position the points correctly according to
         # the nametag node:
@@ -219,3 +233,6 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
 
         self.region.setFrame(left, right, bottom, top)
         self.region.setActive(True)
+
+    def marginVisibilityChanged(self):
+        self.considerUpdateClickRegion()

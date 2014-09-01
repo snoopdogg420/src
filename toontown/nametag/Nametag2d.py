@@ -77,6 +77,17 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
             self.setClickRegion(left, right, bottom, top)
 
+    def considerUpdateClickRegion(self):
+        if self.active and (self.getCell() is not None):
+            self.updateClickRegion()
+        else:
+            self.region.setActive(False)
+
+    def update(self):
+        Nametag.Nametag.update(self)
+
+        self.considerUpdateClickRegion()
+
     def tick(self, task):
         if (self.getCell() is None) or (self.arrow is None):
             return Task.cont
@@ -92,8 +103,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         arrowDegrees = (arrowRadians/math.pi) * 180
 
         self.arrow.setR(arrowDegrees - 90)
-
-        self.updateClickRegion()
         return Task.cont
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
@@ -149,3 +158,6 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         self.region.setFrame(left, right, bottom, top)
         self.region.setActive(True)
+
+    def marginVisibilityChanged(self):
+        self.considerUpdateClickRegion()

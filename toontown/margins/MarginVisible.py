@@ -54,3 +54,6 @@ class MarginVisible:
 
     def getCell(self):
         return self.cell
+
+    def marginVisibilityChanged(self):
+        pass  # Inheritors should override this method.
