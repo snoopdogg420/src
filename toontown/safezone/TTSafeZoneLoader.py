@@ -19,6 +19,19 @@ class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
         doorTrigger = bank.find('**/door_trigger*')
         doorTrigger.setY(doorTrigger.getY() - 1.5)
 
+        eventStage = loader.loadModel("phase_4/models/events/event_stage.bam")
+        eventStage.reparentTo(self.geom) # The geom is created by the dna parser
+        eventStage.setPos(68.08,1.67,4.025)
+        eventStage.setHpr(-447.775,0,0)
+
+        balloonArchway = loader.loadModel("phase_4/models/events/balloon_archway_spiraled.bam")
+        balloonArchway.reparentTo(self.geom) # The geom is created by the dna parser
+        balloonArchway.setPos(80,1.67,4.025)
+        balloonArchway.setHpr(-447.775,0,0)
+        balloonArchway.setScale(1.5)
+
+
+
     def unload(self):
         SafeZoneLoader.SafeZoneLoader.unload(self)
         del self.birdSound
