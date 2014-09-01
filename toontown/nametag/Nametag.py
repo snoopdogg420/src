@@ -251,6 +251,10 @@ class Nametag(FSM, PandaNode, DirectObject):
             foreground, background = self.chatColor[self.clickState]
             if self.chatType == NametagGlobals.SPEEDCHAT:
                 background = self.speedChatColor
+            if background[3] > self.CHAT_BALLOON_ALPHA:
+                background = VBase4(
+                    background[0], background[1], background[2],
+                    self.CHAT_BALLOON_ALPHA)
             self.chatBalloon.setForeground(foreground)
             self.chatBalloon.setBackground(background)
         elif self.panel is not None:
