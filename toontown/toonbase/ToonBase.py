@@ -499,7 +499,7 @@ class ToonBase(OTPBase.OTPBase):
             return task.done
 
         self.lastSpeedHackCheck = time.time()
-        self.lastTrueClockTime = self.trueClock.getLongTime()
+        self.lastTrueClockTime = TrueClock.getGlobalPtr().getLongTime()
 
         return task.cont
 
