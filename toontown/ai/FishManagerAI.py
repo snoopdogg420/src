@@ -104,9 +104,9 @@ def fish(fishName):
     invoker = spellbook.getInvoker()
     if fishName.lower() == 'remove':
         if invoker.doId not in simbase.air.fishManager.fishRequests:
-            return '{0} has not requested a fish.'.format(invoker.getName())
+            return 'You have not requested a fish.'
         del simbase.air.fishManager.fishRequests[invoker.doId]
-        return "Removed {0}'s fish request.".format(invoker.getName())
+        return 'Removed your fish request.'
 
     for genus, species in TTLocalizer.FishSpeciesNames:
         for name in species:
@@ -114,7 +114,6 @@ def fish(fishName):
                 continue
             fishRequest = (genus, species.index(name))
             simbase.air.fishManager.fishRequests[invoker.doId] = fishRequest
-            return 'A request for the fish {0} was saved for {1}.'.format(
-                name, invoker.getName())
+            return 'A request for the fish %s was saved.' % name
 
-    return "Couldn't find a fish with the name {0}!".format(fishName)
+    return "Couldn't find a fish with the name %s!" % fishName
