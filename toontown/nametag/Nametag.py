@@ -244,23 +244,14 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.lastClickState
 
     def setClickState(self, clickState):
+        if (not NametagGlobals.wantActiveNametags) and ((not self.getChatText()) or (self.getChatButton() == NametagGlobals.noButton)):
+            self.setClickStateColor(PGButton.SInactive)
+            return
+
         self.lastClickState = self.clickState
         self.clickState = clickState
 
-        if self.chatBalloon is not None:
-            foreground, background = self.chatColor[self.clickState]
-            if self.chatType == NametagGlobals.SPEEDCHAT:
-                background = self.speedChatColor
-            if background[3] > self.CHAT_BALLOON_ALPHA:
-                background = VBase4(
-                    background[0], background[1], background[2],
-                    self.CHAT_BALLOON_ALPHA)
-            self.chatBalloon.setForeground(foreground)
-            self.chatBalloon.setBackground(background)
-        elif self.panel is not None:
-            foreground, background = self.nametagColor[self.clickState]
-            self.setForeground(foreground)
-            self.setBackground(background)
+        self.setClickStateColor(self.clickState)
 
         if self.clickState == PGButton.SReady:
             self.request('Normal')
@@ -279,6 +270,22 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def getPendingClickState(self):
         return self.pendingClickState
+
+    def setClickStateColor(self, clickState):
+        if self.chatBalloon is not None:
+            foreground, background = self.chatColor[clickState]
+            if self.chatType == NametagGlobals.SPEEDCHAT:
+                background = self.speedChatColor
+            if background[3] > self.CHAT_BALLOON_ALPHA:
+                background = VBase4(
+                    background[0], background[1], background[2],
+                    self.CHAT_BALLOON_ALPHA)
+            self.chatBalloon.setForeground(foreground)
+            self.chatBalloon.setBackground(background)
+        elif self.panel is not None:
+            foreground, background = self.nametagColor[clickState]
+            self.setForeground(foreground)
+            self.setBackground(background)
 
     def setText(self, text):
         self.textNode.setText(text)
