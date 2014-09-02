@@ -31,10 +31,10 @@ class DNACornice(DNAGroup.DNAGroup):
     def traverse(self, nodePath, dnaStorage):
         pParentXScale = nodePath.getParent().getScale().getX()
         parentZScale = nodePath.getScale().getZ()
-        node = dnaStorage.findNode(self.getCode())
+        node = dnaStorage.findNode(self.code)
         if node is None:
             raise DNAError.DNAError('DNACornice code {0} not found in '
-                           'DNAStorage'.format(self.getCode()))
+                           'DNAStorage'.format(self.code))
         nodePathA = nodePath.attachNewNode('cornice-internal', 0)
         node = node.find('**/*_d')
         np = node.copyTo(nodePathA, 0)
@@ -44,6 +44,7 @@ class DNACornice(DNAGroup.DNAGroup):
             LVector3f(1, pParentXScale/parentZScale,
                       pParentXScale/parentZScale))
         np.setEffect(DecalEffect.make())
+        np.flattenStrong()
         node = node.getParent().find('**/*_nd')
         np = node.copyTo(nodePathA, 1)
         np.setPosHprScale(
@@ -51,8 +52,10 @@ class DNACornice(DNAGroup.DNAGroup):
             LVector3f(0, 0, 0),
             LVector3f(1, pParentXScale/parentZScale,
                       pParentXScale/parentZScale))
+        np.flattenStrong()
         nodePathA.setPosHprScale(
             LVector3f(0, 0, node.getScale().getZ()),
             LVector3f(0, 0, 0),
             LVector3f(1, 1, 1))
-        nodePathA.setColor(self.getColor())
+        nodePathA.setColor(self.color)
+        nodePathA.flattenStrong()

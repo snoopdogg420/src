@@ -483,6 +483,9 @@ class SuitPlannerBase:
         self.pointIndexes = {}
         return
 
+    def delete(self):
+        del self.dnaStore
+
     def setupDNA(self):
         if self.dnaStore:
             return None

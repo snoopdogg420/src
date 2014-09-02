@@ -28,14 +28,19 @@ class DNADoor(DNAGroup.DNAGroup):
         doorNodePath.setPosHprScale(doorOrigin, (0, 0, 0), (0, 0, 0), (1, 1, 1))
         doorNodePath.setColor(color, 0)
         leftHole = doorNodePath.find('door_*_hole_left')
+        leftHole.flattenStrong()
         leftHole.setName('doorFrameHoleLeft')
         rightHole = doorNodePath.find('door_*_hole_right')
+        rightHole.flattenStrong()
         rightHole.setName('doorFrameHoleRight')
         leftDoor = doorNodePath.find('door_*_left')
+        leftDoor.flattenStrong()
         leftDoor.setName('leftDoor')
         rightDoor = doorNodePath.find('door_*_right')
+        rightDoor.flattenStrong()
         rightDoor.setName('rightDoor')
         doorFlat = doorNodePath.find('door_*_flat')
+        doorFlat.flattenStrong()
         leftHole.wrtReparentTo(doorFlat, 0)
         rightHole.wrtReparentTo(doorFlat, 0)
         doorFlat.setEffect(DecalEffect.make())
@@ -53,9 +58,7 @@ class DNADoor(DNAGroup.DNAGroup):
         doorTrigger.setName('door_trigger_' + block)
 
         if not dnaStore.getDoorPosHprFromBlockNumber(block):
-            store = NodePath('door-%s' % block)
-            store.setPosHprScale(doorNodePath, (0, 0, 0), (0, 0, 0), (1, 1, 1))
-            dnaStore.storeBlockDoor(block, store)
+            dnaStore.storeBlockDoor(block, doorOrigin)
 
         doorNodePath.flattenMedium()
 
@@ -73,5 +76,6 @@ class DNADoor(DNAGroup.DNAGroup):
         if node is None:
             raise DNAError.DNAError('DNADoor code ' + self.code + ' not found in DNAStorage')
         doorNode = node.copyTo(frontNode, 0)
+        doorNode.flattenMedium()
         block = dnaStorage.getBlock(nodePath.getName())
         DNADoor.setupDoor(doorNode, nodePath, nodePath.find('**/*door_origin'), dnaStorage, block, self.getColor())

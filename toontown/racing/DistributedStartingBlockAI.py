@@ -34,7 +34,9 @@ class DistributedStartingBlockAI(DistributedObjectAI):
 
     def requestEnter(self, isPaid):
         avId = self.air.getAvatarIdFromSender()
-        av = self.air.doId2do[avId]
+        av = self.air.doId2do.get(avId)
+        if not av:
+            return
         if not av.hasKart():
             self.sendUpdateToAvatarId(avId, 'rejectEnter', [KartGlobals.ERROR_CODE.eNoKart])
             return

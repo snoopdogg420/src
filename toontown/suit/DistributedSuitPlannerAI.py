@@ -118,6 +118,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
     def delete(self):
         self.cleanup()
         DistributedObjectAI.DistributedObjectAI.delete(self)
+        SuitPlannerBase.SuitPlannerBase.delete(self)
 
     def initBuildingsAndPoints(self):
         if not self.buildingMgr:

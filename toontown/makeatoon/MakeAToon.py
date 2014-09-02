@@ -87,7 +87,6 @@ class MakeAToon(StateData.StateData):
         self.focusOutIval = None
         self.focusInIval = None
         self.toon = None
-        return
 
     def getToon(self):
         return self.toon
@@ -128,17 +127,29 @@ class MakeAToon(StateData.StateData):
 
     def load(self):
         gui = loader.loadModel('phase_3/models/gui/tt_m_gui_mat_mainGui')
+        gui.flattenMedium()
         guiAcceptUp = gui.find('**/tt_t_gui_mat_okUp')
+        guiAcceptUp.flattenStrong()
         guiAcceptDown = gui.find('**/tt_t_gui_mat_okDown')
+        guiAcceptDown.flattenStrong()
         guiCancelUp = gui.find('**/tt_t_gui_mat_closeUp')
+        guiCancelUp.flattenStrong()
         guiCancelDown = gui.find('**/tt_t_gui_mat_closeDown')
+        guiCancelDown.flattenStrong()
         guiNextUp = gui.find('**/tt_t_gui_mat_nextUp')
+        guiNextUp.flattenStrong()
         guiNextDown = gui.find('**/tt_t_gui_mat_nextDown')
+        guiNextDown.flattenStrong()
         guiNextDisabled = gui.find('**/tt_t_gui_mat_nextDisabled')
+        guiNextDisabled.flattenStrong()
         skipTutorialUp = gui.find('**/tt_t_gui_mat_skipUp')
+        skipTutorialUp.flattenStrong()
         skipTutorialDown = gui.find('**/tt_t_gui_mat_skipDown')
+        skipTutorialDown.flattenStrong()
         rotateUp = gui.find('**/tt_t_gui_mat_arrowRotateUp')
+        rotateUp.flattenStrong()
         rotateDown = gui.find('**/tt_t_gui_mat_arrowRotateDown')
+        rotateDown.flattenStrong()
         self.guiTopBar = DirectFrame(relief=None, text=TTLocalizer.CreateYourToon, text_font=ToontownGlobals.getSignFont(), text_fg=(0.0, 0.65, 0.35, 1), text_scale=0.18, text_pos=(0, -0.03), pos=(0, 0, 0.86))
         self.guiTopBar.hide()
         self.guiBottomBar = DirectFrame(relief=None, image_scale=(1.25, 1, 1), pos=(0.01, 0, -0.86))
@@ -181,6 +192,7 @@ class MakeAToon(StateData.StateData):
          rotateDown,
          rotateUp,
          rotateDown), image_scale=(-0.4, 0.4, 0.4), image1_scale=(-0.5, 0.5, 0.5), image2_scale=(-0.5, 0.5, 0.5), pos=(-0.355, 0, 0.36))
+        self.rotateLeftButton.flattenMedium()
         self.rotateLeftButton.reparentTo(base.a2dBottomCenter)
         self.rotateLeftButton.hide()
         self.rotateLeftButton.bind(DGG.B1PRESS, self.rotateToonLeft)
@@ -189,6 +201,7 @@ class MakeAToon(StateData.StateData):
          rotateDown,
          rotateUp,
          rotateDown), image_scale=(0.4, 0.4, 0.4), image1_scale=(0.5, 0.5, 0.5), image2_scale=(0.5, 0.5, 0.5), pos=(0.355, 0, 0.36))
+        self.rotateRightButton.flattenStrong()
         self.rotateRightButton.reparentTo(base.a2dBottomCenter)
         self.rotateRightButton.hide()
         self.rotateRightButton.bind(DGG.B1PRESS, self.rotateToonRight)
@@ -219,19 +232,32 @@ class MakeAToon(StateData.StateData):
         ee.bind(DGG.B1PRESS, lambda x, ee = ee: self.toggleSlide())
         self.eee = ee
         self.room = loader.loadModel('phase_3/models/makeatoon/tt_m_ara_mat_room')
+        self.room.flattenMedium()
         self.genderWalls = self.room.find('**/genderWalls')
+        self.genderWalls.flattenStrong()
         self.genderProps = self.room.find('**/genderProps')
+        self.genderProps.flattenStrong()
         self.bodyWalls = self.room.find('**/bodyWalls')
+        self.bodyWalls.flattenStrong()
         self.bodyProps = self.room.find('**/bodyProps')
+        self.bodyProps.flattenStrong()
         self.colorWalls = self.room.find('**/colorWalls')
+        self.colorWalls.flattenStrong()
         self.colorProps = self.room.find('**/colorProps')
+        self.colorProps.flattenStrong()
         self.clothesWalls = self.room.find('**/clothWalls')
+        self.clothesWalls.flattenMedium()
         self.clothesProps = self.room.find('**/clothProps')
+        self.clothesProps.flattenMedium()
         self.nameWalls = self.room.find('**/nameWalls')
+        self.nameWalls.flattenStrong()
         self.nameProps = self.room.find('**/nameProps')
+        self.nameProps.flattenStrong()
         self.background = self.room.find('**/background')
+        self.background.flattenStrong()
         self.background.reparentTo(render)
         self.floor = self.room.find('**/floor')
+        self.floor.flattenStrong()
         self.floor.reparentTo(render)
         self.spotlight = self.room.find('**/spotlight')
         self.spotlight.reparentTo(self.spotlightJoint)
@@ -268,13 +294,11 @@ class MakeAToon(StateData.StateData):
         self.musicVolume = base.config.GetFloat('makeatoon-music-volume', 1)
         self.sfxVolume = base.config.GetFloat('makeatoon-sfx-volume', 1)
         self.soundBack = base.loadSfx('phase_3/audio/sfx/GUI_create_toon_back.ogg')
-        self.crashSounds = []
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_boing.ogg'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_glassBoing.ogg'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_wood.ogg'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_woodBoing.ogg'))
-        self.crashSounds.append(base.loadSfx('phase_3/audio/sfx/tt_s_ara_mat_crash_woodGlass.ogg'))
-        return
+        self.crashSounds = map(base.loadSfx, ['phase_3/audio/sfx/tt_s_ara_mat_crash_boing.ogg',
+                                              'phase_3/audio/sfx/tt_s_ara_mat_crash_glassBoing.ogg',
+                                              'phase_3/audio/sfx/tt_s_ara_mat_crash_wood.ogg',
+                                              'phase_3/audio/sfx/tt_s_ara_mat_crash_woodBoing.ogg',
+                                              'phase_3/audio/sfx/tt_s_ara_mat_crash_woodGlass.ogg'])
 
     def unload(self):
         self.exit()

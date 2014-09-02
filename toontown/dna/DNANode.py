@@ -52,3 +52,4 @@ class DNANode(DNAGroup.DNAGroup):
         node.setPosHprScale(self.pos, self.hpr, self.scale)
         for child in self.children:
             child.traverse(node, dnaStorage)
+        node.flattenMedium()

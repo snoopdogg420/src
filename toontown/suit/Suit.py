@@ -186,23 +186,20 @@ def loadModels():
     global Preloaded
     if not Preloaded:
         print 'Preloading suits...'
-        for x, y in enumerate(SuitParts):
-            Preloaded[SuitParts[x]] = loader.loadModel(y)
-        print 'Done preloading suits'
+        for filepath in SuitParts:
+            Preloaded[filepath] = loader.loadModel(filepath)
+            Preloaded[filepath].flattenMedium()
 
 def loadTutorialSuit():
-    loader.loadModelNode('phase_3.5/models/char/suitC-mod')
+    loader.loadModel('phase_3.5/models/char/suitC-mod')
     loadDialog(1)
-
 
 def loadSuits(level):
     loadDialog(level)
 
-
 def unloadSuits(level):
     #loadSuitModelsAndAnims(level, flag=0)
     unloadDialog(level)
-
 
 def loadSuitModelsAndAnims(level, flag = 0):
     for key in ModelDict.keys():
@@ -212,7 +209,6 @@ def loadSuitModelsAndAnims(level, flag = 0):
             Preloaded[filepath] = loader.loadModel(filepath)
             filepath = 'phase_' + str(phase) + model + 'heads'
             Preloaded[filepath] = loader.loadModel(filepath)
-
 
 def cogExists(filePrefix):
     searchPath = DSearchPath()
@@ -244,7 +240,7 @@ def loadSuitAnims(suit, flag = 1):
         filePrefix = ModelDict[bodyType][0]
         animName = filePrefix + anim[1]
         if flag:
-            loader.loadModelNode(animName)
+            loader.loadModel(animName)
         else:
             loader.unloadModel(animName)
 
@@ -426,9 +422,6 @@ class Suit(Avatar.Avatar):
 
             for head in SuitGlobals.suitProperties[dna.name][SuitGlobals.HEADS_INDEX]:
                 self.generateHead(head)
-
-            self.flattenStrong()
-            self.postFlatten()
 
             self.setHeight(SuitGlobals.suitProperties[dna.name][SuitGlobals.HEIGHT_INDEX])
 

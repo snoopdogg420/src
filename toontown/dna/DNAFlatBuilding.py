@@ -146,4 +146,4 @@ class DNAFlatBuilding(DNANode.DNANode):
             wallDecal.removeNode()
             self.setupSuitFlatBuilding(nodePath, dnaStorage)
             self.setupCogdoFlatBuilding(nodePath, dnaStorage)
-
+            node.flattenStrong()

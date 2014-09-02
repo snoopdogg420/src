@@ -15,6 +15,7 @@ model-cache-models #f
 model-cache-textures #f
 default-model-extension .bam
 texture-anisotropic-degree 16
+text-minfilter linear
 
 # Server...
 server-force-ssl #t
@@ -190,10 +191,26 @@ want-instant-parties #f
 want-old-fireworks #t
 
 # Performance...
-hardware-animated-vertices #t
-preload-avatars #t
 sync-video #f
 smooth-lag 0.4
+support-stencil #f
+framebuffer-stencil #f
+textures-power-2 none
+gl-finish #f
+gl-force-no-error #t
+gl-check-errors #f
+gl-force-no-flush #t
+gl-force-no-scissor #t
+texture-magfilter linear
+texture-minfilter linear
+lock-to-one-cpu #f
+support-threads #t
+gl-immutable-texture-storage #f
+gl-dump-compiled-shaders #f
+show-buffers #f
+garbage-collect-states #f
+framebuffer-multisample #f
+multisamples 0
 
 # Quality...
 framebuffer-multisample 1

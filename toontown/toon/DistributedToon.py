@@ -775,6 +775,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.stopSmooth()
         tunnelOrigin = render.attachNewNode('tunnelOrigin')
         tunnelOrigin.setPosHpr(x, y, z, h, 0, 0)
+        if self.tunnelTrack:
+            self.tunnelTrack.finish()
         self.tunnelTrack = Sequence(self.getTunnelInToonTrack(endX, tunnelOrigin), Func(tunnelOrigin.removeNode), Func(self.startSmooth))
         tOffset = globalClock.getFrameTime() - (startTime + self.smoother.getDelay())
         if tOffset < 0.0:
@@ -824,6 +826,8 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def handleTunnelOut(self, startTime, startX, startY, x, y, z, h):
         tunnelOrigin = render.attachNewNode('tunnelOrigin')
         tunnelOrigin.setPosHpr(x, y, z, h, 0, 0)
+        if self.tunnelTrack:
+            self.tunnelTrack.finish()
         self.tunnelTrack = Sequence(Func(self.stopSmooth), self.getTunnelOutToonTrack(startX, startY, tunnelOrigin), Func(self.detachNode), Func(tunnelOrigin.removeNode))
         tOffset = globalClock.getFrameTime() - (startTime + self.smoother.getDelay())
         if tOffset < 0.0:
@@ -2591,6 +2595,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         np = NodePath(self.nametag.getIcon())
         if np.isEmpty():
             return
+        self.gmIcon.flattenStrong()
         self.gmIcon.reparentTo(np)
         self.gmIcon.setScale(1.6)
         self.gmIcon.setZ(2.05)

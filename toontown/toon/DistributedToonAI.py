@@ -3109,8 +3109,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         elif type == 'building':
             returnCode = self.doBuildingTakeover(suitIndex)
         elif type == 'invasion':
-            cogDept = suitIndex / len(SuitDNA.suitDepts)
-            cogType = suitIndex % SuitDNA.suitsPerDept
+            cogDept = suitIndex / SuitDNA.suitsPerDept
+            cogType = SuitDNA.getSuitsInDept(cogDept).index(SuitDNA.suitHeadTypes[suitIndex])
             returnCode = self.doCogInvasion(cogDept, cogType, 0, 0, 0)
         if returnCode:
             if returnCode[0] == 'success':
@@ -4397,7 +4397,8 @@ def maxToon(missingTrack=None):
     invoker.b_setQuestCarryLimit(4)
 
     # Complete their quests:
-    # TODO: Set quest history and rewards.
+    invoker.b_setQuests([])
+    invoker.b_setRewardHistory(Quests.ELDER_TIER, [])
 
     # Max their money:
     invoker.b_setMoney(invoker.getMaxMoney())

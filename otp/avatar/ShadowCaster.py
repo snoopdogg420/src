@@ -1,10 +1,11 @@
-from pandac.PandaModules import *
-from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.showbase.ShadowPlacer import ShadowPlacer
-from otp.otpbase import OTPGlobals
-globalDropShadowFlag = 1
+from pandac.PandaModules import *
 
+from otp.otpbase import OTPGlobals
+
+
+globalDropShadowFlag = 1
 def setGlobalDropShadowFlag(flag):
     global globalDropShadowFlag
     if flag != globalDropShadowFlag:
@@ -13,7 +14,6 @@ def setGlobalDropShadowFlag(flag):
 
 
 globalDropShadowGrayLevel = 0.5
-
 def setGlobalDropShadowGrayLevel(grayLevel):
     global globalDropShadowGrayLevel
     if grayLevel != globalDropShadowGrayLevel:
@@ -37,7 +37,6 @@ class ShadowCaster:
         if hasattr(base, 'wantDynamicShadows') and base.wantDynamicShadows:
             messenger.accept('globalDropShadowFlagChanged', self, self.__globalDropShadowFlagChanged)
             messenger.accept('globalDropShadowGrayLevelChanged', self, self.__globalDropShadowGrayLevelChanged)
-        return
 
     def delete(self):
         if hasattr(base, 'wantDynamicShadows') and base.wantDynamicShadows:
@@ -45,7 +44,6 @@ class ShadowCaster:
             messenger.ignore('globalDropShadowGrayLevelChanged', self)
         self.deleteDropShadow()
         self.shadowJoint = None
-        return
 
     def initializeDropShadow(self, hasGeomNode = True):
         self.deleteDropShadow()
@@ -78,7 +76,6 @@ class ShadowCaster:
         if self.dropShadow:
             self.dropShadow.removeNode()
             self.dropShadow = None
-        return
 
     def setActiveShadow(self, isActive = 1):
         isActive = isActive and self.wantsActive
@@ -92,7 +89,6 @@ class ShadowCaster:
                     self.shadowPlacer.on()
                 else:
                     self.shadowPlacer.off()
-        return
 
     def setShadowHeight(self, shadowHeight):
         if self.dropShadow:
@@ -126,9 +122,7 @@ class ShadowCaster:
             elif self.activeShadow == 0:
                 self.setActiveShadow(1)
             self.showShadow()
-        return
 
     def __globalDropShadowGrayLevelChanged(self):
         if self.dropShadow != None:
             self.dropShadow.setColor(0.0, 0.0, 0.0, globalDropShadowGrayLevel, 1)
-        return

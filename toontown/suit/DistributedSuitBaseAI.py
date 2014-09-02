@@ -31,8 +31,9 @@ class DistributedSuitBaseAI(DistributedAvatarAI.DistributedAvatarAI, SuitBase.Su
     def delete(self):
         self.sp = None
         del self.dna
+
         DistributedAvatarAI.DistributedAvatarAI.delete(self)
-        return
+        SuitBase.SuitBase.delete(self)
 
     def requestRemoval(self):
         if self.sp != None:

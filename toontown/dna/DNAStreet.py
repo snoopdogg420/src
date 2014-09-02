@@ -118,3 +118,4 @@ class DNAStreet(DNANode.DNANode):
             curbNode.setColorScale(self.curbColor, 0)
 
         nodePath.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
+        nodePath.flattenStrong()

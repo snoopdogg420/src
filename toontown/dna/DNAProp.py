@@ -22,6 +22,27 @@ class DNAProp(DNANode.DNANode):
     def setColor(self, color):
         self.color = color
 
+    def smartFlatten(self, node):
+        if 'trolley' in self.name:
+            return
+        elif self.children:
+            node.flattenMedium()
+        elif 'HQTelescopeAnimatedProp' in self.name:
+            node.flattenMedium()
+        elif node.find('**/water1*').isEmpty():
+            node.flattenStrong()
+        elif not node.find('**/water').isEmpty():
+            water = node.find('**/water')
+            water.setTransparency(1)
+            water.setColor(1, 1, 1, 0.8)
+            node.flattenStrong()
+        elif not node.find('**/water1*').isEmpty():
+            water = node.find('**/water1*')
+            water.setTransparency(1)
+            water.setColorScale(1.0, 1.0, 1.0, 1.0)
+            water.setBin('water', 51, 1)
+            node.flattenStrong()
+
     def makeFromDGI(self, dgi):
         DNANode.DNANode.makeFromDGI(self, dgi)
         self.code = DNAUtil.dgiExtractString8(dgi)
@@ -40,5 +61,6 @@ class DNAProp(DNANode.DNANode):
         node.setPosHprScale(self.pos, self.hpr, self.scale)
         node.setName(self.name)
         node.setColorScale(self.color, 0)
+        #self.smartFlatten(node)
         for child in self.children:
             child.traverse(node, dnaStorage)

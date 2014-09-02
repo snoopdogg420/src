@@ -40,6 +40,7 @@ class DistributedNPCYang(DistributedNPCToonBase):
                 State.State('off', self.enterOff, self.exitOff, ['pickColor']),
                 State.State('pickColor', self.enterPickColor, self.exitPickColor, ['off'])
             ], 'off', 'off')
+        self.fsm.enterInitialState()
 
         self.title = None
         self.yesButton = None
