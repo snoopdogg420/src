@@ -81,7 +81,8 @@ class QuestManagerAI:
                 # If there is another part to this quest then give them that.
                 if Quests.getNextQuest(questId, npc, av)[0] != Quests.NA:
                     self.nextQuest(av, npc, questId)
-                    self.openTutorialDoors(avId, npc)
+                    if avId in self.air.tutorialManager.avId2fsm:
+                        self.air.tutorialManager.avId2fsm[avId].demand('Tunnel')
                     break
                 else:
                     # The toon has completed this quest. Give them a reward!
@@ -224,17 +225,6 @@ class QuestManagerAI:
                 currentTier += 1
             av.b_setRewardHistory(currentTier, [])
 
-    def openTutorialDoors(self, avId, npc):
-        # Opens the hq-exit doors after talking to HQ-Harry.
-        if isinstance(npc, DistributedNPCSpecialQuestGiverAI):
-            if npc.tutorial and (npc.npcId == 20002):
-                messenger.send('intHqDoor0-{0}'.format(npc.zoneId), [FADoorCodes.WRONG_DOOR_HQ])
-                messenger.send('intHqDoor1-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
-                streetZone = self.air.tutorialManager.currentAllocatedZones[avId][0]
-                messenger.send('extHqDoor0-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
-                messenger.send('extHqDoor1-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
-                messenger.send('extShopDoor-{0}'.format(streetZone), [FADoorCodes.GO_TO_PLAYGROUND])
-
     def tutorialQuestChoice(self, avId, npc):
         # Get the avatar.
         av = self.air.doId2do.get(avId)
@@ -247,10 +237,10 @@ class QuestManagerAI:
 
         self.avatarChoseQuest(avId, npc, quest[0], quest[1], 0)
 
-        # If its the tutorial introduction. Open the shop doors.
-        if npc.tutorial:
-            if npc.npcId == 20000:
-                messenger.send('intShopDoor-{0}'.format(npc.zoneId), [FADoorCodes.UNLOCKED])
+        # Are we in the tutorial speaking to Tutorial Tom?
+        if avId in self.air.tutorialManager.avId2fsm:
+            if av.getRewardHistory()[0] == 0:
+                self.air.tutorialManager.avId2fsm[avId].demand('Battle')
 
     def toonRodeTrolleyFirstTime(self, av):
         # Toon played a minigame.
