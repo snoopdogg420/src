@@ -65,7 +65,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
             self.setClickRegion(left, right, bottom, top)
 
-        if self.panel is not None:
+        elif self.panel is not None:
             height = self.panelHeight
             width = self.panelWidth
 
