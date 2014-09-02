@@ -96,10 +96,10 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.considerUpdateClickRegion()
 
     def tick(self, task):
-        if (self.getCell() is None) or (self.arrow is None):
+        if (self.avatar is None) or self.avatar.isEmpty():
             return Task.cont
 
-        if (self.avatar is None) or self.avatar.isEmpty():
+        if (self.getCell() is None) or (self.arrow is None):
             return Task.cont
 
         location = self.avatar.getPos(NametagGlobals.me)

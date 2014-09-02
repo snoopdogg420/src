@@ -93,6 +93,9 @@ class NametagGroup:
         return 'NametagGroup-' + str(id(self))
 
     def tick(self, task):
+        if self.avatar is None:
+            return Task.cont
+
         if self.avatar == NametagGlobals.me:
             return Task.done
 

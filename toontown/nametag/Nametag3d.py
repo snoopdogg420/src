@@ -82,6 +82,9 @@ class Nametag3d(Nametag.Nametag):
             self.setClickRegion(left, right, bottom, top)
 
     def tick(self, task):
+        if self.avatar is None:
+            return Task.cont
+
         distance = self.contents.getPos(base.cam).length()
 
         if distance < self.SCALING_MIN_DISTANCE:
