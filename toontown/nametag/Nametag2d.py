@@ -1,7 +1,7 @@
+from direct.gui.DirectGui import *
 from direct.task.Task import Task
 import math
 from pandac.PandaModules import *
-from direct.gui.DirectGui import *
 
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import Nametag
@@ -55,27 +55,20 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
     def updateClickRegion(self):
         if self.chatBalloon is not None:
-            width = self.chatBalloon.width
-            height = self.chatBalloon.height
-
-            left = -(width/2)
-            right = width/2
-            bottom = -(height/2)
-            top = height/2
+            right = self.chatBalloon.width / 2
+            left = -right
+            top = self.chatBalloon.height / 2
+            bottom = -top
 
             self.setClickRegion(left, right, bottom, top)
-
         elif self.panel is not None:
-            height = self.panelHeight
-            width = self.panelWidth
+            rightD = self.panelWidth / 2
+            leftD = -rightD
+            topD = self.panelHeight / 2
+            bottomD = -topD
 
-            leftD = -width/2
-            rightD = width/2
-            bottomD = -height/2
-            topD = height/2
-
-            xCenter = (self.textNode.getLeft()+self.textNode.getRight())/2
-            yCenter = (self.textNode.getTop()+self.textNode.getBottom())/2
+            xCenter = (self.textNode.getLeft()+self.textNode.getRight()) / 2
+            yCenter = (self.textNode.getTop()+self.textNode.getBottom()) / 2
 
             left = xCenter + leftD
             right = xCenter + rightD

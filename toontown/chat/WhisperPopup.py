@@ -197,13 +197,10 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
 
     def updateClickRegion(self):
         if self.chatBalloon is not None:
-            width = self.chatBalloon.width
-            height = self.chatBalloon.height
-
-            left = -(width/2)
-            right = width/2
-            bottom = -(height/2)
-            top = height/2
+            right = self.chatBalloon.width / 2
+            left = -right
+            top = self.chatBalloon.height / 2
+            bottom = -top
 
             self.setClickRegion(left, right, bottom, top)
 

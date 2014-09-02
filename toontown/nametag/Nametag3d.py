@@ -48,36 +48,29 @@ class Nametag3d(Nametag.Nametag):
         self.contents.setEffect(billboardEffect)
 
     def updateClickRegion(self):
-        if self.panel is not None:
-            width = self.panelWidth
-            height = self.panelHeight
+        if self.chatBalloon is not None:
+            left = self.chatBalloon.center[0] - (self.chatBalloon.width/2)
+            right = left + self.chatBalloon.width
 
-            leftD = -width/2
-            rightD = width/2
-            bottomD = -height/2
-            topD = height/2
+            # Calculate the bottom of the region based on constants, with 2.4
+            # being the padded height of a one line message:
+            bottom = NametagGlobals.chatBalloon3dHeight - 2.4
+            top = bottom + self.chatBalloon.height
 
-            xCenter = (self.textNode.getLeft()+self.textNode.getRight())/2
-            yCenter = (self.textNode.getTop()+self.textNode.getBottom())/2
+            self.setClickRegion(left, right, bottom, top)
+        elif self.panel is not None:
+            rightD = self.panelWidth / 2
+            leftD = -rightD
+            topD = self.panelHeight / 2
+            bottomD = -topD
+
+            xCenter = (self.textNode.getLeft()+self.textNode.getRight()) / 2
+            yCenter = (self.textNode.getTop()+self.textNode.getBottom()) / 2
 
             left = xCenter + leftD
             right = xCenter + rightD
             bottom = yCenter + bottomD
             top = yCenter + topD
-
-            self.setClickRegion(left, right, bottom, top)
-
-        if self.chatBalloon is not None:
-            width = self.chatBalloon.width
-            height = self.chatBalloon.height
-
-            left = self.chatBalloon.center[0]-(width/2)
-            right = left+width
-
-            # Calculate the bottom of the region based on constants:
-            # 2.4 is equal to the padded height of a one line message
-            bottom = NametagGlobals.chatBalloon3dHeight-2.4
-            top = bottom+height
 
             self.setClickRegion(left, right, bottom, top)
 
