@@ -112,17 +112,18 @@ class TutorialManagerAI(DistributedObjectAI):
 
     def requestSkipTutorial(self):
         avId = self.air.getAvatarIdFromSender()
-        av = self.air.doId2do.get(avId)
-
-        if av is None:
-            self.d_skipTutorialResponse(avId, 0)
-            return
-
-        av.b_setTutorialAck(1)
-        av.b_setQuestHistory([110, 100])
-        av.addQuest((110, Quests.getQuestFromNpcId(110), Quests.getQuestToNpcId(110), Quests.getQuestReward(110, av), 0), 0)
-        self.air.questManager.toonRodeTrolleyFirstTime(av)
         self.d_skipTutorialResponse(avId, 1)
+
+
+        def handleTutorialSkipped(av):
+            av.b_setTutorialAck(1)
+            av.b_setQuestHistory([110, 100])
+            av.addQuest((110, Quests.getQuestFromNpcId(110), Quests.getQuestToNpcId(110), Quests.getQuestReward(110, av), 0), 0)
+            self.air.questManager.toonRodeTrolleyFirstTime(av)
+
+
+        # We must wait for the avatar to be generated:
+        self.acceptOnce('generate-%d' % avId, handleTutorialSkipped)
 
     def d_skipTutorialResponse(self, avId, allOk):
         self.sendUpdateToAvatarId(avId, 'skipTutorialResponse', [allOk])
@@ -163,7 +164,7 @@ class TutorialManagerAI(DistributedObjectAI):
         av.inventory.zeroInv(killUber=True)
         av.inventory.inventory[ToontownBattleGlobals.THROW_TRACK][0] = 1
         av.inventory.inventory[ToontownBattleGlobals.SQUIRT_TRACK][0] = 1
-        av.d_setInventory(av.inventory.makeNetString())
+        av.b_setInventory(av.inventory.makeNetString())
 
         av.experience.zeroOutExp()
         av.d_setExperience(av.experience.makeNetString())
