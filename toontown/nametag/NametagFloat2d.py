@@ -10,7 +10,7 @@ class NametagFloat2d(NametagFloat3d):
     def update(self):
         NametagFloat3d.update(self)
 
-        if self.active or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton)):
+        if self.getChatText() and (self.getChatButton() != NametagGlobals.noButton):
             self.updateClickRegion()
         else:
             self.region.setActive(False)
