@@ -68,10 +68,6 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.chatTextNode.setGlyphScale(ChatBalloon.TEXT_GLYPH_SCALE)
         self.chatTextNode.setGlyphShift(ChatBalloon.TEXT_GLYPH_SHIFT)
 
-        # Add the tick task:
-        self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
-
         # Create the click region:
         self.regionName = self.getUniqueName() + '-region'
         self.region = MouseWatcherRegion(self.regionName, 0, 0, 0, 0)
@@ -82,6 +78,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.accept(base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName), self.__handleMouseLeave)
         self.accept(base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName), self.__handleMouseDown)
         self.accept(base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName), self.__handleMouseUp)
+
+        # Add the tick task:
+        self.tickTaskName = self.getUniqueName() + '-tick'
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
 
     def destroy(self):
         self.ignoreAll()
