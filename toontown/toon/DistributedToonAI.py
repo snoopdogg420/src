@@ -4292,39 +4292,40 @@ def cheesyEffect(value, hood=0, expire=0):
         value = value.lower()
     if isinstance(value, str):
         if value not in OTPGlobals.CEName2Id:
-            return 'Invalid cheesy effect value: {0}'.format(value)
+            return 'Invalid cheesy effect value: %s' % value
         value = OTPGlobals.CEName2Id[value]
     elif not 0 <= value <= 15:
-        return 'Invalid cheesy effect value: {0}'.format(value)
+        return 'Invalid cheesy effect value: %d' % value
     if (hood != 0) and (not 1000 <= hood < ToontownGlobals.DynamicZonesBegin):
-        return 'Invalid hood ID: {0}'.format(hood)
-    target = spellbook.getTarget()
-    target.b_setCheesyEffect(value, hood, expire)
-    return "Set {0}'s cheesy effect to {1}!".format(target.getName(), value)
+        return 'Invalid hood ID: %d' % hood
+    invoker = spellbook.getInvoker()
+    invoker.b_setCheesyEffect(value, hood, expire)
+    return 'Set your cheesy effect to: %d' % value
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def hp(hp):
     """
-    Modify the target's current HP.
+    Modify the invoker's current HP.
     """
-    target = spellbook.getTarget()
-    maxHp = target.getMaxHp()
+    invoker = spellbook.getInvoker()
+    maxHp = invoker.getMaxHp()
     if not -1 <= hp <= maxHp:
-        return 'HP must be in xrange (-1-{0}).'.format(maxHp)
-    target.b_setHp(hp)
-    return "Set {0}'s HP to {1}!".format(target.getName(), hp)
+        return 'HP must be in range (-1-%d).' % maxHp
+    invoker.b_setHp(hp)
+    return 'Set your HP to: %d' % hp
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def maxHp(maxHp):
     """
-    Modify the target's max HP.
+    Modify the invoker's max HP.
     """
     if not 15 <= maxHp <= ToontownGlobals.MaxHpLimit:
-        return 'HP must be in xrange (15-{0}).'.format(ToontownGlobals.MaxHpLimit)
-    target = spellbook.getTarget()
-    target.b_setMaxHp(maxHp)
-    target.toonUp(maxHp - target.getHp())
-    return "Set {0}'s max HP to {1}!".format(target.getName(), maxHp)
+        return 'HP must be in range (15-%d).' % ToontownGlobals.MaxHpLimit
+    invoker = spellbook.getTarget()
+    invoker.b_setHp(maxHp)
+    invoker.b_setMaxHp(maxHp)
+    invoker.toonUp(maxHp - invoker.getHp())
+    return 'Set your max HP to: %d' % maxHp
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str])
 def maxToon(missingTrack=None):
@@ -4358,6 +4359,18 @@ def maxToon(missingTrack=None):
     # Max out their Laff:
     invoker.b_setMaxHp(ToontownGlobals.MaxHpLimit)
     invoker.toonUp(invoker.getMaxHp() - invoker.hp)
+
+    # Unlock all of the emotes:
+    emotes = list(invoker.getEmoteAccess())
+    for emoteId in OTPLocalizer.EmoteFuncDict.values():
+        if emoteId >= len(emotes):
+            continue
+        # The following emotions are ignored because they are unable to be
+        # obtained:
+        if emoteId in (17, 18, 19):
+            continue
+        emotes[emoteId] = 1
+    invoker.b_setEmoteAccess(emotes)
 
     # Max out their Cog suits:
     suitDeptCount = len(SuitDNA.suitDepts)
@@ -4402,7 +4415,11 @@ def maxToon(missingTrack=None):
 
     # Max their money:
     invoker.b_setMoney(invoker.getMaxMoney())
-    invoker.b_setBankMoney(12000)
+    invoker.b_setBankMoney(10000)
+
+    # Finally, unlock all of their pet phrases:
+    if simbase.wantPets:
+        invoker.b_setPetTrickPhrases(range(7))
 
     return 'Maxed your Toon!'
 
@@ -4431,7 +4448,8 @@ def unlocks():
     invoker.b_setEmoteAccess(emotes)
 
     # Finally, unlock all of their pet phrases:
-    invoker.b_setPetTrickPhrases(range(7))
+    if simbase.wantPets:
+        invoker.b_setPetTrickPhrases(range(7))
 
     return 'Unlocked teleport access, emotions, and pet trick phrases!'
 
@@ -4442,7 +4460,7 @@ def sos(count, name):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 100:
-        return 'Your SOS count must be in xrange (0-100).'
+        return 'Your SOS count must be in range (0-100).'
     for npcId, npcName in TTLocalizer.NPCToonNames.items():
         if name.lower() == npcName.lower():
             if npcId not in NPCToons.npcFriends:
@@ -4462,9 +4480,9 @@ def unites(value=99):
     """
     Restock all resistance messages.
     """
-    target = spellbook.getTarget()
-    target.restockAllResistanceMessages(value)
-    return 'Restocked {0} unites!'.format(value)
+    invoker = spellbook.getInvoker()
+    invoker.restockAllResistanceMessages(value)
+    return 'Restocked %d unites!' % value
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def fires(count):
@@ -4473,9 +4491,9 @@ def fires(count):
     """
     invoker = spellbook.getInvoker()
     if not 0 <= count <= 255:
-        return 'Your fire count must be in xrange (0-255).'
+        return 'Your fire count must be in range (0-255).'
     invoker.b_setPinkSlips(count)
-    return 'You were given {0} fires.'.format(count)
+    return 'You were given %d fires.' % count
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def money(money):
@@ -4683,13 +4701,13 @@ def badName():
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def tickets(tickets):
     """
-    Set the target's racing tickets value.
+    Set the invoker's racing tickets value.
     """
     if not 0 <= tickets <= 99999:
-        return 'Racing tickets value must be in xrange (0-99999).'
-    target = spellbook.getTarget()
-    target.b_setTickets(tickets)
-    return "Set {0}'s tickets to {1}!".format(target.getName(), tickets)
+        return 'Racing tickets value must be in range (0-99999).'
+    invoker = spellbook.getInvoker()
+    invoker.b_setTickets(tickets)
+    return 'Set your tickets to: %d' % tickets
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
 def cogIndex(index):
@@ -4985,11 +5003,11 @@ def givePies(pieType, numPies=0):
     target = spellbook.getTarget()
     if pieType == -1:
         target.b_setNumPies(0)
-        return "Removed {0}'s pies.".format(target.getName())
+        return "Removed %s's pies." % target.getName()
     if pieType == 6:
         return 'Invalid pie type!'
     if not 0 <= pieType <= 7:
-        return 'Pie type must be in xrange (0-7).'
+        return 'Pie type must be in range (0-7).'
     if not -1 <= numPies <= 99:
         return 'Pie count out of range (-1-99).'
     target.b_setPieType(pieType)

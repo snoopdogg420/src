@@ -99,22 +99,21 @@ class FishManagerAI:
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
 def fish(fishName):
     """
-    Register/unregister the fish to be caught on the target.
+    Register/unregister the fish to be caught on the invoker.
     """
-    target = spellbook.getTarget()
+    invoker = spellbook.getInvoker()
     if fishName.lower() == 'remove':
-        if target.doId not in simbase.air.fishManager.fishRequests:
-            return '{0} has not requested a fish.'.format(target.getName())
-        del simbase.air.fishManager.fishRequests[target.doId]
-        return "Removed {0}'s fish request.".format(target.getName())
+        if invoker.doId not in simbase.air.fishManager.fishRequests:
+            return 'You have not requested a fish.'
+        del simbase.air.fishManager.fishRequests[invoker.doId]
+        return 'Removed your fish request.'
 
     for genus, species in TTLocalizer.FishSpeciesNames:
         for name in species:
             if fishName.lower() != name.lower():
                 continue
             fishRequest = (genus, species.index(name))
-            simbase.air.fishManager.fishRequests[target.doId] = fishRequest
-            return 'A request for the fish {0} was saved for {1}.'.format(
-                name, target.getName())
+            simbase.air.fishManager.fishRequests[invoker.doId] = fishRequest
+            return 'A request for the fish %s was saved.' % name
 
-    return "Couldn't find a fish with the name {0}!".format(fishName)
+    return "Couldn't find a fish with the name %s!" % fishName
