@@ -38,6 +38,7 @@ clickSound = None
 me = None
 want2dNametags = True
 forceOnscreenChat = False
+wantActiveNametags = True
 
 
 def setCardModel(model):
@@ -107,6 +108,11 @@ def setWant2dNametags(value):
 def setForceOnscreenChat(value):
     global forceOnscreenChat
     forceOnscreenChat = value
+
+
+def setWantActiveNametags(value):
+    global wantActiveNametags
+    wantActiveNametags = value
 
 
 def getModelWidthHeight(model):
