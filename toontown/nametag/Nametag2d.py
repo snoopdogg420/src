@@ -85,7 +85,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
             self.setClickRegion(left, right, bottom, top)
 
     def considerUpdateClickRegion(self):
-        if self.active and (self.getCell() is not None):
+        if (self.active or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton))) and (self.getCell() is not None):
             self.updateClickRegion()
         else:
             self.region.setActive(False)
