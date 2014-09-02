@@ -3,7 +3,6 @@ from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
 from pandac.PandaModules import *
 
-from otp.otpbase import OTPGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.nametag import NametagGlobals
 
@@ -87,6 +86,10 @@ class Nametag(FSM, PandaNode, DirectObject):
     def destroy(self):
         self.ignoreAll()
 
+        if self.region is not None:
+            base.mouseWatcherNode.removeRegion(self.region)
+            self.region = None
+
         if self.tickTask is not None:
             taskMgr.remove(self.tickTask)
             self.tickTask = None
@@ -135,6 +138,9 @@ class Nametag(FSM, PandaNode, DirectObject):
     def updateClickRegion(self):
         pass  # Inheritors should override this method.
 
+    def setClickRegion(self, left, right, bottom, top):
+        pass # Inheritors should override this method.
+
     def setAvatar(self, avatar):
         self.avatar = avatar
 
@@ -165,8 +171,8 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getChatButton(self):
         return self.chatButton
 
-    def setChatReversed(self, reversed):
-        self.chatReversed = reversed
+    def setChatReversed(self, chatReversed):
+        self.chatReversed = chatReversed
 
     def getChatReversed(self):
         return self.chatReversed
@@ -428,12 +434,9 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.panel.setPos(x, 0, z)
 
         # Resize the panel:
-        sX = self.textNode.getWidth() + self.PANEL_X_PADDING
-        sZ = self.textNode.getHeight() + self.PANEL_Z_PADDING
-        self.panel.setScale(sX, 1, sZ)
-
-        self.panelWidth = sX
-        self.panelHeight = sZ
+        self.panelWidth = self.textNode.getWidth() + self.PANEL_X_PADDING
+        self.panelHeight = self.textNode.getHeight() + self.PANEL_Z_PADDING
+        self.panel.setScale(self.panelWidth, 1, self.panelHeight)
 
     def enterNormal(self):
         if self.lastClickState == PGButton.SDepressed:
@@ -468,6 +471,3 @@ class Nametag(FSM, PandaNode, DirectObject):
     def __handleMouseUp(self, region, button):
         if self.clickState == PGButton.SDepressed:
             self.setClickState(self.pendingClickState)
-
-    def setClickRegion(self, left, right, bottom, top):
-        pass # Inheritors should override this method.
