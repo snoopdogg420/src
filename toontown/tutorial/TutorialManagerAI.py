@@ -162,9 +162,9 @@ class TutorialManagerAI(DistributedObjectAI):
         av.b_setMaxHp(15)
 
         av.inventory.zeroInv(killUber=True)
-        av.inventory.inventory[ToontownBattleGlobals.THROW_TRACK][0] = 1
-        av.inventory.inventory[ToontownBattleGlobals.SQUIRT_TRACK][0] = 1
-        av.b_setInventory(av.inventory.makeNetString())
+        av.inventory.addItem(ToontownBattleGlobals.THROW_TRACK, 0)
+        av.inventory.addItem(ToontownBattleGlobals.SQUIRT_TRACK, 0)
+        av.d_setInventory(av.inventory.makeNetString())
 
         av.experience.zeroOutExp()
         av.d_setExperience(av.experience.makeNetString())

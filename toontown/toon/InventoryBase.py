@@ -96,7 +96,7 @@ class InventoryBase(DirectObject.DirectObject):
         if isinstance(track, str):
             track = Tracks.index(track)
         max = self.getMax(track, level)
-        if not (hasattr(self.toon, 'experience') and hasattr(self.toon.experience, 'getExpLevel')):
+        if (not hasattr(self.toon, 'experience')) or (not hasattr(self.toon.experience, 'getExpLevel')):
             return 0
         if not (self.toon.experience.getExpLevel(track) >= level and self.toon.hasTrackAccess(track)):
             return 0
@@ -104,8 +104,6 @@ class InventoryBase(DirectObject.DirectObject):
             return -1
         if not (self.totalProps + amount <= self.toon.getMaxCarry() or level > LAST_REGULAR_GAG_LEVEL):
             return -2
-        if self.toon.getMoney() < amount:
-            return -3
         self.inventory[track][level] += amount
         self.totalProps += amount
         return self.inventory[track][level]
