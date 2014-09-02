@@ -75,28 +75,31 @@ class Nametag3d(Nametag.Nametag):
             self.setClickRegion(left, right, bottom, top)
 
     def tick(self, task):
-        if self.avatar is None:
-            return Task.cont
+        try:
+            if self.avatar is None:
+                return Task.cont
 
-        distance = self.contents.getPos(base.cam).length()
+            distance = self.contents.getPos(base.cam).length()
 
-        if distance < self.SCALING_MIN_DISTANCE:
-            distance = self.SCALING_MIN_DISTANCE
-        elif distance > self.SCALING_MAX_DISTANCE:
-            distance = self.SCALING_MAX_DISTANCE
+            if distance < self.SCALING_MIN_DISTANCE:
+                distance = self.SCALING_MIN_DISTANCE
+            elif distance > self.SCALING_MAX_DISTANCE:
+                distance = self.SCALING_MAX_DISTANCE
 
-        if distance == self.distance:
+            if distance == self.distance:
+                if self.active or (self.getChatButton() != NametagGlobals.noButton):
+                    self.updateClickRegion()
+                return Task.cont
+
+            self.distance = distance
+
+            self.scale = math.sqrt(distance) * self.SCALING_FACTOR
+            self.contents.setScale(self.scale)
+
             if self.active or (self.getChatButton() != NametagGlobals.noButton):
                 self.updateClickRegion()
-            return Task.cont
-
-        self.distance = distance
-
-        self.scale = math.sqrt(distance) * self.SCALING_FACTOR
-        self.contents.setScale(self.scale)
-
-        if self.active or (self.getChatButton() != NametagGlobals.noButton):
-            self.updateClickRegion()
+        except:
+            pass
 
         return Task.cont
 

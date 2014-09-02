@@ -89,20 +89,23 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.considerUpdateClickRegion()
 
     def tick(self, task):
-        if (self.avatar is None) or self.avatar.isEmpty():
-            return Task.cont
+        try:
+            if (self.avatar is None) or self.avatar.isEmpty():
+                return Task.cont
 
-        if (self.getCell() is None) or (self.arrow is None):
-            return Task.cont
+            if (self.getCell() is None) or (self.arrow is None):
+                return Task.cont
 
-        location = self.avatar.getPos(NametagGlobals.me)
-        rotation = NametagGlobals.me.getQuat(base.cam)
+            location = self.avatar.getPos(NametagGlobals.me)
+            rotation = NametagGlobals.me.getQuat(base.cam)
 
-        camSpacePos = rotation.xform(location)
-        arrowRadians = math.atan2(camSpacePos[0], camSpacePos[1])
-        arrowDegrees = (arrowRadians/math.pi) * 180
+            camSpacePos = rotation.xform(location)
+            arrowRadians = math.atan2(camSpacePos[0], camSpacePos[1])
+            arrowDegrees = (arrowRadians/math.pi) * 180
 
-        self.arrow.setR(arrowDegrees - 90)
+            self.arrow.setR(arrowDegrees - 90)
+        except:
+            pass
         return Task.cont
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
