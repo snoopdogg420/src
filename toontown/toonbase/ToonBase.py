@@ -396,6 +396,8 @@ class ToonBase(OTPBase.OTPBase):
         if clickSound:
             NametagGlobals.setClickSound(clickSound)
 
+        taskMgr.setupTaskChain('nametags', numThreads=1, threadPriority=TPNormal)
+
         self.marginManager = MarginManager()
         self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
         self.leftCells = [

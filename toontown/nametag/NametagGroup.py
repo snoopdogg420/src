@@ -60,7 +60,7 @@ class NametagGroup:
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
 
     def destroy(self):
         if self.tickTask is not None:

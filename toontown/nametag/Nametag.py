@@ -71,7 +71,7 @@ class Nametag(FSM, PandaNode, DirectObject):
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
 
         # Create the click region:
         self.regionName = self.getUniqueName() + '-region'
