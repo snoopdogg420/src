@@ -32,6 +32,5 @@ want-game-tables #f
 want-chestnut-park-construction #t
 
 # Temporary...
-force-skip-tutorial #t
 want-phone-quest #f
 want-yin-yang #t
