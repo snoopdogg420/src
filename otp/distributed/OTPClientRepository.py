@@ -1696,15 +1696,13 @@ class OTPClientRepository(ClientRepositoryBase):
         list = []
         for s in self.activeDistrictMap.values():
             if s.available:
-                list.append((s.doId,
-                 s.name,
-                 s.avatarCount,
-                 s.newAvatarCount))
+                list.append((s.doId, s.name, s.avatarCount, s.newAvatarCount,
+                             s.invasionStatus))
 
         return list
 
     def getPlayerAvatars(self):
-        return [ i for i in self.doId2do.values() if isinstance(i, DistributedPlayer) ]
+        return [i for i in self.doId2do.values() if isinstance(i, DistributedPlayer)]
 
     def queryObjectField(self, dclassName, fieldName, doId, context = 0):
         dclass = self.dclassesByName.get(dclassName)
