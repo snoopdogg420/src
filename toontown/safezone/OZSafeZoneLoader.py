@@ -138,42 +138,43 @@ class OZSafeZoneLoader(SafeZoneLoader):
             self.constructionSign.reparentTo(self.constructionSite)
             self.constructionSign.setPosHpr(-47.941, -138.724, 0.122, 181, 0, 0)
 
-            self.painterPete = Toon.Toon()
+            if base.config.GetBool('want-oz-painter-pete', False):
+                self.painterPete = Toon.Toon()
 
-            self.painterPete.setName('Painter Pete')
-            self.painterPete.setPickable(0)
-            self.painterPete.setPlayerType(NametagGlobals.CCNonPlayer)
+                self.painterPete.setName('Painter Pete')
+                self.painterPete.setPickable(0)
+                self.painterPete.setPlayerType(NametagGlobals.CCNonPlayer)
 
-            dna = ToonDNA.ToonDNA()
-            dna.newToonFromProperties('hls', 'ss', 'm', 'm', 18, 0, 13, 9, 0, 0, 0, 0, 2, 15)
-            self.painterPete.setDNA(dna)
+                dna = ToonDNA.ToonDNA()
+                dna.newToonFromProperties('hls', 'ss', 'm', 'm', 18, 0, 13, 9, 0, 0, 0, 0, 2, 15)
+                self.painterPete.setDNA(dna)
 
-            self.painterPete.setHat(43, 0, 0)
+                self.painterPete.setHat(43, 0, 0)
 
-            self.painterPete.animFSM.request('neutral')
-            self.painterPete.reparentTo(self.constructionSite)
-            self.painterPete.setPosHpr(-52.5, -133.5, 0.025, 338, 0, 0)
+                self.painterPete.animFSM.request('neutral')
+                self.painterPete.reparentTo(self.constructionSite)
+                self.painterPete.setPosHpr(-52.5, -133.5, 0.025, 338, 0, 0)
 
-            self.painterPete.sadEyes()
-            self.painterPete.blinkEyes()
+                self.painterPete.sadEyes()
+                self.painterPete.blinkEyes()
 
-            speechTextList = (
-                "Oh, brother. How am I going to clean up all of this? Those painters left a big mess here, and I can't finish the job without them!",
-                "I'm beginning to feel nervous about where all of my painters went off to. Construction can't continue without them!",
-                "These cones are out of my control. They're disobedient, and they will not listen to what I say.",
-                "What's a playground without color, anyway? Walking into something like that would be surreal for you all. As a painter, though, I'm pretty used to it.",
-                "The Cogs couldn't have done this... could they?",
-                "If anyone sees my painters anywhere, please let me know. Then maybe we'll get this playground done!",
-                "Looks like I'll have to finish this sign myself.",
-                'The documents for this project were just sitting right by this tunnel... Where could they have gone?'
-            )
-            self.painterPeteSpeech = Sequence()
-            for speechText in speechTextList:
-                self.painterPeteSpeech.append(Func(self.painterPete.setChatAbsolute, speechText, CFSpeech))
-                self.painterPeteSpeech.append(Wait(0.55 * len(speechText.split(' '))))
-                self.painterPeteSpeech.append(Func(self.painterPete.clearChat))
-                self.painterPeteSpeech.append(Wait(6))
-            self.painterPeteSpeech.loop(0)
+                speechTextList = (
+                    "Oh, brother. How am I going to clean up all of this? Those painters left a big mess here, and I can't finish the job without them!",
+                    "I'm beginning to feel nervous about where all of my painters went off to. Construction can't continue without them!",
+                    "These cones are out of my control. They're disobedient, and they will not listen to what I say.",
+                    "What's a playground without color, anyway? Walking into something like that would be surreal for you all. As a painter, though, I'm pretty used to it.",
+                    "The Cogs couldn't have done this... could they?",
+                    "If anyone sees my painters anywhere, please let me know. Then maybe we'll get this playground done!",
+                    "Looks like I'll have to finish this sign myself.",
+                    'The documents for this project were just sitting right by this tunnel... Where could they have gone?'
+                )
+                self.painterPeteSpeech = Sequence()
+                for speechText in speechTextList:
+                    self.painterPeteSpeech.append(Func(self.painterPete.setChatAbsolute, speechText, CFSpeech))
+                    self.painterPeteSpeech.append(Wait(0.55 * len(speechText.split(' '))))
+                    self.painterPeteSpeech.append(Func(self.painterPete.clearChat))
+                    self.painterPeteSpeech.append(Wait(6))
+                self.painterPeteSpeech.loop(0)
 
     def exit(self):
         self.clearToonTracks()
