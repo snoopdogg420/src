@@ -1,6 +1,5 @@
 import types
 import time
-from pandac.PandaModules import *
 from direct.distributed.ClockDelta import *
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
@@ -53,6 +52,8 @@ import HoodMgr
 import PlayGame
 from toontown.toontowngui import ToontownLoadingBlocker
 from toontown.hood import StreetSign
+import random
+
 
 class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
     SupportTutorial = 1
@@ -206,7 +207,8 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.sendSetAvatarIdMsg(0)
         self.clearFriendState()
         if self.music == None and base.musicManagerIsValid:
-            self.music = base.musicManager.getSound('phase_3/audio/bgm/tt_theme.ogg')
+            themeList = ('phase_3/audio/bgm/tti_theme.ogg', 'phase_3/audio/bgm/tti_theme_2.ogg')
+            self.music = base.musicManager.getSound(random.choice(themeList))
             if self.music:
                 self.music.setLoop(1)
                 self.music.setVolume(0.9)
