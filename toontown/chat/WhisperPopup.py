@@ -208,7 +208,8 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         if self.active and (self.getCell() is not None):
             self.updateClickRegion()
         else:
-            self.region.setActive(False)
+            if self.region is not None:
+                self.region.setActive(False)
 
     def setClickRegion(self, left, right, bottom, top):
         # Get a transform matrix to position the points correctly according to

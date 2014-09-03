@@ -81,7 +81,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         if (self.active or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton))) and (self.getCell() is not None):
             self.updateClickRegion()
         else:
-            self.region.setActive(False)
+            if self.region is not None:
+                self.region.setActive(False)
 
     def update(self):
         Nametag.Nametag.update(self)
