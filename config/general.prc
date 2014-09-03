@@ -208,8 +208,6 @@ gl-immutable-texture-storage #f
 gl-dump-compiled-shaders #f
 show-buffers #f
 garbage-collect-states #f
-framebuffer-multisample #f
-multisamples 0
 
 # Quality...
 framebuffer-multisample 1
