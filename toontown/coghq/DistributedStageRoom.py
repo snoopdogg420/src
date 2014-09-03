@@ -10,7 +10,7 @@ import FactoryEntityCreator
 import StageRoomSpecs
 from otp.level import LevelSpec, LevelConstants
 from toontown.toonbase import TTLocalizer
-from otp.nametag.NametagConstants import *
+from toontown.nametag.NametagGlobals import *
 if __dev__:
     from otp.level import EditorGlobals
 

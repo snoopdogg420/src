@@ -1,26 +1,29 @@
-import sys
-import os
 import copy
-from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
+from direct.interval.IntervalGlobal import *
 from direct.showbase import AppRunnerGlobal
-from pandac.PandaModules import *
 from direct.showbase import DirectObject
+from direct.showbase import PythonUtil
+import os
+from pandac.PandaModules import *
+import re
+import sys
+import token
+import tokenize
+
 import BlinkingArrows
-from toontown.toon import ToonHeadFrame
-from toontown.char import CharDNA
-from toontown.suit import SuitDNA
-from toontown.char import Char
-from toontown.suit import Suit
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownBattleGlobals
 from otp.speedchat import SpeedChatGlobals
 from toontown.ai import DistributedBlackCatMgr
-from direct.showbase import PythonUtil
-from otp.nametag.NametagConstants import *
-import tokenize
-import token
-import re
+from toontown.char import Char
+from toontown.char import CharDNA
+from toontown.chat.ChatGlobals import *
+from toontown.suit import Suit
+from toontown.suit import SuitDNA
+from toontown.toon import ToonHeadFrame
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownBattleGlobals
+
+
 notify = DirectNotifyGlobal.directNotify.newCategory('QuestParser')
 lineDict = {}
 globalVarDict = {}

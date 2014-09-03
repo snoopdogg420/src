@@ -1,15 +1,17 @@
-import DistributedElevator
-from ElevatorConstants import *
-from ElevatorUtils import *
 from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM
 from direct.fsm import State
 from direct.interval.IntervalGlobal import *
-from otp.nametag.Nametag import Nametag
-from otp.nametag.NametagGroup import NametagGroup
 from pandac.PandaModules import *
+
+import DistributedElevator
+from ElevatorConstants import *
+from ElevatorUtils import *
 from toontown.hood import ZoneUtil
+from toontown.nametag import NametagGlobals
+from toontown.nametag.Nametag import Nametag
+from toontown.nametag.NametagGroup import NametagGroup
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TeaserPanel
@@ -41,18 +43,20 @@ class DistributedElevatorExt(DistributedElevator.DistributedElevator):
             self.nametag.setFont(ToontownGlobals.getBuildingNametagFont())
             if TTLocalizer.BuildingNametagShadow:
                 self.nametag.setShadow(*TTLocalizer.BuildingNametagShadow)
-            self.nametag.setContents(Nametag.CName)
-            self.nametag.setColorCode(NametagGroup.CCSuitBuilding)
-            self.nametag.setActive(0)
+            self.nametag.hideChat()
+            self.nametag.hideThought()
+            nametagColor = NametagGlobals.NametagColors[NametagGlobals.CCSuitBuilding]
+            self.nametag.setNametagColor(nametagColor)
+            self.nametag.setActive(False)
             self.nametag.setAvatar(self.getElevatorModel())
             name = self.cr.playGame.dnaStore.getTitleFromBlockNumber(self.bldg.block)
             if not name:
                 name = TTLocalizer.CogsInc
             else:
                 name += TTLocalizer.CogsIncExt
-            self.nametag.setName(name)
+            self.nametag.setText(name)
             self.nametag.manage(base.marginManager)
-        return
+            self.nametag.updateAll()
 
     def clearNametag(self):
         if self.nametag != None:

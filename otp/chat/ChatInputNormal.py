@@ -1,9 +1,12 @@
-from direct.showbase import DirectObject
-from otp.otpbase import OTPGlobals
-import sys
 from direct.gui.DirectGui import *
+from direct.showbase import DirectObject
 from pandac.PandaModules import *
+import sys
+
+from otp.otpbase import OTPGlobals
 from otp.otpbase import OTPLocalizer
+from toontown.chat.ChatGlobals import *
+
 
 class ChatInputNormal(DirectObject.DirectObject):
     ExecNamespace = None

@@ -1,17 +1,20 @@
-from toontown.estate import PlantingGUI
-from direct.gui.DirectGui import *
-from pandac.PandaModules import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import TTLocalizer
-from direct.task import Task
-from toontown.estate import GardenGlobals
-from toontown.estate import DistributedToonStatuary
-from direct.interval.IntervalGlobal import *
-from direct.gui.DirectScrolledList import *
-from toontown.toon import Toon
-from toontown.toon import DistributedToon
 from direct.distributed import DistributedObject
+from direct.gui.DirectGui import *
+from direct.gui.DirectScrolledList import *
+from direct.interval.IntervalGlobal import *
+from direct.task import Task
+from pandac.PandaModules import *
+
+from toontown.estate import DistributedToonStatuary
+from toontown.estate import GardenGlobals
+from toontown.estate import PlantingGUI
+from toontown.nametag import NametagGlobals
+from toontown.toon import DistributedToon
+from toontown.toon import Toon
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 class ToonStatueSelectionGUI(DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('ToonStatueSelectionGUI')
@@ -93,13 +96,13 @@ class ToonStatueSelectionGUI(DirectFrame):
         return test
 
     def __makeFFlist(self):
-        playerAvatar = (base.localAvatar.doId, base.localAvatar.name, NametagGroup.CCNonPlayer)
+        playerAvatar = (base.localAvatar.doId, base.localAvatar.name, NametagGlobals.CCNonPlayer)
         self.ffList.append(playerAvatar)
         self.dnaSelected = base.localAvatar.style
         self.createPreviewToon(self.dnaSelected)
         for familyMember in base.cr.avList:
             if familyMember.id != base.localAvatar.doId:
-                newFF = (familyMember.id, familyMember.name, NametagGroup.CCNonPlayer)
+                newFF = (familyMember.id, familyMember.name, NametagGlobals.CCNonPlayer)
                 self.ffList.append(newFF)
 
         for friendPair in base.localAvatar.friendsList:
@@ -107,9 +110,9 @@ class ToonStatueSelectionGUI(DirectFrame):
             handle = base.cr.identifyFriend(friendId)
             if handle and not self.checkFamily(friendId):
                 if hasattr(handle, 'getName'):
-                    colorCode = NametagGroup.CCSpeedChat
+                    colorCode = NametagGlobals.CCSpeedChat
                     if flags & ToontownGlobals.FriendChat:
-                        colorCode = NametagGroup.CCFreeChat
+                        colorCode = NametagGlobals.CCFreeChat
                     newFF = (friendPair[0], handle.getName(), colorCode)
                     self.ffList.append(newFF)
                 else:
@@ -125,7 +128,7 @@ class ToonStatueSelectionGUI(DirectFrame):
         self.scrollList.refresh()
 
     def makeFamilyButton(self, familyId, familyName, colorCode):
-        fg = NametagGlobals.getNameFg(colorCode, PGButton.SInactive)
+        fg = NametagGlobals.NametagColors[colorCode][3][0]
         return DirectButton(relief=None, text=familyName, text_scale=0.04, text_align=TextNode.ALeft, text_fg=fg, text1_bg=self.textDownColor, text2_bg=self.textRolloverColor, text3_fg=self.textDisabledColor, textMayChange=0, command=self.__chooseFriend, extraArgs=[familyId, familyName])
 
     def __chooseFriend(self, friendId, friendName):

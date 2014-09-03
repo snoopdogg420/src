@@ -1,20 +1,24 @@
-from pandac.PandaModules import *
+from direct.actor import Actor
+from direct.directnotify import DirectNotifyGlobal
 from direct.gui.DirectGui import *
-from pandac.PandaModules import *
 from direct.gui.DirectScrolledList import *
-from toontown.toonbase import ToontownGlobals
-from toontown.toontowngui import TTDialog
-import CatalogItem
-import CatalogInvalidItem
+from pandac.PandaModules import *
+from pandac.PandaModules import *
+import random
+
 import CatalogFurnitureItem
-from toontown.toonbase import TTLocalizer
+import CatalogInvalidItem
+import CatalogItem
 import CatalogItemPanel
 import CatalogItemTypes
-from direct.actor import Actor
-import random
+from toontown.chat.ChatBalloon import ChatBalloon
+from toontown.nametag import NametagGlobals
+from toontown.nametag import NametagGroup
 from toontown.toon import DistributedToon
-from direct.directnotify import DirectNotifyGlobal
-from otp.nametag import NametagGroup
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+from toontown.toontowngui import TTDialog
+
 
 NUM_CATALOG_ROWS = 3
 NUM_CATALOG_COLS = 2
@@ -932,7 +936,6 @@ class CatalogScreen(DirectFrame):
         return
 
     def setClarabelleChat(self, str, timeout = 6):
-        from otp.nametag.ChatBalloon import ChatBalloon
         self.clearClarabelleChat()
         if not self.clarabelleChatBalloon:
             self.clarabelleChatBalloon = loader.loadModel('phase_3/models/props/chatbox.bam')
@@ -986,10 +989,10 @@ class CatalogScreen(DirectFrame):
         return test
 
     def __makeFFlist(self):
-        from otp.nametag import NametagGroup
+        from toontown.nametag import NametagGroup
         for familyMember in base.cr.avList:
             if familyMember.id != base.localAvatar.doId:
-                newFF = (familyMember.id, familyMember.name, NametagGroup.CCNonPlayer)
+                newFF = (familyMember.id, familyMember.name, NametagGlobals.CCNonPlayer)
                 self.ffList.append(newFF)
 
         for friendPair in base.localAvatar.friendsList:
@@ -997,9 +1000,9 @@ class CatalogScreen(DirectFrame):
             handle = base.cr.identifyFriend(friendId)
             if handle and not self.checkFamily(friendId):
                 if hasattr(handle, 'getName'):
-                    colorCode = NametagGroup.CCSpeedChat
+                    colorCode = NametagGlobals.CCSpeedChat
                     if flags & ToontownGlobals.FriendChat:
-                        colorCode = NametagGroup.CCFreeChat
+                        colorCode = NametagGlobals.CCFreeChat
                     newFF = (friendPair[0], handle.getName(), colorCode)
                     self.ffList.append(newFF)
                 else:
@@ -1014,9 +1017,9 @@ class CatalogScreen(DirectFrame):
                 freeChat = playerInfo.understandableYesNo
                 if handle and not self.checkFamily(avatarId):
                     if hasattr(handle, 'getName'):
-                        colorCode = NametagGroup.CCSpeedChat
+                        colorCode = NametagGlobals.CCSpeedChat
                         if freeChat:
-                            colorCode = NametagGroup.CCFreeChat
+                            colorCode = NametagGlobals.CCFreeChat
                         newFF = (avatarId, handle.getName(), colorCode)
                         self.ffList.append(newFF)
                     else:
@@ -1032,8 +1035,8 @@ class CatalogScreen(DirectFrame):
         self.scrollList.refresh()
 
     def makeFamilyButton(self, familyId, familyName, colorCode):
-        from otp.nametag import NametagConstants
-        fg = NametagConstants.NAMETAG_COLORS.get(colorCode)[3][0]
+        from toontown.nametag import NametagGlobals
+        fg = NametagGlobals.NametagColors.get(colorCode)[3][0]
         return DirectButton(relief=None, text=familyName, text_scale=0.04, text_align=TextNode.ALeft, text_fg=fg, text1_bg=self.textDownColor, text2_bg=self.textRolloverColor, text3_fg=self.textDisabledColor, textMayChange=0, command=self.__chooseFriend, extraArgs=[familyId, familyName])
 
     def __chooseFriend(self, friendId, friendName):

@@ -12,7 +12,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toontowngui import TTDialog
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.coghq import DistributedMint
-from otp.nametag import NametagGlobals
+from toontown.nametag import NametagGlobals
 
 class MintInterior(BattlePlace.BattlePlace):
     notify = DirectNotifyGlobal.directNotify.newCategory('MintInterior')
@@ -84,7 +84,7 @@ class MintInterior(BattlePlace.BattlePlace):
         self._telemLimiter = TLGatherAllAvs('MintInterior', RotationLimitToH)
 
         def commence(self = self):
-            NametagGlobals.setMasterArrowsOn(1)
+            NametagGlobals.setWant2dNametags(True)
             self.fsm.request(requestStatus['how'], [requestStatus])
             base.playMusic(self.music, looping=1, volume=0.8)
             base.transitions.irisIn()
@@ -104,7 +104,7 @@ class MintInterior(BattlePlace.BattlePlace):
         self.acceptOnce('localToonConfrontedMintBoss', handleConfrontedBoss)
 
     def exit(self):
-        NametagGlobals.setMasterArrowsOn(0)
+        NametagGlobals.setWant2dNametags(False)
         bboard.remove(DistributedMint.DistributedMint.ReadyPost)
         self._telemLimiter.destroy()
         del self._telemLimiter

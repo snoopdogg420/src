@@ -1,12 +1,15 @@
-from direct.fsm import FSM
-from otp.otpbase import OTPGlobals
-import sys
 from direct.directnotify import DirectNotifyGlobal
+from direct.fsm import FSM
 from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from otp.otpbase import OTPLocalizer
 from direct.task import Task
+from pandac.PandaModules import *
+import sys
+
 from otp.chat.ChatInputTyped import ChatInputTyped
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLocalizer
+from toontown.chat.ChatGlobals import *
+
 
 class ChatInputWhiteListFrame(FSM.FSM, DirectFrame):
     notify = DirectNotifyGlobal.directNotify.newCategory('ChatInputWhiteList')

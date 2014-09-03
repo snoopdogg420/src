@@ -1,5 +1,7 @@
 from DistributedNPCToonBase import *
-from otp.nametag.NametagConstants import *
+from toontown.chat.ChatGlobals import *
+from toontown.nametag.NametagGlobals import *
+
 
 class DistributedNPCSecret(DistributedNPCToonBase):
 

@@ -1,20 +1,24 @@
-from toontown.toonbase.ToontownGlobals import *
-from SuitBattleGlobals import *
+from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
+from direct.particles import ParticleEffect
+
 from BattleBase import *
+from BattleBase import *
+import BattleParticles
 from BattleProps import *
-from toontown.suit.SuitDNA import *
-from BattleBase import *
 from BattleSounds import *
 import MovieCamera
-from direct.directnotify import DirectNotifyGlobal
 import MovieUtil
-from direct.particles import ParticleEffect
-import BattleParticles
-from toontown.toonbase import ToontownGlobals
+from SuitBattleGlobals import *
+from toontown.chat.ChatGlobals import *
+from toontown.nametag import NametagGlobals
+from toontown.nametag.NametagGlobals import *
+from toontown.suit.SuitDNA import *
 from toontown.toonbase import TTLocalizer
-from otp.nametag.NametagConstants import *
-from otp.nametag import NametagGlobals
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.ToontownGlobals import *
+
+
 notify = DirectNotifyGlobal.directNotify.newCategory('MovieSuitAttacks')
 
 def __doDamage(toon, dmg, died):

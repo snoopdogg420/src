@@ -1,17 +1,16 @@
-# 2013.08.22 22:25:33 Pacific Daylight Time
-# Embedded file name: toontown.suit.Suit
 from direct.actor import Actor
 from otp.avatar import Avatar
 import SuitDNA
 from toontown.toonbase import ToontownGlobals
 from pandac.PandaModules import *
 from toontown.battle import SuitBattleGlobals
+from toontown.nametag import NametagGlobals
 from direct.task.Task import Task
 from toontown.battle import BattleProps
 from toontown.toonbase import TTLocalizer
 from pandac.PandaModules import VirtualFileMountHTTP, VirtualFileSystem, Filename, DSearchPath
 from direct.showbase import AppRunnerGlobal
-from otp.nametag import NametagGroup
+from toontown.nametag import NametagGroup
 import string
 import os
 from toontown.suit import SuitGlobals
@@ -343,7 +342,7 @@ class Suit(Avatar.Avatar):
 
         Avatar.Avatar.__init__(self)
         self.setFont(ToontownGlobals.getSuitFont())
-        self.setPlayerType(NametagGroup.CCSuit)
+        self.setPlayerType(NametagGlobals.CCSuit)
         self.setPickable(1)
         self.leftHand = None
         self.rightHand = None

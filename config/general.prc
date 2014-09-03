@@ -190,7 +190,7 @@ want-instant-parties #f
 # Temporary...
 want-old-fireworks #t
 
-# Performance
+# Performance...
 sync-video #f
 smooth-lag 0.4
 support-stencil #f
@@ -211,6 +211,10 @@ show-buffers #f
 garbage-collect-states #f
 framebuffer-multisample #f
 multisamples 0
+
+# Quality...
+framebuffer-multisample 1
+multisamples 2
 
 # Egg ObjectTypes...
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }

@@ -1,20 +1,22 @@
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from otp.avatar import Avatar
-from otp.nametag.NametagConstants import *
-from toontown.char import CharDNA
-from toontown.char import DistributedChar
+import copy
+from direct.controls.ControlManager import CollisionHandlerRayStart
 from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import ClassicFSM
 from direct.fsm import State
-from direct.controls.ControlManager import CollisionHandlerRayStart
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase.TTLocalizer import Donald, DonaldDock, WesternPluto, Pluto
-from toontown.effects import DustCloud
+from direct.interval.IntervalGlobal import *
+from pandac.PandaModules import *
+import string
+
 import CCharChatter
 import CCharPaths
-import string
-import copy
+from otp.avatar import Avatar
+from toontown.char import CharDNA
+from toontown.char import DistributedChar
+from toontown.chat.ChatGlobals import *
+from toontown.effects import DustCloud
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase.TTLocalizer import Donald, DonaldDock, WesternPluto, Pluto
+
 
 class DistributedCCharBase(DistributedChar.DistributedChar):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedCCharBase')

@@ -1,14 +1,17 @@
-from pandac.PandaModules import *
 from direct.interval.IntervalGlobal import Sequence
-from DistributedNPCToonBase import *
-from toontown.minigame import ClerkPurchase
-from toontown.shtiker.PurchaseManagerConstants import *
-import NPCToons
 from direct.task.Task import Task
-from toontown.toonbase import TTLocalizer
+from pandac.PandaModules import *
+
+from DistributedNPCToonBase import *
+import NPCToons
+from toontown.chat.ChatGlobals import *
 from toontown.hood import ZoneUtil
+from toontown.minigame import ClerkPurchase
+from toontown.nametag.NametagGlobals import *
+from toontown.shtiker.PurchaseManagerConstants import *
+from toontown.toonbase import TTLocalizer
 from toontown.toontowngui import TeaserPanel
-from otp.nametag.NametagConstants import *
+
 
 class DistributedNPCClerk(DistributedNPCToonBase):
 

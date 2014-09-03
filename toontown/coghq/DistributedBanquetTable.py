@@ -192,8 +192,8 @@ class DistributedBanquetTable(DistributedObject.DistributedObject, FSM.FSM, Banq
         level -= 4
         diner.dna.newSuitRandom(level=level, dept='c')
         diner.setDNA(diner.dna)
-        diner.hideNametag2d()
-        diner.hideNametag3d()
+        diner.nametag.setNametag2d(None)
+        diner.nametag.setNametag3d(None)
         if self.useNewAnimations:
             diner.loop('sit', fromFrame=i)
         else:
@@ -401,19 +401,19 @@ class DistributedBanquetTable(DistributedObject.DistributedObject, FSM.FSM, Banq
         self.activeIntervals = {}
 
     def clearInterval(self, name, finish = 1):
-        if name in self.activeIntervals:
+        if self.activeIntervals.has_key(name):
             ival = self.activeIntervals[name]
             if finish:
                 ival.finish()
             else:
                 ival.pause()
-            if name in self.activeIntervals:
+            if self.activeIntervals.has_key(name):
                 del self.activeIntervals[name]
         else:
             self.notify.debug('interval: %s already cleared' % name)
 
     def finishInterval(self, name):
-        if name in self.activeIntervals:
+        if self.activeIntervals.has_key(name):
             interval = self.activeIntervals[name]
             interval.finish()
 
