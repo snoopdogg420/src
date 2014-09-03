@@ -17,8 +17,9 @@ class MarginCell(NodePath):
     def setContent(self, content):
         if self.content is not None:
             self.content.setCell(None)
-            self.contentNodePath.removeNode()
-            del self.contentNodePath
+            if hasattr(self, 'contentNodePath'):
+                self.contentNodePath.removeNode()
+                del self.contentNodePath
             self.content.marginVisibilityChanged()
 
         if content is not None:
