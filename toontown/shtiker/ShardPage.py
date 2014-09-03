@@ -31,28 +31,33 @@ def setupInvasionMarkerAny(node):
 def setupInvasionMarker(node, invasionStatus):
     if node.find('**/*invasion-marker'):
         return
+
     markerNode = node.attachNewNode('invasion-marker')
-    if invasionStatus >= 4:
+
+    if invasionStatus == 5:
         setupInvasionMarkerAny(markerNode)
+        return
+
     icons = loader.loadModel('phase_3/models/gui/cog_icons')
 
-    if invasionStatus == 0:
+    if invasionStatus == 1:
         icon = icons.find('**/CorpIcon').copyTo(markerNode)
-    elif invasionStatus == 1:
-        icon = icons.find('**/LegalIcon').copyTo(markerNode)
     elif invasionStatus == 2:
+        icon = icons.find('**/LegalIcon').copyTo(markerNode)
+    elif invasionStatus == 3:
         icon = icons.find('**/MoneyIcon').copyTo(markerNode)
     else:
         icon = icons.find('**/SalesIcon').copyTo(markerNode)
 
     icons.removeNode()
 
-    icon.setColor(ICON_COLORS[invasionStatus])
+    icon.setColor(ICON_COLORS[invasionStatus - 1])
     icon.setPos(0.54, 0, 0.015)
     icon.setScale(0.053)
 
 def removeInvasionMarker(node):
     markerNode = node.find('**/*invasion-marker')
+
     if not markerNode.isEmpty():
         markerNode.removeNode()
 

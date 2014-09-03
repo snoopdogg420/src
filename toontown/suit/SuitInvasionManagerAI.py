@@ -65,7 +65,7 @@ class SuitInvasionManagerAI:
         if dept == 'any':
             suitIndex = 4
 
-        self.air.districtStats.b_setInvasionStatus(suitIndex)
+        self.air.districtStats.b_setInvasionStatus(suitIndex + 1)
 
         return True
 
