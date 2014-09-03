@@ -4,6 +4,13 @@ from toontown.suit.SuitDNA import *
 import random
 import shlex
 
+suitDepts = {
+  'c': 0,
+  'l': 1,
+  'm': 2,
+  's': 3
+}
+
 class SuitInvasionManagerAI:
     MIN_TIME_INBETWEEN = 10
     MAX_TIME_INBETWEEN = 30
@@ -53,6 +60,12 @@ class SuitInvasionManagerAI:
         self.alertPlayersOfInvasion()
         if invType != 'mega':
             self.invasionStarted()
+
+        suitIndex = suitDepts[dept]
+        if dept == 'any':
+            suitIndex = 4
+
+        self.air.districtStats.b_setInvasionStatus(suitIndex + 1)
 
         return True
 
@@ -134,6 +147,7 @@ class SuitInvasionManagerAI:
         taskMgr.doMethodLater(t*60, self.newInvasion, 'suitInvasionManager-invasion')
 
     def cleanupInvasion(self, task=None):
+        self.air.districtStats.b_setInvasionStatus(0)
         self.invasionStatus = False
         self.alertPlayersInvasionEnded()
         self.currentInvadingSuit = None
