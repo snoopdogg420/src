@@ -8,8 +8,8 @@ from pandac.PandaModules import *
 import random
 
 from otp.avatar import Avatar
-from otp.nametag.NametagConstants import CFSpeech
-from otp.nametag.NametagGroup import *
+from toontown.chat.ChatGlobals import *
+from toontown.nametag.NametagGroup import *
 from otp.otpbase import OTPGlobals
 from toontown.distributed import DelayDelete
 from toontown.effects import Bubbles
@@ -142,7 +142,7 @@ class OZSafeZoneLoader(SafeZoneLoader):
 
             self.painterPete.setName('Painter Pete')
             self.painterPete.setPickable(0)
-            self.painterPete.setPlayerType(NametagGroup.CCNonPlayer)
+            self.painterPete.setPlayerType(NametagGlobals.CCNonPlayer)
 
             dna = ToonDNA.ToonDNA()
             dna.newToonFromProperties('hls', 'ss', 'm', 'm', 18, 0, 13, 9, 0, 0, 0, 0, 2, 15)

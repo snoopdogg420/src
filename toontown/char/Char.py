@@ -1,5 +1,5 @@
 from otp.avatar import Avatar
-from otp.nametag.NametagGroup import *
+from toontown.nametag import NametagGlobals
 from pandac.PandaModules import *
 from direct.task import Task
 import random
@@ -101,7 +101,7 @@ class Char(Avatar.Avatar):
             self.Char_initialized = 1
             Avatar.Avatar.__init__(self)
             self.setPickable(0)
-            self.setPlayerType(NametagGroup.CCNonPlayer)
+            self.setPlayerType(NametagGlobals.CCNonPlayer)
             self.dialogueArray = []
             self.chatterArray = [[], [], []]
 

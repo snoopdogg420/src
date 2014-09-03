@@ -1,25 +1,26 @@
-from pandac.PandaModules import *
-from toontown.toonbase.ToonBaseGlobal import *
-from direct.interval.IntervalGlobal import *
-from BattleBase import *
-from direct.distributed.ClockDelta import *
-from toontown.toonbase import ToontownBattleGlobals
-from direct.distributed import DistributedNode
-from direct.fsm import ClassicFSM, State
-from direct.fsm import State
-from direct.task.Task import Task
+from direct.actor import Actor
 from direct.directnotify import DirectNotifyGlobal
+from direct.distributed import DistributedNode
+from direct.distributed.ClockDelta import *
+from direct.fsm import ClassicFSM, State
+from direct.interval.IntervalGlobal import *
+from direct.task.Task import Task
+from pandac.PandaModules import *
+
+from BattleBase import *
+import BattleParticles
+import BattleProps
 import Movie
 import MovieUtil
-from toontown.suit import Suit
-from direct.actor import Actor
-import BattleProps
-from direct.particles import ParticleEffect
-import BattleParticles
-from toontown.hood import ZoneUtil
-from toontown.distributed import DelayDelete
-from toontown.toon import TTEmote
 from otp.avatar import Emote
+from toontown.distributed import DelayDelete
+from toontown.hood import ZoneUtil
+from toontown.nametag import NametagGlobals
+from toontown.suit import Suit
+from toontown.toon import TTEmote
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase.ToonBaseGlobal import *
+
 
 class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleBase')
@@ -1018,7 +1019,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
         self.notify.debug('enterLocalToonWaitForInput()')
         camera.setPosHpr(self.camPos, self.camHpr)
         base.camLens.setMinFov(self.camMenuFov/(4./3.))
-        NametagGlobals.setMasterArrowsOn(0)
+        NametagGlobals.setWant2dNametags(False)
         self.townBattle.setState('Attack')
         self.accept(self.localToonBattleEvent, self.__handleLocalToonBattleEvent)
 
@@ -1183,7 +1184,8 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
         self.notify.debug('enterPlayMovie()')
         self.delayDeleteMembers()
         if self.hasLocalToon():
-            NametagGlobals.setMasterArrowsOn(0)
+            NametagGlobals.setWant2dNametags(False)
+            pass
         if ToontownBattleGlobals.SkipMovie:
             self.movie.play(ts, self.__handleMovieDone)
             self.movie.finish()

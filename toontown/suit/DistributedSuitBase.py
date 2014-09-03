@@ -1,28 +1,31 @@
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from direct.distributed.ClockDelta import *
-from direct.directtools.DirectGeometry import CLAMP
+import copy
 from direct.controls.ControlManager import CollisionHandlerRayStart
-from direct.task import Task
-from otp.otpbase import OTPGlobals
-from otp.avatar import DistributedAvatar
-import Suit
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import ToontownBattleGlobals
-from toontown.toonbase import TTLocalizer
-from toontown.battle import DistributedBattle
+from direct.directnotify import DirectNotifyGlobal
+from direct.directtools.DirectGeometry import CLAMP
+from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM
 from direct.fsm import State
-import SuitTimings
-import SuitBase
-import DistributedSuitPlanner
-import SuitDNA
-from direct.directnotify import DirectNotifyGlobal
-import SuitDialog
-from toontown.battle import BattleProps
+from direct.interval.IntervalGlobal import *
+from direct.task import Task
 import math
-import copy
-from otp.nametag.NametagConstants import *
+from pandac.PandaModules import *
+
+import DistributedSuitPlanner
+import Suit
+import SuitBase
+import SuitDNA
+import SuitDialog
+import SuitTimings
+from otp.avatar import DistributedAvatar
+from otp.otpbase import OTPGlobals
+from toontown.battle import BattleProps
+from toontown.battle import DistributedBattle
+from toontown.chat.ChatGlobals import *
+from toontown.nametag.NametagGlobals import *
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+
 
 class DistributedSuitBase(DistributedAvatar.DistributedAvatar, Suit.Suit, SuitBase.SuitBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedSuitBase')

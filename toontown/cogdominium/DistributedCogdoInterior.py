@@ -1,26 +1,30 @@
-import random
-from direct.interval.IntervalGlobal import *
-from direct.distributed.ClockDelta import *
-from toontown.building.ElevatorConstants import *
-from toontown.toon import NPCToons
-from pandac.PandaModules import NodePath
-from toontown.building import ElevatorUtils
-from toontown.toonbase import ToontownGlobals
-from toontown.toonbase import ToontownBattleGlobals
 from direct.directnotify import DirectNotifyGlobal
-from direct.fsm import ClassicFSM, State
 from direct.distributed import DistributedObject
+from direct.distributed.ClockDelta import *
+from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from direct.fsm.StatePush import StateVar, FunctionCall
-from toontown.battle import BattleBase
-from toontown.hood import ZoneUtil
-from toontown.cogdominium.CogdoLayout import CogdoLayout
-from toontown.cogdominium import CogdoGameConsts
-from toontown.cogdominium import CogdoBarrelRoom, CogdoBarrelRoomConsts
-from toontown.distributed import DelayDelete
-from toontown.toonbase import TTLocalizer
-from CogdoExecutiveSuiteMovies import CogdoExecutiveSuiteIntro
+from direct.interval.IntervalGlobal import *
+from pandac.PandaModules import NodePath
+import random
+
 from CogdoElevatorMovie import CogdoElevatorMovie
+from CogdoExecutiveSuiteMovies import CogdoExecutiveSuiteIntro
+from toontown.battle import BattleBase
+from toontown.building import ElevatorUtils
+from toontown.building.ElevatorConstants import *
+from toontown.chat.ChatGlobals import *
+from toontown.cogdominium import CogdoBarrelRoom, CogdoBarrelRoomConsts
+from toontown.cogdominium import CogdoGameConsts
+from toontown.cogdominium.CogdoLayout import CogdoLayout
+from toontown.distributed import DelayDelete
+from toontown.hood import ZoneUtil
+from toontown.toon import NPCToons
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownBattleGlobals
+from toontown.toonbase import ToontownGlobals
+
+
 PAINTING_DICT = {'s': 'tt_m_ara_crg_paintingMoverShaker',
  'l': 'tt_m_ara_crg_paintingLegalEagle',
  'm': 'tt_m_ara_crg_paintingMoverShaker',

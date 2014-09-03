@@ -3,7 +3,7 @@ from direct.task.Task import Task
 from pandac.PandaModules import *
 from DistributedNPCToonBaseAI import *
 from toontown.quest import Quests
-from otp.nametag.NametagConstants import *
+from toontown.nametag.NametagGlobals import *
 
 class DistributedNPCSpecialQuestGiverAI(DistributedNPCToonBaseAI):
 

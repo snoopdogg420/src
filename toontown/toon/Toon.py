@@ -1,30 +1,33 @@
-from otp.avatar import Avatar
-from otp.avatar.Avatar import teleportNotify
-import ToonDNA
-from direct.task.Task import Task
-from toontown.suit import SuitDNA
 from direct.actor import Actor
-from ToonHead import *
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-from otp.otpbase import OTPLocalizer
-from toontown.toonbase import TTLocalizer
-import random
-from toontown.effects import Wake
-import TTEmote
-from otp.avatar import Emote
-import Motion
-from toontown.hood import ZoneUtil
-from toontown.battle import SuitBattleGlobals
-from otp.otpbase import OTPGlobals
-from toontown.effects import DustCloud
+from direct.interval.IntervalGlobal import *
 from direct.showbase.PythonUtil import Functor
-from toontown.distributed import DelayDelete
-from otp.nametag.NametagConstants import *
-import AccessoryGlobals
+from direct.task.Task import Task
+from pandac.PandaModules import *
+import random
 import types
+
+import AccessoryGlobals
+import Motion
+import TTEmote
+import ToonDNA
+from ToonHead import *
+from otp.avatar import Avatar
+from otp.avatar import Emote
+from otp.avatar.Avatar import teleportNotify
+from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLocalizer
+from toontown.battle import SuitBattleGlobals
+from toontown.chat.ChatGlobals import *
+from toontown.distributed import DelayDelete
+from toontown.effects import DustCloud
+from toontown.effects import Wake
+from toontown.hood import ZoneUtil
+from toontown.nametag.NametagGlobals import *
+from toontown.suit import SuitDNA
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 def teleportDebug(requestStatus, msg, onlyIfToAv = True):
     if teleportNotify.getDebug():
@@ -1999,9 +2002,9 @@ class Toon(Avatar.Avatar, ToonHead):
         self.openEyes()
         self.startBlink()
         if config.GetBool('stuck-sleep-fix', 1):
-            doClear = SLEEP_STRING in (self.nametag.getChat(), self.nametag.getStompText())
+            doClear = SLEEP_STRING in (self.nametag.getChatText(), self.nametag.getStompChatText())
         else:
-            doClear = self.nametag.getChat() == SLEEP_STRING
+            doClear = self.nametag.getChatText() == SLEEP_STRING
         if doClear:
             self.clearChat()
         self.lerpLookAt(Point3(0, 1, 0), time=0.25)
@@ -2744,10 +2747,10 @@ class Toon(Avatar.Avatar, ToonHead):
                 name = self.getName()
             suitDept = SuitDNA.suitDepts.index(SuitDNA.getSuitDept(suitType))
             suitName = SuitBattleGlobals.SuitAttributes[suitType]['name']
-            self.nametag.setDisplayName(TTLocalizer.SuitBaseNameWithLevel % {'name': name,
+            self.nametag.setText(TTLocalizer.SuitBaseNameWithLevel % {'name': name,
              'dept': suitName,
              'level': self.cogLevels[suitDept] + 1})
-            self.nametag.setNameWordwrap(9.0)
+            self.nametag.setWordWrap(9.0)
 
     def takeOffSuit(self):
         if not self.isDisguised:
@@ -2770,7 +2773,7 @@ class Toon(Avatar.Avatar, ToonHead):
         Emote.globalEmote.releaseAll(self)
         self.isDisguised = 0
         self.setFont(ToontownGlobals.getToonFont())
-        self.nametag.setNameWordwrap(-1)
+        self.nametag.setWordWrap(-1)
         if hasattr(base, 'idTags') and base.idTags:
             name = self.getAvIdName()
         else:

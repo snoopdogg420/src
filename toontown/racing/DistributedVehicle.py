@@ -20,7 +20,7 @@ from toontown.battle.BattleProps import *
 import random
 from direct.showbase.PythonUtil import randFloat
 from direct.task.Task import Task
-from otp.nametag import NametagGlobals
+from toontown.nametag import NametagGlobals
 import math
 iceTurnFactor = 0.25
 iceAccelFactor = 0.4
@@ -498,7 +498,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
                 self.toon.sendCurrentPosition()
             self.doHeadScale(self.toon, 1.75)
             self.toon.setShear(0, 0, 0)
-        NametagGlobals.setOnscreenChatForced(1)
+        NametagGlobals.setForceOnscreenChat(True)
         if self.localVehicle:
             camera.reparentTo(self.cameraNode)
             camera.setPosHpr(0, -33, 16, 0, -10, 0)
@@ -538,7 +538,7 @@ class DistributedVehicle(DistributedSmoothNode.DistributedSmoothNode, Kart.Kart,
             self.toon.reparentTo(render)
             self.toon.loop('neutral')
             self.toon.startSmooth()
-        NametagGlobals.setOnscreenChatForced(0)
+        NametagGlobals.setForceOnscreenChat(False)
         base.camLens.setMinFov(ToontownGlobals.DefaultCameraFov/(4./3.))
         return
 

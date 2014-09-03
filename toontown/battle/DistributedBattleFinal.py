@@ -1,18 +1,20 @@
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from BattleBase import *
 from direct.actor import Actor
-from toontown.distributed import DelayDelete
 from direct.directnotify import DirectNotifyGlobal
+from direct.fsm import State
+from direct.interval.IntervalGlobal import *
+from pandac.PandaModules import *
+import random
+
+from BattleBase import *
 import DistributedBattleBase
 import MovieUtil
-from toontown.suit import Suit
 import SuitBattleGlobals
+from toontown.distributed import DelayDelete
+from toontown.nametag import NametagGlobals
+from toontown.suit import Suit
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import ToontownGlobals
-from direct.fsm import State
-import random
-from otp.nametag import NametagGlobals
+
 
 class DistributedBattleFinal(DistributedBattleBase.DistributedBattleBase):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBattleFinal')
@@ -155,11 +157,9 @@ class DistributedBattleFinal(DistributedBattleBase.DistributedBattleBase):
         self.notify.debug('exitReward()')
         self.clearInterval(self.uniqueName('floorReward'), finish=1)
         self._removeMembersKeep()
-        NametagGlobals.setMasterArrowsOn(1)
+        NametagGlobals.setWant2dNametags(True)
         for toon in self.toons:
             toon.startSmooth()
-
-        return None
 
     def enterResume(self, ts = 0):
         if self.hasLocalToon():

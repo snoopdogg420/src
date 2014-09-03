@@ -1,16 +1,19 @@
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from direct.distributed.ClockDelta import *
-from KnockKnockJokes import *
-from toontown.toonbase import ToontownGlobals
 from direct.directnotify import DirectNotifyGlobal
+from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM
+from direct.interval.IntervalGlobal import *
+from pandac.PandaModules import *
+
 import DistributedAnimatedProp
+from KnockKnockJokes import *
+from toontown.chat.ChatGlobals import *
 from toontown.distributed import DelayDelete
-from toontown.toonbase import TTLocalizer
 from toontown.hood import ZoneUtil
-from otp.nametag.NametagGroup import NametagGroup
-from otp.nametag.NametagConstants import *
+from toontown.nametag.NametagGlobals import *
+from toontown.nametag.NametagGroup import NametagGroup
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
 
 class DistributedKnockKnockDoor(DistributedAnimatedProp.DistributedAnimatedProp):
 
@@ -74,9 +77,11 @@ class DistributedKnockKnockDoor(DistributedAnimatedProp.DistributedAnimatedProp)
             return
         self.nametag = NametagGroup()
         self.nametag.setAvatar(doorNP)
-        self.nametag.setFont(ToontownGlobals.getToonFont())
-        self.nametag.setName(doorName)
-        self.nametag.setActive(0)
+        toonFont = ToontownGlobals.getToonFont()
+        self.nametag.setFont(toonFont)
+        self.nametag.setChatFont(toonFont)
+        self.nametag.setText(doorName)
+        self.nametag.setActive(False)
         self.nametag.manage(base.marginManager)
         self.nametag.getNametag3d().setBillboardOffset(4)
         nametagNode = self.nametag.getNametag3d()
@@ -85,7 +90,7 @@ class DistributedKnockKnockDoor(DistributedAnimatedProp.DistributedAnimatedProp)
         pos = doorNP.node().getSolid(0).getCenter()
         self.nametagNP.setPos(pos + Vec3(0, 0, avatar.getHeight() + 2))
         d = duration * 0.125
-        track = Sequence(Parallel(Sequence(Wait(d * 0.5), SoundInterval(self.knockSfx)), Func(self.nametag.setChat, TTLocalizer.DoorKnockKnock, CFSpeech), Wait(d)), Func(avatar.setChatAbsolute, TTLocalizer.DoorWhosThere, CFSpeech | CFTimeout, openEnded=0), Wait(d), Func(self.nametag.setChat, joke[0], CFSpeech), Wait(d), Func(avatar.setChatAbsolute, joke[0] + TTLocalizer.DoorWhoAppendix, CFSpeech | CFTimeout, openEnded=0), Wait(d), Func(self.nametag.setChat, joke[1], CFSpeech), Parallel(SoundInterval(self.rimshot, startTime=2.0), Wait(d * 4)), Func(self.cleanupTrack))
+        track = Sequence(Parallel(Sequence(Wait(d * 0.5), SoundInterval(self.knockSfx)), Func(self.nametag.setChatText, TTLocalizer.DoorKnockKnock), Wait(d)), Func(avatar.setChatAbsolute, TTLocalizer.DoorWhosThere, CFSpeech | CFTimeout, openEnded=0), Wait(d), Func(self.nametag.setChatText, joke[0]), Wait(d), Func(avatar.setChatAbsolute, joke[0] + TTLocalizer.DoorWhoAppendix, CFSpeech | CFTimeout, openEnded=0), Wait(d), Func(self.nametag.setChatText, joke[1]), Parallel(SoundInterval(self.rimshot, startTime=2.0), Wait(d * 4)), Func(self.cleanupTrack))
         track.delayDelete = DelayDelete.DelayDelete(avatar, 'knockKnockTrack')
         return track
 

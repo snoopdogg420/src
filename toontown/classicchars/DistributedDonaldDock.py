@@ -21,7 +21,7 @@ class DistributedDonaldDock(DistributedCCharBase.DistributedCCharBase):
             DistributedCCharBase.DistributedCCharBase.__init__(self, cr, TTLocalizer.DonaldDock, 'dw')
             self.fsm = ClassicFSM.ClassicFSM('DistributedDonaldDock', [State.State('Off', self.enterOff, self.exitOff, ['Neutral']), State.State('Neutral', self.enterNeutral, self.exitNeutral, ['Off'])], 'Off', 'Off')
             self.fsm.enterInitialState()
-            self.nametag.setName(TTLocalizer.Donald)
+            self.nametag.setText(TTLocalizer.Donald)
             self.handleHolidays()
 
     def disable(self):
