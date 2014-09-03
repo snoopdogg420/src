@@ -4,6 +4,7 @@ from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
 from direct.showbase.PythonUtil import *
 from direct.showbase.Transitions import Transitions
+from direct.task import *
 import math
 import os
 from pandac.PandaModules import *
@@ -12,6 +13,7 @@ import shutil
 from sys import platform
 import sys
 import tempfile
+import time
 
 import ToontownGlobals
 import ToontownLoader
@@ -472,9 +474,29 @@ class ToonBase(OTPBase.OTPBase):
         self.ttAccess = ToontownAccess.ToontownAccess()
         self.ttAccess.initModuleInfo()
 
+        # Start detecting speed hacks:
+        self.lastSpeedHackCheck = time.time()
+        self.lastTrueClockTime = TrueClock.getGlobalPtr().getLongTime()
+        taskMgr.add(self.__speedHackCheckTick, 'speedHackCheck-tick')
+
+    def __speedHackCheckTick(self, task):
+        elapsed = time.time() - self.lastSpeedHackCheck
+        tcElapsed = TrueClock.getGlobalPtr().getLongTime() - self.lastTrueClockTime
+
+        if tcElapsed > (elapsed + 0.05):
+            # The TrueClock is running faster than it should. This means the
+            # player may have sped up the process. Disconnect them:
+            self.cr.stopReaderPollTask()
+            self.cr.lostConnection()
+            return task.done
+
+        self.lastSpeedHackCheck = time.time()
+        self.lastTrueClockTime = TrueClock.getGlobalPtr().getLongTime()
+
+        return task.cont
+
     def removeGlitchMessage(self):
         self.ignore('InputState-forward')
-        print 'ignoring InputState-forward'
 
     def exitShow(self, errorCode = None):
         self.notify.info('Exiting Toontown: errorCode = %s' % errorCode)
