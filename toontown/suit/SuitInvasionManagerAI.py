@@ -5,10 +5,10 @@ import random
 import shlex
 
 suitDepts = {
-'c': 0,
-'l': 1,
-'m': 2,
-'s': 3
+  'c': 0,
+  'l': 1,
+  'm': 2,
+  's': 3
 }
 
 class SuitInvasionManagerAI:
