@@ -1,219 +1,175 @@
 from direct.directnotify.DirectNotifyGlobal import *
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
-from pandac.PandaModules import *
-from toontown.building import DistributedDoorAI
-from toontown.building import DoorTypes, FADoorCodes
-from toontown.building.DistributedHQInteriorAI import DistributedHQInteriorAI
-from toontown.building.DistributedTutorialInteriorAI import DistributedTutorialInteriorAI
-from toontown.suit import DistributedTutorialSuitAI
-from toontown.suit import SuitDNA
-from toontown.toon import Experience
+from direct.fsm.FSM import FSM
+
+from toontown.building import FADoorCodes
+from toontown.building.HQBuildingAI import HQBuildingAI
+from toontown.building.TutorialBuildingAI import TutorialBuildingAI
+from toontown.quest import Quests
+from toontown.suit.DistributedTutorialSuitAI import DistributedTutorialSuitAI
 from toontown.toon import NPCToons
-from toontown.toon.DistributedNPCSpecialQuestGiverAI import DistributedNPCSpecialQuestGiverAI
+from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import ToontownGlobals
+
+
+class TutorialFSM(FSM):
+    def __init__(self, air, zones, avId):
+        FSM.__init__(self, 'TutorialFSM')
+
+        self.air = air
+        self.zones = zones
+        self.avId = avId
+
+        npcDesc = NPCToons.NPCToonDict.get(20000)
+        self.tutorialTom = NPCToons.createNPC(self.air, 20000, npcDesc, self.zones['building'])
+        self.tutorialTom.setTutorial(1)
+
+        npcDesc = NPCToons.NPCToonDict.get(20002)
+        self.hqHarry = NPCToons.createNPC(self.air, 20002, npcDesc, self.zones['hq'])
+        self.hqHarry.setTutorial(1)
+        self.hqHarry.setHq(1)
+
+        self.building = TutorialBuildingAI(
+            self.air, self.zones['street'], self.zones['building'], 2, self.tutorialTom.getDoId())
+        self.hq = HQBuildingAI(self.air, self.zones['street'], self.zones['hq'], 1)
+
+        self.forceTransition('Introduction')
+
+    def enterIntroduction(self):
+        self.building.insideDoor.setDoorLock(FADoorCodes.TALK_TO_TOM)
+
+    def exitIntroduction(self):
+        self.building.insideDoor.setDoorLock(FADoorCodes.UNLOCKED)
+
+    def enterBattle(self):
+        self.suit = DistributedTutorialSuitAI(self.air)
+        self.suit.generateWithRequired(self.zones['street'])
+
+        self.building.door.setDoorLock(FADoorCodes.DEFEAT_FLUNKY_TOM)
+        self.hq.door0.setDoorLock(FADoorCodes.DEFEAT_FLUNKY_HQ)
+        self.hq.door1.setDoorLock(FADoorCodes.DEFEAT_FLUNKY_HQ)
+
+    def exitBattle(self):
+        if self.suit:
+            self.suit.requestDelete()
+
+    def enterHQ(self):
+        self.building.door.setDoorLock(FADoorCodes.TALK_TO_HQ)
+        self.hq.door0.setDoorLock(FADoorCodes.UNLOCKED)
+        self.hq.door1.setDoorLock(FADoorCodes.UNLOCKED)
+        self.hq.insideDoor0.setDoorLock(FADoorCodes.TALK_TO_HQ)
+        self.hq.insideDoor1.setDoorLock(FADoorCodes.TALK_TO_HQ)
+
+    def enterTunnel(self):
+        npcDesc = NPCToons.NPCToonDict.get(20001)
+        self.flippy = NPCToons.createNPC(self.air, 20001, npcDesc, self.zones['street'], 0)
+
+        self.hq.insideDoor0.setDoorLock(FADoorCodes.WRONG_DOOR_HQ)
+        self.hq.insideDoor1.setDoorLock(FADoorCodes.UNLOCKED)
+        self.hq.door0.setDoorLock(FADoorCodes.GO_TO_PLAYGROUND)
+        self.hq.door1.setDoorLock(FADoorCodes.GO_TO_PLAYGROUND)
+        self.building.door.setDoorLock(FADoorCodes.GO_TO_PLAYGROUND)
+
+    def exitTunnel(self):
+        self.flippy.requestDelete()
+
+    def enterCleanup(self):
+        self.building.cleanup()
+        self.hq.cleanup()
+        self.tutorialTom.requestDelete()
+        self.hqHarry.requestDelete()
+
+        self.air.deallocateZone(self.zones['street'])
+        self.air.deallocateZone(self.zones['building'])
+        self.air.deallocateZone(self.zones['hq'])
+
+        del self.air.tutorialManager.avId2fsm[self.avId]
+
 
 class TutorialManagerAI(DistributedObjectAI):
     notify = directNotify.newCategory('TutorialManagerAI')
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
-        self.zoneAllocator = self.air.zoneAllocator
 
-        self.currentAllocatedZones = {}
-
-        self.timesDone = 0
-
-        self.streetZone = 0
-        self.hqZone = 0
-        self.shopZone = 0
+        self.avId2fsm = {}
 
     def requestTutorial(self):
         avId = self.air.getAvatarIdFromSender()
-        shopZone = self.zoneAllocator.allocate()
-        streetZone = self.zoneAllocator.allocate()
-        hqZone = self.zoneAllocator.allocate()
-        self.desc = NPCToons.NPCToonDict.get(20000)
-        self.npc = NPCToons.createNPC(self.air, 20000, self.desc, shopZone)
-        self.npc.setTutorial(1)
-        self.enterTutorial(
-            avId, ToontownGlobals.Tutorial,
-            streetZone, shopZone, hqZone)
-        zones = self.createTutorial(streetZone, shopZone, hqZone)
+
+        zones = {}
+        zones['street'] = self.air.allocateZone()
+        zones['building'] = self.air.allocateZone()
+        zones['hq'] = self.air.allocateZone()
+
+        self.avId2fsm[avId] = TutorialFSM(self.air, zones, avId)
+
+        self.acceptOnce(self.air.getAvatarExitEvent(avId), self.__handleUnexpectedExit, extraArgs=[avId])
+        self.d_enterTutorial(avId, ToontownGlobals.Tutorial, zones['street'], zones['building'], zones['hq'])
 
     def rejectTutorial(self):
-        avId = self.air.getAvatarIdFromSender()
-
-        av = self.air.doId2do.get(avId)
-        if not av:
-            return
-
-        self.acceptOnce('generate-%s'%(avId), self.avatarSkipTutorial)
-        av.b_setTutorialAck(1)
+        pass
 
     def requestSkipTutorial(self):
         avId = self.air.getAvatarIdFromSender()
-        self.skipTutorialResponse(avId, 1)
+        self.d_skipTutorialResponse(avId, 1)
 
-        self.acceptOnce('generate-%s'%(avId), self.avatarSkipTutorial)
 
-    def skipTutorialResponse(self, avId, allOk):
+        def handleTutorialSkipped(av):
+            av.b_setTutorialAck(1)
+            av.b_setQuestHistory([110, 100])
+            av.addQuest((110, Quests.getQuestFromNpcId(110), Quests.getQuestToNpcId(110), Quests.getQuestReward(110, av), 0), 0)
+            self.air.questManager.toonRodeTrolleyFirstTime(av)
+
+
+        # We must wait for the avatar to be generated:
+        self.acceptOnce('generate-%d' % avId, handleTutorialSkipped)
+
+    def d_skipTutorialResponse(self, avId, allOk):
         self.sendUpdateToAvatarId(avId, 'skipTutorialResponse', [allOk])
 
-    def avatarSkipTutorial(self, av):
-        av.b_setQuests([[110, 1, 1000, 100, 0]])
-        av.b_setQuestHistory([101])
-        av.b_setRewardHistory(1, [])
-        av.b_setTutorialAck(1)
-
-    def enterTutorial(self, avId, branchZone, streetZone, shopZone, hqZone):
-        self.currentAllocatedZones[avId] = (streetZone, shopZone, hqZone)
-        self.sendUpdateToAvatarId(avId, 'enterTutorial',
-                                  [branchZone, streetZone, shopZone, hqZone])
-
-    def createTutorial(self, streetZone, shopZone, hqZone):
-        self.createInterior(streetZone, shopZone, hqZone, self.npc)
-        self.createHQ(streetZone, shopZone, hqZone)
-        self.createStreet(streetZone, shopZone, hqZone)
-
-        return (streetZone, shopZone, hqZone)
-
-
-    def createInterior(self, streetZone, shopZone, hqZone, npc):
-        extShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.EXT_STANDARD,
-                                        lockValue=FADoorCodes.DEFEAT_FLUNKY_TOM)
-        intShopDoor = DistributedDoorAI.DistributedDoorAI(self.air, 2, DoorTypes.INT_STANDARD,
-                                        lockValue=FADoorCodes.TALK_TO_TOM)
-        extShopDoor.setOtherDoor(intShopDoor)
-        intShopDoor.setOtherDoor(extShopDoor)
-        extShopDoor.zoneId = streetZone
-        intShopDoor.zoneId = shopZone
-        extShopDoor.generateWithRequired(streetZone)
-        extShopDoor.sendUpdate('setDoorIndex', [extShopDoor.getDoorIndex()])
-        intShopDoor.generateWithRequired(shopZone)
-        intShopDoor.sendUpdate('setDoorIndex', [intShopDoor.getDoorIndex()])
-
-        self.accept('intShopDoor-{0}'.format(shopZone), intShopDoor.setDoorLock)
-        self.accept('extShopDoor-{0}'.format(streetZone), extShopDoor.setDoorLock)
-
-        shopInterior = DistributedTutorialInteriorAI(2, self.air, shopZone)
-        shopInterior.setTutorialNpcId(npc.doId)
-        shopInterior.generateWithRequired(shopZone)
-
-    def createHQ(self, streetZone, shopZone, hqZone):
-        interior = DistributedHQInteriorAI(1, self.air, hqZone)
-        interior.generateWithRequired(hqZone)
-        interior.setTutorial(1)
-
-        desc = NPCToons.NPCToonDict.get(20002)
-        npc = NPCToons.createNPC(self.air, 20002, desc, hqZone)
-        npc.setTutorial(1)
-        npc.setHq(1)
-
-        door0 = DistributedDoorAI.DistributedDoorAI(
-            self.air, 1, DoorTypes.EXT_HQ, doorIndex=0,
-            lockValue=FADoorCodes.DEFEAT_FLUNKY_HQ)
-        door1 = DistributedDoorAI.DistributedDoorAI(
-            self.air, 1, DoorTypes.EXT_HQ, doorIndex=1,
-            lockValue=FADoorCodes.DEFEAT_FLUNKY_HQ)
-        insideDoor0 = DistributedDoorAI.DistributedDoorAI(
-            self.air, 1, DoorTypes.INT_HQ, doorIndex=0,
-            lockValue=FADoorCodes.TALK_TO_HQ)
-        insideDoor1 = DistributedDoorAI.DistributedDoorAI(
-            self.air, 1, DoorTypes.INT_HQ, doorIndex=1,
-            lockValue=FADoorCodes.TALK_TO_HQ)
-        door0.setOtherDoor(insideDoor0)
-        insideDoor0.setOtherDoor(door0)
-        door1.setOtherDoor(insideDoor1)
-        insideDoor1.setOtherDoor(door1)
-        door0.zoneId = streetZone
-        door1.zoneId = streetZone
-        insideDoor0.zoneId = hqZone
-        insideDoor1.zoneId = hqZone
-        door0.generateWithRequired(streetZone)
-        door1.generateWithRequired(streetZone)
-        door0.sendUpdate('setDoorIndex', [door0.getDoorIndex()])
-        door1.sendUpdate('setDoorIndex', [door1.getDoorIndex()])
-        insideDoor0.generateWithRequired(hqZone)
-        insideDoor1.generateWithRequired(hqZone)
-        insideDoor0.sendUpdate('setDoorIndex', [insideDoor0.getDoorIndex()])
-        insideDoor1.sendUpdate('setDoorIndex', [insideDoor1.getDoorIndex()])
-
-        self.accept('extHqDoor0-{0}'.format(streetZone), door0.setDoorLock)
-        self.accept('extHqDoor1-{0}'.format(streetZone), door1.setDoorLock)
-        self.accept('intHqDoor0-{0}'.format(hqZone), insideDoor0.setDoorLock)
-        self.accept('intHqDoor1-{0}'.format(hqZone), insideDoor1.setDoorLock)
-
-    def createStreet(self, streetZone, shopZone, hqZone):
-        flunky = DistributedTutorialSuitAI.DistributedTutorialSuitAI(self.air)
-        suitType = SuitDNA.getSuitType('f')
-        suitTrack = SuitDNA.getSuitDept('f')
-        flunky.setupSuitDNA(1, suitType, suitTrack)
-        flunky.generateWithRequired(streetZone)
-
-        desc = NPCToons.NPCToonDict.get(20001)
-        npc = NPCToons.createNPC(self.air, 20001, desc, streetZone)
-        npc.setTutorial(1)
-        npc.d_setPos(207.4, 18.81, -0.475)
-        npc.d_setHpr(90.0, 0, 0)
+    def d_enterTutorial(self, avId, branchZone, streetZone, shopZone, hqZone):
+        self.sendUpdateToAvatarId(avId, 'enterTutorial', [branchZone, streetZone, shopZone, hqZone])
 
     def allDone(self):
         avId = self.air.getAvatarIdFromSender()
-
         av = self.air.doId2do.get(avId)
-        if not av:
-            return
-
-        av.b_setTutorialAck(1)
-
-        allocatedZones = self.currentAllocatedZones.get(avId)
-        if not allocatedZones:
-            return
-
-        streetZone, shopZone, hqZone = allocatedZones
-        del self.currentAllocatedZones[avId]
-
-        self.ignore('intShopDoor-{0}'.format(shopZone))
-        self.ignore('extShopDoor-{0}'.format(streetZone))
-        self.ignore('extHqDoor0-{0}'.format(streetZone))
-        self.ignore('extHqDoor1-{0}'.format(streetZone))
-        self.ignore('intHqDoor0-{0}'.format(hqZone))
-        self.ignore('intHqDoor1-{0}'.format(hqZone))
-
-        self.zoneAllocator.free(streetZone)
-        self.zoneAllocator.free(shopZone)
-        self.zoneAllocator.free(hqZone)
+        if av is not None:
+            av.b_setTutorialAck(1)
+        self.ignore(self.air.getAvatarExitEvent(avId))
+        fsm = self.avId2fsm.get(avId)
+        if fsm is not None:
+            fsm.demand('Cleanup')
+        else:
+            self.air.writeServerEvent('suspicious', avId, issue='Attempted to exit a non-existent tutorial.')
 
     def toonArrived(self):
         avId = self.air.getAvatarIdFromSender()
-
         av = self.air.doId2do.get(avId)
-        if not av:
+        if av is None:
             return
 
-        av.b_setTutorialAck(0)
+        if av.getTutorialAck():
+            self.avId2fsm[avId].demand('Cleanup')
+            self.air.writeServerEvent('suspicious', avId, issue='Attempted to enter a tutorial when it should be impossible.')
+            return
 
-        av.b_setHp(15)
-        av.b_setMaxHp(15)
-
-        experience = Experience.Experience(av.getExperience(), av)
-        for i, track in enumerate(av.getTrackAccess()):
-            if track:
-                experience.experience[i] = 0
-        av.b_setExperience(experience.makeNetString())
-
-        av.b_setTrackAccess([0, 0, 0, 0, 1, 1, 0])
-        av.b_setMaxCarry(20)
-
-        inventory = av.inventory
-        inventory.zeroInv(killUber=1)
-        inventory.inventory[4][0] = 1
-        inventory.inventory[5][0] = 1
-        av.b_setInventory(inventory.makeNetString())
-
-        av.b_setMoney(0)
-        av.b_setBankMoney(0)
-
-        av.b_setQuestCarryLimit(1)
+        # Prepare the player for the tutorial:
         av.b_setQuests([])
         av.b_setQuestHistory([])
         av.b_setRewardHistory(0, [])
+        av.b_setHp(15)
+        av.b_setMaxHp(15)
+
+        av.inventory.zeroInv(killUber=True)
+        av.inventory.addItem(ToontownBattleGlobals.THROW_TRACK, 0)
+        av.inventory.addItem(ToontownBattleGlobals.SQUIRT_TRACK, 0)
+        av.d_setInventory(av.inventory.makeNetString())
+
+        av.experience.zeroOutExp()
+        av.d_setExperience(av.experience.makeNetString())
+
+    def __handleUnexpectedExit(self, avId):
+        fsm = self.avId2fsm.get(avId)
+        if fsm is not None:
+            fsm.demand('Cleanup')

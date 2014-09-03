@@ -14,7 +14,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.coghq import FactoryCameraViews
 from direct.controls.ControlManager import CollisionHandlerRayStart
 from otp.ai.MagicWordGlobal import *
-from otp.nametag.NametagConstants import *
+from toontown.nametag.NametagGlobals import *
 if __dev__:
     from otp.level import EditorGlobals
 

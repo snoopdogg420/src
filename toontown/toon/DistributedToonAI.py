@@ -5120,7 +5120,10 @@ def getZone():
     zone = invoker.zoneId
     return 'ZoneID: %s' % (zone)
 
-@magicWord(category=CATEGORY_MODERATOR)
-def warn(message):
-    # TODO: Make it add a strike to the user's account.
-    return 'Not implemented'
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
+def nametagStyle(nametagStyle):
+    if nametagStyle >= len(TTLocalizer.NametagFontNames):
+        return 'Invalid nametag style.'
+    invoker = spellbook.getInvoker()
+    invoker.b_setNametagStyle(nametagStyle)
+    return 'Nametag style set to: %s.' % TTLocalizer.NametagFontNames[nametagStyle]

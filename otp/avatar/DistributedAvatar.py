@@ -1,13 +1,13 @@
-from Avatar import Avatar
 from direct.actor.DistributedActor import DistributedActor
 from direct.distributed import DistributedNode
 from direct.interval.IntervalGlobal import *
 from direct.showbase import PythonUtil
 from direct.task import Task
-from otp.ai.MagicWordGlobal import *
-from otp.nametag.Nametag import Nametag
-from otp.otpbase import OTPGlobals
 from pandac.PandaModules import *
+
+from Avatar import Avatar
+from otp.ai.MagicWordGlobal import *
+from otp.otpbase import OTPGlobals
 from toontown.battle.BattleProps import globalPropPool
 
 
@@ -84,11 +84,12 @@ class DistributedAvatar(DistributedActor, Avatar):
 
     def do_setParent(self, parentToken):
         if not self.isDisabled():
+            nametag2d = self.nametag.getNametag2d()
             if parentToken == OTPGlobals.SPHidden:
-                self.nametag2dDist &= ~Nametag.CName
+                nametag2d.hideNametag()
             else:
-                self.nametag2dDist |= Nametag.CName
-            self.nametag.getNametag2d().setContents(self.nametag2dContents & self.nametag2dDist)
+                nametag2d.showNametag()
+            nametag2d.update()
             DistributedActor.do_setParent(self, parentToken)
             self.__setTags()
 

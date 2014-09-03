@@ -14,14 +14,15 @@ import random
 
 import DistributedBossCog
 import SuitDNA
-from otp.nametag.NametagConstants import *
 from toontown.battle import BattleBase
 from toontown.battle import MovieToonVictory
 from toontown.battle import RewardPanel
 from toontown.battle import SuitBattleGlobals
 from toontown.battle.BattleProps import *
+from toontown.chat.ChatGlobals import *
 from toontown.coghq import CogDisguiseGlobals
 from toontown.distributed import DelayDelete
+from toontown.nametag.NametagGlobals import *
 from toontown.suit import SellbotBossGlobals
 from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer

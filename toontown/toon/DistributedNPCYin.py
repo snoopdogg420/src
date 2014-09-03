@@ -1,11 +1,13 @@
-from DistributedNPCToonBase import *
 from direct.fsm import ClassicFSM, State
 from direct.gui.DirectGui import *
 from direct.task.Task import Task
-from otp.nametag.NametagConstants import *
 from pandac.PandaModules import *
 import time
+
+from DistributedNPCToonBase import *
+from toontown.chat.ChatGlobals import *
 from toontown.effects import DustCloud
+from toontown.nametag.NametagGlobals import *
 from toontown.toonbase import TTLocalizer
 
 
@@ -140,7 +142,7 @@ class DistributedNPCYin(DistributedNPCToonBase):
     def popupPickColorGUI(self):
         self.setChatAbsolute('', CFSpeech)
         self.setChatAbsolute(TTLocalizer.YinPickColor, CFSpeech)
-        base.setCellsAvailable(base.bottomCells, 0)
+        base.setCellsActive(base.bottomCells, 0)
 
         self.title = DirectLabel(
             aspect2d, relief=None, text=TTLocalizer.YinTitle,
@@ -171,7 +173,7 @@ class DistributedNPCYin(DistributedNPCToonBase):
 
         self.setChatAbsolute('', CFSpeech)
         self.setChatAbsolute(TTLocalizer.YinEnjoy, CFSpeech|CFTimeout)
-        base.setCellsAvailable(base.bottomCells, 1)
+        base.setCellsActive(base.bottomCells, 1)
 
     def d_requestTransformation(self):
         self.sendUpdate('requestTransformation', [])
@@ -183,7 +185,7 @@ class DistributedNPCYin(DistributedNPCToonBase):
         self.setChatAbsolute(TTLocalizer.YinGoodbye, CFSpeech|CFTimeout)
         self.fsm.request('off')
         base.cr.playGame.getPlace().setState('walk')
-        base.setCellsAvailable(base.bottomCells, 1)
+        base.setCellsActive(base.bottomCells, 1)
 
         if task is not None:
             return task.done

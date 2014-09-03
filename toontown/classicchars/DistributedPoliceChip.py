@@ -20,4 +20,4 @@ class DistributedPoliceChip(DistributedChip.DistributedChip):
             self.fsm = ClassicFSM.ClassicFSM(self.getName(), [State.State('Off', self.enterOff, self.exitOff, ['Neutral']), State.State('Neutral', self.enterNeutral, self.exitNeutral, ['Walk']), State.State('Walk', self.enterWalk, self.exitWalk, ['Neutral'])], 'Off', 'Off')
             self.fsm.enterInitialState()
             self.handleHolidays()
-            self.nametag.setName(TTLocalizer.Chip)
+            self.nametag.setText(TTLocalizer.Chip)

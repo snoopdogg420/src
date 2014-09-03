@@ -176,8 +176,8 @@ class DistributedCogThiefGame(DistributedMinigame):
             pos = self.cogInfo[cogIndex]['pos']
             suit.reparentTo(self.gameBoard)
             suit.setPos(pos)
-            suit.hideNametag2d()
-            suit.hideNametag3d()
+            suit.nametag.setNametag2d(None)
+            suit.nametag.setNametag3d(None)
 
         for avId in self.avIdList:
             self.toonHitTracks[avId] = Wait(0.1)

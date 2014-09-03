@@ -2,7 +2,7 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from otp.distributed.TelemetryLimiter import RotationLimitToH, TLGatherAllAvs
-from otp.nametag import NametagGlobals
+from toontown.nametag import NametagGlobals
 from pandac.PandaModules import *
 from toontown.battle import BattlePlace
 from toontown.building import Elevator
@@ -96,7 +96,7 @@ class FactoryExterior(BattlePlace.BattlePlace):
         self._telemLimiter = TLGatherAllAvs('FactoryExterior', RotationLimitToH)
         self.accept('doorDoneEvent', self.handleDoorDoneEvent)
         self.accept('DistributedDoor_doorTrigger', self.handleDoorTrigger)
-        NametagGlobals.setMasterArrowsOn(1)
+        NametagGlobals.setWant2dNametags(True)
         self.tunnelOriginList = base.cr.hoodMgr.addLinkTunnelHooks(self, self.nodeList, self.zoneId)
         how = requestStatus['how']
         self.fsm.request(how, [requestStatus])

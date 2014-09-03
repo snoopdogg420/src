@@ -1,12 +1,16 @@
 from pandac.PandaModules import *
+
 from DistributedNPCToonBase import *
-from toontown.quest import QuestParser
+from toontown.chat.ChatGlobals import *
+from toontown.hood import ZoneUtil
+from toontown.nametag.NametagGlobals import *
 from toontown.quest import QuestChoiceGui
+from toontown.quest import QuestParser
 from toontown.quest import TrackChoiceGui
 from toontown.toonbase import TTLocalizer
-from toontown.hood import ZoneUtil
 from toontown.toontowngui import TeaserPanel
-from otp.nametag.NametagConstants import *
+
+
 SPAMMING = 1
 DOUBLE_ENTRY = 2
 
@@ -21,12 +25,12 @@ class DistributedSmartNPC(DistributedNPCToonBase):
 
     def handleCollisionSphereEnter(self, collEntry):
         self.sendUpdate('avatarEnter', [])
-        
+
     def greet(self, npcId, avId):
         if avId in base.cr.doId2do:
             avName = base.cr.doId2do.get(avId).getName()
             self.setChatAbsolute('Hello, %s' % avName + '!', CFSpeech | CFTimeout)
-            
+
     def dismiss(self, avId, statusCode):
         if avId in base.cr.doId2do:
             avName = base.cr.doId2do.get(avId).getName()

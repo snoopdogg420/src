@@ -22,7 +22,7 @@ class DistributedFrankenDonald(DistributedDonald.DistributedDonald):
             DistributedCCharBase.DistributedCCharBase.__init__(self, cr, TTLocalizer.FrankenDonald, 'fd')
             self.fsm = ClassicFSM.ClassicFSM(self.getName(), [State.State('Off', self.enterOff, self.exitOff, ['Neutral']), State.State('Neutral', self.enterNeutral, self.exitNeutral, ['Walk']), State.State('Walk', self.enterWalk, self.exitWalk, ['Neutral'])], 'Off', 'Off')
             self.fsm.enterInitialState()
-            self.nametag.setName(TTLocalizer.Donald)
+            self.nametag.setText(TTLocalizer.Donald)
             self.handleHolidays()
 
     def disable(self):

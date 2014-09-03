@@ -1,21 +1,24 @@
-# Yay it works
-from pandac.PandaModules import *
+from direct.actor import Actor
 from direct.directnotify import DirectNotifyGlobal
-from direct.interval.IntervalGlobal import *
+from direct.distributed.ClockDelta import globalClockDelta
 from direct.fsm.ClassicFSM import *
 from direct.fsm.State import *
-from direct.distributed.ClockDelta import globalClockDelta
-from otp.avatar import Avatar
-from otp.nametag import NametagGroup
-from direct.actor import Actor
-from direct.task import Task
-from toontown.pets import PetDNA
-from PetDNA import HeadParts, EarParts, NoseParts, TailParts, BodyTypes, BodyTextures, AllPetColors, getColors, ColorScales, PetEyeColors, EarTextures, TailTextures, getFootTexture, getEarTexture, GiraffeTail, LeopardTail, PetGenders
-from toontown.toonbase import TTLocalizer
-from toontown.toonbase import ToontownGlobals
+from direct.interval.IntervalGlobal import *
 from direct.showbase import PythonUtil
+from direct.task import Task
+from pandac.PandaModules import *
 import random
 import types
+
+from PetDNA import HeadParts, EarParts, NoseParts, TailParts, BodyTypes, BodyTextures, AllPetColors, getColors, ColorScales, PetEyeColors, EarTextures, TailTextures, getFootTexture, getEarTexture, GiraffeTail, LeopardTail, PetGenders
+from otp.avatar import Avatar
+from toontown.chat.ChatGlobals import *
+from toontown.nametag import NametagGlobals
+from toontown.pets import PetDNA
+from toontown.toonbase import TTLocalizer
+from toontown.toonbase import ToontownGlobals
+
+
 Component2IconDict = {'boredom': 'Bored',
  'restlessness': None,
  'playfulness': 'Play',
@@ -44,7 +47,7 @@ class Pet(Avatar.Avatar):
         Pet.SerialNum += 1
         self.lockedDown = 0
         self.setPickable(1)
-        self.setPlayerType(NametagGroup.CCNonPlayer)
+        self.setPlayerType(NametagGlobals.CCNonPlayer)
         self.animFSM = ClassicFSM('petAnimFSM', [State('off', self.enterOff, self.exitOff),
          State('neutral', self.enterNeutral, self.exitNeutral),
          State('neutralHappy', self.enterNeutralHappy, self.exitNeutralHappy),
@@ -324,9 +327,9 @@ class Pet(Avatar.Avatar):
         if self.moodModel:
             self.moodModel.hide()
         if base.config.GetBool('want-speech-bubble', 1):
-            self.nametag.setChat(random.choice(TTLocalizer.SpokenMoods[mood]), CFSpeech)
+            self.nametag.setChatText(random.choice(TTLocalizer.SpokenMoods[mood]))
         else:
-            self.nametag.setChat(random.choice(TTLocalizer.SpokenMoods[mood]), CFThought)
+            self.nametag.setChatText(random.choice(TTLocalizer.SpokenMoods[mood]))
 
     def getGenderString(self):
         if self.style:

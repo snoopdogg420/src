@@ -20,7 +20,7 @@ class DistributedVampireMickey(DistributedMickey.DistributedMickey):
             DistributedCCharBase.DistributedCCharBase.__init__(self, cr, TTLocalizer.VampireMickey, 'vmk')
             self.fsm = ClassicFSM.ClassicFSM(self.getName(), [State.State('Off', self.enterOff, self.exitOff, ['Neutral']), State.State('Neutral', self.enterNeutral, self.exitNeutral, ['Walk']), State.State('Walk', self.enterWalk, self.exitWalk, ['Neutral'])], 'Off', 'Off')
             self.fsm.enterInitialState()
-            self.nametag.setName(TTLocalizer.Mickey)
+            self.nametag.setText(TTLocalizer.Mickey)
 
     def walkSpeed(self):
         return ToontownGlobals.VampireMickeySpeed

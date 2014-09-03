@@ -1,29 +1,32 @@
-from pandac.PandaModules import *
-from direct.interval.IntervalGlobal import *
-from direct.distributed.ClockDelta import *
+import copy
+from direct.directnotify import DirectNotifyGlobal
 from direct.directtools.DirectGeometry import CLAMP
-from direct.task import Task
-from otp.avatar import DistributedAvatar
-import Suit
-from toontown.toonbase import ToontownGlobals
-from toontown.battle import DistributedBattle
+from direct.distributed.ClockDelta import *
 from direct.fsm import ClassicFSM, State
 from direct.fsm import State
-import SuitTimings
-import SuitBase
-import DistributedSuitPlanner
-from direct.directnotify import DirectNotifyGlobal
-import SuitDialog
-from toontown.battle import BattleProps
-from toontown.distributed.DelayDeletable import DelayDeletable
+from direct.interval.IntervalGlobal import *
+from direct.task import Task
 import math
-import copy
-import DistributedSuitBase
-from otp.otpbase import OTPLocalizer
+from pandac.PandaModules import *
 import random
-from otp.nametag.NametagConstants import *
-from otp.nametag import NametagGlobals
+
+import DistributedSuitBase
+import DistributedSuitPlanner
+import Suit
+import SuitBase
+import SuitDialog
+import SuitTimings
+from otp.avatar import DistributedAvatar
+from otp.otpbase import OTPLocalizer
+from toontown.battle import BattleProps
+from toontown.battle import DistributedBattle
+from toontown.chat.ChatGlobals import *
+from toontown.distributed.DelayDeletable import DelayDeletable
+from toontown.nametag import NametagGlobals
+from toontown.nametag.NametagGlobals import *
 from toontown.suit.SuitLegList import *
+from toontown.toonbase import ToontownGlobals
+
 
 STAND_OUTSIDE_DOOR = 2.5
 BATTLE_IGNORE_TIME = 6
@@ -631,12 +634,11 @@ class DistributedSuit(DistributedSuitBase.DistributedSuitBase, DelayDeletable):
             base.playSfx(dialogue, node=self)
         elif chatFlags & CFSpeech != 0:
             if self.nametag.getNumChatPages() > 0:
-                self.playDialogueForString(self.nametag.getChat())
+                self.playDialogueForString(self.nametag.getChatText())
                 if self.soundChatBubble != None:
                     base.playSfx(self.soundChatBubble, node=self)
-            elif self.nametag.getChatStomp() > 0:
-                self.playDialogueForString(self.nametag.getStompText(), self.nametag.getStompDelay())
-        return
+            elif self.nametag.getStompChatText():
+                self.playDialogueForString(self.nametag.getStompChatText(), self.nametag.CHAT_STOMP_DELAY)
 
     def playDialogueForString(self, chatString, delay = 0.0):
         if len(chatString) == 0:
