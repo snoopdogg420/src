@@ -369,8 +369,9 @@ class OZSafeZoneLoader(SafeZoneLoader):
         self.geyserSoundNoToon = None
 
         if hasattr(self, 'constructionSite'):
-            self.painterPeteSpeech.pause()
-            self.painterPete.delete()
+            if hasattr(self, 'painterPete'):
+                self.painterPeteSpeech.pause()
+                self.painterPete.delete()
             self.paintersWantedSign.removeNode()
             self.ladder.removeNode()
             self.cone0.cleanup()
