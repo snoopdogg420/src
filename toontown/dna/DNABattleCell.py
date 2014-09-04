@@ -1,5 +1,3 @@
-from DNAUtil import *
-
 class DNABattleCell:
     COMPONENT_CODE = 21
 
@@ -26,9 +24,5 @@ class DNABattleCell:
     def getPos(self):
         return self.pos
 
-    def setWidthHeight(self, width, height):
-        self.width = width
-        self.height = height
-
     def __str__(self):
-        return 'DNABattleCell width: ' + str(self.width) + ' height: ' + str(self.height) + ' pos: ' + str(self.pos)
+        return 'DNABattleCell width: %s height: %s pos: %s' % (self.width, self.height, self.pos)

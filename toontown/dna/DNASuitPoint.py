@@ -10,7 +10,6 @@ class DNASuitPoint:
         self.index = index
         self.pointType = pointType
         self.pos = pos
-        self.graphId = 0
         self.landmarkBuildingIndex = landmarkBuildingIndex
 
     def __str__(self):
@@ -27,7 +26,7 @@ class DNASuitPoint:
             pointTypeStr = 'COGHQ_OUT_POINT'
         else:
             pointTypeStr = '**invalid**'
-        return 'DNASuitPoint index: {0}, pointType: {1}, pos: {2}'.format(
+        return 'DNASuitPoint index: %s pointType: %s pos: %s' % (
             self.getIndex(), pointTypeStr, self.getPos())
 
     def setIndex(self, index):
@@ -35,24 +34,6 @@ class DNASuitPoint:
 
     def getIndex(self):
         return self.index
-
-    def getGraphId(self):
-        return self.graphId
-
-    def getLandmarkBuildingIndex(self):
-        return self.landmarkBuildingIndex
-
-    def getPos(self):
-        return self.pos
-
-    def isTerminal(self):
-        return self.pointType <= 2
-
-    def setGraphId(self, id):
-        self.graphId = id
-
-    def setLandmarkBuildingIndex(self, index):
-        self.landmarkBuildingIndex = index
 
     def setPointType(self, pointType):
         if isinstance(pointType, int):
@@ -87,3 +68,12 @@ class DNASuitPoint:
 
     def setPos(self, pos):
         self.pos = pos
+
+    def getPos(self):
+        return self.pos
+
+    def setLandmarkBuildingIndex(self, landmarkBuildingIndex):
+        self.landmarkBuildingIndex = landmarkBuildingIndex
+
+    def getLandmarkBuildingIndex(self):
+        return self.landmarkBuildingIndex

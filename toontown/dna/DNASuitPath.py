@@ -13,6 +13,3 @@ class DNASuitPath:
 
     def getPoint(self, pointIndex):
         return self.suitPoints[pointIndex]
-
-    def reversePath(self):
-        self.suitPoints.reverse()
