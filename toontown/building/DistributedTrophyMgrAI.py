@@ -2,82 +2,94 @@ from direct.directnotify.DirectNotifyGlobal import *
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 
 
+MAX_LISTING = 10
+
+AV_ID_INDEX = 0
+NAME_INDEX = 1
+SCORE_INDEX = 2
+
+
 class DistributedTrophyMgrAI(DistributedObjectAI):
     notify = directNotify.newCategory('DistributedTrophyMgrAI')
-    AVATAR_ID = 0
-    NAME = 1
-    SCORE = 2
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
 
-        backup = self.load()
-        self.leaderInfo = backup[0]
-        self.trophyScores = backup[1]
+        # Load the leaderboard back-up for this shard:
+        self.leaderInfo, self.trophyScores = self.load()
+
+    def save(self):
+        simbase.backups.save('trophy-mgr', (simbase.air.districtId,),
+                             (self.leaderInfo, self.trophyScores))
+
+    def load(self):
+        return simbase.backups.load('trophy-mgr', (simbase.air.districtId,),
+                                    default=(([], [], []), {}))
 
     def requestTrophyScore(self):
         avId = self.air.getAvatarIdFromSender()
-        trophyScore = self.trophyScores.get(avId, 0)
         av = self.air.doId2do.get(avId)
-        if av:
-            av.d_setTrophyScore(trophyScore)
-
-    def getLeaderInfo(self):
-        return self.leaderInfo
-
-    def updateTrophyScore(self, avId, trophyScore):
-        av = self.air.doId2do.get(avId)
-        if not av:
-            return
-        if trophyScore <= 0:
-            if avId in self.trophyScores:
-                del self.trophyScores[avId]
-            if avId in self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]:
-                scoreIndex = self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].index(avId)
-                del self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID][scoreIndex]
-                del self.leaderInfo[DistributedTrophyMgrAI.NAME][scoreIndex]
-                del self.leaderInfo[DistributedTrophyMgrAI.SCORE][scoreIndex]
-            for avId in self.trophyScores:
-                if avId not in self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]:
-                    self.updateTrophyScore(avId, self.trophyScores[avId])
-        self.trophyScores[avId] = trophyScore
-        if len(self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]) < 10:
-            if avId not in self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID]:
-                self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].append(avId)
-                self.leaderInfo[DistributedTrophyMgrAI.NAME].append(av.getName())
-                self.leaderInfo[DistributedTrophyMgrAI.SCORE].append(trophyScore)
-            else:
-                scoreIndex = self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].index(avId)
-                self.leaderInfo[DistributedTrophyMgrAI.SCORE][scoreIndex] = trophyScore
-            self.organizeLeaderInfo()
-        else:
-            if trophyScore > min(self.leaderInfo[DistributedTrophyMgrAI.SCORE]):
-                self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID][-1] = avId
-                self.leaderInfo[DistributedTrophyMgrAI.NAME][-1] = av.getName()
-                self.leaderInfo[DistributedTrophyMgrAI.SCORE][-1] = trophyScore
-            self.organizeLeaderInfo()
-
-    def organizeLeaderInfo(self):
-        leaderInfo = zip(*reversed(self.leaderInfo))
-        leaderInfo.sort(reverse=True)
-        self.leaderInfo = [[], [], []]
-        for score, name, avId in leaderInfo:
-            self.leaderInfo[DistributedTrophyMgrAI.AVATAR_ID].append(avId)
-            self.leaderInfo[DistributedTrophyMgrAI.NAME].append(name)
-            self.leaderInfo[DistributedTrophyMgrAI.SCORE].append(score)
+        if av is not None:
+            av.d_setTrophyScore(self.trophyScores.get(avId, 0))
 
     def addTrophy(self, avId, name, numFloors):
-        if avId in self.trophyScores:
-            trophyScore = self.trophyScores[avId] + numFloors
-            self.updateTrophyScore(avId, trophyScore)
+        if avId not in self.trophyScores:
+            self.trophyScores[avId] = 0
+        trophyScore = self.trophyScores[avId] + numFloors
+        self.updateTrophyScore(avId, trophyScore)
 
     def removeTrophy(self, avId, numFloors):
         if avId in self.trophyScores:
             trophyScore = self.trophyScores[avId] - numFloors
             self.updateTrophyScore(avId, trophyScore)
 
-    def save(self):
-        simbase.backups.save('trophy-mgr', (simbase.air.districtId,), (self.leaderInfo, self.trophyScores))
+    def updateTrophyScore(self, avId, trophyScore):
+        av = self.air.doId2do.get(avId)
 
-    def load(self):
-        return simbase.backups.load('trophy-mgr', (simbase.air.districtId,), default=([[], [], []], {}))
+        if trophyScore <= 0:
+            # Take the player off the listing:
+            if avId in self.trophyScores:
+                del self.trophyScores[avId]
+            if avId in self.leaderInfo[AV_ID_INDEX]:
+                scoreIndex = self.leaderInfo[AV_ID_INDEX].index(avId)
+                del self.leaderInfo[AV_ID_INDEX][scoreIndex]
+                del self.leaderInfo[NAME_INDEX][scoreIndex]
+                del self.leaderInfo[SCORE_INDEX][scoreIndex]
+        else:
+            # Add the player to the listing if they haven't been. Otherwise,
+            # update their current trophy score:
+            if av is None:
+                return
+            self.trophyScores[avId] = trophyScore
+            if avId not in self.leaderInfo[AV_ID_INDEX]:
+                self.leaderInfo[AV_ID_INDEX].append(avId)
+                self.leaderInfo[NAME_INDEX].append(av.getName())
+                self.leaderInfo[SCORE_INDEX].append(trophyScore)
+            else:
+                scoreIndex = self.leaderInfo[AV_ID_INDEX].index(avId)
+                self.leaderInfo[SCORE_INDEX][scoreIndex] = trophyScore
+
+        # Truncate and reorganize the listing:
+        self.reorganize()
+
+        # Update the listing in the various Toon HQs:
+        messenger.send('leaderboardChanged')
+        messenger.send('leaderboardFlush')
+
+        if av is not None:
+            av.d_setTrophyScore(trophyScore)
+
+    def reorganize(self):
+        # Sort the leader info:
+        leaderInfo = zip(*reversed(self.leaderInfo))
+        leaderInfo.sort(reverse=True)
+
+        # Construct the new, truncated leader info:
+        self.leaderInfo = [[], [], []]
+        for trophyScore, name, avId in leaderInfo[:MAX_LISTING]:
+            self.leaderInfo[AV_ID_INDEX].append(avId)
+            self.leaderInfo[NAME_INDEX].append(name)
+            self.leaderInfo[SCORE_INDEX].append(trophyScore)
+
+    def getLeaderInfo(self):
+        return self.leaderInfo
