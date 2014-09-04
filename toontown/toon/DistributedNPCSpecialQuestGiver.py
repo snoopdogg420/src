@@ -14,10 +14,11 @@ from toontown.toontowngui import TeaserPanel
 
 ChoiceTimeout = 20
 
-class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
 
+class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
     def __init__(self, cr):
         DistributedNPCToonBase.__init__(self, cr)
+
         self.curQuestMovie = None
         self.questChoiceGui = None
         self.trackChoiceGui = None
@@ -31,11 +32,14 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
             self.clearMat()
         else:
             self.notify.warning('announceGenerate: Could not find npc_origin_' + str(self.posIndex))
+
         DistributedNPCToonBase.announceGenerate(self)
+
         messenger.send('doneTutorialSetup')
 
     def delayDelete(self):
         DistributedNPCToonBase.delayDelete(self)
+
         if self.curQuestMovie:
             curQuestMovie = self.curQuestMovie
             self.curQuestMovie = None
@@ -44,6 +48,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
 
     def disable(self):
         self.cleanupMovie()
+
         DistributedNPCToonBase.disable(self)
 
     def cleanupMovie(self):
@@ -62,30 +67,13 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
             self.trackChoiceGui = None
 
     def allowedToTalk(self):
-        if base.cr.isPaid():
-            return True
-        place = base.cr.playGame.getPlace()
-        myHoodId = ZoneUtil.getCanonicalHoodId(place.zoneId)
-        if hasattr(place, 'id'):
-            myHoodId = place.id
-        if myHoodId in (ToontownGlobals.ToontownCentral,
-         ToontownGlobals.MyEstate,
-         ToontownGlobals.GoofySpeedway,
-         ToontownGlobals.Tutorial):
-            return True
-        return False
+        return True
 
     def handleCollisionSphereEnter(self, collEntry):
-        if self.allowedToTalk():
-            base.cr.playGame.getPlace().fsm.request('quest', [self])
-            self.sendUpdate('avatarEnter', [])
-            self.nametag3d.setDepthTest(0)
-            self.nametag3d.setBin('fixed', 0)
-        else:
-            place = base.cr.playGame.getPlace()
-            if place:
-                place.fsm.request('stopped')
-            self.dialog = TeaserPanel.TeaserPanel(pageName='quests', doneFunc=self.handleOkTeaser)
+        base.cr.playGame.getPlace().fsm.request('quest', [self])
+        self.sendUpdate('avatarEnter', [])
+        self.nametag3d.setDepthTest(0)
+        self.nametag3d.setBin('fixed', 0)
 
     def handleOkTeaser(self):
         self.dialog.destroy()
@@ -101,6 +89,7 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         self.detectAvatars()
         self.clearMat()
         if isLocalToon:
+            self.showNametag2d()
             taskMgr.remove(self.uniqueName('lerpCamera'))
             base.localAvatar.posCamera(0, 0)
             base.cr.playGame.getPlace().setState('walk')
@@ -116,7 +105,6 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
             camera.posQuatInterval(1, (-5, 9, self.getHeight() - 0.5), (-150, -2, 0), other=self, blendType='easeOut').start()
 
     def setMovie(self, mode, npcId, avId, quests, timestamp):
-        timeStamp = ClockDelta.globalClockDelta.localElapsedTime(timestamp)
         isLocalToon = avId == base.localAvatar.doId
         if mode == NPCToons.QUEST_MOVIE_CLEAR:
             self.cleanupMovie()
@@ -153,6 +141,8 @@ class DistributedNPCSpecialQuestGiver(DistributedNPCToonBase):
         self.setupAvatars(av)
         fullString = ''
         toNpcId = None
+        if isLocalToon:
+            self.hideNametag2d()
         if mode == NPCToons.QUEST_MOVIE_COMPLETE:
             questId, rewardId, toNpcId = quests
             scriptId = 'quest_complete_' + str(questId)

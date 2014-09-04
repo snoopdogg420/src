@@ -7,31 +7,28 @@ from toontown.toonbase import TTLocalizer
 from direct.distributed import DistributedObject
 from toontown.quest import QuestParser
 
-class DistributedNPCBlocker(DistributedNPCToonBase):
 
+class DistributedNPCBlocker(DistributedNPCToonBase):
     def __init__(self, cr):
         DistributedNPCToonBase.__init__(self, cr)
-        self.cSphereNodePath.setScale(4.5, 1.0, 6.0)
-        self.isLocalToon = 1
-        self.movie = None
-        return
 
-    def announceGenerate(self):
-        DistributedNPCToonBase.announceGenerate(self)
+        self.cSphereNodePath.setScale(4.5, 1.0, 6.0)
+        self.isLocalToon = False
+        self.movie = None
 
     def initToonState(self):
         self.setAnimState('neutral', 0.9, None, None)
         posh = NPCToons.BlockerPositions[self.name]
         self.setPos(posh[0])
         self.setH(posh[1])
-        return
 
     def disable(self):
         if hasattr(self, 'movie') and self.movie:
             self.movie.cleanup()
             del self.movie
-            if self.isLocalToon == 1:
+            if self.isLocalToon:
                 base.localAvatar.posCamera(0, 0)
+
         DistributedNPCToonBase.disable(self)
 
     def handleCollisionSphereEnter(self, collEntry):
@@ -48,19 +45,19 @@ class DistributedNPCBlocker(DistributedNPCToonBase):
             self.movie = None
         self.startLookAround()
         self.clearMat()
-        if self.isLocalToon == 1:
+        if self.isLocalToon:
             base.localAvatar.posCamera(0, 0)
             self.freeAvatar()
-            self.isLocalToon = 0
-        return
+            self.isLocalToon = False
 
     def setMovie(self, mode, npcId, avId, timestamp):
-        timeStamp = ClockDelta.globalClockDelta.localElapsedTime(timestamp)
         self.npcId = npcId
         self.isLocalToon = avId == base.localAvatar.doId
         if mode == NPCToons.BLOCKER_MOVIE_CLEAR:
             return
         elif mode == NPCToons.BLOCKER_MOVIE_START:
+            if self.isLocalToon:
+                self.hideNametag2d()
             self.movie = QuestParser.NPCMoviePlayer('tutorial_blocker', base.localAvatar, self)
             self.movie.play()
         elif mode == NPCToons.BLOCKER_MOVIE_TIMEOUT:
@@ -68,3 +65,5 @@ class DistributedNPCBlocker(DistributedNPCToonBase):
 
     def finishMovie(self, av, isLocalToon, elapsedTime):
         self.resetBlocker()
+        if self.isLocalToon:
+            self.showNametag2d()

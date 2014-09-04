@@ -23,8 +23,8 @@ class DistributedNPCBanker(DistributedNPCToonBase):
             self.bankGUI.destroy()
         self.av = None
         base.localAvatar.posCamera(0, 0)
+
         DistributedNPCToonBase.disable(self)
-        return
 
     def resetClerk(self):
         self.ignoreAll()
@@ -73,6 +73,7 @@ class DistributedNPCBanker(DistributedNPCToonBase):
             if av:
                 self.setupAvatars(av)
             if isLocalToon:
+                self.hideNametag2d()
                 camera.wrtReparentTo(render)
                 seq = Sequence((camera.posQuatInterval(1, Vec3(-5, 9, self.getHeight() - 0.5),
                     Vec3(-150, -2, 0), other=self, blendType='easeOut',
@@ -101,3 +102,5 @@ class DistributedNPCBanker(DistributedNPCToonBase):
 
         if base.cr.playGame.getPlace():
             base.cr.playGame.getPlace().setState('walk')
+
+        self.showNametag2d()
