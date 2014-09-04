@@ -5746,6 +5746,7 @@ CatalogItemTypeNames = {0: 'INVALID_ITEM',
  18: 'ANIMATED FURNITURE',
  19: AccessoryTypeName}
 HatStylesDescriptions = {'hbb1': 'Green Baseball Cap',
+ 'kmh1': 'Mouskateer',
  'hbb2': 'Blue Baseball Cap',
  'hbb3': 'Orange Baseball Cap',
  'hsf1': 'Beige Safari Hat',
