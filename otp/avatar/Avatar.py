@@ -79,6 +79,7 @@ class Avatar(Actor, ShadowCaster):
         self.__chatDialogueList = []
         self.__chatSet = 0
         self.__chatLocal = 0
+        self.__chatQuitButton = False
         self.__currentDialogue = None
         self.whitelistChatFlags = 0
 
@@ -373,8 +374,6 @@ class Avatar(Actor, ShadowCaster):
 
         if chatFlags & CFPageButton:
             self.nametag.setChatButton(NametagGlobals.pageButton)
-        elif chatFlags & CFQuitButton:
-            self.nametag.setChatButton(NametagGlobals.quitButton)
         else:
             self.nametag.setChatButton(NametagGlobals.noButton)
 
@@ -479,15 +478,15 @@ class Avatar(Actor, ShadowCaster):
         elif self.nametag.getActive():
             messenger.send('clickedNametag', [self])
 
-    def setPageChat(self, addressee, paragraph, message, quitButton, extraChatFlags = None, dialogueList = [], pageButton = True):
+    def setPageChat(self, addressee, paragraph, message, quitButton,
+                    extraChatFlags=None, dialogueList=[], pageButton=True):
         self.__chatAddressee = addressee
         self.__chatPageNumber = None
         self.__chatParagraph = paragraph
         self.__chatMessage = message
-        if extraChatFlags is None:
-            self.__chatFlags = CFSpeech
-        else:
-            self.__chatFlags = CFSpeech | extraChatFlags
+        self.__chatFlags = CFSpeech
+        if extraChatFlags is not None:
+            self.__chatFlags |= extraChatFlags
         self.__chatDialogueList = dialogueList
         self.__chatSet = 0
         self.__chatLocal = 0
@@ -495,30 +494,23 @@ class Avatar(Actor, ShadowCaster):
         if addressee == base.localAvatar.doId:
             if pageButton:
                 self.__chatFlags |= CFPageButton
-            if quitButton == None:
-                self.__chatFlags |= CFNoQuitButton
-            elif quitButton:
-                self.__chatFlags |= CFQuitButton
+            self.__chatQuitButton = quitButton
             self.b_setPageNumber(self.__chatParagraph, 0)
-        return
 
-    def setLocalPageChat(self, message, quitButton, extraChatFlags = None, dialogueList = []):
+    def setLocalPageChat(self, message, quitButton, extraChatFlags=None,
+                         dialogueList=[]):
         self.__chatAddressee = base.localAvatar.doId
         self.__chatPageNumber = None
         self.__chatParagraph = None
         self.__chatMessage = message
-        if extraChatFlags is None:
-            self.__chatFlags = CFSpeech
-        else:
-            self.__chatFlags = CFSpeech | extraChatFlags
+        self.__chatFlags = CFSpeech
+        if extraChatFlags is not None:
+            self.__chatFlags |= extraChatFlags
         self.__chatDialogueList = dialogueList
         self.__chatSet = 1
         self.__chatLocal = 1
         self.__chatFlags |= CFPageButton
-        if quitButton == None:
-            self.__chatFlags |= CFNoQuitButton
-        elif quitButton:
-            self.__chatFlags |= CFQuitButton
+        self.__chatQuitButton = quitButton
         if len(dialogueList) > 0:
             dialogue = dialogueList[0]
         else:
@@ -526,10 +518,9 @@ class Avatar(Actor, ShadowCaster):
         self.clearChat()
         self.setChatAbsolute(message, self.__chatFlags, dialogue)
         self.setPageNumber(None, 0)
-        return
 
-    def setPageNumber(self, paragraph, pageNumber, timestamp = None):
-        if timestamp == None:
+    def setPageNumber(self, paragraph, pageNumber, timestamp=None):
+        if timestamp is None:
             elapsed = 0.0
         else:
             elapsed = ClockDelta.globalClockDelta.localElapsedTime(timestamp)
@@ -544,23 +535,27 @@ class Avatar(Actor, ShadowCaster):
             messenger.send('nextChatPage', [pageNumber, elapsed])
         else:
             messenger.send('doneChatPage', [elapsed])
-        return
 
     def advancePageNumber(self):
-        if self.__chatAddressee == base.localAvatar.doId and self.__chatPageNumber != None and self.__chatPageNumber[0] == self.__chatParagraph:
+        if (self.__chatAddressee == base.localAvatar.doId) and (
+            self.__chatPageNumber is not None) and (
+            self.__chatPageNumber[0] == self.__chatParagraph):
             pageNumber = self.__chatPageNumber[1]
             if pageNumber >= 0:
                 pageNumber += 1
                 if pageNumber >= self.nametag.getNumChatPages():
                     pageNumber = -1
+                if self.__chatQuitButton:
+                    if pageNumber == self.nametag.getNumChatPages() - 1:
+                        self.nametag.setChatButton(NametagGlobals.quitButton)
                 if self.__chatLocal:
                     self.setPageNumber(self.__chatParagraph, pageNumber)
                 else:
                     self.b_setPageNumber(self.__chatParagraph, pageNumber)
-        return
 
     def __updatePageChat(self):
-        if self.__chatPageNumber != None and self.__chatPageNumber[0] == self.__chatParagraph:
+        if (self.__chatPageNumber is not None) and (
+            self.__chatPageNumber[0] == self.__chatParagraph):
             pageNumber = self.__chatPageNumber[1]
             if pageNumber >= 0:
                 if not self.__chatSet:
@@ -571,6 +566,9 @@ class Avatar(Actor, ShadowCaster):
                     self.setChatAbsolute(self.__chatMessage, self.__chatFlags, dialogue)
                     self.__chatSet = 1
                 if pageNumber < self.nametag.getNumChatPages():
+                    if self.__chatQuitButton:
+                        if pageNumber == self.nametag.getNumChatPages() - 1:
+                            self.nametag.setChatButton(NametagGlobals.quitButton)
                     self.nametag.setChatPageIndex(pageNumber)
                     if pageNumber > 0:
                         if len(self.__chatDialogueList) > pageNumber:
