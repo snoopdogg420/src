@@ -1,5 +1,7 @@
 from toontown.safezone import SafeZoneLoader
 from toontown.safezone import TTPlayground
+from direct.actor.Actor import Actor
+
 
 class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
     def __init__(self, hood, parentFSM, doneEvent):
@@ -19,18 +21,57 @@ class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
         doorTrigger = bank.find('**/door_trigger*')
         doorTrigger.setY(doorTrigger.getY() - 1.5)
 
+
+        ### Judgement Day: The Grand Opening Massacre prototype scene ###
+        ### The models below are being loaded to create the prototype scene. This should be deleted later. ###
+        ### Prototype by Markgasus ###
+
         eventStage = loader.loadModel("phase_4/models/events/event_stage.bam")
-        eventStage.reparentTo(self.geom) # The geom is created by the dna parser
-        eventStage.setPos(68.08,1.67,4.025)
+        eventStage.reparentTo(self.geom)
+        eventStage.setPos(68.08,0.67,4.025)
         eventStage.setHpr(-447.775,0,0)
+        eventStage.setScale(1.2)
 
         balloonArchway = loader.loadModel("phase_4/models/events/balloon_archway_spiraled.bam")
-        balloonArchway.reparentTo(self.geom) # The geom is created by the dna parser
-        balloonArchway.setPos(80,1.67,4.025)
+        balloonArchway.reparentTo(self.geom)
+        balloonArchway.setPos(80,0.67,4.025)
         balloonArchway.setHpr(-447.775,0,0)
-        balloonArchway.setScale(1.5)
+        balloonArchway.setScale(2,2.8,1.5)
 
+        barriers = loader.loadModel("phase_4/models/events/ttc_barriers.bam")
+        barriers.reparentTo(self.geom)
+        barriers.setPos(-1.2,-0.5,0)
+        barriers.setHpr(-90,0,0)
 
+        cutSection = loader.loadModel("phase_4/models/events/ttc_barriers_cutSection_mod.bam")
+        cutSection.reparentTo(self.geom)
+        cutSection.setPos(0,-0.81,0)
+
+        eventTent = loader.loadModel("phase_4/models/events/event_tent.bam")
+        eventTent.reparentTo(self.geom)
+        eventTent.setPos(0,0,0)
+
+        self.blueFlag = Actor('phase_4/models/events/event-flag-mod.bam', {'wave': 'phase_4/models/events/event-flag-anim.bam'})
+        self.blueFlag.reparentTo(eventTent.find('**/flag1_jnt'))
+        self.blueFlag.setH(90)
+        self.blueFlag.loop('wave')
+
+        #self.blueFlag.reparentTo(self.geom)
+        #self.blueFlag.loop('wave')
+
+        #redFlag = Actor('phase_4/models/events/event-flag-mod.bam', {'wave': 'phase_4/models/events/event-flag-anim.bam'})
+        #redFlag.reparentTo(tent.find('**/flag2_jnt'))
+        #redFlag.setH(90)
+        #redFlag.loop('wave')
+
+        self.blimpMod = loader.loadModel('phase_4/models/events/blimp_mod.bam')
+
+        self.blimpStart = Actor(self.blimpMod)
+        self.blimpStart.loadAnims({'flying': 'phase_4/models/events/blimp_chan_flying.bam'})
+        self.blimpStart.reparentTo(self.geom)
+        self.blimpStart.loop('flying')
+        self.blimpStart.setPos(144,-188,55)
+        self.blimpStart.setHpr(140,0,5)
 
     def unload(self):
         SafeZoneLoader.SafeZoneLoader.unload(self)
