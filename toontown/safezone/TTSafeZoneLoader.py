@@ -19,6 +19,18 @@ class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
         doorTrigger = bank.find('**/door_trigger*')
         doorTrigger.setY(doorTrigger.getY() - 1.5)
 
+        SillyMeterCrate = loader.loadModel("phase_4/models/events/SillyMeterCrate.bam")
+        SillyMeterCrate.reparentTo(self.geom) # The geom is created by the dna parser
+        SillyMeterCrate.setPos(79.953,2,4)
+        SillyMeterCrate.setHpr(-447.775,0,0)
+        SillyMeterCrate.setScale(0.5)
+
+        ropes = loader.loadModel("phase_4/models/modules/tt_m_ara_int_ropes.bam")
+        ropes.reparentTo(self.geom) # The geom is created by the dna parser
+        ropes.setPos(80,0,4.025)
+        ropes.setHpr(-447.775,0,0)
+        ropes.setScale(1)
+
     def unload(self):
         SafeZoneLoader.SafeZoneLoader.unload(self)
         del self.birdSound
