@@ -32,6 +32,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.ToontownBattleGlobals import *
 from toontown.toontowngui import TTDialog
+from toontown.nametag import NametagGlobals
 
 
 camPos = Point3(14, 0, 10)
@@ -358,6 +359,8 @@ class Movie(DirectObject.DirectObject):
         dna.newToonFromProperties(*dnaList)
         self.tutorialTom.setDNA(dna)
         self.tutorialTom.setName(TTLocalizer.NPCToonNames[20000])
+        self.tutorialTom.setPickable(0)
+        self.tutorialTom.setPlayerType(NametagGlobals.CCNonPlayer)
         self.tutorialTom.uniqueName = uniqueName
         if base.config.GetString('language', 'english') == 'japanese':
             self.tomDialogue03 = base.loadSfx('phase_3.5/audio/dial/CC_tom_movie_tutorial_reward01.ogg')
