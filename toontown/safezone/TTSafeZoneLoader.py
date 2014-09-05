@@ -1,5 +1,6 @@
 from toontown.safezone import SafeZoneLoader
 from toontown.safezone import TTPlayground
+from direct.actor.Actor import Actor
 
 class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
     def __init__(self, hood, parentFSM, doneEvent):
@@ -19,17 +20,25 @@ class TTSafeZoneLoader(SafeZoneLoader.SafeZoneLoader):
         doorTrigger = bank.find('**/door_trigger*')
         doorTrigger.setY(doorTrigger.getY() - 1.5)
 
-        SillyMeterCrate = loader.loadModel("phase_4/models/events/SillyMeterCrate.bam")
-        SillyMeterCrate.reparentTo(self.geom) # The geom is created by the dna parser
-        SillyMeterCrate.setPos(79.953,2,4)
-        SillyMeterCrate.setHpr(-447.775,0,0)
-        SillyMeterCrate.setScale(0.5)
+        self.camModel = loader.loadModel('phase_4/models/events/SillyMeterCrate_mod.bam')
 
-        ropes = loader.loadModel("phase_4/models/modules/tt_m_ara_int_ropes.bam")
-        ropes.reparentTo(self.geom) # The geom is created by the dna parser
-        ropes.setPos(80,0,4.025)
-        ropes.setHpr(-447.775,0,0)
-        ropes.setScale(1)
+        self.cam1 = Actor(self.camModel)
+        self.cam1.loadAnims({'neutral': 'phase_4/models/events/SillyMeterCrate_chan_open.bam'})
+        self.cam1.reparentTo(render)
+        self.cam1.loop('neutral')
+        self.cam1.setPos(79.953,2,4)
+        self.cam1.setHpr(-447.775,0,0)
+        self.cam1.setScale(0.5)
+
+        self.ropes = render.attachNewNode('ball')
+
+        self.ropesd = loader.loadModel("phase_4/models/modules/tt_m_ara_int_ropes.bam")
+        self.ropesd.reparentTo(self.geom) # The geom is created by the dna parser
+        self.ropesd.setPos(80,1,4.025)
+        self.ropesd.setScale(1.3)
+        self.ropesd.node().addSolid(CollisionSphere(80, 1, 0, 35))
+
+        self.constructionSite.attachNewNode(CollisionNode('constructionSiteBlocker'))
 
     def unload(self):
         SafeZoneLoader.SafeZoneLoader.unload(self)
