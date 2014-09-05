@@ -210,8 +210,8 @@ show-buffers #f
 garbage-collect-states #f
 
 # Quality...
-framebuffer-multisample 1
-multisamples 2
+# framebuffer-multisample 1
+# multisamples 2
 
 # Egg ObjectTypes...
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }
