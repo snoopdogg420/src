@@ -1,33 +1,33 @@
-import DNALandmarkBuilding
-import DNAError
-import DNAUtil
+from toontown.dna.DNALandmarkBuilding import DNALandmarkBuilding
+from toontown.dna.DNAPacker import SHORT_STRING
 
-class DNAAnimBuilding(DNALandmarkBuilding.DNALandmarkBuilding):
+
+class DNAAnimBuilding(DNALandmarkBuilding):
     COMPONENT_CODE = 16
 
     def __init__(self, name):
-        DNALandmarkBuilding.DNALandmarkBuilding.__init__(self, name)
+        DNALandmarkBuilding.__init__(self, name)
+
         self.animName = ''
 
-    def setAnim(self, anim):
-        self.animName = anim
+    def setAnimName(self, animName):
+        self.animName = animName
 
-    def getAnim(self):
+    def getAnimName(self):
         return self.animName
 
-    def makeFromDGI(self, dgi):
-        DNALandmarkBuilding.DNALandmarkBuilding.makeFromDGI(self, dgi)
-        self.animName = DNAUtil.dgiExtractString8(dgi)
+    def construct(self, storage, packer):
+        DNALandmarkBuilding.construct(self, storage, packer)
 
-    def traverse(self, nodePath, dnaStorage):
-        node = dnaStorage.findNode(self.getCode())
-        if node is None:
-            raise DNAError.DNAError('DNAAnimBuilding code ' + self.getCode() + ' not found in dnastore')
-        node = node.copyTo(nodePath, 0)
-        node.setName(self.getName())
-        node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
-        node.setTag('DNAAnim', self.animName)
-        self.setupSuitBuildingOrigin(nodePath, node)
-        for child in self.children:
-            child.traverse(nodePath, dnaStorage)
-        nodePath.flattenStrong()
+        self.setAnimName(packer.unpack(SHORT_STRING))
+
+        return True  # We can have children.
+
+    def traverse(self, storage, parent, recursive=True):
+        nodePath = DNALandmarkBuilding.traverse(storage, parent, recursive=False)
+
+        nodePath.setTag('DNAAnim', self.animName)
+
+        if recursive:
+            self.traverseChildren(storage, nodePath)
+        return nodePath

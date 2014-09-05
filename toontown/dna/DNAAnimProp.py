@@ -1,36 +1,33 @@
-import DNAProp
-from DNAUtil import *
+from toontown.dna.DNAPacker import SHORT_STRING
+from toontown.dna.DNAProp import DNAProp
 
-class DNAAnimProp(DNAProp.DNAProp):
+
+class DNAAnimProp(DNAProp):
     COMPONENT_CODE = 14
 
     def __init__(self, name):
-        DNAProp.DNAProp.__init__(self, name)
+        DNAProp.__init__(self, name)
+
         self.animName = ''
 
-    def setAnim(self, anim):
-        self.animName = anim
+    def setAnimName(self, animName):
+        self.animName = animName
 
-    def getAnim(self):
+    def getAnimName(self):
         return self.animName
 
-    def makeFromDGI(self, dgi):
-        DNAProp.DNAProp.makeFromDGI(self, dgi)
-        self.animName = dgiExtractString8(dgi)
+    def construct(self, storage, packer):
+        DNAProp.construct(self, storage, packer)
 
-    def traverse(self, nodePath, dnaStorage):
-        node = None
-        if self.getCode() == 'DCS':
-            node = ModelNode(self.getName())
-            node.setPreserveTransform(ModelNode.PTNet)
-            node = nodePath.attachNewNode(node, 0)
-        else:
-            node = dnaStorage.findNode(self.getCode())
-            node = node.copyTo(nodePath, 0)
-            node.setName(self.getName())
-        node.setTag('DNAAnim', self.getAnim())
-        node.setPosHprScale(self.getPos(), self.getHpr(), self.getScale())
-        node.setColorScale(self.getColor(), 0)
-        node.flattenStrong()
-        for child in self.children:
-            child.traverse(node, dnaStorage)
+        self.setAnimName(packer.unpack(SHORT_STRING))
+
+        return True  # We can have children.
+
+    def traverse(self, storage, parent, recursive=True):
+        nodePath = DNAProp.traverse(storage, parent, recursive=False)
+
+        nodePath.setTag('DNAAnim', self.animName)
+
+        if recursive:
+            self.traverseChildren(storage, nodePath)
+        return nodePath
