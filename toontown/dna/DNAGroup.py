@@ -1,23 +1,23 @@
 from panda3d.core import PandaNode
-import DNAUtil
+
+from toontown.dna.DNAPacker import *
+
 
 class DNAGroup:
     COMPONENT_CODE = 1
 
     def __init__(self, name):
         self.name = name
-        self.children = []
+
         self.parent = None
         self.visGroup = None
+        self.children = []
 
-    def add(self, child):
-        self.children += [child]
+    def setName(self, name):
+        self.name = name
 
-    def remove(self, child):
-        self.children.remove(child)
-
-    def at(self, index):
-        return self.children[index]
+    def getName(self):
+        return self.name
 
     def setParent(self, parent):
         self.parent = parent
@@ -36,19 +36,28 @@ class DNAGroup:
     def getNumChildren(self):
         return len(self.children)
 
-    def getName(self):
-        return self.name
+    def add(self, child):
+        self.children.append(child)
 
-    def setName(self, name):
-        self.name = name
+    def remove(self, child):
+        self.children.remove(child)
 
-    def makeFromDGI(self, dgi):
-        self.name = DNAUtil.dgiExtractString8(dgi)
-        DNAUtil.dgiExtractString8(dgi)
-        DNAUtil.dgiExtractString8(dgi)
+    def at(self, i):
+        return self.children[i]
 
-    def traverse(self, nodePath, dnaStorage):
-        node = PandaNode(self.name)
-        nodePath = nodePath.attachNewNode(node, 0)
+    def construct(self, storage, packer):
+        self.setName(packer.unpack(SHORT_STRING))
+
+        return True  # We can have children.
+
+    def traverse(self, storage, parent, recursive=True):
+        nodePath = parent.attachNewNode(self.name)
+
+        if recursive:
+            self.traverseChilren(storage, parent)
+
+        return nodePath
+
+    def traverseChildren(self, storage, parent):
         for child in self.children:
-            child.traverse(nodePath, dnaStorage)
+            child.traverse(storage, parent)
