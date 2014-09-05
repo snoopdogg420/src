@@ -1,6 +1,4 @@
-from panda3d.core import PandaNode
-
-from toontown.dna.DNAPacker import *
+from toontown.dna.DNAPacker import SHORT_STRING
 
 
 class DNAGroup:
@@ -54,7 +52,7 @@ class DNAGroup:
         nodePath = parent.attachNewNode(self.name)
 
         if recursive:
-            self.traverseChilren(storage, parent)
+            self.traverseChilren(storage, nodePath)
 
         return nodePath
 
