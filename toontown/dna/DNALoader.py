@@ -1,25 +1,25 @@
 import zlib
 
-from toontown.dna import DNAAnimProp
-from toontown.dna import DNABattleCell
-from toontown.dna import DNACornice
-from toontown.dna import DNADoor
-from toontown.dna import DNAFlatBuilding
-from toontown.dna import DNAFlatDoor
-from toontown.dna import DNAGroup
-from toontown.dna import DNAInteractiveProp
-from toontown.dna import DNALandmarkBuilding
-from toontown.dna import DNAProp
-from toontown.dna import DNASign
-from toontown.dna import DNASignBaseline
-from toontown.dna import DNASignGraphic
-from toontown.dna import DNASignText
-from toontown.dna import DNAStreet
-from toontown.dna import DNASuitPoint
-from toontown.dna import DNAVisGroup
-from toontown.dna import DNAWall
-from toontown.dna import DNAWindows
-from toontown.dna.DNAPacker import *
+from toontown.dna.DNAAnimProp import DNAAnimProp
+from toontown.dna.DNABattleCell import DNABattleCell
+from toontown.dna.DNACornice import DNACornice
+from toontown.dna.DNADoor import DNADoor
+from toontown.dna.DNAFlatBuilding import DNAFlatBuilding
+from toontown.dna.DNAFlatDoor import DNAFlatDoor
+from toontown.dna.DNAGroup import DNAGroup
+from toontown.dna.DNAInteractiveProp import DNAInteractiveProp
+from toontown.dna.DNALandmarkBuilding import DNALandmarkBuilding
+from toontown.dna.DNAPacker import DNAPacker, UINT16, SHORT_STRING, UINT8, INT8
+from toontown.dna.DNAProp import DNAProp
+from toontown.dna.DNASign import DNASign
+from toontown.dna.DNASignBaseline import DNASignBaseline
+from toontown.dna.DNASignGraphic import DNASignGraphic
+from toontown.dna.DNASignText import DNASignText
+from toontown.dna.DNAStreet import DNAStreet
+from toontown.dna.DNASuitPoint import DNASuitPoint
+from toontown.dna.DNAVisGroup import DNAVisGroup
+from toontown.dna.DNAWall import DNAWall
+from toontown.dna.DNAWindows import DNAWindows
 
 
 class DNAError(Exception):
@@ -123,7 +123,7 @@ class DNALoader:
             pointType = self.packer.unpack(UINT8)
             pos = self.packer.unpackPosition()
             landmarkBuildingIndex = self.packer.unpack(INT8)
-            suitPoint = DNASuitPoint.DNASuitPoint(
+            suitPoint = DNASuitPoint(
                 index, pointType, pos,
                 landmarkBuildingIndex=landmarkBuildingIndex)
             self.storage.storeSuitPoint(suitPoint)
@@ -144,12 +144,12 @@ class DNALoader:
             width = self.packer.unpack(UINT8)
             height = self.packer.unpack(UINT8)
             pos = self.packer.unpackPosition()
-            cell = DNABattleCell.DNABattleCell(width, height, pos)
+            cell = DNABattleCell(width, height, pos)
             self.storage.storeBattleCell(cell)
 
     def readComponent(self, ctor):
         component = ctor('')
-        hasChildren = component.construct(self.dnaStore, self.packer)
+        hasChildren = component.construct(self.storage, self.packer)
         if self.topGroup is not None:
             self.topGroup.add(component)
             component.setParent(self.topGroup)
@@ -158,40 +158,40 @@ class DNALoader:
 
     def readComponents(self):
         componentCode = self.packer.unpack(UINT8)
-        if componentCode == DNAGroup.DNAGroup.COMPONENT_CODE:
-            self.readComponent(DNAGroup.DNAGroup)
-        elif componentCode == DNAVisGroup.DNAVisGroup.COMPONENT_CODE:
-            self.readComponent(DNAVisGroup.DNAVisGroup)
-        elif componentCode == DNAProp.DNAProp.COMPONENT_CODE:
-            self.readComponent(DNAProp.DNAProp)
-        elif componentCode == DNASign.DNASign.COMPONENT_CODE:
-            self.readComponent(DNASign.DNASign)
-        elif componentCode == DNASignBaseline.DNASignBaseline.COMPONENT_CODE:
-            self.readComponent(DNASignBaseline.DNASignBaseline)
-        elif componentCode == DNASignText.DNASignText.COMPONENT_CODE:
-            self.readComponent(DNASignText.DNASignText)
-        elif componentCode == DNASignGraphic.DNASignGraphic.COMPONENT_CODE:
-            self.readComponent(DNASignGraphic.DNASignGraphic)
-        elif componentCode == DNAFlatBuilding.DNAFlatBuilding.COMPONENT_CODE:
-            self.readComponent(DNAFlatBuilding.DNAFlatBuilding)
-        elif componentCode == DNAWall.DNAWall.COMPONENT_CODE:
-            self.readComponent(DNAWall.DNAWall)
-        elif componentCode == DNAWindows.DNAWindows.COMPONENT_CODE:
-            self.readComponent(DNAWindows.DNAWindows)
-        elif componentCode == DNACornice.DNACornice.COMPONENT_CODE:
-            self.readComponent(DNACornice.DNACornice)
-        elif componentCode == DNALandmarkBuilding.DNALandmarkBuilding.COMPONENT_CODE:
-            self.readComponent(DNALandmarkBuilding.DNALandmarkBuilding)
-        elif componentCode == DNAAnimProp.DNAAnimProp.COMPONENT_CODE:
-            self.readComponent(DNAAnimProp.DNAAnimProp)
-        elif componentCode == DNAInteractiveProp.DNAInteractiveProp.COMPONENT_CODE:
-            self.readComponent(DNAInteractiveProp.DNAInteractiveProp)
-        elif componentCode == DNADoor.DNADoor.COMPONENT_CODE:
-            self.readComponent(DNADoor.DNADoor)
-        elif componentCode == DNAFlatDoor.DNAFlatDoor.COMPONENT_CODE:
-            self.readComponent(DNAFlatDoor.DNAFlatDoor)
-        elif componentCode == DNAStreet.DNAStreet.COMPONENT_CODE:
-            self.readComponent(DNAStreet.DNAStreet)
+        if componentCode == DNAGroup.COMPONENT_CODE:
+            self.readComponent(DNAGroup)
+        elif componentCode == DNAVisGroup.COMPONENT_CODE:
+            self.readComponent(DNAVisGroup)
+        elif componentCode == DNAProp.COMPONENT_CODE:
+            self.readComponent(DNAProp)
+        elif componentCode == DNASign.COMPONENT_CODE:
+            self.readComponent(DNASign)
+        elif componentCode == DNASignBaseline.COMPONENT_CODE:
+            self.readComponent(DNASignBaseline)
+        elif componentCode == DNASignText.COMPONENT_CODE:
+            self.readComponent(DNASignText)
+        elif componentCode == DNASignGraphic.COMPONENT_CODE:
+            self.readComponent(DNASignGraphic)
+        elif componentCode == DNAFlatBuilding.COMPONENT_CODE:
+            self.readComponent(DNAFlatBuilding)
+        elif componentCode == DNAWall.COMPONENT_CODE:
+            self.readComponent(DNAWall)
+        elif componentCode == DNAWindows.COMPONENT_CODE:
+            self.readComponent(DNAWindows)
+        elif componentCode == DNACornice.COMPONENT_CODE:
+            self.readComponent(DNACornice)
+        elif componentCode == DNALandmarkBuilding.COMPONENT_CODE:
+            self.readComponent(DNALandmarkBuilding)
+        elif componentCode == DNAAnimProp.COMPONENT_CODE:
+            self.readComponent(DNAAnimProp)
+        elif componentCode == DNAInteractiveProp.COMPONENT_CODE:
+            self.readComponent(DNAInteractiveProp)
+        elif componentCode == DNADoor.COMPONENT_CODE:
+            self.readComponent(DNADoor)
+        elif componentCode == DNAFlatDoor.COMPONENT_CODE:
+            self.readComponent(DNAFlatDoor)
+        elif componentCode == DNAStreet.COMPONENT_CODE:
+            self.readComponent(DNAStreet)
         else:
             self.topGroup = self.topGroup.getParent()
         if self.packer:
