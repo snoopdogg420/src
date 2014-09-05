@@ -186,26 +186,17 @@ def loadModels():
             fileRoot = LegDict[key]
 
             Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
-            Preloaded[fileRoot+'-1000'].flattenMedium()
-
             Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
-            Preloaded[fileRoot+'-500'].flattenMedium()
-
             Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
-            Preloaded[fileRoot+'-250'].flattenMedium()
 
         for key in TorsoDict.keys():
             fileRoot = TorsoDict[key]
 
             Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
-            Preloaded[fileRoot+'-1000'].flattenMedium()
 
             if len(key) > 1:
                 Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
-                Preloaded[fileRoot+'-500'].flattenMedium()
-
                 Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
-                Preloaded[fileRoot+'-250'].flattenMedium()
 
 def loadBasicAnims():
     loadPhaseAnims()
