@@ -1,13 +1,16 @@
-from panda3d.core import LVector3f, PandaNode
-import DNAGroup
+from pandac.PandaModules import LVector3f
 
-class DNANode(DNAGroup.DNAGroup):
+from toontown.dna.DNAGroup import DNAGroup
+
+
+class DNANode(DNAGroup):
     COMPONENT_CODE = 3
 
     def __init__(self, name):
-        DNAGroup.DNAGroup.__init__(self, name)
-        self.pos = LVector3f()
-        self.hpr = LVector3f()
+        DNAGroup.__init__(self, name)
+
+        self.pos = LVector3f(0, 0, 0)
+        self.hpr = LVector3f(0, 0, 0)
         self.scale = LVector3f(1, 1, 1)
 
     def getPos(self):
@@ -28,28 +31,20 @@ class DNANode(DNAGroup.DNAGroup):
     def setScale(self, scale):
         self.scale = scale
 
-    def makeFromDGI(self, dgi):
-        DNAGroup.DNAGroup.makeFromDGI(self, dgi)
+    def construct(self, storage, packer):
+        DNAGroup.construct(self, storage, packer)
 
-        x = dgi.getInt32() / 100.0
-        y = dgi.getInt32() / 100.0
-        z = dgi.getInt32() / 100.0
-        self.pos = LVector3f(x, y, z)
+        self.setPos(packer.unpackPosition())
+        self.setHpr(packer.unpackRotation())
+        self.setScale(packer.unpackScale())
 
-        h = dgi.getInt32() / 100.0
-        p = dgi.getInt32() / 100.0
-        r = dgi.getInt32() / 100.0
-        self.hpr = LVector3f(h, p, r)
+        return True  # We can have children.
 
-        sx = dgi.getInt16() / 100.0
-        sy = dgi.getInt16() / 100.0
-        sz = dgi.getInt16() / 100.0
-        self.scale = LVector3f(sx, sy, sz)
+    def traverse(self, storage, parent, recursive=True):
+        nodePath = DNANode.traverse(storage, parent, recursive=False)
 
-    def traverse(self, nodePath, dnaStorage):
-        node = PandaNode(self.name)
-        node = nodePath.attachNewNode(node, 0)
-        node.setPosHprScale(self.pos, self.hpr, self.scale)
-        for child in self.children:
-            child.traverse(node, dnaStorage)
-        node.flattenMedium()
+        nodePath.setPosHprScale(self.pos, self.hpr, self.scale)
+
+        if recursive:
+            self.traverseChildren(storage, nodePath)
+        return nodePath

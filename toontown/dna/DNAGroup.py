@@ -53,7 +53,6 @@ class DNAGroup:
 
         if recursive:
             self.traverseChilren(storage, nodePath)
-
         return nodePath
 
     def traverseChildren(self, storage, parent):
