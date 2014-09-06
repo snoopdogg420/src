@@ -24,7 +24,7 @@ texture-anisotropic-degree 16
 server-force-ssl #t
 server-port 7199
 client-agents 8
-server-timezone US/Eastern
+server-timezone EST/EDT/-5
 
 # Database:
 account-server-endpoint https://toontowninfinite.com/api/
