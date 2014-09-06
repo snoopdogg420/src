@@ -189,25 +189,11 @@ want-instant-parties #f
 # Temporary...
 want-old-fireworks #t
 
-# Performance...
+# Performance
+hardware-animated-vertices #t
+preload-avatars #t
 sync-video #f
 smooth-lag 0.4
-support-stencil #f
-framebuffer-stencil #f
-textures-power-2 none
-gl-finish #f
-gl-force-no-error #t
-gl-check-errors #f
-gl-force-no-flush #t
-gl-force-no-scissor #t
-texture-magfilter linear
-texture-minfilter linear
-lock-to-one-cpu #f
-support-threads #t
-gl-immutable-texture-storage #f
-gl-dump-compiled-shaders #f
-show-buffers #f
-garbage-collect-states #f
 
 # Quality...
 # framebuffer-multisample 1
