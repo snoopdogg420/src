@@ -190,10 +190,11 @@ want-instant-parties #f
 want-old-fireworks #t
 
 # Performance
-hardware-animated-vertices #t
-preload-avatars #t
 sync-video #f
 smooth-lag 0.4
+texture-power-2 none
+gl-check-errors #f
+garbage-collect-states #f
 
 # Quality...
 # framebuffer-multisample 1
