@@ -5,7 +5,7 @@ icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
 
 # Preferences...
-preferences-filename preferences.gz
+preferences-filename preferences.json
 
 # Audio...
 audio-library-name p3fmod_audio

@@ -1,5 +1,5 @@
-import gzip
 import json
+import os
 
 
 class Settings:
@@ -10,18 +10,15 @@ class Settings:
         self.read()
 
     def read(self):
-        try:
-            f = gzip.open(self.filename, 'rb')
-            content = f.read()
-            f.close()
-            self.data = json.loads(content)
-        except:
+        if os.path.exists(self.filename):
+            with open(self.filename, 'r') as f:
+                self.data = json.load(f)
+        else:
             self.write()
 
     def write(self):
-        f = gzip.open(self.filename, 'wb')
-        f.write(json.dumps(self.data))
-        f.close()
+        with open(self.filename, 'w') as f:
+            json.dump(self.data, f)
 
     def set(self, key, value):
         self.data[key] = value
