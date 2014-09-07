@@ -49,15 +49,15 @@ class ChatBalloon(NodePath):
         # Resize the balloon as necessary:
         middle = self.balloon.find('**/middle')
         top = self.balloon.find('**/top')
-        textWidth = self.textNode.getWidth()
-        if textWidth < self.TEXT_MIN_WIDTH:
-            textWidth = self.TEXT_MIN_WIDTH
-        paddedWidth = textWidth + (self.BALLOON_X_PADDING*2)
+        self.textWidth = self.textNode.getWidth()
+        if self.textWidth < self.TEXT_MIN_WIDTH:
+            self.textWidth = self.TEXT_MIN_WIDTH
+        paddedWidth = self.textWidth + (self.BALLOON_X_PADDING*2)
         self.balloon.setSx(paddedWidth / modelWidth)
-        textHeight = textNode.getHeight()
-        if textHeight < self.TEXT_MIN_HEIGHT:
-            textHeight = self.TEXT_MIN_HEIGHT
-        paddedHeight = textHeight + (self.BALLOON_Z_PADDING*2)
+        self.textHeight = textNode.getHeight()
+        if self.textHeight < self.TEXT_MIN_HEIGHT:
+            self.textHeight = self.TEXT_MIN_HEIGHT
+        paddedHeight = self.textHeight + (self.BALLOON_Z_PADDING*2)
         middle.setSz(paddedHeight - 1.5)  # Compensate for the top, as well.
         top.setZ(middle, 1)
 
@@ -72,22 +72,24 @@ class ChatBalloon(NodePath):
         self.center = self.balloon.getBounds().getCenter()
         self.textNodePath.setPos(self.center)
         self.textNodePath.setY(self.TEXT_Y_OFFSET)
-        self.textNodePath.setX(self.textNodePath, -(textWidth/2))
-        if textWidth == self.TEXT_MIN_WIDTH:
+        self.textNodePath.setX(self.textNodePath, -(self.textWidth/2))
+        if self.textWidth == self.TEXT_MIN_WIDTH:
             centerX = (self.TEXT_MIN_WIDTH-self.textNode.getWidth()) / 2
             self.textNodePath.setX(self.textNodePath, centerX)
         self.textNodePath.setZ(top, -self.BALLOON_Z_PADDING + self.TEXT_Z_OFFSET)
-        if textHeight == self.TEXT_MIN_HEIGHT:
+        if self.textHeight == self.TEXT_MIN_HEIGHT:
             centerZ = (ChatBalloon.TEXT_MIN_HEIGHT-self.textNode.getHeight()) / 2
             self.textNodePath.setZ(self.textNodePath, -centerZ)
         self.textNodePath.setX(self.textNodePath, self.TEXT_X_OFFSET)
 
         # Add a button if one is given:
         if self.button is not None:
-            buttonNodePath = button.copyTo(self)
-            buttonNodePath.setPos(self.textNodePath, textWidth, 0, -textHeight)
-            buttonNodePath.setPos(buttonNodePath, ChatBalloon.BUTTON_SHIFT)
-            buttonNodePath.setScale(ChatBalloon.BUTTON_SCALE)
+            self.buttonNodePath = button.copyTo(self)
+            self.buttonNodePath.setPos(self.textNodePath, self.textWidth, 0, -self.textHeight)
+            self.buttonNodePath.setPos(self.buttonNodePath, ChatBalloon.BUTTON_SHIFT)
+            self.buttonNodePath.setScale(ChatBalloon.BUTTON_SCALE)
+        else:
+            self.buttonNodePath = None
 
         # Finally, enable anti-aliasing:
         self.setAntialias(AntialiasAttrib.MMultisample)
@@ -105,3 +107,14 @@ class ChatBalloon(NodePath):
 
     def getBackground(self):
         return self.background
+
+    def setButton(self, button):
+        if self.buttonNodePath is not None:
+            self.buttonNodePath.removeNode()
+            self.buttonNodePath = None
+
+        if button is not None:
+            self.buttonNodePath = button.copyTo(self)
+            self.buttonNodePath.setPos(self.textNodePath, self.textWidth, 0, -self.textHeight)
+            self.buttonNodePath.setPos(self.buttonNodePath, ChatBalloon.BUTTON_SHIFT)
+            self.buttonNodePath.setScale(ChatBalloon.BUTTON_SCALE)
