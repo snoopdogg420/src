@@ -393,7 +393,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.getChatButton() != NametagGlobals.noButton:
             self.clickState = self.pendingClickState
 
-        foreground, background = self.chatColor[self.clickState]
+        if NametagGlobals.wantActiveNametags or self.hasChatButton():
+            foreground, background = self.chatColor[self.clickState]
+        else:
+            foreground, background = self.chatColor[PGButton.SInactive]
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
         if background[3] > self.CHAT_BALLOON_ALPHA:
@@ -422,7 +425,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.icon is not None:
             self.contents.attachNewNode(self.icon)
 
-        foreground, background = self.nametagColor[self.clickState]
+        if NametagGlobals.wantActiveNametags:
+            foreground, background = self.nametagColor[self.clickState]
+        else:
+            foreground, background = self.nametagColor[PGButton.SInactive]
 
         # Set the color of the TextNode:
         self.textNode.setTextColor(foreground)
