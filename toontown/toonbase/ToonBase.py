@@ -53,10 +53,9 @@ class ToonBase(OTPBase.OTPBase):
             self.resDict.setdefault(ratio, []).append(res)
 
         # Get the native width, height and ratio:
-        if sys.platform == 'win32':  # Use CTypes
-            import ctypes
-            self.nativeWidth = ctypes.windll.user32.GetSystemMetrics(0)
-            self.nativeHeight = ctypes.windll.user32.GetSystemMetrics(1)
+        if sys.platform == 'win32':  # Use displayInfo
+            self.nativeWidth = displayInfo.getMaximumWindowWidth()
+            self.nativeHeight = displayInfo.getMaximumWindowHeight()
         else:  # Use PyGTK
             import gtk
             self.nativeWidth = gtk.gdk.screen_width()
@@ -69,18 +68,13 @@ class ToonBase(OTPBase.OTPBase):
         fullscreen = self.settings.get('fullscreen', False)
         if ('res' not in self.settings.all()) or fullscreen:
             if fullscreen:
-
                 # If we're fullscreen, we want to fit the entire screen:
                 res = (self.nativeWidth, self.nativeHeight)
-
             elif len(self.resDict[self.nativeRatio]) > 1:
-
                 # We have resolutions that match our native ratio and fit it! Let's
                 # use one:
                 res = sorted(self.resDict[self.nativeRatio])[0]
-
             else:
-
                 # Okay, we don't have any resolutions that match our screen's
                 # resolutions and fit it (besides the native ratio itself, of
                 # course). Let's just use the second largest ratio:

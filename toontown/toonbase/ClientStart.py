@@ -14,7 +14,7 @@ from otp.settings.Settings import Settings
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
 print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
 settings = Settings(preferencesFilename)
-res = settings.get('res', (1280, 720))
+res = settings.get('res', (800, 600))
 fullscreen = settings.get('fullscreen', False)
 if 'fullscreen' not in settings.all():
     settings.set('fullscreen', fullscreen)
