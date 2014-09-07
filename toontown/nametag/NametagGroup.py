@@ -1,5 +1,5 @@
 from direct.task.Task import Task
-from pandac.PandaModules import *
+from pandac.PandaModules import VBase4, PandaNode
 
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import NametagGlobals
@@ -60,7 +60,7 @@ class NametagGroup:
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
     def destroy(self):
         if self.tickTask is not None:
@@ -93,30 +93,27 @@ class NametagGroup:
         return 'NametagGroup-' + str(id(self))
 
     def tick(self, task):
-        try:
-            if self.avatar is None:
-                return Task.cont
+        if (self.avatar is None) or (self.avatar.isEmpty()):
+            return Task.cont
 
-            if self.avatar == NametagGlobals.me:
-                return Task.done
+        if self.avatar == NametagGlobals.me:
+            return Task.done
 
-            chatText = self.getChatText()
-            if (not NametagGlobals.want2dNametags) and (not chatText):
-                visible3d = True
-            elif chatText and NametagGlobals.forceOnscreenChat:
-                visible3d = False
-            elif self.avatar.isHidden() or self.avatar.isEmpty():
-                visible3d = False
-            else:
-                visible3d = base.cam.node().isInView(self.avatar.getPos(base.cam))
+        chatText = self.getChatText()
+        if (not NametagGlobals.want2dNametags) and (not chatText):
+            visible3d = True
+        elif chatText and NametagGlobals.forceOnscreenChat:
+            visible3d = False
+        elif self.avatar.isHidden():
+            visible3d = False
+        else:
+            visible3d = base.cam.node().isInView(self.avatar.getPos(base.cam))
 
-            if visible3d != self.visible3d:
-                self.visible3d = visible3d
-                for nametag in self.nametags:
-                    if isinstance(nametag, MarginVisible):
-                        nametag.setVisible(not self.visible3d)
-        except:
-            pass
+        if visible3d != self.visible3d:
+            self.visible3d = visible3d
+            for nametag in self.nametags:
+                if isinstance(nametag, MarginVisible):
+                    nametag.setVisible(not self.visible3d)
 
         return Task.cont
 

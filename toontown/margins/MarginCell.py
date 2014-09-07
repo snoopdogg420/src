@@ -1,4 +1,4 @@
-from pandac.PandaModules import *
+from pandac.PandaModules import NodePath
 
 
 class MarginCell(NodePath):
@@ -18,10 +18,12 @@ class MarginCell(NodePath):
     def setContent(self, content):
         if self.content is not None:
             self.content.setCell(None)
-            if self.contentNodePath is not None:
-                self.contentNodePath.removeNode()
-                self.contentNodePath = None
             self.content.marginVisibilityChanged()
+            self.content = None
+
+        if self.contentNodePath is not None:
+            self.contentNodePath.removeNode()
+            self.contentNodePath = None
 
         if content is not None:
             content.setLastCell(self)

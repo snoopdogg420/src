@@ -1,4 +1,4 @@
-from pandac.PandaModules import *
+from pandac.PandaModules import VBase4
 
 
 CCNormal = 0

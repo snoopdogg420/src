@@ -1,7 +1,8 @@
 from direct.fsm.FSM import FSM
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
-from pandac.PandaModules import *
+from pandac.PandaModules import MouseWatcherRegion, DepthWriteAttrib
+from pandac.PandaModules import PandaNode, NodePath, TextNode, PGButton, VBase4
 
 from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.nametag import NametagGlobals
@@ -68,20 +69,24 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.chatTextNode.setGlyphScale(ChatBalloon.TEXT_GLYPH_SCALE)
         self.chatTextNode.setGlyphShift(ChatBalloon.TEXT_GLYPH_SHIFT)
 
-        # Create the click region:
+        # Create a click region:
         self.regionName = self.getUniqueName() + '-region'
         self.region = MouseWatcherRegion(self.regionName, 0, 0, 0, 0)
         base.mouseWatcherNode.addRegion(self.region)
 
         # Accept the mouse events:
-        self.accept(base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName), self.__handleMouseEnter)
-        self.accept(base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName), self.__handleMouseLeave)
-        self.accept(base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName), self.__handleMouseDown)
-        self.accept(base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName), self.__handleMouseUp)
+        enterPattern = base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName)
+        leavePattern = base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName)
+        buttonDownPattern = base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName)
+        buttonUpPattern = base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName)
+        self.accept(enterPattern, self.__handleMouseEnter)
+        self.accept(leavePattern, self.__handleMouseLeave)
+        self.accept(buttonDownPattern, self.__handleMouseDown)
+        self.accept(buttonUpPattern, self.__handleMouseUp)
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
     def destroy(self):
         self.ignoreAll()
@@ -171,6 +176,9 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getChatButton(self):
         return self.chatButton
 
+    def hasChatButton(self):
+        return self.getChatButton() != NametagGlobals.noButton
+
     def setChatReversed(self, chatReversed):
         self.chatReversed = chatReversed
 
@@ -250,9 +258,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.lastClickState
 
     def setClickState(self, clickState):
-        if (not NametagGlobals.wantActiveNametags) and ((not self.getChatText()) or (self.getChatButton() == NametagGlobals.noButton)):
-            self.setClickStateColor(PGButton.SInactive)
-            return
+        if not NametagGlobals.wantActiveNametags:
+            if (not self.getChatText()) or (not self.hasChatButton()):
+                self.setClickStateColor(PGButton.SInactive)
+                return
 
         self.lastClickState = self.clickState
         self.clickState = clickState
@@ -456,7 +465,7 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def __handleMouseEnter(self, region, extra):
         self.pendingClickState = PGButton.SRollover
-        if (self.clickState == PGButton.SReady) or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton)):
+        if (self.clickState == PGButton.SReady) or (self.getChatText() and self.hasChatButton()):
             self.setClickState(PGButton.SRollover)
 
     def __handleMouseLeave(self, region, extra):

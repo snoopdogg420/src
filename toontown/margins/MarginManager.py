@@ -1,4 +1,4 @@
-from pandac.PandaModules import *
+from pandac.PandaModules import PandaNode
 import random
 
 from toontown.margins.MarginCell import MarginCell
@@ -17,13 +17,16 @@ class MarginManager(PandaNode):
         cell.setPos(x, 0, y)
         cell.setScale(0.2)
         cell.setActive(True)
+
         self.cells.add(cell)
         self.reorganize()
+
         return cell
 
     def removeCell(self, cell):
         if cell not in self.cells:
             return
+
         self.cells.remove(cell)
         self.reorganize()
 
@@ -34,6 +37,7 @@ class MarginManager(PandaNode):
     def removeVisible(self, visible):
         if visible not in self.visibles:
             return
+
         self.visibles.remove(visible)
         self.reorganize()
 
@@ -61,7 +65,7 @@ class MarginManager(PandaNode):
                 # Ignore it:
                 visibles.remove(content)
                 continue
-            elif content:
+            elif content is not None:
                 # This cell isn't displaying anything interesting, so let's
                 # empty it:
                 cell.setContent(None)
@@ -69,9 +73,8 @@ class MarginManager(PandaNode):
 
         # Assign the visibles to their cells:
         for visible in visibles:
-            if visible.getLastCell() in emptyCells:
-                cell = visible.getLastCell()
-            else:
+            cell = visible.getLastCell()
+            if cell not in emptyCells:
                 cell = random.choice(emptyCells)
             cell.setContent(visible)
             emptyCells.remove(cell)
