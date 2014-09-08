@@ -66,7 +66,8 @@ class ToonBase(OTPBase.OTPBase):
         # Finally, choose the best resolution if we're either fullscreen, or
         # don't have one defined in our preferences:
         fullscreen = self.settings.get('fullscreen', False)
-        if ('res' not in self.settings.all()) or fullscreen:
+        if ('res' not in self.settings.all()) or (
+            fullscreen or (res == (self.nativeWidth, self.nativeHeight))):
             if fullscreen:
                 # If we're fullscreen, we want to fit the entire screen:
                 res = (self.nativeWidth, self.nativeHeight)
