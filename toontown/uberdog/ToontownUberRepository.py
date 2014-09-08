@@ -24,8 +24,6 @@ class ToontownUberRepository(ToontownInternalRepository):
 
         self.csm = simbase.air.generateGlobalObject(OTP_DO_ID_CLIENT_SERVICES_MANAGER,
                                                     'ClientServicesManager')
-        self.ssm = simbase.air.generateGlobalObject(OTP_DO_ID_SYSTEM_SERVICES_MANAGER,
-                                                    'SystemServicesManager')
 
         self.chatAgent = simbase.air.generateGlobalObject(OTP_DO_ID_CHAT_MANAGER,
                                                           'ChatAgent')
