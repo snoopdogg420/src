@@ -1,7 +1,6 @@
-from direct.gui.DirectGui import *
 from direct.task.Task import Task
 import math
-from pandac.PandaModules import *
+from pandac.PandaModules import Point3, Point2
 
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import Nametag
@@ -78,7 +77,8 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
             self.setClickRegion(left, right, bottom, top)
 
     def considerUpdateClickRegion(self):
-        if (self.active or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton))) and (self.getCell() is not None):
+        active = self.active or (self.getChatText() and self.hasChatButton())
+        if active and (self.getCell() is not None):
             self.updateClickRegion()
         else:
             if self.region is not None:
@@ -90,23 +90,20 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.considerUpdateClickRegion()
 
     def tick(self, task):
-        try:
-            if (self.avatar is None) or self.avatar.isEmpty():
-                return Task.cont
+        if (self.avatar is None) or self.avatar.isEmpty():
+            return Task.cont
 
-            if (self.getCell() is None) or (self.arrow is None):
-                return Task.cont
+        if (self.getCell() is None) or (self.arrow is None):
+            return Task.cont
 
-            location = self.avatar.getPos(NametagGlobals.me)
-            rotation = NametagGlobals.me.getQuat(base.cam)
+        location = self.avatar.getPos(NametagGlobals.me)
+        rotation = NametagGlobals.me.getQuat(base.cam)
 
-            camSpacePos = rotation.xform(location)
-            arrowRadians = math.atan2(camSpacePos[0], camSpacePos[1])
-            arrowDegrees = (arrowRadians/math.pi) * 180
+        camSpacePos = rotation.xform(location)
+        arrowRadians = math.atan2(camSpacePos[0], camSpacePos[1])
+        arrowDegrees = (arrowRadians/math.pi) * 180
 
-            self.arrow.setR(arrowDegrees - 90)
-        except:
-            pass
+        self.arrow.setR(arrowDegrees - 90)
         return Task.cont
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
