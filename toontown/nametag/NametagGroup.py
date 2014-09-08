@@ -147,6 +147,9 @@ class NametagGroup:
     def getChatButton(self):
         return self.chatButton
 
+    def hasChatButton(self):
+        return self.chatButton != NametagGlobals.noButton
+
     def setChatReversed(self, reversed):
         self.chatReversed = reversed
         for nametag in self.nametags:

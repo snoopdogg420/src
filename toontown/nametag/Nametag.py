@@ -177,7 +177,11 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.chatButton
 
     def hasChatButton(self):
-        return self.getChatButton() != NametagGlobals.noButton
+        if (self.chatType == NametagGlobals.CHAT) and self.chatHidden:
+            return False
+        if (self.chatType == NametagGlobals.THOUGHT_BALLOON) and self.thoughtHidden:
+            return False
+        return self.chatButton != NametagGlobals.noButton
 
     def setChatReversed(self, chatReversed):
         self.chatReversed = chatReversed
@@ -381,7 +385,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.getText() and (not self.nametagHidden):
             self.drawNametag()
 
-        if self.active or (self.getChatButton() != NametagGlobals.noButton):
+        if self.active or (self.getChatText() and self.hasChatButton()):
             self.updateClickRegion()
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
@@ -390,7 +394,7 @@ class Nametag(FSM, PandaNode, DirectObject):
             return
 
         # If we have a chat balloon button, we must override the click state:
-        if self.getChatButton() != NametagGlobals.noButton:
+        if self.hasChatButton():
             self.clickState = self.pendingClickState
 
         if NametagGlobals.wantActiveNametags or self.hasChatButton():
