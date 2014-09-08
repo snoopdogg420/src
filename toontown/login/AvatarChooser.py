@@ -8,7 +8,6 @@ from toontown.launcher import DownloadForceAcknowledge
 from direct.gui.DirectGui import *
 from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
-from toontown.toonbase import DisplayOptions
 from direct.directnotify import DirectNotifyGlobal
 from direct.interval.IntervalGlobal import *
 import random
@@ -33,21 +32,13 @@ class AvatarChooser(StateData.StateData):
         StateData.StateData.__init__(self, doneEvent)
         self.choice = None
         self.avatarList = avatarList
-        self.displayOptions = None
         self.fsm = ClassicFSM.ClassicFSM('AvatarChooser', [State.State('Choose', self.enterChoose, self.exitChoose, ['CheckDownload']), State.State('CheckDownload', self.enterCheckDownload, self.exitCheckDownload, ['Choose'])], 'Choose', 'Choose')
         self.fsm.enterInitialState()
         self.parentFSM = parentFSM
         self.parentFSM.getCurrentState().addChild(self.fsm)
-        return
 
     def enter(self):
         self.notify.info('AvatarChooser.enter')
-        if not self.displayOptions:
-            self.displayOptions = DisplayOptions.DisplayOptions()
-        self.notify.info('calling self.displayOptions.restrictToEmbedded(False)')
-        if base.appRunner:
-            self.displayOptions.loadFromSettings()
-            self.displayOptions.restrictToEmbedded(False)
         if self.isLoaded == 0:
             self.load()
         base.disableMouse()

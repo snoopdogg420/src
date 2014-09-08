@@ -238,21 +238,21 @@ class OptionsTabPage(DirectFrame):
     def __init__(self, parent = aspect2d):
         self.parent = parent
         self.currentSizeIndex = None
+
         DirectFrame.__init__(self, parent=self.parent, relief=None, pos=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0))
+
         self.load()
-        return
 
     def destroy(self):
         self.parent = None
+
         DirectFrame.destroy(self)
-        return
 
     def load(self):
         self.displaySettings = None
         self.displaySettingsChanged = 0
         self.displaySettingsSize = (None, None)
         self.displaySettingsFullscreen = None
-        self.displaySettingsEmbedded = None
         self.displaySettingsApi = None
         self.displaySettingsApiChanged = 0
         guiButton = loader.loadModel('phase_3/models/gui/quit_button')
@@ -301,7 +301,6 @@ class OptionsTabPage(DirectFrame):
         self.exitButton = DirectButton(parent=self, relief=None, image=(guiButton.find('**/QuitBtn_UP'), guiButton.find('**/QuitBtn_DN'), guiButton.find('**/QuitBtn_RLVR')), image_scale=1.15, text=TTLocalizer.OptionsPageExitToontown, text_scale=options_text_scale, text_pos=button_textpos, textMayChange=0, pos=(0.45, 0, -0.6), command=self.__handleExitShowWithConfirm)
         guiButton.removeNode()
         gui.removeNode()
-        return
 
     def enter(self):
         self.show()
@@ -359,14 +358,15 @@ class OptionsTabPage(DirectFrame):
         self.speedChatStyleText.destroy()
         del self.speedChatStyleText
         self.currentSizeIndex = None
-        return
 
     def __doToggleMusic(self):
         messenger.send('wakeup')
         if base.musicActive:
             base.enableMusic(0)
+            base.settings.set('music', False)
         else:
             base.enableMusic(1)
+            base.settings.set('music', True)
         self.settingsChanged = 1
         self.__setMusicButton()
 
@@ -382,8 +382,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.sfxActive:
             base.enableSoundEffects(0)
+            base.settings.set('sfx', False)
         else:
             base.enableSoundEffects(1)
+            base.settings.set('sfx', True)
         self.settingsChanged = 1
         self.__setSoundFXButton()
 
@@ -391,8 +393,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.toonChatSounds:
             base.toonChatSounds = 0
+            base.settings.set('toonChatSounds', False)
         else:
             base.toonChatSounds = 1
+            base.settings.set('toonChatSounds', True)
         self.settingsChanged = 1
         self.__setToonChatSoundsButton()
 
@@ -423,8 +427,14 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.localAvatar.acceptingNewFriends:
             base.localAvatar.acceptingNewFriends = 0
+            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
+            acceptingNewFriends[base.localAvatar.doId] = False
+            base.settings.set('acceptingNewFriends', acceptingNewFriends)
         else:
             base.localAvatar.acceptingNewFriends = 1
+            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
+            acceptingNewFriends[base.localAvatar.doId] = True
+            base.settings.set('acceptingNewFriends', acceptingNewFriends)
         self.settingsChanged = 1
         self.__setAcceptFriendsButton()
 
@@ -432,8 +442,14 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.localAvatar.acceptingNonFriendWhispers:
             base.localAvatar.acceptingNonFriendWhispers = 0
+            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
+            acceptingNonFriendWhispers[base.localAvatar.doId] = False
+            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         else:
             base.localAvatar.acceptingNonFriendWhispers = 1
+            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
+            acceptingNonFriendWhispers[base.localAvatar.doId] = True
+            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         self.settingsChanged = 1
         self.__setAcceptWhispersButton()
 
@@ -459,7 +475,6 @@ class OptionsTabPage(DirectFrame):
             self.displaySettings.load()
             self.accept(self.displaySettings.doneEvent, self.__doneDisplaySettings)
         self.displaySettings.enter(self.ChangeDisplaySettings, self.ChangeDisplayAPI)
-        return
 
     def __doneDisplaySettings(self, anyChanged, apiChanged):
         if anyChanged:
@@ -468,15 +483,8 @@ class OptionsTabPage(DirectFrame):
             self.displaySettingsChanged = 1
             self.displaySettingsSize = (properties.getXSize(), properties.getYSize())
             self.displaySettingsFullscreen = properties.getFullscreen()
-            self.displaySettingsEmbedded = self.isPropertiesEmbedded(properties)
             self.displaySettingsApi = base.pipe.getInterfaceName()
             self.displaySettingsApiChanged = apiChanged
-
-    def isPropertiesEmbedded(self, properties):
-        result = False
-        if properties.getParentWindow():
-            result = True
-        return result
 
     def __setDisplaySettings(self):
         properties = base.win.getProperties()
@@ -484,9 +492,6 @@ class OptionsTabPage(DirectFrame):
             screensize = '%s x %s' % (properties.getXSize(), properties.getYSize())
         else:
             screensize = TTLocalizer.OptionsPageDisplayWindowed
-        isEmbedded = self.isPropertiesEmbedded(properties)
-        if isEmbedded:
-            screensize = TTLocalizer.OptionsPageDisplayEmbedded
         api = base.pipe.getInterfaceName()
         settings = {'screensize': screensize,
          'api': api}
@@ -527,14 +532,12 @@ class OptionsTabPage(DirectFrame):
             self.speedChatStyleRightArrow['state'] = DGG.DISABLED
         base.localAvatar.b_setSpeedChatStyleIndex(self.speedChatStyleIndex)
 
-    def writeDisplaySettings(self, task = None):
+    def writeDisplaySettings(self, task=None):
         if not self.displaySettingsChanged:
             return
         taskMgr.remove(self.DisplaySettingsTaskName)
-        self.notify.info('writing new display settings %s, fullscreen %s, embedded %s, %s to SettingsFile.' % (self.displaySettingsSize,
-         self.displaySettingsFullscreen,
-         self.displaySettingsEmbedded,
-         self.displaySettingsApi))
+        base.settings.set('res', (self.displaySettingsSize[0], self.displaySettingsSize[1]))
+        base.settings.set('fullscreen', self.displaySettingsFullscreen)
         return Task.done
 
     def __handleExitShowWithConfirm(self):

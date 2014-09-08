@@ -53,10 +53,10 @@ class ToonBase(OTPBase.OTPBase):
             self.resDict.setdefault(ratio, []).append(res)
 
         # Get the native width, height and ratio:
-        if sys.platform == 'win32':  # Use displayInfo
+        if sys.platform == 'win32':  # Use displayInfo.
             self.nativeWidth = displayInfo.getMaximumWindowWidth()
             self.nativeHeight = displayInfo.getMaximumWindowHeight()
-        else:  # Use PyGTK
+        else:  # Use PyGTK.
             import gtk
             self.nativeWidth = gtk.gdk.screen_width()
             self.nativeHeight = gtk.gdk.screen_height()
@@ -66,19 +66,19 @@ class ToonBase(OTPBase.OTPBase):
         # Finally, choose the best resolution if we're either fullscreen, or
         # don't have one defined in our preferences:
         fullscreen = self.settings.get('fullscreen', False)
-        if ('res' not in self.settings.all()) or (
-            fullscreen or (res == (self.nativeWidth, self.nativeHeight))):
+        if ('res' not in self.settings.all()) or fullscreen:
             if fullscreen:
                 # If we're fullscreen, we want to fit the entire screen:
                 res = (self.nativeWidth, self.nativeHeight)
             elif len(self.resDict[self.nativeRatio]) > 1:
-                # We have resolutions that match our native ratio and fit it! Let's
-                # use one:
+                # We have resolutions that match our native ratio and fit it!
+                # Let's use one:
                 res = sorted(self.resDict[self.nativeRatio])[0]
             else:
-                # Okay, we don't have any resolutions that match our screen's
-                # resolutions and fit it (besides the native ratio itself, of
-                # course). Let's just use the second largest ratio:
+                # Okay, we don't have any resolutions that match our native
+                # ratio and fit it (besides the native resolution itself, of
+                # course). Let's just use one of the second largest ratio's
+                # resolutions:
                 ratios = sorted(self.resDict.keys(), reverse=False)
                 nativeIndex = ratios.index(self.nativeRatio)
                 res = sorted(self.resDict[ratios[nativeIndex - 1]])[0]

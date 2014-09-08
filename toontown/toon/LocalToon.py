@@ -169,9 +169,8 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             if not hasattr(base.cr, 'lastLoggedIn'):
                 base.cr.lastLoggedIn = self.cr.toontownTimeManager.convertStrToToontownTime('')
             self.setLastTimeReadNews(base.cr.lastLoggedIn)
-            # TODO: SETTINGSTODO:
-            self.acceptingNewFriends = True #Settings.getAcceptingNewFriends() and base.config.GetBool('accepting-new-friends-default', True)
-            self.acceptingNonFriendWhispers = True #Settings.getAcceptingNonFriendWhispers() and base.config.GetBool('accepting-non-friend-whispers-default', True)
+            self.acceptingNewFriends = True
+            self.acceptingNonFriendWhispers = True
             self.physControls.event.addAgainPattern('again%in')
             self.oldPos = None
             self.questMap = None
@@ -253,8 +252,19 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         self.startLookAround()
         if base.wantNametags:
             self.nametag.manage(base.marginManager)
+
         DistributedToon.DistributedToon.announceGenerate(self)
-        from otp.friends import FriendInfo
+
+        acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
+        acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
+        if self.doId not in acceptingNewFriends:
+            acceptingNewFriends[self.doId] = True
+            base.settings.set('acceptingNewFriends', acceptingNewFriends)
+        if self.doId not in acceptingNonFriendWhispers:
+            acceptingNonFriendWhispers[self.doId] = True
+            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
+        self.acceptingNewFriends = acceptingNewFriends[self.doId]
+        self.acceptingNonFriendWhispers = acceptingNonFriendWhispers[self.doId]
 
     def disable(self):
         self.laffMeter.destroy()
