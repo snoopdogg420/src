@@ -19,8 +19,6 @@ from toontown.nametag.Nametag import Nametag
 
 
 class DistributedDoor(DistributedObject.DistributedObject, DelayDeletable):
-    deferFor = 1
-
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.openSfx = base.loadSfx('phase_3.5/audio/sfx/Door_Open_1.ogg')
