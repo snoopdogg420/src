@@ -148,10 +148,11 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 
         self.friendsList.append((friendId, friendCode))
 
+
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
 def system(message):
     """
-    broadcast a <message> to the game server.
+    Broadcast a <message> to the game server.
     """
     message = 'ADMIN: ' + message
     dclass = simbase.air.dclassesByName['ClientServicesManager']
@@ -163,7 +164,7 @@ def system(message):
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[int])
 def maintenance(minutes):
     """
-    initiate the maintenance message sequence. It will last for the specified
+    Initiate the maintenance message sequence. It will last for the specified
     amount of <minutes>.
     """
     def countdown(minutes):
@@ -172,7 +173,7 @@ def maintenance(minutes):
         else:
             system(OTPLocalizer.CRMaintenanceMessage)
 
-        if maintenance <= 5:
+        if minutes <= 5:
             next = 60
             minutes -= 1
         elif minutes % 5:
