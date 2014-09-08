@@ -63,14 +63,14 @@ class NametagGroup:
         self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
     def destroy(self):
+        if self.marginManager is not None:
+            self.unmanage(self.marginManager)
+
         if self.tickTask is not None:
             taskMgr.remove(self.tickTask)
             self.tickTask = None
 
         self.clearChatText()
-
-        if self.marginManager is not None:
-            self.unmanage(self.marginManager)
 
         for nametag in list(self.nametags):
             self.remove(nametag)
