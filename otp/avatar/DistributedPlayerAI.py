@@ -6,6 +6,7 @@ from otp.avatar import DistributedAvatarAI
 from otp.avatar import PlayerBase
 from otp.distributed import OtpDoGlobals
 from otp.distributed.ClsendTracker import ClsendTracker
+from otp.otpbase import OTPLocalizer
 
 
 class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.PlayerBase, ClsendTracker):
@@ -159,17 +160,33 @@ def system(message):
                                10, 1000000, [message])
     simbase.air.send(dg)
 
-@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR)
-def maintenance():
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[int])
+def maintenance(minutes):
     """
-    initiate the maintenance message sequence.
+    initiate the maintenance message sequence. It will last for the specified
+    amount of <minutes>.
     """
-    message = 'ADMIN: Attention Toons! Toontown Infinite will be going down for maintenance now. Hang tight!'
-    dclass = simbase.air.dclassesByName['ClientServicesManager']
-    dg = dclass.aiFormatUpdate('systemMessage',
-                               OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER,
-                               10, 1000000, [message])
-    simbase.air.send(dg)
+    def countdown(minutes):
+        if minutes > 0:
+            system(OTPLocalizer.CRMaintenanceCountdownMessage % minutes)
+        else:
+            system(OTPLocalizer.CRMaintenanceMessage)
+
+        if maintenance <= 5:
+            next = 60
+            minutes -= 1
+        elif minutes % 5:
+            next = 60 * (minutes%5)
+            minutes -= minutes % 5
+        else:
+            next = 300
+            minutes -= 5
+        if minutes >= 0:
+            taskMgr.doMethodLater(next, countdown, 'maintenance-task',
+                                  extraArgs=[minutes])
+
+
+    countdown(minutes)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
 def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
