@@ -320,17 +320,19 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.chatTextNode.getText()
 
     def setWordWrap(self, wordWrap):
-        if wordWrap > self.TEXT_WORD_WRAP:
+        if wordWrap is None:
             wordWrap = self.TEXT_WORD_WRAP
         self.textNode.setWordwrap(wordWrap)
+        self.update()
 
     def getWordWrap(self):
         return self.textNode.getWordwrap()
 
     def setChatWordWrap(self, chatWordWrap):
-        if chatWordWrap > self.CHAT_TEXT_WORD_WRAP:
+        if chatWordWrap is None:
             chatWordWrap = self.CHAT_TEXT_WORD_WRAP
         self.chatTextNode.setWordwrap(chatWordWrap)
+        self.update()
 
     def getChatWordWrap(self):
         return self.chatTextNode.getWordwrap()
