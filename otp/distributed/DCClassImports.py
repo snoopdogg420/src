@@ -2,7 +2,7 @@
 from pandac.PandaModules import *
 
 
-hashVal = 780067120
+hashVal = 489323859
 
 
 from toontown.cogdominium import DistributedCogdoInterior, DistributedCogdoBattleBldg, DistributedCogdoElevatorExt, DistributedCogdoElevatorInt, DistributedCogdoBarrel, DistCogdoGame, DistCogdoLevelGame, DistCogdoBoardroomGame, DistCogdoCraneGame, DistCogdoMazeGame, DistCogdoFlyingGame, DistCogdoCrane, DistCogdoCraneMoneyBag, DistCogdoCraneCog
@@ -57,7 +57,6 @@ from toontown.ai.DistributedMailboxZeroMgr import DistributedMailboxZeroMgr
 from toontown.uberdog.DistributedDeliveryManager import DistributedDeliveryManager
 from direct.distributed import DistributedObject, DistributedNode, DistributedSmoothNode, DistributedCartesianGrid, DistributedCamera, DistributedObjectGlobal
 from toontown.uberdog.DistributedWhitelistMgr import DistributedWhitelistMgr
-from toontown.uberdog.SystemServicesManager import SystemServicesManager
 from otp.ai import TimeManager, MagicWordManager
 from otp.avatar import DistributedAvatar, DistributedPlayer, AvatarHandle
 from toontown.battle import DistributedBattleBase, DistributedBattle, DistributedBattleBldg, DistributedBattleFinal, DistributedBattleWaiters, DistributedBattleDiners

@@ -1,14 +1,15 @@
 from direct.showbase import GarbageReport
+
 from otp.ai.AIBaseGlobal import *
 from otp.ai.MagicWordGlobal import *
 from otp.avatar import DistributedAvatarAI
 from otp.avatar import PlayerBase
+from otp.distributed import OtpDoGlobals
 from otp.distributed.ClsendTracker import ClsendTracker
-from otp.otpbase import OTPGlobals
+from otp.otpbase import OTPLocalizer
 
 
 class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.PlayerBase, ClsendTracker):
-
     def __init__(self, air):
         DistributedAvatarAI.DistributedAvatarAI.__init__(self, air)
         PlayerBase.PlayerBase.__init__(self)
@@ -147,31 +148,46 @@ class DistributedPlayerAI(DistributedAvatarAI.DistributedAvatarAI, PlayerBase.Pl
 
         self.friendsList.append((friendId, friendCode))
 
+
 @magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[str])
 def system(message):
     """
-    broadcast a <message> to the game server.
+    Broadcast a <message> to the game server.
     """
-    target = spellbook.getTarget()
-    channel = simbase.air.ourChannel
-    system = simbase.air.dclassesByName['SystemServicesManagerAI']
-    name = target.getName()
     message = 'ADMIN: ' + message
-    dg = system.aiFormatUpdate(
-        'systemMessage', 4821, 4821, 1000000, [message, channel])
+    dclass = simbase.air.dclassesByName['ClientServicesManager']
+    dg = dclass.aiFormatUpdate('systemMessage',
+                               OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER,
+                               10, 1000000, [message])
     simbase.air.send(dg)
 
-@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR)
-def maintenance():
+@magicWord(category=CATEGORY_SYSTEM_ADMINISTRATOR, types=[int])
+def maintenance(minutes):
     """
-    initiate the maintenance message sequence.
+    Initiate the maintenance message sequence. It will last for the specified
+    amount of <minutes>.
     """
-    channel = simbase.air.ourChannel
-    system = simbase.air.dclassesByName['SystemServicesManagerAI']
-    message = 'ADMIN: Attention all Toons! Toontown Infinite will be going down for maintenance. Hang tight!'
-    dg = system.aiFormatUpdate(
-        'systemMessage', 4821, 4821, 1000000, [message, channel])
-    simbase.air.send(dg)
+    def countdown(minutes):
+        if minutes > 0:
+            system(OTPLocalizer.CRMaintenanceCountdownMessage % minutes)
+        else:
+            system(OTPLocalizer.CRMaintenanceMessage)
+
+        if minutes <= 5:
+            next = 60
+            minutes -= 1
+        elif minutes % 5:
+            next = 60 * (minutes%5)
+            minutes -= minutes % 5
+        else:
+            next = 300
+            minutes -= 5
+        if minutes >= 0:
+            taskMgr.doMethodLater(next, countdown, 'maintenance-task',
+                                  extraArgs=[minutes])
+
+
+    countdown(minutes)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str, int])
 def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):

@@ -205,7 +205,6 @@ from toontown.racing import DistributedLeaderBoard/AI
 from toontown.racing import DistributedGag/AI
 from toontown.racing import DistributedProjectile/AI
 from toontown.racing.DistributedStartingBlock/AI import DistributedViewingBlock/AI
-from toontown.uberdog.SystemServicesManager/AI/UD import SystemServicesManager/AI/UD
 from toontown.uberdog.ClientServicesManager/UD import ClientServicesManager/UD
 from toontown.uberdog.DistributedDeliveryManager/AI/UD import DistributedDeliveryManager/AI/UD
 from toontown.uberdog.DistributedDataStoreManager/AI/UD import DistributedDataStoreManager/AI/UD
@@ -3277,10 +3276,8 @@ dclass ClientServicesManager : DistributedObjectGlobal {
   deleteAvatar(uint32 avId) clsend;
 
   chooseAvatar(uint32 avId) clsend;
-};
 
-dclass SystemServicesManager : DistributedObjectGlobal {
-  systemMessage(string message, uint32 parentId);
+  systemMessage(string message);
 };
 
 dclass AwardManager : DistributedObjectGlobal {
