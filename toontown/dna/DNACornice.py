@@ -1,13 +1,15 @@
-from panda3d.core import LVector4f, LVector3f, DecalEffect
-import DNAGroup
-import DNAError
-import DNAUtil
+from pandac.PandaModules import  LVector4f, DecalEffect
 
-class DNACornice(DNAGroup.DNAGroup):
+from toontown.dna.DNAGroup import DNAGroup
+from toontown.dna.DNAPacker import SHORT_STRING
+
+
+class DNACornice(DNAGroup):
     COMPONENT_CODE = 12
 
     def __init__(self, name):
-        DNAGroup.DNAGroup.__init__(self, name)
+        DNAGroup.__init__(self, name)
+
         self.code = ''
         self.color = LVector4f(1, 1, 1, 1)
 
@@ -23,39 +25,31 @@ class DNACornice(DNAGroup.DNAGroup):
     def getColor(self):
         return self.color
 
-    def makeFromDGI(self, dgi):
-        DNAGroup.DNAGroup.makeFromDGI(self, dgi)
-        self.code = DNAUtil.dgiExtractString8(dgi)
-        self.color = DNAUtil.dgiExtractColor(dgi)
+    def construct(self, storage, packer):
+        DNAGroup.construct(self, storage, packer)
 
-    def traverse(self, nodePath, dnaStorage):
-        pParentXScale = nodePath.getParent().getScale().getX()
-        parentZScale = nodePath.getScale().getZ()
-        node = dnaStorage.findNode(self.code)
+        self.setCode(packer.unpack(SHORT_STRING))
+        self.setColor(packer.unpackColor())
+
+        return False  # We can't have children.
+
+    def traverse(self, storage, parent, recursive=True):
+        nodePath = DNAGroup.traverse(storage, parent, recursive=False)
+
+        node = storage.findNode(self.code)
         if node is None:
-            raise DNAError.DNAError('DNACornice code {0} not found in '
-                           'DNAStorage'.format(self.code))
-        nodePathA = nodePath.attachNewNode('cornice-internal', 0)
-        node = node.find('**/*_d')
-        np = node.copyTo(nodePathA, 0)
-        np.setPosHprScale(
-            LVector3f(0, 0, 0),
-            LVector3f(0, 0, 0),
-            LVector3f(1, pParentXScale/parentZScale,
-                      pParentXScale/parentZScale))
-        np.setEffect(DecalEffect.make())
-        np.flattenStrong()
-        node = node.getParent().find('**/*_nd')
-        np = node.copyTo(nodePathA, 1)
-        np.setPosHprScale(
-            LVector3f(0, 0, 0),
-            LVector3f(0, 0, 0),
-            LVector3f(1, pParentXScale/parentZScale,
-                      pParentXScale/parentZScale))
-        np.flattenStrong()
-        nodePathA.setPosHprScale(
-            LVector3f(0, 0, node.getScale().getZ()),
-            LVector3f(0, 0, 0),
-            LVector3f(1, 1, 1))
-        nodePathA.setColor(self.color)
-        nodePathA.flattenStrong()
+            raise DNAError('DNACornice code %d could not be found.' % self.code)
+
+        scale = parent.getParent().getSx() / parent.getSz()
+
+        _d = node.find('**/*_d').copyTo(nodePath, 0)
+        _d.setScale(1, scale, scale)
+        _d.setEffect(DecalEffect.make())
+
+        _nd = node.find('**/*_nd').copyTo(nodePath, 1)
+        _nd.setScale(1, scale, scale)
+
+        nodePath.setZ(parent.getSz())
+        nodePath.setColor(self.color)
+
+        return nodePath
