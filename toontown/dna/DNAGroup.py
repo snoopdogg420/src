@@ -19,7 +19,7 @@ class DNAGroup:
 
     def setParent(self, parent):
         self.parent = parent
-        self.visGroup = parent.getVisGroup()
+        self.visGroup = self.parent.getVisGroup()
 
     def getParent(self):
         return self.parent

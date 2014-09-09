@@ -41,7 +41,7 @@ class DNANode(DNAGroup):
         return True  # We can have children.
 
     def traverse(self, storage, parent, recursive=True):
-        nodePath = DNANode.traverse(storage, parent, recursive=False)
+        nodePath = DNANode.traverse(self, storage, parent, recursive=False)
 
         nodePath.setPosHprScale(self.pos, self.hpr, self.scale)
 

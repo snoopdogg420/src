@@ -1,13 +1,14 @@
-from panda3d.core import LVector3f
-import DNAGroup
-import DNABattleCell
-import DNAUtil
+from toontown.dna.DNABattleCell import DNABattleCell
+from toontown.dna.DNAGroup import DNAGroup
+from toontown.dna.DNAPacker import UINT16, SHORT_STRING, UINT8
 
-class DNAVisGroup(DNAGroup.DNAGroup):
+
+class DNAVisGroup(DNAGroup):
     COMPONENT_CODE = 2
 
     def __init__(self, name):
-        DNAGroup.DNAGroup.__init__(self, name)
+        DNAGroup.__init__(self, name)
+
         self.visibles = []
         self.suitEdges = []
         self.battleCells = []
@@ -15,58 +16,61 @@ class DNAVisGroup(DNAGroup.DNAGroup):
     def getVisGroup(self):
         return self
 
-    def addBattleCell(self, battleCell):
-        self.battleCells.append(battleCell)
-
-    def addSuitEdge(self, suitEdge):
-        self.suitEdges.append(suitEdge)
+    def getNumVisibles(self):
+        return len(self.visibles)
 
     def addVisible(self, visible):
         self.visibles.append(visible)
 
-    def getBattleCell(self, i):
-        return self.battleCells[i]
-
-    def getNumBattleCells(self):
-        return len(self.battleCells)
-
-    def getNumSuitEdges(self):
-        return len(self.suitEdges)
-
-    def getNumVisibles(self):
-        return len(self.visibles)
-
-    def getSuitEdge(self, i):
-        return self.suitEdges[i]
+    def removeVisible(self, visible):
+        self.visibles.remove(visible)
 
     def getVisibleName(self, i):
         return self.visibles[i]
 
-    def removeBattleCell(self, cell):
-        self.battleCells.remove(cell)
+    def getNumSuitEdges(self):
+        return len(self.suitEdges)
+
+    def addSuitEdge(self, suitEdge):
+        self.suitEdges.append(suitEdge)
 
     def removeSuitEdge(self, edge):
         self.suitEdges.remove(edge)
 
-    def removeVisible(self, visible):
-        self.visibles.remove(visible)
+    def getSuitEdge(self, i):
+        return self.suitEdges[i]
 
-    def makeFromDGI(self, dgi, dnaStorage):
-        DNAGroup.DNAGroup.makeFromDGI(self, dgi)
+    def getNumBattleCells(self):
+        return len(self.battleCells)
 
-        numEdges = dgi.getUint16()
-        for _ in xrange(numEdges):
-            index = dgi.getUint16()
-            endPoint = dgi.getUint16()
-            self.addSuitEdge(dnaStorage.getSuitEdge(index, endPoint))
+    def addBattleCell(self, battleCell):
+        self.battleCells.append(battleCell)
 
-        numVisibles = dgi.getUint16()
-        for _ in xrange(numVisibles):
-            self.addVisible(DNAUtil.dgiExtractString8(dgi))
+    def removeBattleCell(self, cell):
+        self.battleCells.remove(cell)
 
-        numCells = dgi.getUint16()
-        for _ in xrange(numCells):
-            w = dgi.getUint8()
-            h = dgi.getUint8()
-            x, y, z = [dgi.getInt32() / 100.0 for i in xrange(3)]
-            self.addBattleCell(DNABattleCell.DNABattleCell(w, h, LVector3f(x, y, z)))
+    def getBattleCell(self, i):
+        return self.battleCells[i]
+
+    def construct(self, storage, packer):
+        DNAGroup.construct(self, storage, packer)
+
+        edgeCount = packer.unpack(UINT16)
+        for _ in xrange(edgeCount):
+            startPointIndex = packer.unpack(UINT16)
+            endPointIndex = packer.unpack(UINT16)
+            edge = storage.getSuitEdge(startPointIndex, endPointIndex)
+            self.addSuitEdge(edge)
+
+        visibleCount = packer.unpack(UINT16)
+        for _ in xrange(visibleCount):
+            self.addVisible(packer.unpack(SHORT_STRING))
+
+        battleCellCount = packer.unpack(UINT16)
+        for _ in xrange(battleCellCount):
+            width = packer.unpack(UINT8)
+            height = packer.unpack(UINT8)
+            pos = packer.unpackPosition()
+            self.addBattleCell(DNABattleCell(width, height, pos))
+
+        return True # We can have children.
