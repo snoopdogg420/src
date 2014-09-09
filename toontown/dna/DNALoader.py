@@ -41,6 +41,15 @@ class DNALoader:
         self.packer = None
         self.topGroup = None
 
+    def getStorage(self):
+        return self.storage
+
+    def getPacker(self):
+        return self.packer
+
+    def getTopGroup(self):
+        return self.topGroup
+
     def load(self, storage, filepath):
         self.storage = storage
 

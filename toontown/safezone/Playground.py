@@ -647,7 +647,8 @@ class Playground(Place.Place):
 
     def createPlayground(self, dnaFile):
         dnaBulk = DNABulkLoader(self.loader.dnaStore, (self.safeZoneStorageDNAFile,))
-        dnaBulk.loadDNAFiles()
+        dnaBulk.load()
+        dnaBulk.destroy()
         node = loader.loadDNAFile(self.loader.dnaStore, dnaFile)
         if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))

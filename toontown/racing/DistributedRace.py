@@ -721,7 +721,8 @@ class DistributedRace(DistributedObject.DistributedObject):
                  'phase_8/dna/storage_BR.pdna', 'phase_8/dna/storage_BR_town.pdna',
                  'phase_8/dna/storage_DL.pdna', 'phase_8/dna/storage_DL_town.pdna')
         dnaBulk = DNABulkLoader(self.dnaStore, files)
-        dnaBulk.loadDNAFiles()
+        dnaBulk.load()
+        dnaBulk.destroy()
         dnaFile = 'phase_6/dna/urban_track_town.pdna'
         if self.trackId in (RaceGlobals.RT_Urban_2, RaceGlobals.RT_Urban_2_rev):
             dnaFile = 'phase_6/dna/urban_track_town_B.pdna'

@@ -99,7 +99,8 @@ class Hood(StateData.StateData):
             self.sky.setScale(1.0)
             self.sky.setFogOff()
         dnaBulk = DNABulkLoader(self.dnaStore, tuple(files))
-        dnaBulk.loadDNAFiles()
+        dnaBulk.load()
+        dnaBulk.destroy()
 
     def unload(self):
         if hasattr(self, 'loader'):

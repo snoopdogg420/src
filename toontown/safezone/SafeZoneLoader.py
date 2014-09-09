@@ -78,7 +78,8 @@ class SafeZoneLoader(StateData.StateData):
     def createSafeZone(self, dnaFile):
         if self.safeZoneStorageDNAFile:
             dnaBulk = DNABulkLoader(self.hood.dnaStore, (self.safeZoneStorageDNAFile,))
-            dnaBulk.loadDNAFiles()
+            dnaBulk.load()
+            dnaBulk.destroy()
         node = loadDNAFile(self.hood.dnaStore, dnaFile)
         if node.getNumParents() == 1:
             self.geom = NodePath(node.getParent(0))

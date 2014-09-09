@@ -196,7 +196,8 @@ class TownLoader(StateData.StateData):
         if loadStorage:
             files = ('phase_5/dna/storage_town.pdna', self.townStorageDNAFile)
             dnaBulk = DNABulkLoader(self.hood.dnaStore, files)
-            dnaBulk.loadDNAFiles()
+            dnaBulk.load()
+            dnaBulk.destroy()
         node = loader.loadDNAFile(self.hood.dnaStore, dnaFile)
         self.notify.debug('done loading %s' % dnaFile)
         if node.getNumParents() == 1:
