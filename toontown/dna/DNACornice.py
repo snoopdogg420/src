@@ -38,7 +38,7 @@ class DNACornice(DNAGroup):
 
         node = storage.findNode(self.code)
         if node is None:
-            raise DNAError('DNACornice code %d could not be found.' % self.code)
+            raise DNAError('DNACornice code %s could not be found.' % self.code)
 
         scale = parent.getParent().getSx() / parent.getSz()
 
