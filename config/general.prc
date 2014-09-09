@@ -5,7 +5,7 @@ icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
 
 # Preferences...
-preferences-filename preferences.gz
+preferences-filename preferences.json
 
 # Audio...
 audio-library-name p3fmod_audio
@@ -189,29 +189,16 @@ want-instant-parties #f
 # Temporary...
 want-old-fireworks #t
 
-# Performance...
+# Performance
 sync-video #f
 smooth-lag 0.4
-support-stencil #f
-framebuffer-stencil #f
-textures-power-2 none
-gl-finish #f
-gl-force-no-error #t
+texture-power-2 none
 gl-check-errors #f
-gl-force-no-flush #t
-gl-force-no-scissor #t
-texture-magfilter linear
-texture-minfilter linear
-lock-to-one-cpu #f
-support-threads #t
-gl-immutable-texture-storage #f
-gl-dump-compiled-shaders #f
-show-buffers #f
 garbage-collect-states #f
 
 # Quality...
-framebuffer-multisample 1
-multisamples 2
+# framebuffer-multisample 1
+# multisamples 2
 
 # Egg ObjectTypes...
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }

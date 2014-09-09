@@ -9,7 +9,7 @@
 .DS_Store
 
 # Game preferences
-preferences.gz
+preferences.json
 
 # ppython.exe path configuration
 PPYTHON_PATH

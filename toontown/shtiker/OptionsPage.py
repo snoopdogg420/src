@@ -1,151 +1,235 @@
-from pandac.PandaModules import *
-import ShtikerPage
-from toontown.toontowngui import TTDialog
+from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.gui.DirectGui import *
-from pandac.PandaModules import *
-from toontown.toonbase import TTLocalizer
-import DisplaySettingsDialog
+from direct.showbase import PythonUtil
 from direct.task import Task
-from otp.speedchat import SpeedChat
+from pandac.PandaModules import *
+
+import DisplaySettingsDialog
+import ShtikerPage
 from otp.speedchat import SCColorScheme
 from otp.speedchat import SCStaticTextTerminal
-from direct.showbase import PythonUtil
-from direct.directnotify import DirectNotifyGlobal
-from toontown.toonbase import ToontownGlobals
-speedChatStyles = ((2000,
-  (200 / 255.0, 60 / 255.0, 229 / 255.0),
-  (200 / 255.0, 135 / 255.0, 255 / 255.0),
-  (220 / 255.0, 195 / 255.0, 229 / 255.0)),
- (2012,
-  (142 / 255.0, 151 / 255.0, 230 / 255.0),
-  (173 / 255.0, 180 / 255.0, 237 / 255.0),
-  (220 / 255.0, 195 / 255.0, 229 / 255.0)),
- (2001,
-  (0 / 255.0, 0 / 255.0, 255 / 255.0),
-  (140 / 255.0, 150 / 255.0, 235 / 255.0),
-  (201 / 255.0, 215 / 255.0, 255 / 255.0)),
- (2010,
-  (0 / 255.0, 119 / 255.0, 190 / 255.0),
-  (53 / 255.0, 180 / 255.0, 255 / 255.0),
-  (201 / 255.0, 215 / 255.0, 255 / 255.0)),
- (2014,
-  (0 / 255.0, 64 / 255.0, 128 / 255.0),
-  (0 / 255.0, 64 / 255.0, 128 / 255.0),
-  (201 / 255.0, 215 / 255.0, 255 / 255.0)),
- (2002,
-  (90 / 255.0, 175 / 255.0, 225 / 255.0),
-  (120 / 255.0, 215 / 255.0, 255 / 255.0),
-  (208 / 255.0, 230 / 255.0, 250 / 255.0)),
- (2003,
-  (130 / 255.0, 235 / 255.0, 235 / 255.0),
-  (120 / 255.0, 225 / 255.0, 225 / 255.0),
-  (234 / 255.0, 255 / 255.0, 255 / 255.0)),
- (2004,
-  (0 / 255.0, 200 / 255.0, 70 / 255.0),
-  (0 / 255.0, 200 / 255.0, 80 / 255.0),
-  (204 / 255.0, 255 / 255.0, 204 / 255.0)),
- (2015,
-  (13 / 255.0, 255 / 255.0, 100 / 255.0),
-  (64 / 255.0, 255 / 255.0, 131 / 255.0),
-  (204 / 255.0, 255 / 255.0, 204 / 255.0)),
- (2005,
-  (235 / 255.0, 230 / 255.0, 0 / 255.0),
-  (255 / 255.0, 250 / 255.0, 100 / 255.0),
-  (255 / 255.0, 250 / 255.0, 204 / 255.0)),
- (2006,
-  (255 / 255.0, 153 / 255.0, 0 / 255.0),
-  (229 / 255.0, 147 / 255.0, 0 / 255.0),
-  (255 / 255.0, 234 / 255.0, 204 / 255.0)),
- (2011,
-  (255 / 255.0, 177 / 255.0, 62 / 255.0),
-  (255 / 255.0, 200 / 255.0, 117 / 255.0),
-  (255 / 255.0, 234 / 255.0, 204 / 255.0)),
- (2007,
-  (255 / 255.0, 0 / 255.0, 50 / 255.0),
-  (229 / 255.0, 0 / 255.0, 50 / 255.0),
-  (255 / 255.0, 204 / 255.0, 204 / 255.0)),
- (2013,
-  (130 / 255.0, 0 / 255.0, 26 / 255.0),
-  (179 / 255.0, 0 / 255.0, 50 / 255.0),
-  (255 / 255.0, 204 / 255.0, 204 / 255.0)),
- (2016,
-  (176 / 255.0, 35 / 255.0, 0 / 255.0),
-  (240 / 255.0, 48 / 255.0, 0 / 255.0),
-  (255 / 255.0, 204 / 255.0, 204 / 255.0)),
- (2008,
-  (255 / 255.0, 153 / 255.0, 193 / 255.0),
-  (240 / 255.0, 157 / 255.0, 192 / 255.0),
-  (255 / 255.0, 215 / 255.0, 238 / 255.0)),
- (2009,
-  (170 / 255.0, 120 / 255.0, 20 / 255.0),
-  (165 / 255.0, 120 / 255.0, 50 / 255.0),
-  (210 / 255.0, 200 / 255.0, 180 / 255.0)))
+from otp.speedchat import SpeedChat
+from toontown.toonbase import TTLocalizer
+from toontown.toontowngui import TTDialog
+
+
+speedChatStyles = (
+    (
+        2000,
+        (200 / 255.0, 60 / 255.0, 229 / 255.0),
+        (200 / 255.0, 135 / 255.0, 255 / 255.0),
+        (220 / 255.0, 195 / 255.0, 229 / 255.0)
+    ),
+    (
+        2012,
+        (142 / 255.0, 151 / 255.0, 230 / 255.0),
+        (173 / 255.0, 180 / 255.0, 237 / 255.0),
+        (220 / 255.0, 195 / 255.0, 229 / 255.0)
+    ),
+    (
+        2001,
+        (0 / 255.0, 0 / 255.0, 255 / 255.0),
+        (140 / 255.0, 150 / 255.0, 235 / 255.0),
+        (201 / 255.0, 215 / 255.0, 255 / 255.0)
+    ),
+    (
+        2010,
+        (0 / 255.0, 119 / 255.0, 190 / 255.0),
+        (53 / 255.0, 180 / 255.0, 255 / 255.0),
+        (201 / 255.0, 215 / 255.0, 255 / 255.0)
+    ),
+    (
+        2014,
+        (0 / 255.0, 64 / 255.0, 128 / 255.0),
+        (0 / 255.0, 64 / 255.0, 128 / 255.0),
+        (201 / 255.0, 215 / 255.0, 255 / 255.0)
+    ),
+    (
+        2002,
+        (90 / 255.0, 175 / 255.0, 225 / 255.0),
+        (120 / 255.0, 215 / 255.0, 255 / 255.0),
+        (208 / 255.0, 230 / 255.0, 250 / 255.0)
+    ),
+    (
+        2003,
+        (130 / 255.0, 235 / 255.0, 235 / 255.0),
+        (120 / 255.0, 225 / 255.0, 225 / 255.0),
+        (234 / 255.0, 255 / 255.0, 255 / 255.0)
+    ),
+    (
+        2004,
+        (0 / 255.0, 200 / 255.0, 70 / 255.0),
+        (0 / 255.0, 200 / 255.0, 80 / 255.0),
+        (204 / 255.0, 255 / 255.0, 204 / 255.0)
+    ),
+    (
+        2015,
+        (13 / 255.0, 255 / 255.0, 100 / 255.0),
+        (64 / 255.0, 255 / 255.0, 131 / 255.0),
+        (204 / 255.0, 255 / 255.0, 204 / 255.0)
+    ),
+    (
+        2005,
+        (235 / 255.0, 230 / 255.0, 0 / 255.0),
+        (255 / 255.0, 250 / 255.0, 100 / 255.0),
+        (255 / 255.0, 250 / 255.0, 204 / 255.0)
+    ),
+    (
+        2006,
+        (255 / 255.0, 153 / 255.0, 0 / 255.0),
+        (229 / 255.0, 147 / 255.0, 0 / 255.0),
+        (255 / 255.0, 234 / 255.0, 204 / 255.0)
+    ),
+    (
+        2011,
+        (255 / 255.0, 177 / 255.0, 62 / 255.0),
+        (255 / 255.0, 200 / 255.0, 117 / 255.0),
+        (255 / 255.0, 234 / 255.0, 204 / 255.0)
+    ),
+    (
+        2007,
+        (255 / 255.0, 0 / 255.0, 50 / 255.0),
+        (229 / 255.0, 0 / 255.0, 50 / 255.0),
+        (255 / 255.0, 204 / 255.0, 204 / 255.0)
+    ),
+    (
+        2013,
+        (130 / 255.0, 0 / 255.0, 26 / 255.0),
+        (179 / 255.0, 0 / 255.0, 50 / 255.0),
+        (255 / 255.0, 204 / 255.0, 204 / 255.0)
+    ),
+    (
+        2016,
+        (176 / 255.0, 35 / 255.0, 0 / 255.0),
+        (240 / 255.0, 48 / 255.0, 0 / 255.0),
+        (255 / 255.0, 204 / 255.0, 204 / 255.0)
+    ),
+    (
+        2008,
+        (255 / 255.0, 153 / 255.0, 193 / 255.0),
+        (240 / 255.0, 157 / 255.0, 192 / 255.0),
+        (255 / 255.0, 215 / 255.0, 238 / 255.0)
+    ),
+    (
+        2009,
+        (170 / 255.0, 120 / 255.0, 20 / 255.0),
+        (165 / 255.0, 120 / 255.0, 50 / 255.0),
+        (210 / 255.0, 200 / 255.0, 180 / 255.0)
+    )
+)
 PageMode = PythonUtil.Enum('Options, Codes')
 
+
 class OptionsPage(ShtikerPage.ShtikerPage):
-    notify = DirectNotifyGlobal.directNotify.newCategory('OptionsPage')
+    notify = directNotify.newCategory('OptionsPage')
 
     def __init__(self):
         ShtikerPage.ShtikerPage.__init__(self)
 
+        self.optionsTabPage = None
+        self.codesTabPage = None
+        self.title = None
+        self.optionsTab = None
+        self.codesTab = None
+
     def load(self):
         ShtikerPage.ShtikerPage.load(self)
+
         self.optionsTabPage = OptionsTabPage(self)
         self.optionsTabPage.hide()
         self.codesTabPage = CodesTabPage(self)
         self.codesTabPage.hide()
-        titleHeight = 0.61
-        self.title = DirectLabel(parent=self, relief=None, text=TTLocalizer.OptionsPageTitle, text_scale=0.12, pos=(0, 0, titleHeight))
+
+        self.title = DirectLabel(
+            parent=self, relief=None, text=TTLocalizer.OptionsPageTitle,
+            text_scale=0.12, pos=(0, 0, 0.61))
+
+        gui = loader.loadModel('phase_3.5/models/gui/fishingBook.bam')
         normalColor = (1, 1, 1, 1)
         clickColor = (0.8, 0.8, 0, 1)
         rolloverColor = (0.15, 0.82, 1.0, 1)
         diabledColor = (1.0, 0.98, 0.15, 1)
-        gui = loader.loadModel('phase_3.5/models/gui/fishingBook')
-        self.optionsTab = DirectButton(parent=self, relief=None, text=TTLocalizer.OptionsPageTitle, text_scale=TTLocalizer.OPoptionsTab, text_align=TextNode.ALeft, text_pos=(0.01, 0.0, 0.0), image=gui.find('**/tabs/polySurface1'), image_pos=(0.55, 1, -0.91), image_hpr=(0, 0, -90), image_scale=(0.033, 0.033, 0.035), image_color=normalColor, image1_color=clickColor, image2_color=rolloverColor, image3_color=diabledColor, text_fg=Vec4(0.2, 0.1, 0, 1), command=self.setMode, extraArgs=[PageMode.Options], pos=(-0.36, 0, 0.77))
-        self.codesTab = DirectButton(parent=self, relief=None, text=TTLocalizer.OptionsPageCodesTab, text_scale=TTLocalizer.OPoptionsTab, text_align=TextNode.ALeft, text_pos=(-0.035, 0.0, 0.0), image=gui.find('**/tabs/polySurface2'), image_pos=(0.12, 1, -0.91), image_hpr=(0, 0, -90), image_scale=(0.033, 0.033, 0.035), image_color=normalColor, image1_color=clickColor, image2_color=rolloverColor, image3_color=diabledColor, text_fg=Vec4(0.2, 0.1, 0, 1), command=self.setMode, extraArgs=[PageMode.Codes], pos=(0.11, 0, 0.77))
-        return
+        self.optionsTab = DirectButton(
+            parent=self, relief=None, text=TTLocalizer.OptionsPageTitle,
+            text_scale=TTLocalizer.OPoptionsTab, text_align=TextNode.ALeft,
+            text_pos=(0.01, 0.0, 0.0), image=gui.find('**/tabs/polySurface1'),
+            image_pos=(0.55, 1, -0.91), image_hpr=(0, 0, -90),
+            image_scale=(0.033, 0.033, 0.035), image_color=normalColor,
+            image1_color=clickColor, image2_color=rolloverColor,
+            image3_color=diabledColor, text_fg=Vec4(0.2, 0.1, 0, 1),
+            command=self.setMode, extraArgs=[PageMode.Options],
+            pos=(-0.36, 0, 0.77))
+        self.codesTab = DirectButton(
+            parent=self, relief=None, text=TTLocalizer.OptionsPageCodesTab,
+            text_scale=TTLocalizer.OPoptionsTab, text_align=TextNode.ALeft,
+            text_pos=(-0.035, 0.0, 0.0),
+            image=gui.find('**/tabs/polySurface2'), image_pos=(0.12, 1, -0.91),
+            image_hpr=(0, 0, -90), image_scale=(0.033, 0.033, 0.035),
+            image_color=normalColor, image1_color=clickColor,
+            image2_color=rolloverColor, image3_color=diabledColor,
+            text_fg=Vec4(0.2, 0.1, 0, 1), command=self.setMode,
+            extraArgs=[PageMode.Codes], pos=(0.11, 0, 0.77))
+        gui.removeNode()
 
     def enter(self):
         self.setMode(PageMode.Options, updateAnyways=1)
+
         ShtikerPage.ShtikerPage.enter(self)
 
     def exit(self):
         self.optionsTabPage.exit()
         self.codesTabPage.exit()
+
         ShtikerPage.ShtikerPage.exit(self)
 
     def unload(self):
-        self.optionsTabPage.unload()
-        del self.title
+        if self.optionsTabPage is not None:
+            self.optionsTabPage.unload()
+            self.optionsTabPage = None
+
+        if self.codesTabPage is not None:
+            self.codesTabPage.unload()
+            self.codesTabPage = None
+
+        if self.title is not None:
+            self.title.destroy()
+            self.title = None
+
+        if self.optionsTab is not None:
+            self.optionsTab.destroy()
+            self.optionsTab = None
+
+        if self.codesTab is not None:
+            self.codesTab.destroy()
+            self.codesTab = None
+
         ShtikerPage.ShtikerPage.unload(self)
 
-    def setMode(self, mode, updateAnyways = 0):
+    def setMode(self, mode, updateAnyways=0):
         messenger.send('wakeup')
+
         if not updateAnyways:
             if self.mode == mode:
                 return
-            else:
-                self.mode = mode
+
+        self.mode = mode
+
         if mode == PageMode.Options:
-            self.mode = PageMode.Options
             self.title['text'] = TTLocalizer.OptionsPageTitle
             self.optionsTab['state'] = DGG.DISABLED
             self.optionsTabPage.enter()
             self.codesTab['state'] = DGG.NORMAL
             self.codesTabPage.exit()
         elif mode == PageMode.Codes:
-            self.mode = PageMode.Codes
             self.title['text'] = TTLocalizer.CdrPageTitle
             self.optionsTab['state'] = DGG.NORMAL
             self.optionsTabPage.exit()
             self.codesTab['state'] = DGG.DISABLED
             self.codesTabPage.enter()
-        else:
-            raise StandardError, 'OptionsPage::setMode - Invalid Mode %s' % mode
 
 
 class OptionsTabPage(DirectFrame):
-    notify = DirectNotifyGlobal.directNotify.newCategory('OptionsTabPage')
+    notify = directNotify.newCategory('OptionsTabPage')
     DisplaySettingsTaskName = 'save-display-settings'
     DisplaySettingsDelay = 60
     ChangeDisplaySettings = base.config.GetBool('change-display-settings', 1)
@@ -154,21 +238,21 @@ class OptionsTabPage(DirectFrame):
     def __init__(self, parent = aspect2d):
         self.parent = parent
         self.currentSizeIndex = None
+
         DirectFrame.__init__(self, parent=self.parent, relief=None, pos=(0.0, 0.0, 0.0), scale=(1.0, 1.0, 1.0))
+
         self.load()
-        return
 
     def destroy(self):
         self.parent = None
+
         DirectFrame.destroy(self)
-        return
 
     def load(self):
         self.displaySettings = None
         self.displaySettingsChanged = 0
         self.displaySettingsSize = (None, None)
         self.displaySettingsFullscreen = None
-        self.displaySettingsEmbedded = None
         self.displaySettingsApi = None
         self.displaySettingsApiChanged = 0
         guiButton = loader.loadModel('phase_3/models/gui/quit_button')
@@ -217,7 +301,6 @@ class OptionsTabPage(DirectFrame):
         self.exitButton = DirectButton(parent=self, relief=None, image=(guiButton.find('**/QuitBtn_UP'), guiButton.find('**/QuitBtn_DN'), guiButton.find('**/QuitBtn_RLVR')), image_scale=1.15, text=TTLocalizer.OptionsPageExitToontown, text_scale=options_text_scale, text_pos=button_textpos, textMayChange=0, pos=(0.45, 0, -0.6), command=self.__handleExitShowWithConfirm)
         guiButton.removeNode()
         gui.removeNode()
-        return
 
     def enter(self):
         self.show()
@@ -275,14 +358,15 @@ class OptionsTabPage(DirectFrame):
         self.speedChatStyleText.destroy()
         del self.speedChatStyleText
         self.currentSizeIndex = None
-        return
 
     def __doToggleMusic(self):
         messenger.send('wakeup')
         if base.musicActive:
             base.enableMusic(0)
+            base.settings.set('music', False)
         else:
             base.enableMusic(1)
+            base.settings.set('music', True)
         self.settingsChanged = 1
         self.__setMusicButton()
 
@@ -298,8 +382,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.sfxActive:
             base.enableSoundEffects(0)
+            base.settings.set('sfx', False)
         else:
             base.enableSoundEffects(1)
+            base.settings.set('sfx', True)
         self.settingsChanged = 1
         self.__setSoundFXButton()
 
@@ -307,8 +393,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.toonChatSounds:
             base.toonChatSounds = 0
+            base.settings.set('toonChatSounds', False)
         else:
             base.toonChatSounds = 1
+            base.settings.set('toonChatSounds', True)
         self.settingsChanged = 1
         self.__setToonChatSoundsButton()
 
@@ -339,8 +427,14 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.localAvatar.acceptingNewFriends:
             base.localAvatar.acceptingNewFriends = 0
+            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
+            acceptingNewFriends[base.localAvatar.doId] = False
+            base.settings.set('acceptingNewFriends', acceptingNewFriends)
         else:
             base.localAvatar.acceptingNewFriends = 1
+            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
+            acceptingNewFriends[base.localAvatar.doId] = True
+            base.settings.set('acceptingNewFriends', acceptingNewFriends)
         self.settingsChanged = 1
         self.__setAcceptFriendsButton()
 
@@ -348,8 +442,14 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.localAvatar.acceptingNonFriendWhispers:
             base.localAvatar.acceptingNonFriendWhispers = 0
+            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
+            acceptingNonFriendWhispers[base.localAvatar.doId] = False
+            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         else:
             base.localAvatar.acceptingNonFriendWhispers = 1
+            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
+            acceptingNonFriendWhispers[base.localAvatar.doId] = True
+            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         self.settingsChanged = 1
         self.__setAcceptWhispersButton()
 
@@ -375,7 +475,6 @@ class OptionsTabPage(DirectFrame):
             self.displaySettings.load()
             self.accept(self.displaySettings.doneEvent, self.__doneDisplaySettings)
         self.displaySettings.enter(self.ChangeDisplaySettings, self.ChangeDisplayAPI)
-        return
 
     def __doneDisplaySettings(self, anyChanged, apiChanged):
         if anyChanged:
@@ -384,15 +483,8 @@ class OptionsTabPage(DirectFrame):
             self.displaySettingsChanged = 1
             self.displaySettingsSize = (properties.getXSize(), properties.getYSize())
             self.displaySettingsFullscreen = properties.getFullscreen()
-            self.displaySettingsEmbedded = self.isPropertiesEmbedded(properties)
             self.displaySettingsApi = base.pipe.getInterfaceName()
             self.displaySettingsApiChanged = apiChanged
-
-    def isPropertiesEmbedded(self, properties):
-        result = False
-        if properties.getParentWindow():
-            result = True
-        return result
 
     def __setDisplaySettings(self):
         properties = base.win.getProperties()
@@ -400,9 +492,6 @@ class OptionsTabPage(DirectFrame):
             screensize = '%s x %s' % (properties.getXSize(), properties.getYSize())
         else:
             screensize = TTLocalizer.OptionsPageDisplayWindowed
-        isEmbedded = self.isPropertiesEmbedded(properties)
-        if isEmbedded:
-            screensize = TTLocalizer.OptionsPageDisplayEmbedded
         api = base.pipe.getInterfaceName()
         settings = {'screensize': screensize,
          'api': api}
@@ -443,14 +532,12 @@ class OptionsTabPage(DirectFrame):
             self.speedChatStyleRightArrow['state'] = DGG.DISABLED
         base.localAvatar.b_setSpeedChatStyleIndex(self.speedChatStyleIndex)
 
-    def writeDisplaySettings(self, task = None):
+    def writeDisplaySettings(self, task=None):
         if not self.displaySettingsChanged:
             return
         taskMgr.remove(self.DisplaySettingsTaskName)
-        self.notify.info('writing new display settings %s, fullscreen %s, embedded %s, %s to SettingsFile.' % (self.displaySettingsSize,
-         self.displaySettingsFullscreen,
-         self.displaySettingsEmbedded,
-         self.displaySettingsApi))
+        base.settings.set('res', (self.displaySettingsSize[0], self.displaySettingsSize[1]))
+        base.settings.set('fullscreen', self.displaySettingsFullscreen)
         return Task.done
 
     def __handleExitShowWithConfirm(self):
@@ -471,7 +558,7 @@ class OptionsTabPage(DirectFrame):
 
 
 class CodesTabPage(DirectFrame):
-    notify = DirectNotifyGlobal.directNotify.newCategory('CodesTabPage')
+    notify = directNotify.newCategory('CodesTabPage')
 
     def __init__(self, parent = aspect2d):
         self.parent = parent

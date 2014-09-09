@@ -186,26 +186,17 @@ def loadModels():
             fileRoot = LegDict[key]
 
             Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
-            Preloaded[fileRoot+'-1000'].flattenMedium()
-
             Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
-            Preloaded[fileRoot+'-500'].flattenMedium()
-
             Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
-            Preloaded[fileRoot+'-250'].flattenMedium()
 
         for key in TorsoDict.keys():
             fileRoot = TorsoDict[key]
 
             Preloaded[fileRoot+'-1000'] = loader.loadModel('phase_3' + fileRoot + '1000')
-            Preloaded[fileRoot+'-1000'].flattenMedium()
 
             if len(key) > 1:
                 Preloaded[fileRoot+'-500'] = loader.loadModel('phase_3' + fileRoot + '500')
-                Preloaded[fileRoot+'-500'].flattenMedium()
-
                 Preloaded[fileRoot+'-250'] = loader.loadModel('phase_3' + fileRoot + '250')
-                Preloaded[fileRoot+'-250'].flattenMedium()
 
 def loadBasicAnims():
     loadPhaseAnims()
@@ -2773,7 +2764,7 @@ class Toon(Avatar.Avatar, ToonHead):
         Emote.globalEmote.releaseAll(self)
         self.isDisguised = 0
         self.setFont(ToontownGlobals.getToonFont())
-        self.nametag.setWordWrap(-1)
+        self.nametag.setWordWrap(None)
         if hasattr(base, 'idTags') and base.idTags:
             name = self.getAvIdName()
         else:

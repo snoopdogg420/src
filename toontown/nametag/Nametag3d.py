@@ -1,9 +1,7 @@
-from direct.gui.DirectGui import *
 from direct.task.Task import Task
 import math
-from pandac.PandaModules import *
+from pandac.PandaModules import BillboardEffect, Vec3, Quat, Point3, Point2
 
-from toontown.chat import ChatBalloon
 from toontown.nametag import Nametag
 from toontown.nametag import NametagGlobals
 
@@ -75,31 +73,25 @@ class Nametag3d(Nametag.Nametag):
             self.setClickRegion(left, right, bottom, top)
 
     def tick(self, task):
-        try:
-            if self.avatar is None:
-                return Task.cont
+        distance = self.contents.getPos(base.cam).length()
 
-            distance = self.contents.getPos(base.cam).length()
+        if distance < self.SCALING_MIN_DISTANCE:
+            distance = self.SCALING_MIN_DISTANCE
+        elif distance > self.SCALING_MAX_DISTANCE:
+            distance = self.SCALING_MAX_DISTANCE
 
-            if distance < self.SCALING_MIN_DISTANCE:
-                distance = self.SCALING_MIN_DISTANCE
-            elif distance > self.SCALING_MAX_DISTANCE:
-                distance = self.SCALING_MAX_DISTANCE
-
-            if distance == self.distance:
-                if self.active or (self.getChatButton() != NametagGlobals.noButton):
-                    self.updateClickRegion()
-                return Task.cont
-
-            self.distance = distance
-
-            self.scale = math.sqrt(distance) * self.SCALING_FACTOR
-            self.contents.setScale(self.scale)
-
-            if self.active or (self.getChatButton() != NametagGlobals.noButton):
+        if distance == self.distance:
+            if self.active or (self.getChatText() and self.hasChatButton()):
                 self.updateClickRegion()
-        except:
-            pass
+            return Task.cont
+
+        self.distance = distance
+
+        self.scale = math.sqrt(distance) * self.SCALING_FACTOR
+        self.contents.setScale(self.scale)
+
+        if self.active or (self.getChatText() and self.hasChatButton()):
+            self.updateClickRegion()
 
         return Task.cont
 

@@ -236,7 +236,6 @@ DSDintroText = 0.06
 DSDintroTextWordwrap = 25
 DSDwindowedButtonPos = (0.0961, 0, -0.221)
 DSDfullscreenButtonPos = (0.097, 0, -0.311)
-DSDembeddedButtonPos = (0.097, 0, -0.411)
 DSDcancel = 0.06
 DSDcancelPos = (0, -0.02)
 DPtab = 0.1

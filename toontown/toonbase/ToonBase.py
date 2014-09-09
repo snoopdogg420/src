@@ -53,11 +53,10 @@ class ToonBase(OTPBase.OTPBase):
             self.resDict.setdefault(ratio, []).append(res)
 
         # Get the native width, height and ratio:
-        if sys.platform == 'win32':  # Use CTypes
-            import ctypes
-            self.nativeWidth = ctypes.windll.user32.GetSystemMetrics(0)
-            self.nativeHeight = ctypes.windll.user32.GetSystemMetrics(1)
-        else:  # Use PyGTK
+        if sys.platform == 'win32':  # Use displayInfo.
+            self.nativeWidth = displayInfo.getMaximumWindowWidth()
+            self.nativeHeight = displayInfo.getMaximumWindowHeight()
+        else:  # Use PyGTK.
             import gtk
             self.nativeWidth = gtk.gdk.screen_width()
             self.nativeHeight = gtk.gdk.screen_height()
@@ -69,21 +68,17 @@ class ToonBase(OTPBase.OTPBase):
         fullscreen = self.settings.get('fullscreen', False)
         if ('res' not in self.settings.all()) or fullscreen:
             if fullscreen:
-
                 # If we're fullscreen, we want to fit the entire screen:
                 res = (self.nativeWidth, self.nativeHeight)
-
             elif len(self.resDict[self.nativeRatio]) > 1:
-
-                # We have resolutions that match our native ratio and fit it! Let's
-                # use one:
+                # We have resolutions that match our native ratio and fit it!
+                # Let's use one:
                 res = sorted(self.resDict[self.nativeRatio])[0]
-
             else:
-
-                # Okay, we don't have any resolutions that match our screen's
-                # resolutions and fit it (besides the native ratio itself, of
-                # course). Let's just use the second largest ratio:
+                # Okay, we don't have any resolutions that match our native
+                # ratio and fit it (besides the native resolution itself, of
+                # course). Let's just use one of the second largest ratio's
+                # resolutions:
                 ratios = sorted(self.resDict.keys(), reverse=False)
                 nativeIndex = ratios.index(self.nativeRatio)
                 res = sorted(self.resDict[ratios[nativeIndex - 1]])[0]
@@ -120,7 +115,6 @@ class ToonBase(OTPBase.OTPBase):
             self.win.setSort(sort)
             self.graphicsEngine.renderFrame()
             self.graphicsEngine.renderFrame()
-        taskMgr.setupTaskChain('nametag-chain', numThreads=1, frameSync=True, threadPriority=TPNormal)
         self.disableShowbaseMouse()
         self.addCullBins()
         self.debugRunningMultiplier /= OTPGlobals.ToonSpeedFactor
@@ -393,31 +387,30 @@ class ToonBase(OTPBase.OTPBase):
         chatButtonGui.removeNode()
 
         rolloverSound = DirectGuiGlobals.getDefaultRolloverSound()
-        if rolloverSound:
+        if rolloverSound is not None:
             NametagGlobals.setRolloverSound(rolloverSound)
         clickSound = DirectGuiGlobals.getDefaultClickSound()
-        if clickSound:
+        if clickSound is not None:
             NametagGlobals.setClickSound(clickSound)
 
-        taskMgr.setupTaskChain('nametags', numThreads=1, threadPriority=TPNormal)
-
         self.marginManager = MarginManager()
-        self.margins = self.aspect2d.attachNewNode(self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
+        self.margins = self.aspect2d.attachNewNode(
+            self.marginManager, DirectGuiGlobals.MIDGROUND_SORT_INDEX + 1)
         self.leftCells = [
-            self.marginManager.addCell(0.25, -0.6, base.a2dTopLeft),
-            self.marginManager.addCell(0.25, -1.0, base.a2dTopLeft),
-            self.marginManager.addCell(0.25, -1.4, base.a2dTopLeft)
+            self.marginManager.addCell(0.25, -0.6, self.a2dTopLeft),
+            self.marginManager.addCell(0.25, -1.0, self.a2dTopLeft),
+            self.marginManager.addCell(0.25, -1.4, self.a2dTopLeft)
         ]
         self.bottomCells = [
-            self.marginManager.addCell(0.4, 0.2, base.a2dBottomCenter),
-            self.marginManager.addCell(-0.4, 0.2, base.a2dBottomCenter),
-            self.marginManager.addCell(-1.0, 0.2, base.a2dBottomCenter),
-            self.marginManager.addCell(1.0, 0.2, base.a2dBottomCenter)
+            self.marginManager.addCell(0.4, 0.2, self.a2dBottomCenter),
+            self.marginManager.addCell(-0.4, 0.2, self.a2dBottomCenter),
+            self.marginManager.addCell(-1.0, 0.2, self.a2dBottomCenter),
+            self.marginManager.addCell(1.0, 0.2, self.a2dBottomCenter)
         ]
         self.rightCells = [
-            self.marginManager.addCell(-0.25, -0.6, base.a2dTopRight),
-            self.marginManager.addCell(-0.25, -1.0, base.a2dTopRight),
-            self.marginManager.addCell(-0.25, -1.4, base.a2dTopRight)
+            self.marginManager.addCell(-0.25, -0.6, self.a2dTopRight),
+            self.marginManager.addCell(-0.25, -1.0, self.a2dTopRight),
+            self.marginManager.addCell(-0.25, -1.4, self.a2dTopRight)
         ]
 
     def setCellsActive(self, cells, active):
@@ -555,16 +548,14 @@ class ToonBase(OTPBase.OTPBase):
         sys.exit()
 
     def getShardPopLimits(self):
-        if self.cr.productName == 'JP':
-            return (config.GetInt('shard-low-pop', ToontownGlobals.LOW_POP_JP), config.GetInt('shard-mid-pop', ToontownGlobals.MID_POP_JP), config.GetInt('shard-high-pop', ToontownGlobals.HIGH_POP_JP))
-        elif self.cr.productName in ['BR', 'FR']:
-            return (config.GetInt('shard-low-pop', ToontownGlobals.LOW_POP_INTL), config.GetInt('shard-mid-pop', ToontownGlobals.MID_POP_INTL), config.GetInt('shard-high-pop', ToontownGlobals.HIGH_POP_INTL))
-        else:
-            return (config.GetInt('shard-low-pop', ToontownGlobals.LOW_POP), config.GetInt('shard-mid-pop', ToontownGlobals.MID_POP), config.GetInt('shard-high-pop', ToontownGlobals.HIGH_POP))
+        return (
+            config.GetInt('shard-low-pop', ToontownGlobals.LOW_POP),
+            config.GetInt('shard-mid-pop', ToontownGlobals.MID_POP),
+            config.GetInt('shard-high-pop', ToontownGlobals.HIGH_POP)
+        )
 
     def playMusic(self, music, looping = 0, interrupt = 1, volume = None, time = 0.0):
         OTPBase.OTPBase.playMusic(self, music, looping, interrupt, volume, time)
-
 
     # OS X Specific Actions
     def exitOSX(self):
@@ -592,4 +583,3 @@ class ToonBase(OTPBase.OTPBase):
         wp = WindowProperties()
         wp.setMinimized(True)
         base.win.requestProperties(wp)
-

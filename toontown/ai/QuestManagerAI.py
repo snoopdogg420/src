@@ -3,6 +3,7 @@ from toontown.building import FADoorCodes
 from otp.ai.MagicWordGlobal import *
 from toontown.hood import ZoneUtil
 from toontown.quest import Quests
+from direct.directnotify.DirectNotifyGlobal import directNotify
 
 QuestIdIndex = 0
 QuestFromNpcIdIndex = 1
@@ -11,6 +12,8 @@ QuestRewardIdIndex = 3
 QuestProgressIndex = 4
 
 class QuestManagerAI:
+    notify = directNotify.newCategory('QuestManagerAI')
+
     def __init__(self, air):
         self.air = air
 
@@ -205,7 +208,10 @@ class QuestManagerAI:
     def giveReward(self, av, questId, rewardId):
         # Give the reward.
         rewardClass = Quests.getReward(rewardId)
-        rewardClass.sendRewardAI(av)
+        if rewardClass is None:
+            self.notify.warning('rewardClass was None for rewardId: %s.' % rewardId)
+        else:
+            rewardClass.sendRewardAI(av)
 
         # Add the rewardId to the avatars rewardHistory.
         rewardTier, rewardHistory = av.getRewardHistory()

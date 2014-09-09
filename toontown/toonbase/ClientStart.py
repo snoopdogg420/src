@@ -14,7 +14,7 @@ from otp.settings.Settings import Settings
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
 print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
 settings = Settings(preferencesFilename)
-res = settings.get('res', (1280, 720))
+res = settings.get('res', (800, 600))
 fullscreen = settings.get('fullscreen', False)
 if 'fullscreen' not in settings.all():
     settings.set('fullscreen', fullscreen)
@@ -36,6 +36,10 @@ if 'sfxVol' not in settings.all():
 loadDisplay = settings.get('loadDisplay', 'pandagl')
 if 'loadDisplay' not in settings.all():
     settings.set('loadDisplay', loadDisplay)
+if 'acceptingNewFriends' not in settings.all():
+    settings.set('acceptingNewFriends', {})
+if 'acceptingNonFriendWhispers' not in settings.all():
+    settings.set('acceptingNonFriendWhispers', {})
 loadPrcFileData('toonBase Settings Window Res', 'win-size %s %s' % (res[0], res[1]))
 loadPrcFileData('toonBase Settings Window FullScreen', 'fullscreen %s' % fullscreen)
 loadPrcFileData('toonBase Settings Music Active', 'audio-music-active %s' % music)

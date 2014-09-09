@@ -6,7 +6,9 @@ class DistributedNPCYinAI(DistributedNPCToonBaseAI):
     def requestTransformation(self):
         avId = self.air.getAvatarIdFromSender()
         av = self.air.doId2do.get(avId)
-        if not av:
+        if av is None:
+            return
+        if not hasattr(av, 'dna'):
             return
         if (av.dna.getAnimal() == 'cat') and (av.dna.headColor != 0x1a):
             newDNA = ToonDNA()

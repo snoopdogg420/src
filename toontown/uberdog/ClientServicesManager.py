@@ -1,8 +1,13 @@
-from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
 from direct.directnotify.DirectNotifyGlobal import directNotify
-from otp.distributed.PotentialAvatar import PotentialAvatar
-from pandac.PandaModules import *
+from direct.distributed.DistributedObjectGlobal import DistributedObjectGlobal
 import hmac
+from pandac.PandaModules import *
+
+from otp.distributed.PotentialAvatar import PotentialAvatar
+from otp.otpbase import OTPGlobals
+from toontown.chat.ChatGlobals import WTSystem
+from toontown.chat.WhisperPopup import WhisperPopup
+
 
 class ClientServicesManager(DistributedObjectGlobal):
     notify = directNotify.newCategory('ClientServicesManager')
@@ -10,6 +15,8 @@ class ClientServicesManager(DistributedObjectGlobal):
     # --- LOGIN LOGIC ---
     def performLogin(self, doneEvent):
         self.doneEvent = doneEvent
+
+        self.systemMessageSfx = None
 
         token = self.cr.playToken or 'dev'
 
@@ -81,4 +88,11 @@ class ClientServicesManager(DistributedObjectGlobal):
     def sendChooseAvatar(self, avId):
         self.sendUpdate('chooseAvatar', [avId])
 
-    # No response: instead, an OwnerView is sent or deleted.
+    def systemMessage(self, message):
+        whisper = WhisperPopup(message, OTPGlobals.getInterfaceFont(), WTSystem)
+        whisper.manage(base.marginManager)
+
+        if self.systemMessageSfx is None:
+            self.systemMessageSfx = base.loadSfx('phase_3/audio/sfx/clock03.ogg')
+
+        base.playSfx(self.systemMessageSfx)

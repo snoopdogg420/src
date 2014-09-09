@@ -15,17 +15,14 @@ from toontown.suit import SuitDNA
 from toontown.suit import Suit
 from toontown.quest import QuestParser
 from toontown.toon import DistributedNPCSpecialQuestGiver
+from toontown.toonbase import TTLocalizer
+from toontown.chat.ChatGlobals import CFSpeech
+
 
 class DistributedTutorialInterior(DistributedObject.DistributedObject):
-
-    def __init__(self, cr):
-        DistributedObject.DistributedObject.__init__(self, cr)
-
-    def generate(self):
-        DistributedObject.DistributedObject.generate(self)
-
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
+
         if not base.cr.doFindAllInstances(DistributedNPCSpecialQuestGiver.DistributedNPCSpecialQuestGiver):
             self.acceptOnce('doneTutorialSetup', self.setup)
         else:
@@ -43,10 +40,8 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
         self.suit.delete()
         del self.suit
         self.ignore('enterTutorialInterior')
-        DistributedObject.DistributedObject.disable(self)
 
-    def delete(self):
-        DistributedObject.DistributedObject.delete(self)
+        DistributedObject.DistributedObject.disable(self)
 
     def randomDNAItem(self, category, findFunc):
         codeCount = self.dnaStore.getNumCatalogCodes(category)
@@ -131,6 +126,8 @@ class DistributedTutorialInterior(DistributedObject.DistributedObject):
             self.cr.doId2do[self.npcId].reparentTo(npcOrigin)
             self.cr.doId2do[self.npcId].clearMat()
         self.createSuit()
+        base.localAvatar.setPosHpr(-2, 12, 0, -10, 0, 0)
+        self.cr.doId2do[self.npcId].setChatAbsolute(TTLocalizer.QuestScriptTutorialMickey_4, CFSpeech)
         place = base.cr.playGame.getPlace()
         if place and hasattr(place, 'fsm') and place.fsm.getCurrentState().getName():
             self.notify.info('Tutorial movie: Place ready.')

@@ -1,5 +1,5 @@
-from pandac.PandaModules import *
-from toontown.nametag import NametagGlobals
+from pandac.PandaModules import Point3, Point2
+
 from toontown.nametag.NametagFloat3d import NametagFloat3d
 
 
@@ -10,7 +10,7 @@ class NametagFloat2d(NametagFloat3d):
     def update(self):
         NametagFloat3d.update(self)
 
-        if self.getChatText() and (self.getChatButton() != NametagGlobals.noButton):
+        if self.getChatText() and self.hasChatButton():
             self.updateClickRegion()
         else:
             self.region.setActive(False)

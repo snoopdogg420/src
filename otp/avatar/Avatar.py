@@ -473,7 +473,7 @@ class Avatar(Actor, ShadowCaster):
 
     def clickedNametag(self):
         MagicWordManager.lastClickedNametag = self
-        if self.nametag.getChatButton() != NametagGlobals.noButton:
+        if self.nametag.getChatText() and self.nametag.hasChatButton():
             self.advancePageNumber()
         elif self.nametag.getActive():
             messenger.send('clickedNametag', [self])

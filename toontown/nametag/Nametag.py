@@ -1,7 +1,8 @@
 from direct.fsm.FSM import FSM
 from direct.showbase.DirectObject import DirectObject
 from direct.task.Task import Task
-from pandac.PandaModules import *
+from pandac.PandaModules import MouseWatcherRegion, DepthWriteAttrib
+from pandac.PandaModules import PandaNode, NodePath, TextNode, PGButton, VBase4
 
 from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.nametag import NametagGlobals
@@ -68,20 +69,24 @@ class Nametag(FSM, PandaNode, DirectObject):
         self.chatTextNode.setGlyphScale(ChatBalloon.TEXT_GLYPH_SCALE)
         self.chatTextNode.setGlyphShift(ChatBalloon.TEXT_GLYPH_SHIFT)
 
-        # Create the click region:
+        # Create a click region:
         self.regionName = self.getUniqueName() + '-region'
         self.region = MouseWatcherRegion(self.regionName, 0, 0, 0, 0)
         base.mouseWatcherNode.addRegion(self.region)
 
         # Accept the mouse events:
-        self.accept(base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName), self.__handleMouseEnter)
-        self.accept(base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName), self.__handleMouseLeave)
-        self.accept(base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName), self.__handleMouseDown)
-        self.accept(base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName), self.__handleMouseUp)
+        enterPattern = base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName)
+        leavePattern = base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName)
+        buttonDownPattern = base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName)
+        buttonUpPattern = base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName)
+        self.accept(enterPattern, self.__handleMouseEnter)
+        self.accept(leavePattern, self.__handleMouseLeave)
+        self.accept(buttonDownPattern, self.__handleMouseDown)
+        self.accept(buttonUpPattern, self.__handleMouseUp)
 
         # Add the tick task:
         self.tickTaskName = self.getUniqueName() + '-tick'
-        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=0, taskChain='nametags')
+        self.tickTask = taskMgr.add(self.tick, self.tickTaskName, sort=45)
 
     def destroy(self):
         self.ignoreAll()
@@ -171,6 +176,13 @@ class Nametag(FSM, PandaNode, DirectObject):
     def getChatButton(self):
         return self.chatButton
 
+    def hasChatButton(self):
+        if (self.chatType == NametagGlobals.CHAT) and self.chatHidden:
+            return False
+        if (self.chatType == NametagGlobals.THOUGHT_BALLOON) and self.thoughtHidden:
+            return False
+        return self.chatButton != NametagGlobals.noButton
+
     def setChatReversed(self, chatReversed):
         self.chatReversed = chatReversed
 
@@ -250,9 +262,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.lastClickState
 
     def setClickState(self, clickState):
-        if (not NametagGlobals.wantActiveNametags) and ((not self.getChatText()) or (self.getChatButton() == NametagGlobals.noButton)):
-            self.setClickStateColor(PGButton.SInactive)
-            return
+        if not NametagGlobals.wantActiveNametags:
+            if (not self.getChatText()) or (not self.hasChatButton()):
+                self.setClickStateColor(PGButton.SInactive)
+                return
 
         self.lastClickState = self.clickState
         self.clickState = clickState
@@ -288,6 +301,7 @@ class Nametag(FSM, PandaNode, DirectObject):
                     self.CHAT_BALLOON_ALPHA)
             self.chatBalloon.setForeground(foreground)
             self.chatBalloon.setBackground(background)
+            self.chatBalloon.setButton(self.chatButton[self.clickState])
         elif self.panel is not None:
             foreground, background = self.nametagColor[clickState]
             self.setForeground(foreground)
@@ -306,17 +320,19 @@ class Nametag(FSM, PandaNode, DirectObject):
         return self.chatTextNode.getText()
 
     def setWordWrap(self, wordWrap):
-        if wordWrap > self.TEXT_WORD_WRAP:
+        if wordWrap is None:
             wordWrap = self.TEXT_WORD_WRAP
         self.textNode.setWordwrap(wordWrap)
+        self.update()
 
     def getWordWrap(self):
         return self.textNode.getWordwrap()
 
     def setChatWordWrap(self, chatWordWrap):
-        if chatWordWrap > self.CHAT_TEXT_WORD_WRAP:
+        if (chatWordWrap is None) or (chatWordWrap > self.CHAT_TEXT_WORD_WRAP):
             chatWordWrap = self.CHAT_TEXT_WORD_WRAP
         self.chatTextNode.setWordwrap(chatWordWrap)
+        self.update()
 
     def getChatWordWrap(self):
         return self.chatTextNode.getWordwrap()
@@ -371,7 +387,7 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.getText() and (not self.nametagHidden):
             self.drawNametag()
 
-        if self.active or (self.getChatButton() != NametagGlobals.noButton):
+        if self.active or (self.getChatText() and self.hasChatButton()):
             self.updateClickRegion()
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
@@ -380,10 +396,13 @@ class Nametag(FSM, PandaNode, DirectObject):
             return
 
         # If we have a chat balloon button, we must override the click state:
-        if self.getChatButton() != NametagGlobals.noButton:
+        if self.hasChatButton():
             self.clickState = self.pendingClickState
 
-        foreground, background = self.chatColor[self.clickState]
+        if NametagGlobals.wantActiveNametags or self.hasChatButton():
+            foreground, background = self.chatColor[self.clickState]
+        else:
+            foreground, background = self.chatColor[PGButton.SInactive]
         if self.chatType == NametagGlobals.SPEEDCHAT:
             background = self.speedChatColor
         if background[3] > self.CHAT_BALLOON_ALPHA:
@@ -412,7 +431,10 @@ class Nametag(FSM, PandaNode, DirectObject):
         if self.icon is not None:
             self.contents.attachNewNode(self.icon)
 
-        foreground, background = self.nametagColor[self.clickState]
+        if NametagGlobals.wantActiveNametags:
+            foreground, background = self.nametagColor[self.clickState]
+        else:
+            foreground, background = self.nametagColor[PGButton.SInactive]
 
         # Set the color of the TextNode:
         self.textNode.setTextColor(foreground)
@@ -456,7 +478,7 @@ class Nametag(FSM, PandaNode, DirectObject):
 
     def __handleMouseEnter(self, region, extra):
         self.pendingClickState = PGButton.SRollover
-        if (self.clickState == PGButton.SReady) or (self.getChatText() and (self.getChatButton() != NametagGlobals.noButton)):
+        if (self.clickState == PGButton.SReady) or (self.getChatText() and self.hasChatButton()):
             self.setClickState(PGButton.SRollover)
 
     def __handleMouseLeave(self, region, extra):
