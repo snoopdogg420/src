@@ -1,14 +1,18 @@
-from panda3d.core import NodePath, DecalEffect
-import DNADoor
+from pandac.PandaModules import NodePath, DecalEffect
 
-class DNAFlatDoor(DNADoor.DNADoor):
+from toontown.dna.DNADoor import DNADoor
+
+
+class DNAFlatDoor(DNADoor):
     COMPONENT_CODE = 18
 
-    def traverse(self, nodePath, dnaStorage):
-        node = dnaStorage.findNode(self.getCode())
-        node = node.copyTo(nodePath, 0)
-        node.setScale(NodePath(), (1, 1, 1))
-        node.setPosHpr((0.5, 0, 0), (0, 0, 0))
-        node.setColor(self.getColor())
-        node.getNode(0).setEffect(DecalEffect.make())
-        node.flattenStrong()
+    def traverse(self, storage, parent, recursive=True):
+        node = storage.findNode(self.code)
+        if node is None:
+            raise DNAError('DNAFlatDoor code %s could not be found.' % self.code)
+
+        nodePath = node.copyTo(parent, 0)
+        nodePath.setScale(NodePath(), 1)
+        nodePath.setX(0.5)
+        nodePath.setColor(self.color)
+        nodePath.getNode(0).setEffect(DecalEffect.make())
