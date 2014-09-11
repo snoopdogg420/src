@@ -4,9 +4,9 @@ class HolidayManagerAI:
         self.currentHolidays = []
         self.xpMultiplier = 1
 
-    def isHolidayRunning(self, *args):
-        return True
-        #TODO: this function needs to actually check holidays
+    def isHolidayRunning(self, holidayId):
+        if holidayId in self.currentHolidays:
+            return True
 
     def isMoreXpHolidayRunning(self):
         return False
