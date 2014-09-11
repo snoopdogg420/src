@@ -1,3 +1,5 @@
+from toontown.toonbase import ToontownGlobals
+
 class HolidayManagerAI:
 
     def __init__(self, air):
@@ -19,7 +21,7 @@ class HolidayManagerAI:
             return True
 
     def isMoreXpHolidayRunning(self):
-        if 25 in self.currentHolidays:
+        if ToontownGlobals.MORE_XP_HOLIDAY in self.currentHolidays:
             self.xpMultiplier = 2
             return True
         return False
