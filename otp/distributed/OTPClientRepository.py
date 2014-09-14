@@ -912,6 +912,8 @@ class OTPClientRepository(ClientRepositoryBase):
         self.stopReaderPollTask()
         if (self.bootedIndex is not None) and (self.bootedIndex in OTPLocalizer.CRBootedReasons):
             message = OTPLocalizer.CRBootedReasons[self.bootedIndex]
+        elif(self.bootedIndex == 155):
+            message = self.bootedText
         elif self.bootedText is not None:
             message = OTPLocalizer.CRBootedReasonUnknownCode % self.bootedIndex
         else:
