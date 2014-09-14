@@ -444,9 +444,10 @@ class Avatar(Actor, ShadowCaster):
         nametag2d = self.nametag.getNametag2d()
         if not self.ghostMode:
             nametag2d.showNametag()
+            nametag2d.showChat()
         else:
             nametag2d.hideNametag()
-        nametag2d.showChat()
+            nametag2d.hideChat()
         nametag2d.update()
 
     def hideNametag3d(self):
