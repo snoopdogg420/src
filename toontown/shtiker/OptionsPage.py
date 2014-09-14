@@ -425,30 +425,28 @@ class OptionsTabPage(DirectFrame):
 
     def __doToggleAcceptFriends(self):
         messenger.send('wakeup')
+        acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
         if base.localAvatar.acceptingNewFriends:
             base.localAvatar.acceptingNewFriends = 0
-            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
-            acceptingNewFriends[base.localAvatar.doId] = False
+            acceptingNewFriends['%s'.replace("%s",str(base.localAvatar.doId))] = False
             base.settings.set('acceptingNewFriends', acceptingNewFriends)
         else:
             base.localAvatar.acceptingNewFriends = 1
-            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
-            acceptingNewFriends[base.localAvatar.doId] = True
+            acceptingNewFriends['%s'.replace("%s",str(base.localAvatar.doId))] = True
             base.settings.set('acceptingNewFriends', acceptingNewFriends)
         self.settingsChanged = 1
         self.__setAcceptFriendsButton()
 
     def __doToggleAcceptWhispers(self):
         messenger.send('wakeup')
+        acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
         if base.localAvatar.acceptingNonFriendWhispers:
             base.localAvatar.acceptingNonFriendWhispers = 0
-            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
-            acceptingNonFriendWhispers[base.localAvatar.doId] = False
+            acceptingNonFriendWhispers['%s'.replace("%s",str(base.localAvatar.doId))] = False
             base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         else:
             base.localAvatar.acceptingNonFriendWhispers = 1
-            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
-            acceptingNonFriendWhispers[base.localAvatar.doId] = True
+            acceptingNonFriendWhispers['%s'.replace("%s",str(base.localAvatar.doId))] = True
             base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         self.settingsChanged = 1
         self.__setAcceptWhispersButton()
