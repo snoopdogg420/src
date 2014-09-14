@@ -428,11 +428,11 @@ class OptionsTabPage(DirectFrame):
         acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
         if base.localAvatar.acceptingNewFriends:
             base.localAvatar.acceptingNewFriends = 0
-            acceptingNewFriends['%s'.replace("%s",str(base.localAvatar.doId))] = False
+            acceptingNewFriends[str(base.localAvatar.doId)] = False
             base.settings.set('acceptingNewFriends', acceptingNewFriends)
         else:
             base.localAvatar.acceptingNewFriends = 1
-            acceptingNewFriends['%s'.replace("%s",str(base.localAvatar.doId))] = True
+            acceptingNewFriends[str(base.localAvatar.doId)] = True
             base.settings.set('acceptingNewFriends', acceptingNewFriends)
         self.settingsChanged = 1
         self.__setAcceptFriendsButton()
@@ -442,11 +442,11 @@ class OptionsTabPage(DirectFrame):
         acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
         if base.localAvatar.acceptingNonFriendWhispers:
             base.localAvatar.acceptingNonFriendWhispers = 0
-            acceptingNonFriendWhispers['%s'.replace("%s",str(base.localAvatar.doId))] = False
+            acceptingNonFriendWhispers[str(base.localAvatar.doId)] = False
             base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         else:
             base.localAvatar.acceptingNonFriendWhispers = 1
-            acceptingNonFriendWhispers['%s'.replace("%s",str(base.localAvatar.doId))] = True
+            acceptingNonFriendWhispers[str(base.localAvatar.doId)] = True
             base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
         self.settingsChanged = 1
         self.__setAcceptWhispersButton()
