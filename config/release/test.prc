@@ -33,4 +33,4 @@ want-chestnut-park-construction #t
 
 # Temporary...
 want-phone-quest #f
-want-yin-yang #t
+want-yin-yang #f
