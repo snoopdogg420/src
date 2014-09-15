@@ -257,14 +257,14 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
 
         acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
         acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
-        if self.doId not in acceptingNewFriends:
-            acceptingNewFriends[self.doId] = True
+        if str(self.doId) not in acceptingNewFriends:
+            acceptingNewFriends[str(self.doId)] = True
             base.settings.set('acceptingNewFriends', acceptingNewFriends)
-        if self.doId not in acceptingNonFriendWhispers:
-            acceptingNonFriendWhispers[self.doId] = True
+        if str(self.doId) not in acceptingNonFriendWhispers:
+            acceptingNonFriendWhispers[str(self.doId)] = True
             base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
-        self.acceptingNewFriends = acceptingNewFriends[self.doId]
-        self.acceptingNonFriendWhispers = acceptingNonFriendWhispers[self.doId]
+        self.acceptingNewFriends = acceptingNewFriends[str(self.doId)]
+        self.acceptingNonFriendWhispers = acceptingNonFriendWhispers[str(self.doId)]
 
     def disable(self):
         self.laffMeter.destroy()
