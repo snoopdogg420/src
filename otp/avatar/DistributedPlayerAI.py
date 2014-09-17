@@ -1,6 +1,6 @@
 from direct.showbase import GarbageReport
 from direct.distributed.PyDatagram import PyDatagram
-from direct.distributed.MsgTypes import *
+from direct.distributed.MsgTypes import CLIENTAGENT_EJECT
 
 from otp.ai.AIBaseGlobal import *
 from otp.ai.MagicWordGlobal import *
