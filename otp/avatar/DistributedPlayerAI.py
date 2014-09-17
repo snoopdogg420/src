@@ -173,7 +173,7 @@ def maintenance(minutes):
         dg = PyDatagram()
         dg.addServerHeader(10, simbase.air.ourChannel, CLIENTAGENT_EJECT)
         dg.addUint16(154)
-        dg.addString('Toontown is now closed for maintenance.')
+        dg.addString('Toontown Infinite is now closed for maintenance.')
         simbase.air.send(dg)
         return Task.done
     
