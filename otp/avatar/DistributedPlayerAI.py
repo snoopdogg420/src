@@ -176,6 +176,7 @@ def maintenance(minutes):
         dg.addString('Toontown is now closed for maintenance.')
         simbase.air.send(dg)
         return Task.done
+    
     def countdown(minutes):
         if minutes > 0:
             system(OTPLocalizer.CRMaintenanceCountdownMessage % minutes)
