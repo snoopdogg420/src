@@ -1,4 +1,6 @@
 from direct.showbase import GarbageReport
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.MsgTypes import CLIENTAGENT_EJECT
 
 from otp.ai.AIBaseGlobal import *
 from otp.ai.MagicWordGlobal import *
@@ -167,12 +169,20 @@ def maintenance(minutes):
     Initiate the maintenance message sequence. It will last for the specified
     amount of <minutes>.
     """
+    def disconnect(task):
+        dg = PyDatagram()
+        dg.addServerHeader(10, simbase.air.ourChannel, CLIENTAGENT_EJECT)
+        dg.addUint16(154)
+        dg.addString('Toontown Infinite is now closed for maintenance.')
+        simbase.air.send(dg)
+        return Task.done
+    
     def countdown(minutes):
         if minutes > 0:
             system(OTPLocalizer.CRMaintenanceCountdownMessage % minutes)
         else:
             system(OTPLocalizer.CRMaintenanceMessage)
-
+            taskMgr.doMethodLater(10, disconnect, 'maintenance-disconnection')
         if minutes <= 5:
             next = 60
             minutes -= 1
