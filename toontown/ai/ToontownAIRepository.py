@@ -92,7 +92,6 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.timeManager.generateWithRequired(2)
         self.magicWordManager = MagicWordManagerAI(self)
         self.magicWordManager.generateWithRequired(2)
-        self.holidayManager = HolidayManagerAI(self)
         self.newsManager = NewsManagerAI(self)
         self.newsManager.generateWithRequired(2)
         self.safeZoneManager = SafeZoneManagerAI(self)
@@ -111,6 +110,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.promotionMgr = PromotionManagerAI.PromotionManagerAI(self)
         self.cogPageManager = CogPageManagerAI.CogPageManagerAI()
         self.bankManager = BankManagerAI.BankManagerAI(self)
+        self.holidayManager = HolidayManagerAI(self)
         if self.wantFishing:
             self.fishManager = FishManagerAI(self)
         if self.wantHousing:

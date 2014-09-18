@@ -19,6 +19,7 @@ decorationHolidays = [ToontownGlobals.WINTER_DECORATIONS,
  ToontownGlobals.HALLOWEEN_COSTUMES,
  ToontownGlobals.SPOOKY_COSTUMES,
  ToontownGlobals.CRASHED_LEADERBOARD]
+promotionalSpeedChatHolidays = []
 
 class NewsManager(DistributedObject.DistributedObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('NewsManager')
