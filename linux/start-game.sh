@@ -3,8 +3,8 @@ cd ..
 
 # Get the user input:
 read -p "Username: " ttiUsername
-read -p "Gameserver (DEFAULT: 192.99.200.107): " TTI_GAMESERVER
-TTI_GAMESERVER=${TTI_GAMESERVER:-"192.99.200.107"}
+read -p "Gameserver (DEFAULT:  167.114.28.238): " TTI_GAMESERVER
+TTI_GAMESERVER=${TTI_GAMESERVER:-"167.114.28.238"}
 
 # Export the environment variables:
 export ttiUsername=$ttiUsername
