@@ -48,7 +48,12 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
         if not self.validate(avId, avId in self.involvedToons, 'hitBoss from unknown avatar'):
             return
         self.validate(avId, bossDamage == 1, 'invalid bossDamage %s' % bossDamage)
+        if bossDamage > 1:
+            simbase.air.writeServerEvent('suspicious', avId, 'Toon sent an attack over 1 damage!')
+            simbase.air.banManager.ban(avId, 0, 'hacking')
+            return
         if bossDamage < 1:
+            simbase.air.writeServerEvent('suspicious', avId, 'Toon sent an attack less than 1 damage!')
             return
         currState = self.getCurrentOrNextState()
         if currState != 'BattleThree':
@@ -74,6 +79,9 @@ class DistributedSellbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
 
     def hitToon(self, toonId):
         avId = self.air.getAvatarIdFromSender()
+        if avId == toonId:
+            simbase.air.writeServerEvent('suspicious', avId, 'Toon tried to heal their self!')
+            simbase.air.banManager.ban(avId, 0, 'hacking')
         if not self.validate(avId, avId != toonId, 'hitToon on self'):
             return
         if avId not in self.involvedToons or toonId not in self.involvedToons:
