@@ -158,11 +158,27 @@ class ToontownRPCHandler:
 
         Parameters:
             [int accountId] = The ID of the account to direct the message to.
-            [str message]   = The message to broadcast.
+            [str message]   = The message to send.
 
         Returns: None
         """
         channel = accountId + (1003L<<32)
+        self.rpc_messageChannel.callInternal(self, channel, message)
+
+    @rpcmethod(accessLevel=600)
+    def rpc_messageAvatar(self, avId, message):
+        """
+        Summary:
+            Sends a [message] to the client associated with the provided
+            [avId].
+
+        Parameters:
+            [int avId]    = The ID of the avatar to direct the message to.
+            [str message] = The message to send.
+
+        Returns: None
+        """
+        channel = avId + (1001L<<32)
         self.rpc_messageChannel.callInternal(self, channel, message)
 
     @rpcmethod(accessLevel=700)
@@ -231,4 +247,19 @@ class ToontownRPCHandler:
         Returns: None
         """
         channel = accountId + (1003L<<32)
+        self.rpc_kickChannel.callInternal(self, channel, code, reason)
+
+    @rpcmethod(accessLevel=300)
+    def rpc_kickAvatar(self, avId, code, reason):
+        """
+        Summary: Kicks the client associated with the provided [avId].
+
+        Parameters:
+            [int avId]    = The ID of the avatar to direct the kick to.
+            [int code]    = The code for the kick.
+            [str reason]  = The reason for the kick.
+
+        Returns: None
+        """
+        channel = avId + (1001L<<32)
         self.rpc_kickChannel.callInternal(self, channel, code, reason)
