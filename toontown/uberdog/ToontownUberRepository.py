@@ -9,8 +9,7 @@ import toontown.minigame.MinigameCreatorAI
 
 
 if config.GetBool('want-rpc-server', False):
-    from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
-    from toontown.rpc.ToontownRPCHandler import ToontownRPCHandler
+    from toontown.rpc.ToontownRPCServer import ToontownRPCServer
 
 
 class ToontownUberRepository(ToontownInternalRepository):
@@ -33,8 +32,7 @@ class ToontownUberRepository(ToontownInternalRepository):
             hostname = url.hostname or 'localhost'
             port = url.port or 8080
 
-            self.rpcServer = SimpleJSONRPCServer((hostname, port), logRequests=False)
-            self.rpcHandler = ToontownRPCHandler(self)
+            self.rpcServer = ToontownRPCServer((hostname, port), logRequests=False)
 
             taskMgr.setupTaskChain(
                 'RPCServer', numThreads=1, threadPriority=TP_normal,
