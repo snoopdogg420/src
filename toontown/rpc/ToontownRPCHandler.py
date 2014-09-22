@@ -76,6 +76,10 @@ class RPCMethod:
             return method(self, *args, **kwds)
 
 
+        # Sometimes we'll want to call the original method without security
+        # checks:
+        wrapper.callInternal = method
+
         return wrapper
 
 
@@ -114,6 +118,18 @@ class ToontownRPCHandler:
         self.air.send(datagram)
 
     @rpcmethod(accessLevel=700)
+    def rpc_messageAll(self, message):
+        """
+        Summary: Broadcasts a [message] to all clients.
+
+        Parameters:
+            [str message] = The message to broadcast.
+
+        Returns: None
+        """
+        self.rpc_messageChannel.callInternal(self, 10, message)
+
+    @rpcmethod(accessLevel=700)
     def rpc_kickChannel(self, channel, code, reason):
         """
         Summary:
@@ -122,8 +138,8 @@ class ToontownRPCHandler:
 
         Parameters:
             [int channel] = The channel to direct the kick(s) to.
-            [int code]    = The code for the kick(s).
-            [str reason]  = The reason for the kick(s).
+            [int code]    = The code for the kick.
+            [str reason]  = The reason for the kick.
 
         Returns: None
         """
@@ -132,3 +148,16 @@ class ToontownRPCHandler:
         datagram.addUint16(code)
         datagram.addString(reason)
         self.air.send(datagram)
+
+    @rpcmethod(accessLevel=700)
+    def rpc_kickAll(self, code, reason):
+        """
+        Summary: Kicks all clients.
+
+        Parameters:
+            [code]   = The code for the kick.
+            [reason] = The reason for the kick.
+
+        Returns: None
+        """
+        self.rpc_kickChannel.callInternal(self, 10, code, reason)
