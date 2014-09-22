@@ -1,5 +1,7 @@
 import base64
 from direct.directnotify.DirectNotifyGlobal import directNotify
+from direct.distributed.MsgTypes import CLIENTAGENT_EJECT
+from direct.distributed.PyDatagram import PyDatagram
 import json
 import time
 
@@ -93,13 +95,40 @@ class ToontownRPCHandler:
                 self.air.rpcServer.register_function(func, name=name)
 
     @rpcmethod(accessLevel=700)
-    def rpc_systemMessage(self, message):
+    def rpc_messageChannel(self, channel, message):
         """
-        Broadcast a <message> to the game server.
+        Summary:
+            Broadcasts a [message] to any clients whose Client Agents are
+            subscribed to the provided [channel].
+
+        Parameters:
+            [int channel] = The channel to direct the message(s) to.
+            [str message] = The message to broadcast.
+
+        Returns: None
         """
-        message = 'ADMIN: ' + message
         dclass = self.air.dclassesByName['ClientServicesManagerUD']
         datagram = dclass.aiFormatUpdate(
             'systemMessage', OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER,
             10, 1000000, [message])
+        self.air.send(datagram)
+
+    @rpcmethod(accessLevel=700)
+    def rpc_kickChannel(self, channel, code, reason):
+        """
+        Summary:
+            Kicks any clients whose Client Agents are subscribed to the
+            provided [channel].
+
+        Parameters:
+            [int channel] = The channel to direct the kick(s) to.
+            [int code]    = The code for the kick(s).
+            [str reason]  = The reason for the kick(s).
+
+        Returns: None
+        """
+        datagram = PyDatagram()
+        datagram.addServerHeader(channel, self.air.ourChannel, CLIENTAGENT_EJECT)
+        datagram.addUint16(code)
+        datagram.addString(reason)
         self.air.send(datagram)
