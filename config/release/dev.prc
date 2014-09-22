@@ -36,4 +36,5 @@ want-yin-yang #t
 want-chestnut-park-construction #t
 
 # Developer options...
+force-skip-tutorial #t
 want-instant-parties #t
