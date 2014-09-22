@@ -213,17 +213,17 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if not isinstance(self, DistributedNPCToonBaseAI):
             if 100 <= zoneId < ToontownGlobals.DynamicZonesBegin:
                 hood = ZoneUtil.getHoodId(zoneId)
-                self.sendUpdate('setLastHood', [hood])
+                self.b_setLastHood(hood)
                 self.b_setDefaultZone(hood)
 
                 hoodsVisited = list(self.getHoodsVisited())
-                if not hood in hoodsVisited:
+                if hood not in hoodsVisited:
                     hoodsVisited.append(hood)
                     self.b_setHoodsVisited(hoodsVisited)
 
                 if zoneId == ToontownGlobals.GoofySpeedway:
                     tpAccess = self.getTeleportAccess()
-                    if not ToontownGlobals.GoofySpeedway in tpAccess:
+                    if ToontownGlobals.GoofySpeedway not in tpAccess:
                         tpAccess.append(ToontownGlobals.GoofySpeedway)
                         self.b_setTeleportAccess(tpAccess)
 
@@ -521,9 +521,13 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def setDefaultZone(self, zone):
         self.defaultZone = zone
 
-    def b_setDefaultZone(self, zone):
+    def d_setDefaultZone(self, zone):
         self.sendUpdate('setDefaultZone', [zone])
-        self.setDefaultZone(zone)
+
+    def b_setDefaultZone(self, zone):
+        if zone != self.defaultZone:
+            self.setDefaultZone(zone)
+            self.d_setDefaultZone(zone)
 
     def getDefaultZone(self):
         return self.defaultZone
@@ -1082,6 +1086,14 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setLastHood(self, hood):
         self.lastHood = hood
+
+    def d_setLastHood(self, hood):
+        self.sendUpdate('setLastHood', [hood])
+
+    def b_setLastHood(self, hood):
+        if hood != self.lastHood:
+            self.setLastHood(hood)
+            self.d_setLastHood(hood)
 
     def getLastHood(self):
         return self.lastHood

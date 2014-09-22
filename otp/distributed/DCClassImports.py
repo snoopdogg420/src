@@ -2,7 +2,7 @@
 from pandac.PandaModules import *
 
 
-hashVal = 489509521
+hashVal = 489147217
 
 
 from toontown.cogdominium import DistributedCogdoInterior, DistributedCogdoBattleBldg, DistributedCogdoElevatorExt, DistributedCogdoElevatorInt, DistributedCogdoBarrel, DistCogdoGame, DistCogdoLevelGame, DistCogdoBoardroomGame, DistCogdoCraneGame, DistCogdoMazeGame, DistCogdoFlyingGame, DistCogdoCrane, DistCogdoCraneMoneyBag, DistCogdoCraneCog
