@@ -136,8 +136,8 @@ class ToontownRPCHandler:
             Broadcasts a [message] to all clients under the provided [shardId].
 
         Parameters:
-            [str message] = The message to broadcast.
             [int shardId] = The ID of the shard to direct the message to.
+            [str message] = The message to broadcast.
 
         Returns: None
         """
@@ -147,6 +147,22 @@ class ToontownRPCHandler:
         # Use it to get the uber zone's channel:
         channel = (districtId<<32) | 2
 
+        self.rpc_messageChannel.callInternal(self, channel, message)
+
+    @rpcmethod(accessLevel=600)
+    def rpc_messageAccount(self, accountId, message):
+        """
+        Summary:
+            Sends a [message] to the client associated with the provided
+            [accountId].
+
+        Parameters:
+            [int accountId] = The ID of the account to direct the message to.
+            [str message]   = The message to broadcast.
+
+        Returns: None
+        """
+        channel = accountId + (1003L<<32)
         self.rpc_messageChannel.callInternal(self, channel, message)
 
     @rpcmethod(accessLevel=700)
@@ -200,4 +216,19 @@ class ToontownRPCHandler:
         # Use it to get the uber zone's channel:
         channel = (districtId<<32) | 2
 
+        self.rpc_kickChannel.callInternal(self, channel, code, reason)
+
+    @rpcmethod(accessLevel=300)
+    def rpc_kickAccount(self, accountId, code, reason):
+        """
+        Summary: Kicks the client associated with the provided [accountId].
+
+        Parameters:
+            [int accountId] = The ID of the account to direct the kick to.
+            [int code]      = The code for the kick.
+            [str reason]    = The reason for the kick.
+
+        Returns: None
+        """
+        channel = accountId + (1003L<<32)
         self.rpc_kickChannel.callInternal(self, channel, code, reason)
