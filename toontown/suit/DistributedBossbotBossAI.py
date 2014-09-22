@@ -466,7 +466,7 @@ class DistributedBossbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
     def hitBossHackCheck(self, avId, bossDamage):
         if bossDamage > 3: # Hacker
             # Ban them.
-            self.air.banManager.ban(avId, "hacking", 0)
+            self.air.banManager.ban(avId, 'sys-hack', 0)
             return 0
         return bossDamage
 
