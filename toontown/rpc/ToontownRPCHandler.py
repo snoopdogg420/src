@@ -106,7 +106,7 @@ class ToontownRPCHandler:
             subscribed to the provided [channel].
 
         Parameters:
-            [int channel] = The channel to direct the message(s) to.
+            [int channel] = The channel to direct the message to.
             [str message] = The message to broadcast.
 
         Returns: None
@@ -114,7 +114,7 @@ class ToontownRPCHandler:
         dclass = self.air.dclassesByName['ClientServicesManagerUD']
         datagram = dclass.aiFormatUpdate(
             'systemMessage', OtpDoGlobals.OTP_DO_ID_CLIENT_SERVICES_MANAGER,
-            10, 1000000, [message])
+            channel, 1000000, [message])
         self.air.send(datagram)
 
     @rpcmethod(accessLevel=700)
@@ -130,6 +130,26 @@ class ToontownRPCHandler:
         self.rpc_messageChannel.callInternal(self, 10, message)
 
     @rpcmethod(accessLevel=700)
+    def rpc_messageShard(self, shardId, message):
+        """
+        Summary:
+            Broadcasts a [message] to all clients under the provided [shardId].
+
+        Parameters:
+            [str message] = The message to broadcast.
+            [int shardId] = The ID of the shard to direct the message to.
+
+        Returns: None
+        """
+        # Get the DO ID of the district object:
+        districtId = shardId + 1
+
+        # Use it to get the uber zone's channel:
+        channel = (districtId<<32) | 2
+
+        self.rpc_messageChannel.callInternal(self, channel, message)
+
+    @rpcmethod(accessLevel=700)
     def rpc_kickChannel(self, channel, code, reason):
         """
         Summary:
@@ -137,7 +157,7 @@ class ToontownRPCHandler:
             provided [channel].
 
         Parameters:
-            [int channel] = The channel to direct the kick(s) to.
+            [int channel] = The channel to direct the kick to.
             [int code]    = The code for the kick.
             [str reason]  = The reason for the kick.
 
@@ -161,3 +181,23 @@ class ToontownRPCHandler:
         Returns: None
         """
         self.rpc_kickChannel.callInternal(self, 10, code, reason)
+
+    @rpcmethod(accessLevel=700)
+    def rpc_kickShard(self, shardId, code, reason):
+        """
+        Summary: Kicks all clients under the provided [shardId].
+
+        Parameters:
+            [int shardId] = The ID of the shard to direct the kick to.
+            [int code]    = The code for the kick.
+            [str reason]  = The reason for the kick.
+
+        Returns: None
+        """
+        # Get the DO ID of the district object:
+        districtId = shardId + 1
+
+        # Use it to get the uber zone's channel:
+        channel = (districtId<<32) | 2
+
+        self.rpc_kickChannel.callInternal(self, channel, code, reason)
