@@ -102,7 +102,7 @@ class ToontownRPCHandler:
     def rpc_messageChannel(self, channel, message):
         """
         Summary:
-            Broadcasts a [message] to any clients whose Client Agents are
+            Broadcasts a [message] to any client whose Client Agent is
             subscribed to the provided [channel].
 
         Parameters:
@@ -185,8 +185,8 @@ class ToontownRPCHandler:
     def rpc_kickChannel(self, channel, code, reason):
         """
         Summary:
-            Kicks any clients whose Client Agents are subscribed to the
-            provided [channel].
+            Kicks any client whose Client Agent is subscribed to the provided
+            [channel].
 
         Parameters:
             [int channel] = The channel to direct the kick to.
