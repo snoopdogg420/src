@@ -11,8 +11,18 @@ from jsonrpclib.SimpleJSONRPCServer import SimpleJSONRPCServer
 from otp.distributed import OtpDoGlobals
 
 
+UNKNOWN = 700
+USER = 100
+COMMUNITY_MANAGER = 200
+MODERATOR = 300
+ARTIST = 400
+PROGRAMMER = 500
+ADMINISTRATOR = 600
+SYSTEM_ADMINISTRATOR = 700
+
+
 class RPCMethod:
-    def __init__(self, accessLevel=600):
+    def __init__(self, accessLevel=UNKNOWN):
         self.accessLevel = accessLevel
 
     def __call__(self, method):
@@ -94,7 +104,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
 
     # --- MESSAGING ---
 
-    @rpcmethod(accessLevel=700)
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_messageChannel(self, channel, message):
         """
         Summary:
@@ -113,7 +123,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
             channel, 1000000, [message])
         simbase.air.send(datagram)
 
-    @rpcmethod(accessLevel=700)
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_messageAll(self, message):
         """
         Summary: Broadcasts a [message] to all clients.
@@ -125,7 +135,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
         """
         self.rpc_messageChannel(10, message)
 
-    @rpcmethod(accessLevel=700)
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_messageShard(self, shardId, message):
         """
         Summary:
@@ -145,7 +155,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
 
         self.rpc_messageChannel(channel, message)
 
-    @rpcmethod(accessLevel=600)
+    @rpcmethod(accessLevel=ADMINISTRATOR)
     def rpc_messageAccount(self, accountId, message):
         """
         Summary:
@@ -161,7 +171,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
         channel = accountId + (1003L<<32)
         self.rpc_messageChannel(channel, message)
 
-    @rpcmethod(accessLevel=600)
+    @rpcmethod(accessLevel=ADMINISTRATOR)
     def rpc_messageAvatar(self, avId, message):
         """
         Summary:
@@ -179,7 +189,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
 
     # --- KICKS ---
 
-    @rpcmethod(accessLevel=700)
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_kickChannel(self, channel, code, reason):
         """
         Summary:
@@ -199,7 +209,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
         datagram.addString(reason)
         simbase.air.send(datagram)
 
-    @rpcmethod(accessLevel=700)
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_kickAll(self, code, reason):
         """
         Summary: Kicks all clients.
@@ -212,7 +222,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
         """
         self.rpc_kickChannel(10, code, reason)
 
-    @rpcmethod(accessLevel=700)
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_kickShard(self, shardId, code, reason):
         """
         Summary: Kicks all clients under the provided [shardId].
@@ -232,7 +242,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
 
         self.rpc_kickChannel(channel, code, reason)
 
-    @rpcmethod(accessLevel=300)
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_kickAccount(self, accountId, code, reason):
         """
         Summary: Kicks the client associated with the provided [accountId].
@@ -247,7 +257,7 @@ class ToontownRPCServer(SimpleJSONRPCServer):
         channel = accountId + (1003L<<32)
         self.rpc_kickChannel(channel, code, reason)
 
-    @rpcmethod(accessLevel=300)
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_kickAvatar(self, avId, code, reason):
         """
         Summary: Kicks the client associated with the provided [avId].
