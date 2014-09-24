@@ -1,40 +1,40 @@
-# Distribution token...
+# Distribution token:
 distribution dev
 
-# Models/textures...
+# Models/textures:
 model-path ../resources
 
-# Server...
+# Server:
 server-version infinite-dev
 client-agents 1
 server-force-ssl #f
 
-# DClass files (in reverse order)...
+# DClass files (in reverse order):
 dc-file astron/dclass/toon.dc
 dc-file astron/dclass/otp.dc
 
-# Database...
+# Database:
 accountdb-type developer
 account-server-min-access-level 600
 
-# Core features...
+# Core features:
 want-pets #f
 want-parties #f
 want-cogdominiums #f
 want-achievements #f
 want-whitelist #f
 
-# Districts...
+# Districts:
 shard-low-pop 50
 shard-mid-pop 100
 
-# Picnic table board games...
+# Picnic table board games:
 want-find-four #f
 
-# Optional...
+# Optional:
 want-yin-yang #t
 want-chestnut-park-construction #t
 
-# Developer options...
+# Developer options:
 force-skip-tutorial #t
 want-instant-parties #t

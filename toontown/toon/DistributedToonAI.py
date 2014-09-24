@@ -4975,21 +4975,17 @@ def dna(part, value):
         return 'Bottom texture color index set to: {0}'.format(dna.botTexColor)
 
     if part == 'save':
-        data = simbase.backups.load('toondna', (invoker.doId,), default={})
-        data[value] = invoker.getDNAString()
-        simbase.backups.save('toondna', (invoker.doId,), data)
-        return "Saved a DNA backup for {0} under file: {1}".format(
-            invoker.getName(), value)
+        backup = simbase.backups.load('toon', (invoker.doId,), default={})
+        backup.setdefault('dna', {})[value] = invoker.getDNAString()
+        simbase.backups.save('toon', (invoker.doId,), backup)
+        return 'Saved a DNA backup for %s under the name: %s' % (invoker.getName(), value)
 
     if part == 'restore':
-        data = simbase.backups.load('toondna', (invoker.doId,), {})
-        if value not in data:
-            return 'Could not find DNA backup for {0} under file: {1}'.format(
-                invoker.getName(), value)
-        dna.makeFromNetString(data[value])
-        invoker.b_setDNAString(data[value])
-        return 'Restored DNA backup for {0} under file: {1}'.format(
-            invoker.getName(), value)
+        backup = simbase.backups.load('toon', (invoker.doId,), default={})
+        if value not in backup.get('dna', {}):
+            return "Couldn't find a DNA backup for %s under the name: %s" % (invoker.getName(), value)
+        invoker.b_setDNAString(backup['dna'][value])
+        return 'Restored a DNA backup for %s under the name: %s' % (invoker.getName(), value)
 
     return 'Invalid part: {0}'.format(part)
 
