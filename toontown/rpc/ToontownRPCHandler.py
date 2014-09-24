@@ -6,6 +6,22 @@ from toontown.rpc.ToontownRPCHandlerBase import *
 
 
 class ToontownRPCHandler(ToontownRPCHandlerBase):
+    # --- TESTING ---
+
+    @rpcmethod(accessLevel=COMMUNITY_MANAGER)
+    def rpc_ping(self, data):
+        """
+        Summary:
+            Responds with the [data] that was sent. This method exists only for
+            testing purposes.
+
+        Parameters:
+            [str data] = The data to be given back in response.
+
+        Example response: "pong"
+        """
+        return data
+
     # --- MESSAGING ---
 
     @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)

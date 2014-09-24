@@ -236,7 +236,26 @@ class ToontownRPCConnection:
         # Grab the method from the handler:
         method = getattr(self.handler, 'rpc_' + methodName, None)
         if method is None:
-            self.writeJSONError(-32601, 'Method not found')
+            self.writeJSONError(-32601, 'Method not found', id=id)
+            return
+
+        # Find the token in the params, and remove it:
+        token = None
+        if isinstance(params, dict):
+            token = params.get('token')
+            del params['token']
+        elif len(params) > 0:
+            token = params[0]
+            params = params[1:]
+        if not isinstance(token, basestring):
+            self.writeJSONError(-32000, 'No token provided', id=id)
+            return
+
+        # Authenticate the provided token:
+        error = self.handler.authenticate(token, method)
+        if error is not None:
+            # Authentication wasn't successful. Send the error:
+            self.writeJSONError(*error, id=id)
             return
 
         # Attempt to call the method:
