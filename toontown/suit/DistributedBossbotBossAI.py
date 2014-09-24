@@ -463,18 +463,14 @@ class DistributedBossbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
 
         self.battleFourSetup = True
 
-    def hitBossHackCheck(self, avId, bossDamage):
-        if bossDamage > 3: # Hacker
-            # Ban them.
-            self.air.banManager.ban(avId, 'sys-hack', 0)
-            return 0
-        return bossDamage
-
     def hitBoss(self, bossDamage):
         avId = self.air.getAvatarIdFromSender()
         if not self.validate(avId, avId in self.involvedToons, 'hitBoss from unknown avatar'):
             return
-        bossDamage = self.hitBossHackCheck(avId, bossDamage)
+        if bossDamage > 3: # Hacker
+            # Ban them.
+            self.air.banManager.ban(avId, 0, 'sys-hack')
+            return
         if bossDamage < 1:
             return
         currState = self.getCurrentOrNextState()
