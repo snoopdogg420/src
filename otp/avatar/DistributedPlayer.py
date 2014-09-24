@@ -49,8 +49,7 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
             self.adminAccess = 0
             self.autoRun = 0
             self.whiteListEnabled = base.config.GetBool('whitelist-chat-enabled', 1)
-
-        return
+            self.lastTeleportQuery = time.time()
 
     @staticmethod
     def GetPlayerGenerateEvent():
@@ -340,6 +339,15 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         return
 
     def d_teleportQuery(self, requesterId, sendToId = None):
+        lastQuery = self.lastTeleportQuery
+        currentQuery = time.time()
+
+        if currentQuery - lastQuery < 0.1: # Oh boy! We found a skid!
+            self.cr.stopReaderPollTask()
+            self.cr.lostConnection()
+
+        self.lastTeleportQuery = time.time()
+
         if sendToId in base.cr.doId2do:
             teleportNotify.debug('sending teleportQuery%s' % ((requesterId, sendToId),))
             self.sendUpdate('teleportQuery', [requesterId], sendToId)
