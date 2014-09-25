@@ -1,6 +1,7 @@
 from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.showbase import PythonUtil
 from direct.stdpy import threading
+from direct.stdpy import threading2
 import httplib
 import json
 import socket
@@ -70,7 +71,7 @@ class ToontownRPCConnection:
                 command, _, version = words
 
                 if command != 'POST':
-                    self.writeHTTPError(505)
+                    self.writeHTTPError(501)
                     return {}
 
                 if version not in ('HTTP/1.0', 'HTTP/1.1'):
@@ -165,9 +166,11 @@ class ToontownRPCConnection:
 
             request = self.writeQueue.pop(0)
 
-            if request.get('abort', False):
+            abort = request.get('abort')
+            if abort is not None:
                 # Clear the write queue, and stop:
                 self.writeQueue = []
+                abort.set()
                 break
 
             # Write the data immediately:
@@ -180,8 +183,10 @@ class ToontownRPCConnection:
         self.writeSemaphore.release()
 
     def close(self):
-        self.writeQueue.append({'abort': True})
+        abort = threading2.Event()
+        self.writeQueue.append({'abort': abort})
         self.writeSemaphore.release()
+        abort.wait()
 
         try:
             self.socket.shutdown(socket.SHUT_RDWR)
@@ -231,7 +236,7 @@ class ToontownRPCConnection:
     def writeJSONError(self, code, message, id=None):
         self.notify.warning('Received a bad JSON request: %d %s' % (code, message))
         response = {'error': {'code': code, 'message': message}}
-        self.writeJSONResponse(response)
+        self.writeJSONResponse(response, id=id)
 
     def dispatch(self, methodName, params=(), id=None):
         # Grab the method from the handler:
