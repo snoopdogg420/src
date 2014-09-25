@@ -60,7 +60,7 @@ class ToontownRPCServer:
 
     def poll(self, task=None):
         try:
-            r = select.select([self.listenerSocket] + self.sockets, [], [], 0.002)[0]
+            r = select.select([self.listenerSocket] + self.sockets, [], [])[0]
         except:
             # One or more of our sockets might have become invalid.
 
