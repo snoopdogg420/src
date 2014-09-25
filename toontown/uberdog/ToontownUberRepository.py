@@ -24,7 +24,7 @@ class ToontownUberRepository(ToontownInternalRepository):
         if config.GetBool('want-rpc-server', False):
             endpoint = config.GetString('rpc-server-endpoint', 'http://localhost:8080/')
             self.rpcServer = ToontownRPCServer(endpoint, ToontownRPCHandler(self))
-            self.rpcServer.start()
+            self.rpcServer.start(useTaskChain=True)
 
         self.createGlobals()
         self.notify.info('Done.')

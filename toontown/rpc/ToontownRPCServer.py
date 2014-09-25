@@ -1,5 +1,4 @@
 from direct.directnotify.DirectNotifyGlobal import directNotify
-from direct.task.Task import Task
 import errno
 from panda3d.core import TP_normal
 import select
@@ -15,92 +14,100 @@ class ToontownRPCServer:
     def __init__(self, endpoint, handler):
         self.handler = handler
 
-        self.sockets = []
+        # Parse the endpoint:
+        url = urlparse.urlparse(endpoint)
+
+        # We only support the http scheme:
+        if url.scheme != 'http':
+            self.notify.warning('Invalid scheme for endpoint: ' + str(url.scheme))
+
+        # Parse the hostname, and port:
+        self.hostname = url.hostname or 'localhost'
+        self.port = url.port or 8080
+
+        self.listenerSocket = None
         self.connections = {}
 
-        self.pollTask = None
+    def getUniqueName(self):
+        """
+        Returns a unique identifier for this instance. This is primarily used
+        for creating unique task names.
+        """
+        return 'ToontownRPCServer-' + str(id(self))
 
-        # Parse the endpoint URL:
-        url = urlparse.urlparse(endpoint)
-        if url.scheme != 'http':
-            self.notify.error('invalid endpoint URL scheme: ' + url.scheme)
+    def start(self, useTaskChain=False):
+        """
+        Serve until stop() is called.
+        """
+        taskChain = None
+        if useTaskChain and (not taskMgr.hasTaskChain('ToontownRPCServer')):
+            taskChain = 'ToontownRPCServer'
+            taskMgr.setupTaskChain(taskChain, numThreads=1, threadPriority=TP_normal)
 
-        hostname = url.hostname or 'localhost'
-        port = url.port or 8080
-
-        # Create a listener socket to watch for incoming connections:
+        # Create a socket to listen for incoming connections:
         self.listenerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listenerSocket.setblocking(0)
         self.listenerSocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.listenerSocket.bind((hostname, port))
+        self.listenerSocket.bind((self.hostname, self.port))
         self.listenerSocket.listen(5)
 
-    def start(self):
-        # If we don't have a dedicated task chain, create one:
-        if not taskMgr.hasTaskChain('RPCServer'):
-            taskMgr.setupTaskChain('RPCServer', numThreads=1,
-                                   threadPriority=TP_normal, frameBudget=0.001,
-                                   frameSync=True)
-
         # Start polling:
-        self.pollTask = taskMgr.add(self.poll, 'pollTask', taskChain='RPCServer')
+        taskName = self.getUniqueName() + '-pollTask'
+        taskMgr.add(self.pollTask, taskName, taskChain=taskChain)
 
     def stop(self):
-        if self.pollTask is None:
-            return
+        """
+        Stop serving.
+        """
+        # Stop polling:
+        taskName = self.getUniqueName() + '-pollTask'
+        assert taskMgr.hasTaskNamed(taskName)
+        taskMgr.remove(taskName)
 
-        taskMgr.remove(self.pollTask)
-        self.pollTask = None
+        # Close any open connections:
+        for k, v in self.connections.items():
+            v.close()
+            del self.connections[k]
 
-        for connection in self.connections:
-            connection.close()
-
-        self.sockets = []
-        self.connections = {}
-
-    def poll(self, task=None):
+        # Shutdown and close the listener socket:
         try:
-            r = select.select([self.listenerSocket] + self.sockets, [], [])[0]
-        except:
-            # One or more of our sockets might have become invalid.
+            self.listenerSocket.shutdown(socket.SHUT_RDWR)
+        except socket.error:
+            pass
+        self.listenerSocket.close()
+        self.listenerSocket = None
 
-            # If our listener socket has, we can't continue:
-            self.listenerSocket.fileno()
+    def pollOnce(self):
+        """
+        Poll for incoming data once.
+        """
+        rlist = select.select([self.listenerSocket] + self.connections.keys(), [], [])[0]
 
-            # Otherwise, discard the socket(s) that have, and wait for the next
-            # poll iteration:
-            for k, v in self.sockets.items():
-                try:
-                    v.fileno()
-                    v.getpeername()
-                except:
-                    del self.sockets[k]
+        if self.listenerSocket in rlist:
+            self.handleNewConnection()
 
-            return Task.cont
-
-        if self.listenerSocket in r:
-            try:
-                conn = self.listenerSocket.accept()[0]
-            except socket.error, e:
-                if e.args[0] == errno.EWOULDBLOCK:
-                    return Task.cont
-                raise e
-            self.sockets.append(conn)
-            self.connections[conn.fileno()] = ToontownRPCConnection(conn, self.handler)
-
-        for sock in r:
-            fileno = sock.fileno()
-            connection = self.connections.get(fileno)
+        for socket in rlist:
+            connection = self.connections.get(socket)
             if connection is None:
                 continue
-            try:
-                connection.dispatchUntilEmpty()
-            except:
-                pass
-            finally:
-                connection.close()
-                self.sockets.remove(sock)
-                del self.connections[fileno]
+            connection.dispatchUntilEmpty()
+            connection.close()
+            del self.connections[socket]
 
-        if task is not None:
-            return Task.cont
+    def pollTask(self, task):
+        """
+        Continuously poll for incoming data.
+        """
+        self.pollOnce()
+        return task.cont
+
+    def handleNewConnection(self):
+        """
+        Handle an incoming connection.
+        """
+        try:
+            conn = self.listenerSocket.accept()[0]
+        except socket.error, e:
+            if e.args[0] != errno.EWOULDBLOCK:
+                raise e
+        self.connections[conn] = ToontownRPCConnection(conn, self.handler)
