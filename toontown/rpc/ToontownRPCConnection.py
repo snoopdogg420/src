@@ -96,6 +96,7 @@ class ToontownRPCConnection:
 
         if not headers:
             # It looks like we have nothing to read.
+            self.socketLock.release()
             return ''
 
         # We need a content-length in order to read POST data:
