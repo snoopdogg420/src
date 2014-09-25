@@ -17,11 +17,13 @@ SYSTEM_ADMINISTRATOR = 700
 
 
 class RPCMethod:
-    def __init__(self, accessLevel=UNKNOWN):
+    def __init__(self, accessLevel=UNKNOWN, deferResult=False):
         self.accessLevel = accessLevel
+        self.deferResult = deferResult
 
     def __call__(self, method):
         method.accessLevel = self.accessLevel
+        method.deferResult = self.deferResult
         return method
 
 

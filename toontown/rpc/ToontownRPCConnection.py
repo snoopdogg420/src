@@ -8,6 +8,20 @@ import socket
 import time
 
 
+class ToontownRPCRequest:
+    def __init__(self, connection, id=None):
+        self.connection = connection
+        self.id = id
+
+    def result(self, result):
+        # If this isn't a notification, send the response:
+        if self.id is not None:
+            self.connection.writeJSONResponse({'result': result}, id=self.id)
+
+    def error(self, code, message):
+        self.connection.writeJSONError(code, message, id=self.id)
+
+
 class ToontownRPCConnection:
     notify = directNotify.newCategory('ToontownRPCConnection')
 
@@ -265,17 +279,27 @@ class ToontownRPCConnection:
             return
 
         # Attempt to call the method:
+        request = ToontownRPCRequest(self, id=id)
         try:
-            if isinstance(params, dict):
-                result = method(**params)
+            if method.deferResult:
+                # This function is going to handle the response itself. Pass
+                # the request over to it:
+                if isinstance(params, dict):
+                    method(request, **params)
+                else:
+                    method(request, *params)
             else:
-                result = method(*params)
+                if isinstance(params, dict):
+                    result = method(**params)
+                else:
+                    result = method(*params)
         except:
-            self.writeJSONError(-32603, PythonUtil.describeException(), id=id)
+            request.error(-32603, PythonUtil.describeException())
         else:
-            # If this isn't a notification, send back the result:
-            if id is not None:
-                self.writeJSONResponse({'result': result}, id=id)
+            # If the method isn't going to handle the response itself, send out
+            # the result:
+            if not method.deferResult:
+                request.result(result)
 
     def dispatchUntilEmpty(self):
         while True:
