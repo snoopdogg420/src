@@ -18,7 +18,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Parameters:
             [str data] = The data to be given back in response.
 
-        Example response: "pong"
+        Example response: 'pong'
         """
         return data
 

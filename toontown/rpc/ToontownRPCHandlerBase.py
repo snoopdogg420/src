@@ -37,6 +37,10 @@ class ToontownRPCHandlerBase:
         self.air = air
 
     def authenticate(self, token, method):
+        """
+        Ensure the provided token is valid, and meets the access level
+        requirements of the method.
+        """
         # First, base64 decode the token:
         try:
             token = base64.b64decode(token)

@@ -1,5 +1,4 @@
 from direct.directnotify.DirectNotifyGlobal import directNotify
-from direct.showbase import PythonUtil
 from direct.stdpy import threading
 from direct.stdpy import threading2
 import httplib
@@ -7,19 +6,7 @@ import json
 import socket
 import time
 
-
-class ToontownRPCRequest:
-    def __init__(self, connection, id=None):
-        self.connection = connection
-        self.id = id
-
-    def result(self, result):
-        # If this isn't a notification, send the response:
-        if self.id is not None:
-            self.connection.writeJSONResponse({'result': result}, id=self.id)
-
-    def error(self, code, message):
-        self.connection.writeJSONError(code, message, id=self.id)
+from toontown.rpc.ToontownRPCDispatcher import ToontownRPCDispatcher
 
 
 class ToontownRPCConnection:
@@ -27,13 +14,14 @@ class ToontownRPCConnection:
 
     def __init__(self, socket, handler):
         self.socket = socket
-        self.handler = handler
 
-        self.readBuffer = ''
+        self.dispatcher = ToontownRPCDispatcher(handler)
 
         self.socketLock = threading.Lock()
         self.readLock = threading.RLock()
         self.writeLock = threading.RLock()
+
+        self.readBuffer = ''
 
         self.writeQueue = []
         self.writeSemaphore = threading.Semaphore(0)
@@ -41,6 +29,11 @@ class ToontownRPCConnection:
         self.writeThread.start()
 
     def __readHeaders(self):
+        """
+        Read a set of HTTP headers from the socket into a dictionary format.
+        This is meant for internal use only.
+        """
+        # Acquire a read lock so that nothing intervenes:
         self.readLock.acquire()
 
         # Read data until we find the '\r\n\r\n' terminator:
@@ -70,6 +63,10 @@ class ToontownRPCConnection:
         return self.__parseHeaders(data)
 
     def __parseHeaders(self, data):
+        """
+        Parse the provided HTTP request data into a dictionary of headers. This
+        is meant for internal use only.
+        """
         headers = {}
 
         for i, line in enumerate(data.split('\n')):
@@ -93,7 +90,7 @@ class ToontownRPCConnection:
                     return {}
             else:
                 # This is an HTTP header.
-                words = line.split(': ')
+                words = line.split(': ', 1)
                 if len(words) != 2:
                     self.writeHTTPError(400)
                     return {}
@@ -103,6 +100,9 @@ class ToontownRPCConnection:
         return headers
 
     def read(self, timeout=None):
+        """
+        Read an HTTP POST request from the socket, and return the body.
+        """
         self.socketLock.acquire()
         self.socket.settimeout(timeout)
 
@@ -117,15 +117,16 @@ class ToontownRPCConnection:
         # We need a content-length in order to read POST data:
         contentLength = headers.get('content-length', '')
         if (not contentLength) or (not contentLength.isdigit()):
-            self.writeHTTPError(400)
             self.socketLock.release()
+            self.writeHTTPError(400)
             return ''
+
+        # Acquire a read lock so nothing touches the read buffer while we work:
+        self.readLock.acquire()
 
         contentLength = int(contentLength)
 
-        # Read data until we have enough in our read buffer:
-        self.readLock.acquire()
-
+        # Ensure we have all of our content:
         while len(self.readBuffer) < contentLength:
             try:
                 self.readBuffer += self.socket.recv(2048)
@@ -135,7 +136,7 @@ class ToontownRPCConnection:
                 return ''
 
             if not self.readBuffer:
-                # It looks like we have nothing to read:
+                # It looks like we have nothing to read.
                 self.readLock.release()
                 self.socketLock.release()
                 return ''
@@ -146,13 +147,20 @@ class ToontownRPCConnection:
         # Truncate the remaining data:
         self.readBuffer = self.readBuffer[contentLength + 1:]
 
+        # Release our thread locks:
         self.readLock.release()
         self.socketLock.release()
 
         return data
 
     def __writeNow(self, data, timeout=None):
+        """
+        Write data to the socket immediately. This is meant for internal use
+        only.
+        """
+        # Acquire a write lock so nothing intervenes:
         self.writeLock.acquire()
+
         self.socket.settimeout(timeout)
 
         # Ensure the data ends with a new line:
@@ -168,52 +176,47 @@ class ToontownRPCConnection:
                 break
             data = data[sent:]
 
+        # Release our write lock:
         self.writeLock.release()
 
     def __writeThread(self):
+        """
+        A daemon for managing the write queue. This is meant to be run on a
+        thread internally.
+        """
         while True:
             self.writeSemaphore.acquire()
 
-            # Ensure we have a request in the queue:
+            # Ensure we have a request in the write queue:
             if not self.writeQueue:
                 continue
 
             request = self.writeQueue.pop(0)
 
-            abort = request.get('abort')
-            if abort is not None:
+            terminate = request.get('terminate')
+            if terminate is not None:
                 # Clear the write queue, and stop:
                 self.writeQueue = []
-                abort.set()
+                terminate.set()
                 break
 
-            # Write the data immediately:
+            # Write the data to the socket:
             data = request.get('data')
             if data:
                 self.__writeNow(data, timeout=request.get('timeout'))
 
     def write(self, data, timeout=None):
+        """
+        Add data to the write queue.
+        """
         self.writeQueue.append({'data': data, 'timeout': timeout})
         self.writeSemaphore.release()
 
-    def close(self):
-        abort = threading2.Event()
-        self.writeQueue.append({'abort': abort})
-        self.writeSemaphore.release()
-        abort.wait()
-
-        try:
-            self.socket.shutdown(socket.SHUT_RDWR)
-        except socket.error:
-            pass
-        self.socket.close()
-
-    def writeHTTP(self, body, contentType='text/plain', code=200):
-        # First, look up a description for the code:
-        description = httplib.responses.get(code)
-
-        # Prepare the response:
-        response = 'HTTP/1.1 %d %s\r\n' % (code, description)
+    def writeHTTPResponse(self, body, contentType=None, code=200):
+        """
+        Write an HTTP response to the socket.
+        """
+        response = 'HTTP/1.1 %d %s\r\n' % (code, httplib.responses.get(code))
 
         # Add the standard headers:
         response += 'Date: %s\r\n' % time.strftime('%a, %d %b %Y %H:%M:%S GMT', time.gmtime())
@@ -231,77 +234,53 @@ class ToontownRPCConnection:
         self.write(response, timeout=5)
 
     def writeHTTPError(self, code):
+        """
+        Write an HTTP error response to the socket.
+        """
         self.notify.warning('Received a bad HTTP request: ' + str(code))
         body = '%d %s' % (code, httplib.responses.get(code))
-        self.writeHTTP(body, code=code)
+        self.writeHTTPResponse(body, contentType='text/plain', code=code)
 
-    def writeJSON(self, object):
+    def writeJSONResponse(self, response, id=None):
+        """
+        Write a JSON response object to the socket.
+        """
+        response.update({'jsonrpc': '2.0', 'id': id})
         try:
-            body = json.dumps(object)
+            body = json.dumps(response)
         except TypeError:
             self.writeJSONError(-32603, 'Internal error')
             return
-        self.writeHTTP(body, contentType='application/json')
-
-    def writeJSONResponse(self, response, id=None):
-        response.update({'jsonrpc': '2.0', 'id': id})
-        self.writeJSON(response)
+        self.writeHTTPResponse(body, contentType='application/json')
 
     def writeJSONError(self, code, message, id=None):
+        """
+        Write a JSON error response object to the socket.
+        """
         self.notify.warning('Received a bad JSON request: %d %s' % (code, message))
         response = {'error': {'code': code, 'message': message}}
         self.writeJSONResponse(response, id=id)
 
-    def dispatch(self, methodName, params=(), id=None):
-        # Grab the method from the handler:
-        method = getattr(self.handler, 'rpc_' + methodName, None)
-        if method is None:
-            self.writeJSONError(-32601, 'Method not found', id=id)
-            return
+    def close(self):
+        """
+        Wait until the write queue is empty, then shutdown and close our
+        socket.
+        """
+        terminate = threading2.Event()
+        self.writeQueue.append({'terminate': terminate})
+        self.writeSemaphore.release()
+        terminate.wait()
 
-        # Find the token in the params, and remove it:
-        token = None
-        if isinstance(params, dict):
-            token = params.get('token')
-            del params['token']
-        elif len(params) > 0:
-            token = params[0]
-            params = params[1:]
-        if not isinstance(token, basestring):
-            self.writeJSONError(-32000, 'No token provided', id=id)
-            return
-
-        # Authenticate the provided token:
-        error = self.handler.authenticate(token, method)
-        if error is not None:
-            # Authentication wasn't successful. Send the error:
-            self.writeJSONError(*error, id=id)
-            return
-
-        # Attempt to call the method:
-        request = ToontownRPCRequest(self, id=id)
         try:
-            if method.deferResult:
-                # This function is going to handle the response itself. Pass
-                # the request over to it:
-                if isinstance(params, dict):
-                    method(request, **params)
-                else:
-                    method(request, *params)
-            else:
-                if isinstance(params, dict):
-                    result = method(**params)
-                else:
-                    result = method(*params)
-        except:
-            request.error(-32603, PythonUtil.describeException())
-        else:
-            # If the method isn't going to handle the response itself, send out
-            # the result:
-            if not method.deferResult:
-                request.result(result)
+            self.socket.shutdown(socket.SHUT_RDWR)
+        except socket.error:
+            pass
+        self.socket.close()
 
     def dispatchUntilEmpty(self):
+        """
+        Read and dispatch until there is nothing left.
+        """
         while True:
             data = self.read(timeout=5)
 
@@ -315,18 +294,35 @@ class ToontownRPCConnection:
                 self.writeJSONError(-32700, 'Parse error')
                 continue
 
-            method = request.get('method')
-            params = request.get('params') or ()
-            id = request.get('id')
-
-            if not isinstance(method, basestring):
-                self.writeJSONError(-32600, 'Invalid Request', id=id)
-                continue
-
-            if not isinstance(params, (tuple, list, dict)):
-                self.writeJSONError(-32600, 'Invalid Request', id=id)
-                continue
+            request = ToontownRPCRequest(
+                self, request.get('method'), params=request.get('params') or (),
+                id=request.get('id'), notification=('id' not in request))
 
             dispatchThread = threading.Thread(
-                target=self.dispatch, args=[method, params, id])
+                target=self.dispatcher.dispatch, args=[request])
             dispatchThread.start()
+
+
+class ToontownRPCRequest:
+    def __init__(self, connection, method, params=(), id=None, notification=False):
+        self.connection = connection
+        self.method = method
+        self.params = params
+        self.id = id
+        self.notification = notification
+
+    def result(self, result):
+        """
+        Write a result response object to the connection as long as this isn't
+        a notification.
+        """
+        if not self.notification:
+            self.connection.writeJSONResponse({'result': result}, id=self.id)
+
+    def error(self, code, message):
+        """
+        Write an error response object to the connection as long as this isn't
+        a notification.
+        """
+        if not self.notification:
+            self.connection.writeJSONError(code, message, id=self.id)
