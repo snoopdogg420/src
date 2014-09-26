@@ -151,7 +151,10 @@ class ToontownRPCConnection:
         self.readLock.release()
         self.socketLock.release()
 
-        return data
+        try:
+            return data.decode('utf-8')
+        except UnicodeDecodeError:
+            return ''
 
     def __writeNow(self, data, timeout=None):
         """
@@ -247,7 +250,7 @@ class ToontownRPCConnection:
         """
         response.update({'jsonrpc': '2.0', 'id': id})
         try:
-            body = json.dumps(response)
+            body = json.dumps(response, encoding='latin-1')
         except TypeError:
             self.writeJSONError(-32603, 'Internal error')
             return
