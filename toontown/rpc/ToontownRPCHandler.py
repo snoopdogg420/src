@@ -211,6 +211,24 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         if str(userId) in self.air.csm.accountDB.dbm:
             return int(self.air.csm.accountDB.dbm[str(userId)])
 
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getUserAvatars(self, request, userId):
+        """
+        Summary:
+            Returns a list of avatar IDs associated with the provided [userId].
+
+        Parameters:
+            [int userId] = The ID of the user to query the avatars on.
+
+        Example response:
+            On success: [0, 100000001, 0, 0, 0, 0]
+            On failure: None
+        """
+        accountId = self.rpc_getUserAccountId(userId)
+        if accountId is None:
+            request.result(None)
+        self.rpc_getAccountAvatars(request, accountId)
+
     # --- ACCOUNT QUERIES ---
 
     @rpcmethod(accessLevel=MODERATOR, deferResult=True)
@@ -232,6 +250,30 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
             # TODO: Change the field name to USER_ID for clarity.
             request.result(fields['ACCOUNT_ID'])
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, accountId, callback)
+
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getAccountAvatars(self, request, accountId):
+        """
+        Summary:
+            Returns a list of avatar IDs associated with the provided
+            [accountId].
+
+        Parameters:
+            [int accountId] = The ID of the account to query the avatars on.
+
+        Example response:
+            On success: [0, 100000001, 0, 0, 0, 0]
+            On failure: None
+        """
+        def callback(dclass, fields):
+            if (dclass is None) or (dclass.getName() != 'Account'):
+                request.result(None)
+                return
+
+            request.result(fields['ACCOUNT_AV_SET'])
 
 
         self.air.dbInterface.queryObject(self.air.dbId, accountId, callback)
@@ -282,6 +324,33 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                 return
 
             request.result(fields.get('setDISLid', (None,))[0])
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, avId, callback)
+
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getAvatarAvatars(self, request, avId):
+        """
+        Summary:
+            Returns a list of avatar IDs associated with the provided [avId].
+
+        Parameters:
+            [int avId] = The ID of the avatar to query the avatars on.
+
+        Example response:
+            On success: [0, 100000001, 0, 0, 0, 0]
+            On failure: None
+        """
+        def callback(dclass, fields):
+            if (dclass is None) or (dclass.getName() != 'DistributedToon'):
+                request.result(None)
+                return
+
+            accountId = fields.get('setDISLid', (None,))[0]
+            if accountId is None:
+                request.result(None)
+            else:
+                self.rpc_getAccountAvatars(request, accountId)
 
 
         self.air.dbInterface.queryObject(self.air.dbId, avId, callback)
