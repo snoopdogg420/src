@@ -3,6 +3,8 @@ from direct.distributed.PyDatagram import PyDatagram
 
 from otp.distributed import OtpDoGlobals
 from toontown.rpc.ToontownRPCHandlerBase import *
+from toontown.toon import ToonDNA
+from toontown.toonbase import TTLocalizer
 
 
 class ToontownRPCHandler(ToontownRPCHandlerBase):
@@ -191,3 +193,46 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         channel = avId + (1001L<<32)
         self.rpc_kickChannel(channel, code, reason)
+
+    # --- AVATAR QUERIES ---
+
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getAvatarDetails(self, request, avId):
+        """
+        Summary:
+            Returns basic details on the avatar associated with the provided
+            [avId].
+
+        Parameters:
+            [int avId] = The ID of the avatar to query details on.
+
+        Example response:
+            success: {
+                       'name': 'Toon Name',
+                       'species': 'cat',
+                       'head-color': 'Red',
+                       'max-hp': 15
+                     }
+            failure: None
+        """
+        def callback(dclass, fields):
+            if (dclass is None) or (dclass.getName() != 'DistributedToon'):
+                request.result(None)
+                return
+
+            name = fields['setName'][0]
+            dna = ToonDNA.ToonDNA()
+            dna.makeFromNetString(fields['setDNAString'][0])
+            species = ToonDNA.getSpeciesName(dna.head)
+            headColor = TTLocalizer.NumToColor[dna.headColor]
+            maxHp = fields['setMaxHp'][0]
+
+            request.result({
+                'name': name,
+                'species': species,
+                'head-color': headColor,
+                'max-hp': maxHp
+            })
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, avId, callback)
