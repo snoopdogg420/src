@@ -194,7 +194,97 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         channel = avId + (1001L<<32)
         self.rpc_kickChannel(channel, code, reason)
 
+    # --- USER QUERIES ---
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_getUserAccountId(self, userId):
+        """
+        Summary: Returns the account ID associated with the provided [userId].
+
+        Parameters:
+            [int userId] = The ID of the user to query the account ID on.
+
+        Example response:
+            On success: 100000000
+            On failure: None
+        """
+        if str(userId) in self.air.csm.accountDB.dbm:
+            return int(self.air.csm.accountDB.dbm[str(userId)])
+
+    # --- ACCOUNT QUERIES ---
+
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getAccountUserId(self, request, accountId):
+        """
+        Summary: Returns the user ID associated with the provided [accountId].
+
+        Parameters:
+            [int accountId] = The ID of the account to query the user ID on.
+
+        Example response:
+            On success: 1
+            On failure: None
+        """
+        def callback(dclass, fields):
+            if (dclass is None) or (dclass.getName() != 'Account'):
+                request.result(None)
+                return
+
+            # TODO: Change the field name to USER_ID for clarity.
+            request.result(fields['ACCOUNT_ID'])
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, accountId, callback)
+
     # --- AVATAR QUERIES ---
+
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getAvatarUserId(self, request, avId):
+        """
+        Summary: Returns the user ID associated with the provided [avId].
+
+        Parameters:
+            [int avId] = The ID of the avatar to query the user ID on.
+
+        Example response:
+            On success: 1
+            On failure: None
+        """
+        def callback(dclass, fields):
+            if (dclass is None) or (dclass.getName() != 'DistributedToon'):
+                request.result(None)
+                return
+
+            accountId = fields.get('setDISLid', (None,))[0]
+            if accountId is None:
+                request.result(None)
+            else:
+                self.rpc_getAccountUserId(request, accountId)
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, avId, callback)
+
+    @rpcmethod(accessLevel=MODERATOR, deferResult=True)
+    def rpc_getAvatarAccountId(self, request, avId):
+        """
+        Summary: Returns the account ID associated with the provided [avId].
+
+        Parameters:
+            [int avId] = The ID of the avatar to query the account ID on.
+
+        Example response:
+            On success: 100000000
+            On failure: None
+        """
+        def callback(dclass, fields):
+            if (dclass is None) or (dclass.getName() != 'DistributedToon'):
+                request.result(None)
+                return
+
+            request.result(fields.get('setDISLid', (None,))[0])
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, avId, callback)
 
     @rpcmethod(accessLevel=MODERATOR, deferResult=True)
     def rpc_getAvatarDetails(self, request, avId):
@@ -207,13 +297,13 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int avId] = The ID of the avatar to query details on.
 
         Example response:
-            success: {
-                       'name': 'Toon Name',
-                       'species': 'cat',
-                       'head-color': 'Red',
-                       'max-hp': 15
-                     }
-            failure: None
+            On success: {
+                          'name': 'Toon Name',
+                          'species': 'cat',
+                          'head-color': 'Red',
+                          'max-hp': 15
+                        }
+            On failure: None
         """
         def callback(dclass, fields):
             if (dclass is None) or (dclass.getName() != 'DistributedToon'):
