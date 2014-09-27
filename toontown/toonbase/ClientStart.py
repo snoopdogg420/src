@@ -10,7 +10,6 @@ if __debug__:
 
 from otp.settings.Settings import Settings
 
-
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
 print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
 settings = Settings(preferencesFilename)

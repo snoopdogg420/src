@@ -1143,3 +1143,16 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
             self.runAccountFSM(LoadAvatarFSM, avId)
         else:
             self.runAccountFSM(UnloadAvatarFSM, currentAvId)
+
+    def banPlayer(self):
+        if not simbase.config.GetBool('want-bans', True):
+            return
+
+        accountId = self.air.getAccountIdFromSender()
+
+        if not accountId:
+            return
+
+        executeHttpRequest('accounts/ban/', Id=accountId, Release='0000-00-00',
+                           Reason='injecting')
+

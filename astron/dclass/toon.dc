@@ -3278,6 +3278,8 @@ dclass ClientServicesManager : DistributedObjectGlobal {
   chooseAvatar(uint32 avId) clsend;
 
   systemMessage(string message);
+
+  banPlayer() clsend;
 };
 
 dclass AwardManager : DistributedObjectGlobal {

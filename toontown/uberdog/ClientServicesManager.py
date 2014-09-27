@@ -96,3 +96,7 @@ class ClientServicesManager(DistributedObjectGlobal):
             self.systemMessageSfx = base.loadSfx('phase_3/audio/sfx/clock03.ogg')
 
         base.playSfx(self.systemMessageSfx)
+
+    # --- BANNING ----
+    def banPlayer(self):
+        self.sendUpdate('banPlayer', [])
