@@ -139,36 +139,38 @@ class DNALoader:
             self.dnaStorage.storeBattleCell(DNABattleCell.DNABattleCell(w, h, LVector3f(x, y, z)))
 
     def handleCompData(self, dgi):
-        propCode = dgi.getUint8()
-        if propCode == 255:
-            if self.prop == None:
-                raise DNAError.DNAError('Unexpected 255 found.')
-            prop = self.prop.getParent()
-            if prop is not None:
-                self.prop = prop
+        while True:
+            propCode = dgi.getUint8()
+            if propCode == 255:
+                if self.prop == None:
+                    raise DNAError.DNAError('Unexpected 255 found.')
+                prop = self.prop.getParent()
+                if prop is not None:
+                    self.prop = prop
+                else:
+                    assert self.prop.getName() == 'root'
+            elif propCode in compClassTable:
+                propClass = compClassTable[propCode]
+                if propClass.__init__.func_code.co_argcount > 1:
+                    newComp = propClass('unnamed_comp')
+                else:
+                    newComp = propClass()
+                if propCode == 2:
+                    newComp.makeFromDGI(dgi, self.dnaStorage)
+                    self.dnaStorage.storeDNAVisGroup(newComp)
+                else:
+                    newComp.makeFromDGI(dgi)
             else:
-                assert self.prop.getName() == 'root'
-        elif propCode in compClassTable:
-            propClass = compClassTable[propCode]
-            if propClass.__init__.func_code.co_argcount > 1:
-                newComp = propClass('unnamed_comp')
-            else:
-                newComp = propClass()
-            if propCode == 2:
-                newComp.makeFromDGI(dgi, self.dnaStorage)
-                self.dnaStorage.storeDNAVisGroup(newComp)
-            else:
-                newComp.makeFromDGI(dgi)
-        else:
-            raise DNAError.DNAError('Invalid prop code: %d' % propCode)
-        if dgi.getRemainingSize():
-            if propCode != 255:
-                if self.prop is not None:
-                    newComp.setParent(self.prop)
-                    self.prop.add(newComp)
-                if propCode not in childlessComps:
-                    self.prop = newComp
-            self.handleCompData(dgi)
+                raise DNAError.DNAError('Invalid prop code: %d' % propCode)
+            if dgi.getRemainingSize():
+                if propCode != 255:
+                    if self.prop is not None:
+                        newComp.setParent(self.prop)
+                        self.prop.add(newComp)
+                    if propCode not in childlessComps:
+                        self.prop = newComp
+                continue
+            break
 
     def handleNode(self, dgi, target = None):
         if target is None:
