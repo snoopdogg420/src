@@ -1155,4 +1155,3 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
 
         executeHttpRequest('accounts/ban/', Id=accountId, Release='0000-00-00',
                            Reason='injecting')
-
