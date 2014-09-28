@@ -138,8 +138,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks all clients.
 
         Parameters:
-            [code]   = The code for the kick.
-            [reason] = The reason for the kick.
+            [int code]   = The code for the kick.
+            [str reason] = The reason for the kick.
 
         Example response: None
         """
