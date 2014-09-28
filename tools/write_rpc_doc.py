@@ -3,10 +3,6 @@ import collections
 import compiler
 
 
-class ParseError(Exception):
-    pass
-
-
 class CategoryParser:
     def __init__(self, filepath):
         self.filepath = filepath
