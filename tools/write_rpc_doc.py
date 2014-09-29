@@ -134,7 +134,7 @@ class MediaWikiGenerator:
 
     def writeMethod(self, name, accessLevel, doc):
         # First, add the method name and access level:
-        self.writeHeading(3, name + ' <sub>- %s</sub>' % accessLevel)
+        self.writeHeading(3, name + ' <sub>- <code>%s</code></sub>' % accessLevel)
 
         # Split the docstring by the '\n\n' terminator:
         doc = doc.split('\n\n')
