@@ -161,10 +161,16 @@ class MediaWikiGenerator:
                 'On failure:' not in exampleResponse):
                 # Generate a single-row table:
                 self.content += '! Example Response\n'
-                self.content += '| %s\n' % exampleResponse
+                self.content += '| <nowiki>%s</nowiki>\n' % exampleResponse
             else:
-                # Generate a two-row table:
+                # Generate a double-row table:
+                successResponse, failureResponse = exampleResponse[12:].split('On failure:', 1)
                 self.content += '! rowspan="2"|Example Response\n'
+                self.content += '| Success\n'
+                self.content += '| <nowiki>%s</nowiki>\n' % successResponse.strip()
+                self.content += '|-\n'
+                self.content += '| Failure\n'
+                self.content += '| <nowiki>%s</nowiki>\n' % failureResponse.strip()
             self.content += '|}\n'
 
         return self.content
