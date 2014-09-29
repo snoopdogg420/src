@@ -25,7 +25,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         return data
 
-    # --- MESSAGING ---
+    # --- MESSAGES ---
 
     @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_messageChannel(self, channel, message):
