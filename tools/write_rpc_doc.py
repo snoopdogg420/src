@@ -21,6 +21,7 @@ class CategoryParser:
         self.categories[lineno] = category
 
     def getCategory(self, lineno):
+        category = 'Unknown'
         for k in sorted(self.categories.keys()):
             if k > lineno:
                 break
