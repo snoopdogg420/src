@@ -145,9 +145,9 @@ class MediaWikiGenerator:
 
         # Parameters are also required, so let's assume they're second:
         parameters = []
-        for parameter in doc[1][12:].strip().split('\n'):
+        for parameter in doc[1][13:].strip().split('\n['):
             name, description = parameter.split(' = ', 1)
-            type, name = name.strip()[1:-1].split(' ', 1)
+            type, name = name.strip()[:-1].split(' ', 1)
             description = ' '.join(description.split('\n'))
             parameters.append((name, type, description))
         self.writeParameters(parameters)
