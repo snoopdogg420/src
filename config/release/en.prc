@@ -1,20 +1,20 @@
-# Distribution token...
+# Distribution token:
 distribution en
 
-# Models/textures...
+# Models/textures:
 model-path resources
 
-# Server...
+# Server:
 server-version SERVER_VERSION
 
-# Core features...
+# Core features:
 want-pets #f
 want-parties #f
 want-cogdominiums #f
 want-achievements #f
 
-# Districts...
+# Districts:
 show-population #f
 
-# Picnic table board games...
+# Picnic table board games:
 want-find-four #f

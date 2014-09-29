@@ -1,13 +1,17 @@
-# Window options...
+# Window options:
 window-title Toontown Infinite
 win-origin -1 -1
 icon-filename icon.ico
 cursor-filename phase_3/etc/toonmono.cur
 
-# Preferences...
+# Preferences:
 preferences-filename preferences.json
 
-# Audio...
+# Backups:
+backups-filepath backups/
+backups-extension .json
+
+# Audio:
 audio-library-name p3fmod_audio
 
 # Models/textures
@@ -16,18 +20,18 @@ model-cache-textures #f
 default-model-extension .bam
 texture-anisotropic-degree 16
 
-# Server...
+# Server:
 server-force-ssl #t
 server-port 7199
 client-agents 8
 server-timezone US/Eastern
 
-# Database...
+# Database:
 account-server-endpoint https://toontowninfinite.com/api/
 account-bridge-filename astron/databases/account-bridge.db
 account-server-min-access-level 100
 
-# Core features...
+# Core features:
 want-fishing #t
 want-housing #t
 want-pets #t
@@ -38,16 +42,16 @@ want-cogdominiums #t
 want-achievements #t
 want-whitelist #t
 
-# Chat...
+# Chat:
 parent-password-set #t
 allow-secret-chat #t
 
-# Districts...
+# Districts:
 show-total-population #t
 shard-low-pop 150
 shard-mid-pop 300
 
-# Safe zones...
+# Safe zones:
 want-safe-zones #t
 want-toontown-central #t
 want-donalds-dock #t
@@ -59,12 +63,12 @@ want-goofy-speedway #t
 want-outdoor-zone #t
 want-golf-zone #t
 
-# Safe zone settings...
+# Safe zone settings:
 want-treasure-planners #t
 want-suit-planners #t
 want-butterflies #f
 
-# Classic characters...
+# Classic characters:
 want-classic-chars #f
 want-mickey #f
 want-donald-dock #f
@@ -75,20 +79,20 @@ want-donald-dreamland #f
 want-chip-and-dale #f
 want-goofy #f
 
-# Cog headquarters...
+# Cog headquarters:
 want-cog-headquarters #t
 want-sellbot-headquarters #t
 want-cashbot-headquarters #t
 want-lawbot-headquarters #t
 want-bossbot-headquarters #t
 
-# Cashbot boss...
+# Cashbot boss:
 want-resistance-toonup #f
 want-resistance-restock #f
 want-resistance-money #t
 want-resistance-dance #f
 
-# Trolley minigames...
+# Trolley minigames:
 want-minigames #t
 want-race-game #t
 want-cannon-game #t
@@ -109,7 +113,7 @@ want-photo-game #f
 want-travel-game #f
 force-minigame 0
 
-# Cog buildings...
+# Cog buildings:
 want-cogbuildings #t
 silly-street-building-min 0
 silly-street-building-max 3
@@ -163,30 +167,30 @@ pajama-place-building-min 6
 pajama-place-building-max 12
 pajama-place-building-chance 100.0
 
-# Cog battles...
+# Cog battles:
 base-xp-multiplier 1.0
 
-# Economy...
+# Economy:
 want-personal-bank #f
 
-# Picnic table board games...
+# Picnic table board games:
 want-game-tables #t
 want-checkers #t
 want-chinese-checkers #t
 want-find-four #t
 
-# Optional...
+# Optional:
 want-mat-all-tailors #t
 want-long-pattern-game #f
 want-talkative-tyler #f
 want-yin-yang #f
 
-# Developer options...
+# Developer options:
 want-dev #f
 want-pstats 0
 want-instant-parties #f
 
-# Temporary...
+# Temporary:
 want-old-fireworks #t
 
 # Performance
@@ -196,11 +200,11 @@ texture-power-2 none
 gl-check-errors #f
 garbage-collect-states #f
 
-# Quality...
+# Quality:
 # framebuffer-multisample 1
 # multisamples 2
 
-# Egg ObjectTypes...
+# Egg ObjectTypes:
 egg-object-type-barrier <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend }
 egg-object-type-trigger <Scalar> collide-mask { 0x01 } <Collide> { Polyset descend intangible }
 egg-object-type-sphere <Scalar> collide-mask { 0x01 } <Collide> { Sphere descend }
@@ -212,6 +216,6 @@ egg-object-type-camera-collide-sphere <Scalar> collide-mask { 0x04 } <Collide> {
 egg-object-type-camera-barrier <Scalar> collide-mask { 0x05 } <Collide> { Polyset descend }
 egg-object-type-camera-barrier-sphere <Scalar> collide-mask { 0x05 } <Collide> { Sphere descend }
 
-# The modelers occasionally put <ObjectType> { model } instead of <Model> { 1 }...
+# The modelers occasionally put <ObjectType> { model } instead of <Model> { 1 }:
 egg-object-type-model <Model> { 1 }
 egg-object-type-dcs <DCS> { 1 }

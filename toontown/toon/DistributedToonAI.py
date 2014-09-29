@@ -213,17 +213,17 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if not isinstance(self, DistributedNPCToonBaseAI):
             if 100 <= zoneId < ToontownGlobals.DynamicZonesBegin:
                 hood = ZoneUtil.getHoodId(zoneId)
-                self.sendUpdate('setLastHood', [hood])
+                self.b_setLastHood(hood)
                 self.b_setDefaultZone(hood)
 
                 hoodsVisited = list(self.getHoodsVisited())
-                if not hood in hoodsVisited:
+                if hood not in hoodsVisited:
                     hoodsVisited.append(hood)
                     self.b_setHoodsVisited(hoodsVisited)
 
                 if zoneId == ToontownGlobals.GoofySpeedway:
                     tpAccess = self.getTeleportAccess()
-                    if not ToontownGlobals.GoofySpeedway in tpAccess:
+                    if ToontownGlobals.GoofySpeedway not in tpAccess:
                         tpAccess.append(ToontownGlobals.GoofySpeedway)
                         self.b_setTeleportAccess(tpAccess)
 
@@ -521,9 +521,13 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def setDefaultZone(self, zone):
         self.defaultZone = zone
 
-    def b_setDefaultZone(self, zone):
+    def d_setDefaultZone(self, zone):
         self.sendUpdate('setDefaultZone', [zone])
-        self.setDefaultZone(zone)
+
+    def b_setDefaultZone(self, zone):
+        if zone != self.defaultZone:
+            self.setDefaultZone(zone)
+            self.d_setDefaultZone(zone)
 
     def getDefaultZone(self):
         return self.defaultZone
@@ -1082,6 +1086,14 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setLastHood(self, hood):
         self.lastHood = hood
+
+    def d_setLastHood(self, hood):
+        self.sendUpdate('setLastHood', [hood])
+
+    def b_setLastHood(self, hood):
+        if hood != self.lastHood:
+            self.setLastHood(hood)
+            self.d_setLastHood(hood)
 
     def getLastHood(self):
         return self.lastHood
@@ -4963,21 +4975,17 @@ def dna(part, value):
         return 'Bottom texture color index set to: {0}'.format(dna.botTexColor)
 
     if part == 'save':
-        data = simbase.backups.load('toondna', (invoker.doId,), default={})
-        data[value] = invoker.getDNAString()
-        simbase.backups.save('toondna', (invoker.doId,), data)
-        return "Saved a DNA backup for {0} under file: {1}".format(
-            invoker.getName(), value)
+        backup = simbase.backups.load('toon', (invoker.doId,), default={})
+        backup.setdefault('dna', {})[value] = invoker.getDNAString()
+        simbase.backups.save('toon', (invoker.doId,), backup)
+        return 'Saved a DNA backup for %s under the name: %s' % (invoker.getName(), value)
 
     if part == 'restore':
-        data = simbase.backups.load('toondna', (invoker.doId,), {})
-        if value not in data:
-            return 'Could not find DNA backup for {0} under file: {1}'.format(
-                invoker.getName(), value)
-        dna.makeFromNetString(data[value])
-        invoker.b_setDNAString(data[value])
-        return 'Restored DNA backup for {0} under file: {1}'.format(
-            invoker.getName(), value)
+        backup = simbase.backups.load('toon', (invoker.doId,), default={})
+        if value not in backup.get('dna', {}):
+            return "Couldn't find a DNA backup for %s under the name: %s" % (invoker.getName(), value)
+        invoker.b_setDNAString(backup['dna'][value])
+        return 'Restored a DNA backup for %s under the name: %s' % (invoker.getName(), value)
 
     return 'Invalid part: {0}'.format(part)
 

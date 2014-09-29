@@ -1009,7 +1009,7 @@ class NameShop(StateData.StateData):
 
     def storeSkipTutorialRequest(self):
         if base.forceSkipTutorial:
-            base.cr.skipTutorialRequest = True#self.requestingSkipTutorial
+            base.cr.skipTutorialRequest = True
         else:
             base.cr.skipTutorialRequest = self.requestingSkipTutorial
 

@@ -122,7 +122,7 @@ class DistributedBuildingMgrAI:
                 bankBlocks, libraryBlocks, animBldgBlocks)
 
     def findAllLandmarkBuildings(self):
-        backups = simbase.backups.load('blockinfo', (self.air.districtId, self.branchId), default={})
+        backups = simbase.backups.load('block-info', (self.air.districtId, self.branchId), default={})
         (blocks, hqBlocks, gagshopBlocks, petshopBlocks, kartshopBlocks,
          bankBlocks, libraryBlocks, animBldgBlocks) = self.getDNABlockLists()
         for blockNumber in blocks:
@@ -232,7 +232,7 @@ class DistributedBuildingMgrAI:
         return building
 
     def save(self):
-        buildings = {}
+        backups = {}
         for blockNumber in self.getSuitBlocks():
             building = self.getBuilding(blockNumber)
             backup = {
@@ -244,5 +244,5 @@ class DistributedBuildingMgrAI:
                 'savedBy': building.savedBy,
                 'becameSuitTime': building.becameSuitTime
             }
-            buildings[blockNumber] = backup
-        simbase.backups.save('blockinfo', (self.air.districtId, self.branchId), buildings)
+            backups[blockNumber] = backup
+        simbase.backups.save('block-info', (self.air.districtId, self.branchId), backups)
