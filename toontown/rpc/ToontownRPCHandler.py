@@ -271,6 +271,25 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         if accountId is not None:
             return self.rpc_getAccountAvatars(accountId)
 
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_getUserDeletedAvatars(self, userId):
+        """
+        Summary:
+            Returns a list of deleted avatar IDs associated with the provided
+            [userId], along with the time at which they were deleted.
+
+        Parameters:
+            [int userId] = The ID of the user to query the deleted avatar IDs
+                           on.
+
+        Example response:
+            On success: [[100000001, 1409665000], ...]
+            On failure: None
+        """
+        accountId = self.rpc_getUserAccountId(userId)
+        if accountId is not None:
+            return self.rpc_getAccountDeletedAvatars(accountId)
+
     # --- ACCOUNT QUERIES ---
 
     @rpcmethod(accessLevel=MODERATOR)
@@ -307,6 +326,25 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         dclassName, fields = self.rpc_queryObject(accountId)
         if dclassName == 'Account':
             return fields['ACCOUNT_AV_SET']
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_getAccountDeletedAvatars(self, accountId):
+        """
+        Summary:
+            Returns a list of deleted avatar IDs associated with the provided
+            [accountId], along with the time at which they were deleted.
+
+        Parameters:
+            [int accountId] = The ID of the account to query the deleted avatar
+                              IDs on.
+
+        Example response:
+            On success: [[100000001, 1409665000], ...]
+            On failure: None
+        """
+        dclassName, fields = self.rpc_queryObject(accountId)
+        if dclassName == 'Account':
+            return fields['ACCOUNT_AV_SET_DEL']
 
     # --- AVATAR QUERIES ---
 
@@ -358,6 +396,25 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         accountId = self.rpc_getAvatarAccountId(avId)
         if accountId is not None:
             return self.rpc_getAccountAvatars(accountId)
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_getAvatarDeletedAvatars(self, avId):
+        """
+        Summary:
+            Returns a list of deleted avatar IDs associated with the provided
+            [avId], along with the time at which they were deleted.
+
+        Parameters:
+            [int avId] = The ID of the avatar to query the deleted avatar IDs
+                         on.
+
+        Example response:
+            On success: [[100000001, 1409665000], ...]
+            On failure: None
+        """
+        accountId = self.rpc_getAvatarAccountId(avId)
+        if accountId is not None:
+            return self.rpc_getAccountDeletedAvatars(accountId)
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAvatarDetails(self, avId):
