@@ -190,9 +190,9 @@ class MediaWikiGenerator:
         self.content += '! Description\n'
         for name, type, description in parameters:
             self.content += '|-\n'
-            self.content += '| %s\n' % name
-            self.content += '| %s\n' % type
-            self.content += '| %s\n' % description
+            self.content += '| <nowiki>%s</nowiki>\n' % name
+            self.content += '| <nowiki>%s</nowiki>\n' % type
+            self.content += '| <nowiki>%s</nowiki>\n' % description
         self.content += '|}\n'
 
     def writeFooter(self):
