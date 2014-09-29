@@ -19,7 +19,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             testing purposes.
 
         Parameters:
-            [str data] = The data to be given back in response.
+            [any data] = The data to be given back in response.
 
         Example response: 'pong'
         """
@@ -80,8 +80,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [userId].
 
         Parameters:
-            [int userId]  = The ID of the user to direct the message to.
-            [str message] = The message to send.
+            [int/str userId]  = The ID of the user to direct the message to.
+            [str message]     = The message to send.
         """
         accountId = self.rpc_getUserAccountId(userId)
         if accountId is not None:
@@ -170,9 +170,9 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks the client associated with the provided [userId].
 
         Parameters:
-            [int userId] = The ID of the user to direct the kick to.
-            [int code]   = The code for the kick.
-            [str reason] = The reason for the kick.
+            [int/str userId] = The ID of the user to direct the kick to.
+            [int code]       = The code for the kick.
+            [str reason]     = The reason for the kick.
         """
         accountId = self.rpc_getUserAccountId(userId)
         if accountId is not None:
@@ -245,7 +245,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Returns the account ID associated with the provided [userId].
 
         Parameters:
-            [int userId] = The ID of the user to query the account ID on.
+            [int/str userId] = The ID of the user to query the account ID on.
 
         Example response:
             On success: 100000000
@@ -261,7 +261,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             Returns a list of avatar IDs associated with the provided [userId].
 
         Parameters:
-            [int userId] = The ID of the user to query the avatar IDs on.
+            [int/str userId] = The ID of the user to query the avatar IDs on.
 
         Example response:
             On success: [0, 100000001, 0, 0, 0, 0]
@@ -279,8 +279,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [userId], along with the time at which they were deleted.
 
         Parameters:
-            [int userId] = The ID of the user to query the deleted avatar IDs
-                           on.
+            [int/str userId] = The ID of the user to query the deleted avatar
+                               IDs on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
