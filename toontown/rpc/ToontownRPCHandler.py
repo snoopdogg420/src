@@ -37,8 +37,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Parameters:
             [int channel] = The channel to direct the message to.
             [str message] = The message to broadcast.
-
-        Example response: None
         """
         dclass = self.air.dclassesByName['ClientServicesManagerUD']
         datagram = dclass.aiFormatUpdate(
@@ -53,8 +51,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [str message] = The message to broadcast.
-
-        Example response: None
         """
         self.rpc_messageChannel(10, message)
 
@@ -67,8 +63,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Parameters:
             [int shardId] = The ID of the shard to direct the message to.
             [str message] = The message to broadcast.
-
-        Example response: None
         """
         # Get the DO ID of the district object:
         districtId = shardId + 1
@@ -77,6 +71,21 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         channel = (districtId<<32) | 2
 
         self.rpc_messageChannel(channel, message)
+
+    @rpcmethod(accessLevel=ADMINISTRATOR)
+    def rpc_messageUser(self, userId, message):
+        """
+        Summary:
+            Sends a [message] to the client associated with the provided
+            [userId].
+
+        Parameters:
+            [int userId]  = The ID of the user to direct the message to.
+            [str message] = The message to send.
+        """
+        accountId = self.rpc_getUserAccountId(userId)
+        if accountId is not None:
+            self.rpc_messageAccount(accountId, message)
 
     @rpcmethod(accessLevel=ADMINISTRATOR)
     def rpc_messageAccount(self, accountId, message):
@@ -88,8 +97,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Parameters:
             [int accountId] = The ID of the account to direct the message to.
             [str message]   = The message to send.
-
-        Example response: None
         """
         channel = accountId + (1003L<<32)
         self.rpc_messageChannel(channel, message)
@@ -104,8 +111,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Parameters:
             [int avId]    = The ID of the avatar to direct the message to.
             [str message] = The message to send.
-
-        Example response: None
         """
         channel = avId + (1001L<<32)
         self.rpc_messageChannel(channel, message)
@@ -123,8 +128,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int channel] = The channel to direct the kick to.
             [int code]    = The code for the kick.
             [str reason]  = The reason for the kick.
-
-        Example response: None
         """
         datagram = PyDatagram()
         datagram.addServerHeader(channel, self.air.ourChannel, CLIENTAGENT_EJECT)
@@ -140,8 +143,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Parameters:
             [int code]   = The code for the kick.
             [str reason] = The reason for the kick.
-
-        Example response: None
         """
         self.rpc_kickChannel(10, code, reason)
 
@@ -154,8 +155,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int shardId] = The ID of the shard to direct the kick to.
             [int code]    = The code for the kick.
             [str reason]  = The reason for the kick.
-
-        Example response: None
         """
         # Get the DO ID of the district object:
         districtId = shardId + 1
@@ -166,6 +165,20 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         self.rpc_kickChannel(channel, code, reason)
 
     @rpcmethod(accessLevel=MODERATOR)
+    def rpc_kickUser(self, userId, code, reason):
+        """
+        Summary: Kicks the client associated with the provided [userId].
+
+        Parameters:
+            [int userId] = The ID of the user to direct the kick to.
+            [int code]   = The code for the kick.
+            [str reason] = The reason for the kick.
+        """
+        accountId = self.rpc_getUserAccountId(userId)
+        if accountId is not None:
+            self.rpc_kickAccount(accountId, code, reason)
+
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_kickAccount(self, accountId, code, reason):
         """
         Summary: Kicks the client associated with the provided [accountId].
@@ -174,8 +187,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int accountId] = The ID of the account to direct the kick to.
             [int code]      = The code for the kick.
             [str reason]    = The reason for the kick.
-
-        Example response: None
         """
         channel = accountId + (1003L<<32)
         self.rpc_kickChannel(channel, code, reason)
@@ -189,8 +200,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int avId]    = The ID of the avatar to direct the kick to.
             [int code]    = The code for the kick.
             [str reason]  = The reason for the kick.
-
-        Example response: None
         """
         channel = avId + (1001L<<32)
         self.rpc_kickChannel(channel, code, reason)
