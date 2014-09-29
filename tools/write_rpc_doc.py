@@ -157,9 +157,14 @@ class MediaWikiGenerator:
             exampleResponse = doc[2][18:].strip()
             self.content += '{|\n'
             self.content += '|-\n'
-            self.content += '! rowspan="1"|Example Response\n'
-            # TODO: Handle on success.
-            self.content += '| TODO\n'
+            if (not exampleResponse.startswith('On success:')) or (
+                'On failure:' not in exampleResponse):
+                # Generate a single-row table:
+                self.content += '! Example Response\n'
+                self.content += '| %s\n' % exampleResponse
+            else:
+                # Generate a two-row table:
+                self.content += '! rowspan="2"|Example Response\n'
             self.content += '|}\n'
 
         return self.content
