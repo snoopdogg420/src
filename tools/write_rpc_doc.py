@@ -33,8 +33,6 @@ class MethodParser(CategoryParser):
     def __init__(self, filepath):
         CategoryParser.__init__(self, filepath)
 
-        self.filepath = filepath
-
         # Order matters, so store the method information in an OrderedDict:
         self.methods = collections.OrderedDict()
 
@@ -82,18 +80,18 @@ class MethodParser(CategoryParser):
         else:
             return
 
-        # Documentation is nice, but not required:
-        doc = node.doc or ''
+        # A docstring is also required:
+        if node.doc is None:
+            return
 
-        # If we have documentation, we'll want to get rid of any indentation so
-        # that we can have an easier time parsing it:
-        if doc:
-            lines = doc.split('\n')
-            for i, line in enumerate(lines):
-                lines[i] = line.lstrip()
-            doc = '\n'.join(lines)
+        # Get rid of the indentation in our docstring so that we can have an
+        # easier time parsing it:
+        lines = node.doc.split('\n')
+        for i, line in enumerate(lines):
+            lines[i] = line.lstrip()
+        doc = '\n'.join(lines)
 
-        # Get the category in which this method is under:
+        # Get the category in which this method is underneath:
         category = self.getCategory(node.lineno)
 
         # Store this method's information:
@@ -110,15 +108,21 @@ class MediaWikiGenerator:
         self.content = ''
 
     def generate(self):
+        # Start on a clean slate:
         self.content = ''
+
+        # Write the documentation header:
         self.writeHeader()
 
+        # Write the categories and methods:
         for category, methods in self.methods.items():
             self.writeCategory(category)
             for name, accessLevel, doc in methods:
                 self.writeMethod(name, accessLevel, doc)
 
+        # Write the documentation footer:
         self.writeFooter()
+
         return self.content
 
     def writeHeader(self):
@@ -130,59 +134,61 @@ class MediaWikiGenerator:
 
     def writeMethod(self, name, accessLevel, doc):
         # First, add the method name:
-        self.content += '== %s ==\n' % name
+        self.writeHeading(3, name)
 
-        # Next, add the access level header:
-        self.content += '<h5>%s</h5>\n' % accessLevel
+        # Next, add the access level:
+        self.writeHeading(6, accessLevel)
 
-        # Parse out the summary and write it to a block quote:
-        if 'Summary:' in doc:
-            doc = doc[doc.find('Summary:') + 9:]
-            self.writeBlockQuote(' '.join(doc.split('\n\n', 1)[0].split('\n')))
-            doc = doc[doc.find('\n\n') + 2:].lstrip()
+        # Split the docstring by the '\n\n' terminator:
+        doc = doc.split('\n\n')
 
-        # Parse out the parameters and write them to a table:
-        if ('Parameters: None' not in doc) and ('Parameters:' in doc):
-            doc = doc[doc.find('Parameters:') + 12:]
-            args = doc.split('\n\n', 1)[0][1:].split('\n[')
-            doc = doc[doc.find('\n\n') + 2:].lstrip()
+        # A summary is required, so let's assume it's first:
+        summary = doc[0][9:].strip()
+        self.writeBlockQuote(' '.join(summary.split('\n')))
 
-            for arg in args:
-                name, description = arg.split(' = ', 1)
-                name = name.rstrip()[:-1]
-                description = ' '.join(description.split('\n'))
-                type, name = name.split(' ', 1)
+        # Parameters are also required, so let's assume they're second:
+        parameters = []
+        for parameter in doc[1][12:].strip().split('\n'):
+            name, description = parameter.split(' = ', 1)
+            type, name = name.strip()[1:-1].split(' ', 1)
+            description = ' '.join(description.split('\n'))
+            parameters.append((name, type, description))
+        self.writeParameters(parameters)
 
+        # Finally, we have an optional example response:
+        if (len(doc) > 2) and ('Example response:' in doc[2]):
+            exampleResponse = doc[2][18:].strip()
             self.content += '{|\n'
             self.content += '|-\n'
-            self.content += '!colspan="3"|Parameters\n'
-            self.content += '|-\n'
-            self.content += '! Name\n'
-            self.content += '! Type\n'
-            self.content += '! Description\n'
-            self.content += '|-\n'
-            self.content += '| %s\n' % name
-            self.content += '| %s\n' % type
-            self.content += '| %s\n' % description
-            self.content += '|}\n'
-
-        # Finally, parse out the example response, and write it to a table:
-        if 'Example response:' in doc:
-            doc = doc[18:]
-            self.content += '{|\n'
-            self.content += '|-\n'
-            self.content += '! rowspan="2"|Example Response\n'
+            self.content += '! rowspan="1"|Example Response\n'
             # TODO: Handle on success.
             self.content += '| TODO\n'
             self.content += '|}\n'
 
         return self.content
 
-    def writeBlockQuote(self, data):
-        self.content += '<blockquote>%s</blockquote>' % data
+    def writeHeading(self, size, text):
+        self.content += '<h%d>%s</h%d>\n' % (size, text, size)
+
+    def writeBlockQuote(self, text):
+        self.content += '<blockquote>%s</blockquote>\n' % text
+
+    def writeParameters(self, parameters):
+        self.content += '{|\n'
+        self.content += '|-\n'
+        self.content += '! rowspan="%d"|Parameters\n' % (len(parameters) + 1)
+        self.content += '! Name\n'
+        self.content += '! Type\n'
+        self.content += '! Description\n'
+        for name, type, description in parameters:
+            self.content += '|-\n'
+            self.content += '| %s\n' % name
+            self.content += '| %s\n' % type
+            self.content += '| %s\n' % description
+        self.content += '|}\n'
 
     def writeFooter(self):
-        # Let the reader know that this documentation is automatically
+        # Let the reader know that this documentation was automatically
         # generated:
         self.content += '----\n'
         self.content += ("''This document was automatically generated by the "
@@ -192,5 +198,5 @@ class MediaWikiGenerator:
 parser = MethodParser('toontown/rpc/ToontownRPCHandler.py')
 parser.parse()
 generator = MediaWikiGenerator(parser.getMethods())
-with open('test.txt', 'w') as f:
+with open('wiki.txt', 'w') as f:
     f.write(generator.generate())
