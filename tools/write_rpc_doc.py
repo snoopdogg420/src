@@ -179,7 +179,7 @@ class MediaWikiGenerator:
         self.content += '<h%d>%s</h%d>\n' % (size, text, size)
 
     def writeBlockQuote(self, text):
-        self.content += '<blockquote>%s</blockquote>\n' % text
+        self.content += '<blockquote><nowiki>%s</nowiki></blockquote>\n' % text
 
     def writeParameters(self, parameters):
         self.content += '{|\n'
