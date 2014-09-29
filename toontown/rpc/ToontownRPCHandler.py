@@ -9,7 +9,7 @@ from toontown.toonbase import TTLocalizer
 
 
 class ToontownRPCHandler(ToontownRPCHandlerBase):
-    # --- TESTING ---
+    # --- TESTS ---
 
     @rpcmethod(accessLevel=COMMUNITY_MANAGER)
     def rpc_ping(self, data):
