@@ -45,7 +45,7 @@ from otp.ai.AIBaseGlobal import *
 
 from toontown.ai.ToontownAIRepository import ToontownAIRepository
 simbase.air = ToontownAIRepository(config.GetInt('air-base-channel', 401000000),
-                                   config.GetInt('air-stateserver', 10000),
+                                   config.GetInt('air-stateserver', 4002),
                                    config.GetString('district-name', 'Devhaven'))
 host = config.GetString('air-connect', '127.0.0.1')
 port = 7100

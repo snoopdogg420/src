@@ -43,7 +43,7 @@ from otp.ai.AIBaseGlobal import *
 
 from toontown.uberdog.ToontownUberRepository import ToontownUberRepository
 simbase.air = ToontownUberRepository(config.GetInt('air-base-channel', 400000000),
-                                     config.GetInt('air-stateserver', 10000))
+                                     config.GetInt('air-stateserver', 4002))
 host = config.GetString('air-connect', '127.0.0.1')
 port = 7100
 if ':' in host:
