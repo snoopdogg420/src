@@ -2,6 +2,9 @@
 import __builtin__
 
 
+__builtin__.process = 'client'
+
+
 __builtin__.__dict__.update(__import__('pandac.PandaModules', fromlist=['*']).__dict__)
 from direct.extensions_native import CInterval_extensions
 from direct.extensions_native import HTTPChannel_extensions
@@ -60,12 +63,6 @@ loadPrcFileData('toonBase Settings Aux Display', 'aux-display pandagl')
 loadPrcFileData('toonBase Settings Aux Display', 'aux-display pandadx9')
 
 
-class game:
-    name = 'toontown'
-    process = 'client'
-
-
-__builtin__.game = game()
 import time
 import os
 import sys
