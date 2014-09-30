@@ -143,34 +143,46 @@ class MediaWikiGenerator:
         summary = doc[0][9:].strip()
         self.writeBlockQuote(' '.join(summary.split('\n')))
 
-        # Parameters are also required, so let's assume they're second:
-        parameters = []
-        for parameter in doc[1][13:].strip().split('\n['):
-            name, description = parameter.split(' = ', 1)
-            type, name = name.strip()[:-1].split(' ', 1)
-            description = ' '.join(description.split('\n'))
-            parameters.append((name, type, description))
-        self.writeParameters(parameters)
+        # Let's do parameters next if we have them:
+        for entry in doc:
+            if entry.startswith('Parameters:'):
+                entry = entry[13:].strip()
+                break
+        else:
+            entry = None
+        if entry is not None:
+            parameters = []
+            for parameter in entry.split('\n['):
+                name, description = parameter.split(' = ', 1)
+                type, name = name.strip()[:-1].split(' ', 1)
+                description = ' '.join(description.split('\n'))
+                parameters.append((name, type, description))
+            self.writeParameters(parameters)
 
         # Finally, we have an optional example response:
-        if (len(doc) > 2) and ('Example response:' in doc[2]):
-            exampleResponse = doc[2][18:].strip()
+        for entry in doc:
+            if entry.startswith('Example response:'):
+                entry = entry[18:].strip()
+                break
+        else:
+            entry = None
+        if entry is not None:
             self.content += '{|\n'
             self.content += '|-\n'
-            if (not exampleResponse.startswith('On success:')) or (
-                'On failure:' not in exampleResponse):
+            if (not entry.startswith('On success:')) or (
+                'On failure:' not in entry):
                 # Generate a single-row table:
                 self.content += '! Example Response\n'
-                self.content += '| <nowiki>%s</nowiki>\n' % exampleResponse
+                self.content += '| <nowiki>%s</nowiki>\n' % entry
             else:
                 # Generate a double-row table:
-                successResponse, failureResponse = exampleResponse[12:].split('On failure:', 1)
+                success, failure = entry[12:].split('On failure:', 1)
                 self.content += '! rowspan="2"|Example Response\n'
                 self.content += '| Success\n'
-                self.content += '| <nowiki>%s</nowiki>\n' % successResponse.strip()
+                self.content += '| <nowiki>%s</nowiki>\n' % success.strip()
                 self.content += '|-\n'
                 self.content += '| Failure\n'
-                self.content += '| <nowiki>%s</nowiki>\n' % failureResponse.strip()
+                self.content += '| <nowiki>%s</nowiki>\n' % failure.strip()
             self.content += '|}\n'
 
         return self.content

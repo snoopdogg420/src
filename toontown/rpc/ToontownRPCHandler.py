@@ -3,12 +3,18 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.stdpy import threading2
 
 from otp.distributed import OtpDoGlobals
+from toontown.distributed.ShardStatusReceiver import ShardStatusReceiver
 from toontown.rpc.ToontownRPCHandlerBase import *
 from toontown.toon import ToonDNA
 from toontown.toonbase import TTLocalizer
 
 
 class ToontownRPCHandler(ToontownRPCHandlerBase):
+    def __init__(self, air):
+        ToontownRPCHandlerBase.__init__(self, air)
+
+        self.shardStatus = ShardStatusReceiver(air)
+
     # --- TESTS ---
 
     @rpcmethod(accessLevel=COMMUNITY_MANAGER)
@@ -204,7 +210,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         channel = avId + (1001L<<32)
         self.rpc_kickChannel(channel, code, reason)
 
-    # --- QUERIES ---
+    # --- GENERAL QUERIES ---
 
     @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_queryObject(self, doId):
@@ -237,7 +243,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         return result
 
-    # --- USER QUERIES ---
+    # --- USERS ---
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getUserAccountId(self, userId):
@@ -290,7 +296,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         if accountId is not None:
             return self.rpc_getAccountDeletedAvatars(accountId)
 
-    # --- ACCOUNT QUERIES ---
+    # --- ACCOUNTS ---
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAccountUserId(self, accountId):
@@ -346,7 +352,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         if dclassName == 'Account':
             return fields['ACCOUNT_AV_SET_DEL']
 
-    # --- AVATAR QUERIES ---
+    # --- AVATARS ---
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAvatarUserId(self, avId):
@@ -445,3 +451,27 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                 'head-color':  TTLocalizer.NumToColor[dna.headColor],
                 'max-hp': fields['setMaxHp'][0]
             }
+
+    # --- SHARDS ---
+
+    @rpcmethod(accessLevel=USER)
+    def rpc_listShards(self):
+        """
+        Summary:
+            Responds with the current status of each shard that has ever been
+            created in the lifetime of the UberDOG.
+
+        Example response: {
+                            401000000: {
+                              'name': 'District Name'
+                              'available': True,
+                              'created': 1409665000,
+                              'population': 150
+                            },
+                            ...
+                          }
+        """
+        return self.shardStatus.getShards()
+
+    # --- INVASIONS ---
+    # TODO: rpc_listInvasions, rpc_startInvasion, rpc_stopInvasion
