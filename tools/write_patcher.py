@@ -62,7 +62,7 @@ for filename in os.listdir(resourcesDir):
     resourcesFiles.append(getFileInfo(filepath))
     print 'Including...', filename
 
-print 'Writing {0}...'.format(args.output)
+print 'Writing %s...' % args.output
 
 # First, add the element:
 patcher = ET.Element('patcher')
@@ -117,4 +117,4 @@ for filename, size, hash in resourcesFiles:
 filepath = os.path.join(args.dest_dir, args.output)
 ET.ElementTree(patcher).write(filepath)
 
-print 'Done writing {0}.'.format(args.output)
+print 'Done writing %s.' % args.output

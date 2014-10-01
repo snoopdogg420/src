@@ -73,7 +73,7 @@ class DistributedGameTable(DistributedObject.DistributedObject):
         for i in xrange(self.numSeats):
             self.seats.append(self.picnicTable.find('**/*seat' + str(i+1)))
             self.jumpOffsets.append(self.picnicTable.find('**/*jumpOut' + str(i+1)))
-            cn = CollisionNode('picnicTable_sphere_{0}_{1}'.format(self.doId, i))
+            cn = CollisionNode('picnicTable_sphere_%d_%d' % (self.doId, i))
             self.picnicTableSphereNodes.append(self.seats[i].attachNewNode(cn))
             cs = CollisionSphere(0, 0, 0, 2)
             self.picnicTableSphereNodes[i].node().addSolid(cs)
@@ -134,14 +134,14 @@ class DistributedGameTable(DistributedObject.DistributedObject):
 
     def enableCollisions(self):
         for i in xrange(self.numSeats):
-            event = 'enterpicnicTable_sphere_{0}_{1}'.format(self.doId, i)
+            event = 'enterpicnicTable_sphere_%d_%d' % (self.doId, i)
             self.accept(event, self.handleEnterPicnicTableSphere, [i])
             self.picnicTableSphereNodes[i].setCollideMask(ToontownGlobals.WallBitmask)
         self.tableClothSphereNode.setCollideMask(ToontownGlobals.WallBitmask)
 
     def disableCollisions(self):
         for i in xrange(self.numSeats):
-            self.ignore('enterpicnicTable_sphere_{0}_{1}'.format(self.doId, i))
+            self.ignore('enterpicnicTable_sphere_%d_%d' % (self.doId, i))
         for i in xrange(self.numSeats):
             self.picnicTableSphereNodes[i].setCollideMask(BitMask32(0))
         self.tableClothSphereNode.setCollideMask(BitMask32(0))

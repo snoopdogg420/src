@@ -111,12 +111,12 @@ print 'Branch:', branch
 print 'Resources branch:', resourcesBranch
 print 'Server version:', serverVersion
 print 'Configuration directory:', configDir
-print 'Virtual file system ({0}):'.format(len(vfsMounts))
+print 'Virtual file system (%d):' % len(vfsMounts)
 for vfsMount in vfsMounts:
-    print '  {0}'.format(vfsMount)
-print 'Modules ({0}):'.format(len(modules))
+    print '  %s' % vfsMount
+print 'Modules (%d):' % len(modules)
 for module in modules:
-    print '  {0}'.format(module)
+    print '  %s' % module
 print 'Main module:', mainModule
 
 # Create a 'src' directory containing the source code from the desired branch:
@@ -228,16 +228,12 @@ for module in modules:
     cmd += ' ' + module
 os.system(cmd)
 
-# Compress the PYD file with UPX:
-cmd = '../tools/upx.exe -6 -k build/{0}'.format(output)
-os.system(cmd)
-
 # ...and encrypt the product:
 os.chdir('build')
 if sys.platform == 'win32':
-    os.system('..\\infinitecipher.exe {0} GameData.bin'.format(output))
+    os.system('..\\infinitecipher.exe %s GameData.bin' % output)
 else:
-    os.system('../infinitecipher {0} GameData.bin'.format(output))
+    os.system('../infinitecipher %s GameData.bin' % output)
 
 # Copy the necessary patcher includes:
 for include in patcherIncludes:
@@ -346,7 +342,7 @@ def compressFile(filepath):
 
 # Compress the updated files:
 for filepath in updatedFiles:
-    print 'Compressing {0}...'.format(filepath)
+    print 'Compressing %s...' % filepath
     compressFile(os.path.join('build', filepath))
 
 print 'Uploading files to download.toontowninfinite.com...'

@@ -255,14 +255,14 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
 
         DistributedToon.DistributedToon.announceGenerate(self)
 
-        acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
-        acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
+        acceptingNewFriends = settings.get('acceptingNewFriends', {})
+        acceptingNonFriendWhispers = settings.get('acceptingNonFriendWhispers', {})
         if str(self.doId) not in acceptingNewFriends:
             acceptingNewFriends[str(self.doId)] = True
-            base.settings.set('acceptingNewFriends', acceptingNewFriends)
+            settings['acceptingNewFriends'] = acceptingNewFriends
         if str(self.doId) not in acceptingNonFriendWhispers:
             acceptingNonFriendWhispers[str(self.doId)] = True
-            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
+            settings['acceptingNonFriendWhispers'] = acceptingNonFriendWhispers
         self.acceptingNewFriends = acceptingNewFriends[str(self.doId)]
         self.acceptingNonFriendWhispers = acceptingNonFriendWhispers[str(self.doId)]
 

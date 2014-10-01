@@ -177,14 +177,14 @@ class OTPClientRepository(ClientRepositoryBase):
 
         self.accountOldAuth = config.GetBool('account-old-auth', 0)
 
-        self.accountOldAuth = config.GetBool('%s-account-old-auth' % game.name,
+        self.accountOldAuth = config.GetBool('%s-account-old-auth' % process,
                                              self.accountOldAuth)
 
         self.loginInterface = LoginTTIAccount.LoginTTIAccount(self)
 
 
-        self.secretChatAllowed = base.config.GetBool('allow-secret-chat', 0)
-        self.openChatAllowed = base.config.GetBool('allow-open-chat', 0)
+        self.secretChatAllowed = base.config.GetBool('allow-secret-chat', True)
+        self.openChatAllowed = base.config.GetBool('allow-open-chat', True)
 
 
         self.secretChatNeedsParentPassword = base.config.GetBool('secret-chat-needs-parent-password', 0)
@@ -192,7 +192,7 @@ class OTPClientRepository(ClientRepositoryBase):
 
 
 
-        self.parentPasswordSet = base.config.GetBool('parent-password-set', 0)
+        self.parentPasswordSet = base.config.GetBool('parent-password-set', True)
 
 
         self.userSignature = base.config.GetString('signature', 'none')
@@ -475,7 +475,7 @@ class OTPClientRepository(ClientRepositoryBase):
             className = dclass.getName()
             classDef = DCClassImports.dcImports.get(className)
             if classDef is None:
-                self.notify.debug('No class definition for {0}.'.format(className))
+                self.notify.debug('No class definition for %s.' % className)
             else:
                 if type(classDef) == types.ModuleType:
                     if not hasattr(classDef, className):
