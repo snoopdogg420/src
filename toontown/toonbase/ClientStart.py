@@ -7,12 +7,7 @@ __builtin__.process = 'client'
 
 # Temporary hack patch:
 __builtin__.__dict__.update(__import__('pandac.PandaModules', fromlist=['*']).__dict__)
-from direct.extensions_native import CInterval_extensions
 from direct.extensions_native import HTTPChannel_extensions
-from direct.extensions_native import Mat3_extensions
-from direct.extensions_native import NodePath_extensions
-from direct.extensions_native import VBase3_extensions
-from direct.extensions_native import VBase4_extensions
 
 
 from panda3d.core import loadPrcFile
