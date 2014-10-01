@@ -475,7 +475,7 @@ class OTPClientRepository(ClientRepositoryBase):
             className = dclass.getName()
             classDef = DCClassImports.dcImports.get(className)
             if classDef is None:
-                self.notify.debug('No class definition for {0}.'.format(className))
+                self.notify.debug('No class definition for %s.' % className)
             else:
                 if type(classDef) == types.ModuleType:
                     if not hasattr(classDef, className):

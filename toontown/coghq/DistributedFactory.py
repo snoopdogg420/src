@@ -183,4 +183,4 @@ def factoryWarp(zoneNum):
     if (not factory) or (not isinstance(factory, DistributedFactory)):
         return 'You must be in a factory.'
     factory.warpToZone(zoneNum)
-    return 'Warped to zone: {0}'.format(zoneNum)
+    return 'Warped to zone: %d' % zoneNum

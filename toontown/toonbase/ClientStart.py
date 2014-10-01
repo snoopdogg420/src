@@ -23,7 +23,7 @@ from otp.settings.Settings import Settings
 
 
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
-print 'ToontownStart: Reading {0}...'.format(preferencesFilename)
+print 'ToontownStart: Reading %s...' % preferencesFilename
 settings = Settings(preferencesFilename)
 res = settings.get('res', (800, 600))
 fullscreen = settings.get('fullscreen', False)

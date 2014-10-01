@@ -60,4 +60,4 @@ def fireworks(showName='july4'):
         fireworkShow.generateWithRequired(hood.zoneId)
         fireworkShow.b_startShow(showType, showIndex,
                                  globalClockDelta.getRealNetworkTime())
-    return 'A {0} fireworks show was started!'.format(showName)
+    return 'A %s fireworks show was started!' % showName

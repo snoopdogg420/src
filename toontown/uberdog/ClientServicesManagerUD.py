@@ -106,7 +106,7 @@ class AccountDB:
             self.dbm.sync()
             callback(True)
         else:
-            self.notify.warning('Unable to associate user {0} with account {1}!'.format(userId, accountId))
+            self.notify.warning('Unable to associate user %s with account %d!' % (userId, accountId))
             callback(False)
 
 
@@ -1035,7 +1035,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         elif accountDBType == 'remote':
             self.accountDB = RemoteAccountDB(self)
         else:
-            self.notify.error('Invalid accountdb-type: {0}'.format(accountDBType))
+            self.notify.error('Invalid accountdb-type: ' + accountDBType)
 
     def killConnection(self, connId, reason):
         datagram = PyDatagram()

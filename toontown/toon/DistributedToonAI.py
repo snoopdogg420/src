@@ -416,7 +416,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def setDNAString(self, string):
         self.dna.makeFromNetString(string)
         if not self.verifyDNA():
-            self.notify.warning('Avatar {0} has an invalid DNA string.'.format(self.doId))
+            self.notify.warning('Avatar %d has an invalid DNA string.' % self.doId)
             self.air.writeServerEvent(
                 'suspicious', self.doId, 'Invalid DNA string.')
 
@@ -3185,7 +3185,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         if building is None:
             return ['badlocation', difficulty, 0]
         building.cogdoTakeOver(difficulty, buildingHeight)
-        self.notify.warning('cogdoTakeOver {0}, {1}'.format(difficulty, buildingHeight))
         return ['success', difficulty, building.doId]
 
     def doCogInvasion(self, cogDept, cogType, isSkelecog, isV2, isWaiter, type='regular'):
@@ -4479,13 +4478,13 @@ def sos(count, name):
                 continue
             break
     else:
-        return 'SOS card {0} was not found!'.format(name)
+        return 'SOS card %s was not found!' % name
     if (count == 0) and (npcId in invoker.NPCFriendsDict):
         del invoker.NPCFriendsDict[npcId]
     else:
         invoker.NPCFriendsDict[npcId] = count
     invoker.d_setNPCFriendsDict(invoker.NPCFriendsDict)
-    return "You were given {0} {1} SOS cards.".format(count, name)
+    return "You were given %d %s SOS cards." % (count, name)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def unites(value=99):
@@ -4515,9 +4514,9 @@ def money(money):
     target = spellbook.getTarget()
     maxMoney = 10000
     if not 0 <= money <= maxMoney:
-        return 'Money value must be in xrange (0-{0}).'.format(maxMoney)
+        return 'Money value must be in xrange (0-%d).' % maxMoney
     target.b_setMoney(money)
-    return "Set {0}'s money value to {1}!".format(target.getName(), money)
+    return "Set %s's money value to %d!" % (target.getName(), money)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str, int])
 def bank(command, value):
@@ -4562,7 +4561,7 @@ def fishingRod(rod):
         return 'Rod value must be in xrange (0-4).'
     target = spellbook.getTarget()
     target.b_setFishingRod(rod)
-    return "Set {0}'s fishing rod to {1}!".format(target.getName(), rod)
+    return "Set %s's fishing rod to %d!" % (target.getName(), rod)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def maxFishTank(maxFishTank):
@@ -4573,7 +4572,7 @@ def maxFishTank(maxFishTank):
         return 'Max fish tank value must be in xrange (20-99).'
     target = spellbook.getTarget()
     target.b_setMaxFishTank(maxFishTank)
-    return "Set {0}'s max fish tank value to {1}!".format(target.getName(), maxFishTank)
+    return "Set %s's max fish tank value to %d!" % (target.getName(), maxFishTank)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str])
 def name(name=''):
@@ -4584,9 +4583,9 @@ def name(name=''):
     _name = target.getName()
     target.b_setName(name)
     if name:
-        return "Set {0}'s name to {1}!".format(_name, name)
+        return "Set %s's name to %s!" % (_name, name)
     else:
-        return "{0}'s name is now empty!".format(_name)
+        return "%s's name is now empty!" % _name
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def hat(hatIndex, hatTex=0):
@@ -4599,7 +4598,7 @@ def hat(hatIndex, hatTex=0):
         return 'Invalid hat texture.'
     invoker = spellbook.getInvoker()
     invoker.b_setHat(hatIndex, hatTex, 0)
-    return "Set {0}'s hat to {1}, {2}!".format(invoker.getName(), hatIndex, hatTex)
+    return "Set %s's hat to %d, %d!" % (invoker.getName(), hatIndex, hatTex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def glasses(glassesIndex, glassesTex=0):
@@ -4612,7 +4611,7 @@ def glasses(glassesIndex, glassesTex=0):
         return 'Invalid glasses texture.'
     invoker = spellbook.getInvoker()
     invoker.b_setGlasses(glassesIndex, glassesTex, 0)
-    return "Set {0}'s glasses to {1}, {2}!".format(invoker.getName(), glassesIndex, glassesTex)
+    return "Set %s's glasses to %d, %d!" % (invoker.getName(), glassesIndex, glassesTex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def backpack(backpackIndex, backpackTex=0):
@@ -4625,7 +4624,7 @@ def backpack(backpackIndex, backpackTex=0):
         return 'Invalid backpack texture.'
     invoker = spellbook.getInvoker()
     invoker.b_setBackpack(backpackIndex, backpackTex, 0)
-    return "Set {0}'s backpack to {1}, {2}!".format(invoker.getName(), backpackIndex, backpackTex)
+    return "Set %s's backpack to %d, %d!" % (invoker.getName(), backpackIndex, backpackTex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[int, int])
 def shoes(shoesIndex, shoesTex=0):
@@ -4638,7 +4637,7 @@ def shoes(shoesIndex, shoesTex=0):
         return 'Invalid shoes texture.'
     invoker = spellbook.getInvoker()
     invoker.b_setShoes(shoesIndex, shoesTex, 0)
-    return "Set {0}'s shoes to {1}, {2}!".format(invoker.getName(), shoesIndex, shoesTex)
+    return "Set %s's shoes to %d, %d!" % (invoker.getName(), shoesIndex, shoesTex)
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER, types=[int])
 def gmIcon(accessLevel=None):
@@ -4658,7 +4657,7 @@ def gmIcon(accessLevel=None):
         target._gmDisabled = True
         if target == invoker:
             return 'Your GM icon has been disabled for this session!'
-        return "{0}'s GM icon has been disabled for this session!".format(target.getName())
+        return "%s's GM icon has been disabled for this session!" % target.getName()
     else:
         target._gmDisabled = False
         if accessLevel is None:
@@ -4678,10 +4677,10 @@ def gmIcon(accessLevel=None):
         if accessLevel == target.getAdminAccess():
             if target == invoker:
                 return 'Your GM icon is now enabled!'
-            return "{0}'s GM icon is now enabled!".format(target.getName())
+            return "%s's GM icon is now enabled!" % target.getName()
         if target == invoker:
-            return 'Your GM icon has been set to: {0}'.format(accessLevel)
-        return "{0}'s GM icon has been set to: {1}".format(target.getName(), accessLevel)
+            return 'Your GM icon has been set to: ' + str(accessLevel)
+        return "%s's GM icon has been set to: %d" % (target.getName(), accessLevel)
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def ghost():
@@ -4708,7 +4707,7 @@ def badName():
     animalType = TTLocalizer.AnimalToSpecies[target.dna.getAnimal()]
     target.b_setName(colorString + ' ' + animalType)
     target.sendUpdate('WishNameState', ['REJECTED'])
-    return "Revoked {0}'s name!".format(_name)
+    return "Revoked %s's name!" % _name
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def tickets(tickets):
@@ -4730,7 +4729,7 @@ def cogIndex(index):
         return 'Invalid Cog index.'
     invoker = spellbook.getInvoker()
     invoker.b_setCogIndex(index)
-    return 'Set your Cog index to {0}!'.format(index)
+    return 'Set your Cog index to %d!' % index
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
 def inventory(a, b=None, c=None):
@@ -4739,10 +4738,10 @@ def inventory(a, b=None, c=None):
     if a == 'reset':
         maxLevelIndex = b or 5
         if not 0 <= maxLevelIndex < len(ToontownBattleGlobals.Levels[0]):
-            return 'Invalid max level index: {0}'.format(maxLevelIndex)
+            return 'Invalid max level index: ' + str(maxLevelIndex)
         targetTrack = -1 or c
         if not -1 <= targetTrack < len(ToontownBattleGlobals.Tracks):
-            return 'Invalid target track index: {0}'.format(targetTrack)
+            return 'Invalid target track index: ' + str(targetTrack)
         for track in xrange(0, len(ToontownBattleGlobals.Tracks)):
             if (targetTrack == -1) or (track == targetTrack):
                 inventory.inventory[track][:maxLevelIndex + 1] = [0] * (maxLevelIndex+1)
@@ -4750,36 +4749,36 @@ def inventory(a, b=None, c=None):
         if targetTrack == -1:
             return 'Inventory reset.'
         else:
-            return 'Inventory reset for target track index: {0}'.format(targetTrack)
+            return 'Inventory reset for target track index: ' + str(targetTrack)
     elif a == 'restock':
         maxLevelIndex = b or 5
         if not 0 <= maxLevelIndex < len(ToontownBattleGlobals.Levels[0]):
-            return 'Invalid max level index: {0}'.format(maxLevelIndex)
+            return 'Invalid max level index: ' + str(maxLevelIndex)
         targetTrack = -1 or c
         if not -1 <= targetTrack < len(ToontownBattleGlobals.Tracks):
-            return 'Invalid target track index: {0}'.format(targetTrack)
+            return 'Invalid target track index: ' + str(targetTrack)
         if (targetTrack != -1) and (not invoker.hasTrackAccess(targetTrack)):
-            return "You don't have target track index: {0}".format(targetTrack)
+            return "You don't have target track index: " + str(targetTrack)
         inventory.NPCMaxOutInv(targetTrack=targetTrack, maxLevelIndex=maxLevelIndex)
         invoker.b_setInventory(inventory.makeNetString())
         if targetTrack == -1:
             return 'Inventory restocked.'
         else:
-            return 'Inventory restocked for target track index: {0}'.format(targetTrack)
+            return 'Inventory restocked for target track index: ' + str(targetTrack)
     else:
         try:
             targetTrack = int(a)
         except:
             return 'Invalid first argument.'
         if not invoker.hasTrackAccess(targetTrack):
-            return "You don't have target track index: {0}".format(targetTrack)
+            return "You don't have target track index: " + str(targetTrack)
         maxLevelIndex = b or 6
         if not 0 <= maxLevelIndex < len(ToontownBattleGlobals.Levels[0]):
-            return 'Invalid max level index: {0}'.format(maxLevelIndex)
+            return 'Invalid max level index: ' + str(maxLevelIndex)
         for _ in xrange(c):
             inventory.addItem(targetTrack, maxLevelIndex)
         invoker.b_setInventory(inventory.makeNetString())
-        return 'Restored {0} Gags to: {1}, {2}'.format(c, targetTrack, maxLevelIndex)
+        return 'Restored %d Gags to: %d, %d' % (c, targetTrack, maxLevelIndex)
 
 @magicWord(category=CATEGORY_CREATIVE, types=[str, str])
 def dna(part, value):
@@ -4795,10 +4794,10 @@ def dna(part, value):
 
     if part == 'gender':
         if value not in ('m', 'f', 'male', 'female'):
-            return 'Invalid gender: {0}'.format(value)
+            return 'Invalid gender: ' + value
         dna.gender = value[0]
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Gender set to: {0}'.format(dna.gender)
+        return 'Gender set to: ' + dna.gender
 
     if part in ('head', 'species'):
         speciesNames = (
@@ -4809,22 +4808,22 @@ def dna(part, value):
             speciesIndex = speciesNames.index(value)
             value = ToonDNA.toonSpeciesTypes[speciesIndex]
         if value not in ToonDNA.toonSpeciesTypes:
-            return 'Invalid species: {0}'.format(value)
+            return 'Invalid species: ' + value
         if (dna.headColor == 0x1a) and (value == 'c'):
             return 'Invalid species for color: black'
         if (dna.headColor == 0x00) and (value == 'b'):
             return 'Invalid species for color: white'
         dna.head = value + dna.head[1:3]
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Species set to: {0}'.format(dna.head[0])
+        return 'Species set to: ' + dna.head[0]
 
     if part == 'headsize':
         sizes = ('ls', 'ss', 'sl', 'll')
         if not 0 <= value <= len(sizes):
-            return 'Invalid head size index: {0}'.format(value)
+            return 'Invalid head size index: ' + str(value)
         dna.head = dna.head[0] + sizes[value]
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Head size index set to: {0}'.format(dna.head[1:])
+        return 'Head size index set to: ' + dna.head[1:]
 
     if part == 'torso':
         if dna.gender not in ('m', 'f'):
@@ -4836,16 +4835,15 @@ def dna(part, value):
             return 'Female torso index out of range (3-8).'
         dna.torso = ToonDNA.toonTorsoTypes[value]
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Torso set to: {0}'.format(dna.torso)
+        return 'Torso set to: ' + dna.torso
 
     if part == 'legs':
         value = int(value)
         if not 0 <= value <= len(ToonDNA.toonLegTypes):
-            return 'Legs index out of range (0-{0}).'.format(
-                len(ToonDNA.toonLegTypes))
+            return 'Legs index out of range (0-%d).' % len(ToonDNA.toonLegTypes)
         dna.legs = ToonDNA.toonLegTypes[value]
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Legs set to: {0}'.format(dna.legs)
+        return 'Legs set to: ' + dna.legs
 
     if part == 'headcolor':
         if dna.gender not in ('m', 'f'):
@@ -4855,12 +4853,12 @@ def dna(part, value):
         if (value == 0x00) or (0x00 in (dna.headColor, dna.armColor, dna.legColor)):
             return 'Toon contains white parts!'
         if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
-            return 'Invalid male head color index: {0}'.format(value)
+            return 'Invalid male head color index: ' + str(value)
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
-            return 'Invalid female head color index: {0}'.format(value)
+            return 'Invalid female head color index: ' + str(value)
         dna.headColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Head color index set to: {0}'.format(dna.headColor)
+        return 'Head color index set to: ' + str(dna.headColor)
 
     if part == 'armcolor':
         if dna.gender not in ('m', 'f'):
@@ -4870,12 +4868,12 @@ def dna(part, value):
         if (value == 0x00) or (0x00 in (dna.headColor, dna.armColor, dna.legColor)):
             return 'Toon contains white parts!'
         if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
-            return 'Invalid male arm color index: {0}'.format(value)
+            return 'Invalid male arm color index: ' + str(value)
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
-            return 'Invalid female arm color index: {0}'.format(value)
+            return 'Invalid female arm color index: ' + str(value)
         dna.armColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Arm color index set to: {0}'.format(dna.armColor)
+        return 'Arm color index set to: ' + str(dna.armColor)
 
     if part == 'legcolor':
         if dna.gender not in ('m', 'f'):
@@ -4885,72 +4883,67 @@ def dna(part, value):
         if (value == 0x00) or (0x00 in (dna.headColor, dna.armColor, dna.legColor)):
             return 'Toon contains white parts!'
         if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
-            return 'Invalid male leg color index: {0}'.format(value)
+            return 'Invalid male leg color index: ' + str(value)
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
-            return 'Invalid female leg color index: {0}'.format(value)
+            return 'Invalid female leg color index: ' + str(value)
         dna.legColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Leg color index set to: {0}'.format(dna.legColor)
+        return 'Leg color index set to: ' + str(dna.legColor)
 
     if part == 'color':
         if dna.gender not in ('m', 'f'):
             return 'Unknown gender.'
         if (dna.gender == 'm') and (value not in ToonDNA.defaultBoyColorList):
             if (value != 0x1a) and (value != 0x00):
-                return 'Invalid male color index: {0}'.format(value)
+                return 'Invalid male color index: ' + str(value)
         if (dna.gender == 'f') and (value not in ToonDNA.defaultGirlColorList):
             if (value != 0x1a) and (value != 0x00):
-                return 'Invalid female color index: {0}'.format(value)
+                return 'Invalid female color index: ' + str(value)
         if (value == 0x1a) and (dna.getAnimal() != 'cat'):
-            return 'Invalid color index for species: {0}'.format(dna.getAnimal())
+            return 'Invalid color index for species: ' + dna.getAnimal()
         if (value == 0x00) and (dna.getAnimal() != 'bear'):
-            return 'Invalid color index for species: {0}'.format(dna.getAnimal())
+            return 'Invalid color index for species: ' + dna.getAnimal()
         dna.headColor = value
         dna.armColor = value
         dna.legColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Color index set to: {0}'.format(dna.headColor)
+        return 'Color index set to: ' + str(dna.headColor)
 
     if part == 'gloves':
         value = int(value)
         if value != 0:
-            return 'Invalid glove color: {0}'.format(value)
+            return 'Invalid glove color: ' + str(value)
         dna.gloveColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Glove color set to: {0}'.format(dna.gloveColor)
+        return 'Glove color set to: ' + str(dna.gloveColor)
 
     if part == 'toptex':
         if not 0 <= value <= len(ToonDNA.Shirts):
-            return 'Top texture index out of range (0-{0}).'.format(
-                len(ToonDNA.Shirts))
+            return 'Top texture index out of range (0-%d).' % len(ToonDNA.Shirts)
         dna.topTex = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Top texture index set to: {0}'.format(dna.topTex)
+        return 'Top texture index set to: ' + str(dna.topTex)
 
     if part == 'toptexcolor':
         if not 0 <= value <= len(ToonDNA.ClothesColors):
-            return 'Top texture color index out of range(0-{0}).'.format(
-                len(ToonDNA.ClothesColors))
+            return 'Top texture color index out of range(0-%d).' % len(ToonDNA.ClothesColors)
         dna.topTexColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Top texture color index set to: {0}'.format(dna.topTexColor)
+        return 'Top texture color index set to: ' + str(dna.topTexColor)
 
     if part == 'sleevetex':
         if not 0 <= value <= len(ToonDNA.Sleeves):
-            return 'Sleeve texture index out of range(0-{0}).'.format(
-                len(ToonDNA.Sleeves))
+            return 'Sleeve texture index out of range(0-%d).' % len(ToonDNA.Sleeves)
         dna.sleeveTex = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Sleeve texture index set to: {0}'.format(dna.sleeveTex)
+        return 'Sleeve texture index set to: ' + str(dna.sleeveTex)
 
     if part == 'sleevetexcolor':
         if not 0 <= value <= len(ToonDNA.ClothesColors):
-            return 'Sleeve texture color index out of range(0-{0}).'.format(
-                len(ToonDNA.ClothesColors))
+            return 'Sleeve texture color index out of range(0-%d).' % len(ToonDNA.ClothesColors)
         dna.sleeveTexColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Sleeve texture color index set to: {0}'.format(
-            dna.sleeveTexColor)
+        return 'Sleeve texture color index set to: ' + str(dna.sleeveTexColor)
 
     if part == 'bottex':
         if dna.gender not in ('m', 'f'):
@@ -4960,19 +4953,17 @@ def dna(part, value):
         else:
             bottoms = ToonDNA.GirlBottoms
         if not 0 <= value <= len(bottoms):
-            return 'Bottom texture index out of range (0-{0}).'.format(
-                len(bottoms))
+            return 'Bottom texture index out of range (0-%d).' % len(bottoms)
         dna.botTex = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Bottom texture index set to: {0}'.format(dna.botTex)
+        return 'Bottom texture index set to: ' + str(dna.botTex)
 
     if part == 'bottexcolor':
         if not 0 <= value <= len(ToonDNA.ClothesColors):
-            return 'Bottom texture color index out of range(0-{0}).'.format(
-                len(ToonDNA.ClothesColors))
+            return 'Bottom texture color index out of range(0-%d).' % len(ToonDNA.ClothesColors)
         dna.botTexColor = value
         invoker.b_setDNAString(dna.makeNetString())
-        return 'Bottom texture color index set to: {0}'.format(dna.botTexColor)
+        return 'Bottom texture color index set to: ' + str(dna.botTexColor)
 
     if part == 'save':
         backup = simbase.backups.load('toon', (invoker.doId,), default={})
@@ -4987,7 +4978,7 @@ def dna(part, value):
         invoker.b_setDNAString(backup['dna'][value])
         return 'Restored a DNA backup for %s under the name: %s' % (invoker.getName(), value)
 
-    return 'Invalid part: {0}'.format(part)
+    return 'Invalid part: ' + part
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
 def trophyScore(value):
@@ -4995,13 +4986,10 @@ def trophyScore(value):
     Modifies the target's trophy score.
     """
     if value < 0:
-        return 'Invalid trophy score: {0}'.format(value)
+        return 'Invalid trophy score: ' + str(value)
     target = spellbook.getTarget()
-    target.d_setTrophyScore(value)
     simbase.air.trophyMgr.updateTrophyScore(target.doId, value)
-    messenger.send('leaderboardChanged')
-    messenger.send('leaderboardFlush')
-    return "{0}'s trophy score has been set to: {1}".format(target.getName(), value)
+    return "%s's trophy score has been set to: %d" % (target.getName(), value)
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int, int])
 def givePies(pieType, numPies=0):
@@ -5053,20 +5041,20 @@ def track(command, track, value=None):
             return "You can't remove throw and squirt!"
         trackAccess[index] = 0
         invoker.b_setTrackAccess(trackAccess)
-        return 'Removed the {0} track!'.format(track)
+        return 'Removed the %s track!' % track
     if command.lower() == 'add':
         trackAccess[index] = 1
         invoker.b_setTrackAccess(trackAccess)
-        return 'Added the {0} track!'.format(track)
+        return 'Added the %s track!' % track
     if command.lower() == 'experience':
         if value is None:
             return 'You must provide an experience value.'
         if not 0 <= value <= Experience.MaxSkill:
-            return 'Experience value not in xrange (0-{0}).'.format(Experience.MaxSkill)
+            return 'Experience value not in xrange (0-%d).' % Experience.MaxSkill
         experience = Experience.Experience(invoker.getExperience(), invoker)
         experience.experience[index] = value
         invoker.b_setExperience(experience.makeNetString())
-        return 'Set the experience of the {0} track to: {1}!'.format(track, value)
+        return 'Set the experience of the %s track to: %d!' % (track, value)
     return 'Invalid command.'
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int, int, int, int])
@@ -5076,18 +5064,13 @@ def suit(command, suitIndex, cogType=0, isSkelecog=0, isV2=0, isWaiter=0):
     if command == 'spawn':
         returnCode = invoker.doSummonSingleCog(int(suitIndex))
         if returnCode[0] == 'success':
-            return 'Successfully spawned suit with index {0}!'.format(suitIndex)
-        return "Couldn't spawn suit with index {0}.".format(suitIndex)
+            return 'Successfully spawned suit with index %d!' % suitIndex
+        return "Couldn't spawn suit with index %d." % suitIndex
     elif command == 'building':
         returnCode = invoker.doBuildingTakeover(suitIndex)
         if returnCode[0] == 'success':
-            return 'Successfully spawned building with index {0}!'.format(suitIndex)
-        return "Couldn't spawn building with index {0}.".format(suitIndex)
-    elif command == 'do':
-        returnCode = invoker.doCogdoTakeOver(suitIndex, 1)
-        if returnCode[0] == 'success':
-            return 'Successfully spawned Cogdo with difficulty {0}!'.format(suitIndex)
-        return "Couldn't spawn Cogdo with difficulty {0}.".format(suitIndex)
+            return 'Successfully spawned building with index %d!' % suitIndex
+        return "Couldn't spawn building with index %d." % suitIndex
     elif command == 'invasion':
         returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog,
             isV2, isWaiter)

@@ -19,7 +19,7 @@ import __builtin__
 # Load all of the packaged PRC config page(s):
 from pandac.PandaModules import *
 for i, config in enumerate(game_data.CONFIG):
-    name = 'GameData config page #{0}'.format(i)
+    name = 'GameData config page #' + str(i)
     loadPrcFileData(name, config)
 
 # The VirtualFileSystem, which has already initialized, doesn't see the mount
@@ -48,35 +48,35 @@ mod.__file__ = "zoneinfo\\__init__.pyc"
 def registerTopAttr(modname, mod):
     base = modname.rsplit('.', 1)[0]
     top = modname.split('.')[-1]
-    
+
     setattr(sys.modules[base], top, mod)
-    
+
 # mount top locations (zoneinfo/XXXXX)
 locations = set(x.split('/')[1] for x in game_data.ZONEINFO.keys())
 for x in locations:
     path = 'zoneinfo/' + x
     fullname = path.replace('/', '.')
     data = game_data.ZONEINFO.get(path)
-    
+
     mod = sys.modules.setdefault(fullname, new.module(fullname))
-    
+
     if data:
         mod.__file__ = os.path.join(path, '__init__.pyc')
         exec marshal.loads(zlib.decompress(data)) in mod.__dict__
-        
+
     else:
         mod.__file__ = path + '.pyc'
-        
+
     registerTopAttr(fullname, mod)
-        
+
 # some modules have 3 levels of depth
 def handleAmerica3Levels(name):
     modname = "zoneinfo.America." + name
     mod = sys.modules.setdefault(modname, new.module(modname))
     mod.__file__ = "zoneinfo\\America\\%s\\__init__.pyc" % name
-    
+
     registerTopAttr(modname, mod)
-    
+
 handleAmerica3Levels("Argentina")
 handleAmerica3Levels("Indiana")
 handleAmerica3Levels("Kentucky")
@@ -86,19 +86,19 @@ handleAmerica3Levels("North_Dakota")
 for x in game_data.ZONEINFO.keys():
     if len(x.split('/')) == 2:
         continue
-        
+
     path = x
     fullname = path.replace('/', '.')
     data = game_data.ZONEINFO.get(path)
-    
+
     #print 'mount', path
-    
+
     mod = sys.modules.setdefault(fullname, new.module(fullname))
     mod.__file__ = path + '.pyc'
-    
+
     if data:
         exec marshal.loads(zlib.decompress(data)) in mod.__dict__
-        
+
     registerTopAttr(fullname, mod)
 
 # Finally, start the game:
