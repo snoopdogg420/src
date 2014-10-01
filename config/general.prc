@@ -22,6 +22,9 @@ texture-anisotropic-degree 16
 # Preferences:
 preferences-filename preferences.json
 
+# Content packs:
+content-packs-filepath contentpacks/
+
 # Backups:
 backups-filepath backups/
 backups-extension .json
