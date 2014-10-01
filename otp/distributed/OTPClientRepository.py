@@ -1992,7 +1992,6 @@ class OTPClientRepository(ClientRepositoryBase):
     def _isInvalidPlayerAvatarGenerate(self, doId, dclass, parentId, zoneId):
         if self._isPlayerDclass(dclass):
             if not self._isValidPlayerLocation(parentId, zoneId):
-                base.cr.centralLogger.writeClientEvent('got generate for player avatar %s in invalid location (%s, %s)' % (doId, parentId, zoneId))
                 return True
         return False
 

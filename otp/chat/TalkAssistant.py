@@ -19,9 +19,7 @@ ThoughtPrefix = '.'
 
 
 class TalkAssistant(DirectObject.DirectObject):
-    ExecNamespace = None
     notify = DirectNotifyGlobal.directNotify.newCategory('TalkAssistant')
-    execChat = base.config.GetBool('exec-chat', 0)
 
     def __init__(self):
         self.logWhispers = 1
@@ -203,12 +201,6 @@ class TalkAssistant(DirectObject.DirectObject):
         newText = ' '.join(newwords)
         return newText
 
-    def executeSlashCommand(self, text):
-        pass
-
-    def executeGMCommand(self, text):
-        pass
-
     def isThought(self, message):
         if not message:
             return 0
@@ -247,37 +239,6 @@ class TalkAssistant(DirectObject.DirectObject):
              message.getSenderAvatarName(),
              message.getSenderAccountName(),
              message.getBody())
-
-    def importExecNamespace(self):
-        pass
-
-    def execMessage(self, message):
-        print 'execMessage %s' % message
-        if not TalkAssistant.ExecNamespace:
-            TalkAssistant.ExecNamespace = {}
-            exec 'from pandac.PandaModules import *' in globals(), self.ExecNamespace
-            self.importExecNamespace()
-        try:
-            return str(eval(message, globals(), TalkAssistant.ExecNamespace))
-        except SyntaxError:
-            try:
-                exec message in globals(), TalkAssistant.ExecNamespace
-                return 'ok'
-            except:
-                exception = sys.exc_info()[0]
-                extraInfo = sys.exc_info()[1]
-                if extraInfo:
-                    return str(extraInfo)
-                else:
-                    return str(exception)
-
-        except:
-            exception = sys.exc_info()[0]
-            extraInfo = sys.exc_info()[1]
-            if extraInfo:
-                return str(extraInfo)
-            else:
-                return str(exception)
 
     def checkOpenTypedChat(self):
         if base.localAvatar.commonChatFlags & OTPGlobals.CommonChat:

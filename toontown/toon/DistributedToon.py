@@ -1319,26 +1319,19 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         realIndexToSend = 0
         if type(index) == type(0) and 0 <= index and index < len(speedChatStyles):
             realIndexToSend = index
-        else:
-            base.cr.centralLogger.writeClientEvent('Hacker alert b_setSpeedChatStyleIndex invalid')
         self.setSpeedChatStyleIndex(realIndexToSend)
         self.d_setSpeedChatStyleIndex(realIndexToSend)
-        return None
 
     def d_setSpeedChatStyleIndex(self, index):
         realIndexToSend = 0
         if type(index) == type(0) and 0 <= index and index < len(speedChatStyles):
             realIndexToSend = index
-        else:
-            base.cr.centralLogger.writeClientEvent('Hacker alert d_setSpeedChatStyleIndex invalid')
         self.sendUpdate('setSpeedChatStyleIndex', [realIndexToSend])
 
     def setSpeedChatStyleIndex(self, index):
         realIndexToUse = 0
         if type(index) == type(0) and 0 <= index and index < len(speedChatStyles):
             realIndexToUse = index
-        else:
-            base.cr.centralLogger.writeClientEvent('Hacker victim setSpeedChatStyleIndex invalid attacking toon = %d' % self.doId)
         self.speedChatStyleIndex = realIndexToUse
         nameKey, arrowColor, rolloverColor, frameColor = speedChatStyles[realIndexToUse]
         self.nametag.setSpeedChatColor(VBase4(frameColor[0], frameColor[1], frameColor[2], 1))

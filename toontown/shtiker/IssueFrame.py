@@ -330,7 +330,6 @@ class IssueFrame(DirectFrame):
         self.curSection = section
         self.curSubsection = subsection
         messenger.send('wakeup')
-        base.cr.centralLogger.writeClientEvent('news gotoPage %s %s %s' % (self.dateStr, section, subsection))
 
     def loadFlatQuad(self, fullFilename):
         cm = CardMaker('cm-%s' % fullFilename)

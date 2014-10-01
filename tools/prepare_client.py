@@ -3,7 +3,6 @@ import argparse
 import hashlib
 import os
 from pandac.PandaModules import *
-import pytz
 import shutil
 
 
@@ -105,7 +104,7 @@ for module in args.modules:
 
 # Let's write game_data.py now. game_data.py is a compile-time generated
 # collection of data that will be used by the game at runtime. It contains the
-# PRC file data, (stripped) DC file, and time zone info.
+# PRC file data, and (stripped) DC file:
 
 # First, we need to add the configuration pages:
 configData = []
@@ -145,27 +144,11 @@ for filename in os.listdir(filepath):
                     data = data.replace(line + '\n', '')
             dcData += data
 
-# Now, collect our timezone info:
-import marshal, zlib
-zoneInfo = {}
-filename = os.path.split(pytz.__file__)[0]
-for timezone in pytz.all_timezones:
-    fn = os.path.join(filename, 'zoneinfo', timezone.replace('-', '_minus_').replace('+', '_plus_') + '.py')
-    if not os.path.exists(fn):
-        print 'Unable to find timezone %s file!' % timezone
-        continue
-
-    with open(fn, 'rb') as f:
-        zoneInfo['zoneinfo/' + timezone] = zlib.compress(marshal.dumps(compile(f.read(), '', 'exec')))
-
 # Finally, write our data to game_data.py:
 print 'Writing game_data.py...'
-gameData = '''\
-CONFIG = %r
-DC = %r
-ZONEINFO = %r'''
+gameData = 'CONFIG = %r\nDC = %r\n'
 with open(os.path.join(args.build_dir, 'game_data.py'), 'wb') as f:
-    f.write(gameData % (configData, dcData.strip(), zoneInfo))
+    f.write(gameData % (configData, dcData.strip()))
 
 # We have all of the code gathered together. Let's create the multifiles now:
 if args.build_mfs:

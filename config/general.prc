@@ -31,7 +31,7 @@ backups-filepath backups/
 backups-extension .json
 
 # Server:
-server-timezone US/Eastern
+server-timezone EST/EDT/-5
 server-port 7199
 account-server-endpoint https://toontowninfinite.com/api/
 account-bridge-filename astron/databases/account-bridge.db

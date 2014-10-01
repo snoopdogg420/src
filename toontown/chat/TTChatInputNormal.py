@@ -30,10 +30,6 @@ class TTChatInputNormal(ChatInputNormal.ChatInputNormal):
         ChatInputNormal.ChatInputNormal.delete(self)
         loader.unloadModel('phase_3.5/models/gui/chat_input_gui')
 
-    def importExecNamespace(self):
-        ChatInputNormal.ChatInputNormal.importExecNamespace(self)
-        exec 'from toontown.toonbase.ToonBaseGlobal import *' in globals(), self.ExecNamespace
-
     def typeCallback(self, extraArgs):
         if localAvatar.chatMgr.chatInputWhiteList and localAvatar.chatMgr.chatInputWhiteList.isActive():
             return
