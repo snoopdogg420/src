@@ -2,33 +2,9 @@
 # This is the "main" module that will start a production copy of
 # Toontown Infinite.
 
-import hashlib
-import sys
-
-
-def __eval_hook__(*args):
-    try:
-        base.cr.centralLogger.writeClientEvent('sys-hack')
-    finally:
-        sys.exit(28)
-
-
-__builtins__.__ceval__ = __eval_hook__
-__builtins__.__eeval__ = __eval_hook__
-
-# Before anything else, we need to confirm the authenticity of python27.dll:
-md5 = hashlib.md5()
-with open('python27.dll', 'rb') as f:
-    readChunk = lambda: f.read(128 * md5.block_size)
-    for chunk in iter(readChunk, ''):
-        md5.update(chunk)
-    hash = md5.hexdigest()
-
-if hash != 'a332b72d3b6a4ab8ccc47b2a60df8766':
-    sys.exit(27)
-
 # This is a temp patch.
 # It should really be done by the runtime (e.g. infinite.exe):
+import sys
 sys.path = ['.']
 
 # Replace some modules that do exec:
