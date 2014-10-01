@@ -1,5 +1,6 @@
 import atexit
 from direct.directnotify import DirectNotifyGlobal
+from direct.filter.CommonFilters import CommonFilters
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
 from direct.showbase.PythonUtil import *
@@ -233,6 +234,9 @@ class ToonBase(OTPBase.OTPBase):
         self.oldY = max(1, base.win.getYSize())
         self.aspectRatio = float(self.oldX) / self.oldY
         self.localAvatarStyle = None
+
+        self.filters = CommonFilters(self.win, self.cam)
+        self.filters.setBlurSharpen(1.1)
 
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
