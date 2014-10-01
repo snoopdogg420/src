@@ -7,6 +7,4 @@ TTAIMsgName2Id = {'DBSERVER_GET_ESTATE': 1040,
 TTAIMsgId2Names = invertDictLossless(TTAIMsgName2Id)
 globals().update(TTAIMsgName2Id)
 
-del name
-del value
 DBSERVER_PET_OBJECT_TYPE = 5
