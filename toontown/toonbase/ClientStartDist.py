@@ -19,7 +19,7 @@ import __builtin__
 # Load all of the packaged PRC config page(s):
 from pandac.PandaModules import *
 for i, config in enumerate(game_data.CONFIG):
-    name = 'GameData config page #{0}'.format(i)
+    name = 'GameData config page #' + str(i)
     loadPrcFileData(name, config)
 
 # The VirtualFileSystem, which has already initialized, doesn't see the mount
