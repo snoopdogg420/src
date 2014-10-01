@@ -23,7 +23,7 @@ from otp.settings.Settings import Settings
 
 
 preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
-print 'ToontownStart: Reading %s...' % preferencesFilename
+print 'ClientStart: Reading %s...' % preferencesFilename
 settings = Settings(preferencesFilename)
 res = settings.get('res', (800, 600))
 fullscreen = settings.get('fullscreen', False)
@@ -76,12 +76,12 @@ except:
     __builtin__.launcher = launcher
 
 pollingDelay = 0.5
-print 'ToontownStart: Polling for game2 to finish...'
+print 'ClientStart: Polling for game2 to finish...'
 while not launcher.getGame2Done():
     time.sleep(pollingDelay)
 
-print 'ToontownStart: Game2 is finished.'
-print 'ToontownStart: Starting the game.'
+print 'ClientStart: Game2 is finished.'
+print 'ClientStart: Starting the game.'
 if launcher.isDummy():
     http = HTTPClient()
 else:
@@ -90,7 +90,7 @@ tempLoader = Loader()
 backgroundNode = tempLoader.loadSync(Filename('phase_3/models/gui/loading-background'))
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
-print 'ToontownStart: setting default font'
+print 'ClientStart: setting default font'
 import ToontownGlobals
 DirectGuiGlobals.setDefaultFontFunc(ToontownGlobals.getInterfaceFont)
 launcher.setPandaErrorCode(7)
@@ -130,7 +130,7 @@ if base.musicManagerIsValid:
         music.setLoop(1)
         music.setVolume(0.9)
         music.play()
-    print 'ToontownStart: Loading default gui sounds'
+    print 'ClientStart: Loading default gui sounds'
     DirectGuiGlobals.setDefaultRolloverSound(base.loadSfx('phase_3/audio/sfx/GUI_rollover.ogg'))
     DirectGuiGlobals.setDefaultClickSound(base.loadSfx('phase_3/audio/sfx/GUI_create_toon_fwd.ogg'))
 else:
@@ -138,7 +138,7 @@ else:
 import ToontownLoader
 from direct.gui.DirectGui import *
 serverVersion = base.config.GetString('server-version', 'no_version_set')
-print 'ToontownStart: serverVersion: ', serverVersion
+print 'ClientStart: serverVersion: ', serverVersion
 version = OnscreenText(serverVersion, pos=(-1.3, -0.975), scale=0.06, fg=Vec4(0, 0, 0, 1), align=TextNode.ALeft)
 version.setPos(0.03,0.03)
 version.reparentTo(base.a2dBottomLeft)
