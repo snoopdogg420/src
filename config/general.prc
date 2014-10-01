@@ -24,6 +24,7 @@ preferences-filename preferences.json
 
 # Content packs:
 content-packs-filepath contentpacks/
+content-packs-sort-filename sort.yaml
 
 # Backups:
 backups-filepath backups/
