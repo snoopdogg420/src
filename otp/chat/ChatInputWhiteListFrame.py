@@ -278,7 +278,7 @@ class ChatInputWhiteListFrame(FSM.FSM, DirectFrame):
 
     def applyFilter(self, keyArgs, strict = False):
         text = self.chatEntry.get(plain=True)
-        if len(text) > 0 and text[0] in ['~', '>']:
+        if text.startswith('~'):
             self.okayToSubmit = True
         else:
             words = text.split(' ')
