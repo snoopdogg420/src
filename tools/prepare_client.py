@@ -37,7 +37,7 @@ print 'Preparing the client...'
 if os.path.exists(args.build_dir):
     shutil.rmtree(args.build_dir)
 os.mkdir(args.build_dir)
-print 'Build directory = {0}'.format(args.build_dir)
+print 'Build directory = ' + args.build_dir
 
 # Copy the provided Toontown Infinite modules:
 
@@ -113,7 +113,7 @@ with open('../config/general.prc') as f:
 
 configFileName = args.distribution + '.prc'
 configFilePath = os.path.join(args.config_dir, configFileName)
-print 'Using configuration file: {0}'.format(configFilePath)
+print 'Using configuration file: ' + configFilePath
 
 with open(configFilePath) as f:
     data = f.readlines()
@@ -121,12 +121,12 @@ with open(configFilePath) as f:
     # Replace server-version definitions with the desired server version:
     for i, line in enumerate(data):
         if 'server-version' in line:
-            data[i] = 'server-version {0}'.format(args.server_ver)
+            data[i] = 'server-version ' + args.server_ver
 
     # Add our virtual file system data:
     data.append('\n# Virtual file system...\nmodel-path /\n')
     for filepath in args.vfs:
-        data.append('vfs-mount {0} /\n'.format(filepath))
+        data.append('vfs-mount %s /\n' % filepath)
 
     configData.append('\n'.join(data))
 
@@ -136,7 +136,7 @@ filepath = os.path.join(args.src_dir, 'astron/dclass')
 for filename in os.listdir(filepath):
     if filename.endswith('.dc'):
         fullpath = str(Filename.fromOsSpecific(os.path.join(filepath, filename)))
-        print 'Reading {0}...'.format(fullpath)
+        print 'Reading %s...' % fullpath
         with open(fullpath, 'r') as f:
             data = f.read()
             for line in data.split('\n'):
@@ -166,6 +166,6 @@ if args.build_mfs:
         filename = phase + '.mf'
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
-        os.system('multify -c -f "{0}" "{1}"'.format(filepath, phase))
+        os.system('multify -c -f "%s" "%s"' % (filepath, phase))
 
 print 'Done preparing the client.'

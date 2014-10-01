@@ -2581,7 +2581,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if not gmType:
             gmType = self._gmType
         icons = loader.loadModel('phase_3/models/props/gm_icons.bam')
-        searchString = '**/access_level_{0}'.format(gmType)
+        searchString = '**/access_level_' + str(gmType)
         self.gmIcon = icons.find(searchString)
         np = NodePath(self.nametag.getIcon())
         if np.isEmpty():
@@ -2642,7 +2642,7 @@ def zone(zoneId):
     Changes the invoker's zone ID.
     """
     base.cr.sendSetZoneMsg(zoneId, [zoneId])
-    return 'You have been moved to zone {0}.'.format(zoneId)
+    return 'You have been moved to zone %d.' % zoneId
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
 def promote(deptIndex):

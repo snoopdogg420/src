@@ -166,19 +166,19 @@ class ToontownAIRepository(ToontownInternalRepository):
 
     def handleConnected(self):
         self.districtId = self.allocateChannel()
-        self.notify.info('Creating ToontownDistrictAI({0})...'.format(self.districtId))
+        self.notify.info('Creating ToontownDistrictAI(%d)...' % self.districtId)
         self.distributedDistrict = ToontownDistrictAI(self)
         self.distributedDistrict.setName(self.districtName)
         self.distributedDistrict.generateWithRequiredAndId(
             self.districtId, self.getGameDoId(), 2)
-        self.notify.info('Claiming ownership of channel ID: {0}...'.format(self.districtId))
+        self.notify.info('Claiming ownership of channel ID: %d...' % self.districtId)
         self.claimOwnership(self.districtId)
 
         self.districtStats = ToontownDistrictStatsAI(self)
         self.districtStats.settoontownDistrictId(self.districtId)
         self.districtStats.generateWithRequiredAndId(
             self.allocateChannel(), self.getGameDoId(), 3)
-        self.notify.info('Created ToontownDistrictStats({0})'.format(self.districtStats.doId))
+        self.notify.info('Created ToontownDistrictStats(%d)' % self.districtStats.doId)
 
         self.notify.info('Creating managers...')
         self.createManagers()
@@ -208,7 +208,7 @@ class ToontownAIRepository(ToontownInternalRepository):
             phaseNum = ToontownGlobals.phaseMap[hoodId]
         else:
             phaseNum = ToontownGlobals.streetPhaseMap[hoodId]
-        return 'phase_{0}/dna/{1}_{2}.pdna'.format(phaseNum, hood, zoneId)
+        return 'phase_%s/dna/%s_%s.pdna' % (phaseNum, hood, zoneId)
 
     def loadDNAFileAI(self, dnastore, filename):
         return loadDNAFileAI(dnastore, filename)

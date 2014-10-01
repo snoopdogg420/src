@@ -1,40 +1,40 @@
-# Distribution token:
+# Distribution:
 distribution dev
 
-# Models/textures:
+# Art assets:
 model-path ../resources
 
 # Server:
 server-version infinite-dev
-client-agents 1
-server-force-ssl #f
+min-access-level 600
+accountdb-type developer
+shard-low-pop 50
+shard-mid-pop 100
 
 # DClass files (in reverse order):
 dc-file astron/dclass/toon.dc
 dc-file astron/dclass/otp.dc
-
-# Database:
-accountdb-type developer
-account-server-min-access-level 600
 
 # Core features:
 want-pets #f
 want-parties #f
 want-cogdominiums #f
 want-achievements #f
+
+# Chat:
 want-whitelist #f
 
-# Districts:
-shard-low-pop 50
-shard-mid-pop 100
-
-# Picnic table board games:
-want-find-four #f
+# Cashbot boss:
+want-resistance-toonup #t
+want-resistance-restock #t
+want-resistance-dance #t
 
 # Optional:
 want-yin-yang #t
-want-chestnut-park-construction #t
 
 # Developer options:
+want-dev #f
+want-pstats 0
+show-population #t
 force-skip-tutorial #t
 want-instant-parties #t

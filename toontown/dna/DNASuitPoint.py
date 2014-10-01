@@ -27,7 +27,7 @@ class DNASuitPoint:
             pointTypeStr = 'COGHQ_OUT_POINT'
         else:
             pointTypeStr = '**invalid**'
-        return 'DNASuitPoint index: {0}, pointType: {1}, pos: {2}'.format(
+        return 'DNASuitPoint index: %d, pointType: %s, pos: %s' % (
             self.getIndex(), pointTypeStr, self.getPos())
 
     def setIndex(self, index):

@@ -62,7 +62,7 @@ class GSHoodAI(HoodAI.HoodAI):
                 racingPad.setArea(zoneId)
                 racingPad.generateWithRequired(zoneId)
             else:
-                self.notify.error('Invalid racing pad type: {0}'.format(padType))
+                self.notify.error('Invalid racing pad type: ' + padType)
 
             racingPads.append(racingPad)
         elif isinstance(dnaGroup, DNAVisGroup):

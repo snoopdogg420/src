@@ -23,7 +23,7 @@ os.chdir(args.build_dir)
 cmd = sys.executable + ' -m direct.showutil.pfreeze'
 args.modules.extend(['direct', 'pandac'])
 for module in args.modules:
-    cmd += ' -i {0}.*.*'.format(module)
+    cmd += ' -i %s.*.*' % module
 cmd += ' -i encodings.*'
 cmd += ' -i base64'
 cmd += ' -i site'

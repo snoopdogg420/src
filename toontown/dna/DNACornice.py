@@ -33,8 +33,7 @@ class DNACornice(DNAGroup.DNAGroup):
         parentZScale = nodePath.getScale().getZ()
         node = dnaStorage.findNode(self.code)
         if node is None:
-            raise DNAError.DNAError('DNACornice code {0} not found in '
-                           'DNAStorage'.format(self.code))
+            raise DNAError.DNAError('DNACornice code %d not found in DNAStorage' % self.code)
         nodePathA = nodePath.attachNewNode('cornice-internal', 0)
         node = node.find('**/*_d')
         np = node.copyTo(nodePathA, 0)
