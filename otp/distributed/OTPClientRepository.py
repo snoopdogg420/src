@@ -183,8 +183,8 @@ class OTPClientRepository(ClientRepositoryBase):
         self.loginInterface = LoginTTIAccount.LoginTTIAccount(self)
 
 
-        self.secretChatAllowed = base.config.GetBool('allow-secret-chat', 0)
-        self.openChatAllowed = base.config.GetBool('allow-open-chat', 0)
+        self.secretChatAllowed = base.config.GetBool('allow-secret-chat', True)
+        self.openChatAllowed = base.config.GetBool('allow-open-chat', True)
 
 
         self.secretChatNeedsParentPassword = base.config.GetBool('secret-chat-needs-parent-password', 0)
@@ -192,7 +192,7 @@ class OTPClientRepository(ClientRepositoryBase):
 
 
 
-        self.parentPasswordSet = base.config.GetBool('parent-password-set', 0)
+        self.parentPasswordSet = base.config.GetBool('parent-password-set', True)
 
 
         self.userSignature = base.config.GetString('signature', 'none')

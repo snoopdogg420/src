@@ -59,8 +59,6 @@ loadPrcFileData('toonBase Settings Music Volume', 'audio-master-music-volume %s'
 loadPrcFileData('toonBase Settings Sfx Volume', 'audio-master-sfx-volume %s' % sfxVol)
 loadPrcFileData('toonBase Settings Toon Chat Sounds', 'toon-chat-sounds %s' % toonChatSounds)
 loadPrcFileData('toonBase Settings Load Display', 'load-display %s' % loadDisplay)
-loadPrcFileData('toonBase Settings Aux Display', 'aux-display pandagl')
-loadPrcFileData('toonBase Settings Aux Display', 'aux-display pandadx9')
 
 
 import time

@@ -25,7 +25,7 @@ if accountDBType == 'remote':
 
 # Sometimes we'll want to force a specific access level, such as on the
 # developer server:
-minAccessLevel = simbase.config.GetInt('account-server-min-access-level', 0)
+minAccessLevel = simbase.config.GetInt('min-access-level', 100)
 
 accountServerEndpoint = simbase.config.GetString(
     'account-server-endpoint', 'https://toontowninfinite.com/api/')

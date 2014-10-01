@@ -435,7 +435,7 @@ class ToonBase(OTPBase.OTPBase):
         serverPort = base.config.GetInt('server-port', 7199)
 
         # Get the number of client-agents.
-        clientagents = base.config.GetInt('client-agents', 4) - 1
+        clientagents = base.config.GetInt('client-agents', 1) - 1
 
         # Get a new port.
         serverPort += (random.randint(0, clientagents) * 100)
