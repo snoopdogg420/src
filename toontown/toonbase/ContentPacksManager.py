@@ -3,7 +3,7 @@ import os
 from panda3d.core import Multifile, Filename, VirtualFileSystem
 
 
-CONTENT_EXT_WHITELIST = ('.jpg', '.jpeg', '.rgb', '.ogg', '.ttf')
+CONTENT_EXT_WHITELIST = ('.jpg', '.jpeg', '.rgb', '.png', '.ogg', '.ttf')
 
 
 class ContentPacksManager:
