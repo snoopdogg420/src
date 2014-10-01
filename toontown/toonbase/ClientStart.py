@@ -56,8 +56,24 @@ loadPrcFileData('Settings: loadDisplay', 'load-display %s' % settings['loadDispl
 loadPrcFileData('Settings: toonChatSounds', 'toon-chat-sounds %s' % settings['toonChatSounds'])
 
 
-import time
 import os
+
+from toontown.toonbase.ContentPacksManager import ContentPacksManager
+
+
+contentPacksFilepath = ConfigVariableString(
+    'content-packs-filepath', 'contentpacks/').getValue()
+if not os.path.exists(contentPacksFilepath):
+    os.makedirs(contentPacksFilepath)
+__builtin__.contentPacksMgr = ContentPacksManager(contentPacksFilepath)
+contentPacksSortFilename = ConfigVariableString(
+    'content-packs-sort-filename', 'sort.yaml').getValue()
+contentPacksMgr.readSortData(contentPacksSortFilename)
+contentPacksMgr.applyAll()
+contentPacksMgr.writeSortData(contentPacksSortFilename)
+
+
+import time
 import sys
 import random
 import __builtin__
