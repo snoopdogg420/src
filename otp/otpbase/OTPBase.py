@@ -6,7 +6,6 @@ import OTPGlobals
 import OTPRender
 from direct.showbase.ShowBase import ShowBase
 from otp.ai.MagicWordGlobal import *
-from otp.settings.Settings import Settings
 from pandac.PandaModules import Camera, TPLow, VBase4, ColorWriteAttrib, Filename, getModelPath, NodePath, Vec4
 
 class OTPBase(ShowBase):
@@ -14,7 +13,6 @@ class OTPBase(ShowBase):
     def __init__(self, windowType = None):
         self.wantEnviroDR = False
         ShowBase.__init__(self, windowType=windowType)
-        self.settings = Settings(config.GetString('preferences-filename', 'preferences.gz'))
         if config.GetBool('want-phase-checker', 0):
             from direct.showbase import Loader
             Loader.phaseChecker = self.loaderPhaseChecker

@@ -5,6 +5,7 @@ import __builtin__
 __builtin__.process = 'client'
 
 
+# Temporary hack patch:
 __builtin__.__dict__.update(__import__('pandac.PandaModules', fromlist=['*']).__dict__)
 from direct.extensions_native import CInterval_extensions
 from direct.extensions_native import HTTPChannel_extensions
@@ -14,51 +15,50 @@ from direct.extensions_native import VBase3_extensions
 from direct.extensions_native import VBase4_extensions
 
 
+from panda3d.core import loadPrcFile
+
+
 if __debug__:
     loadPrcFile('config/general.prc')
     loadPrcFile('config/release/dev.prc')
 
 
+from direct.directnotify.DirectNotifyGlobal import directNotify
+
+
+notify = directNotify.newCategory('ClientStart')
+notify.setInfo(True)
+
+
 from otp.settings.Settings import Settings
 
 
-preferencesFilename = ConfigVariableString('preferences-filename', 'preferences.gz').getValue()
-print 'ClientStart: Reading %s...' % preferencesFilename
-settings = Settings(preferencesFilename)
-res = settings.get('res', (800, 600))
-fullscreen = settings.get('fullscreen', False)
-if 'fullscreen' not in settings.all():
-    settings.set('fullscreen', fullscreen)
-music = settings.get('music', True)
-if 'music' not in settings.all():
-    settings.set('music', music)
-sfx = settings.get('sfx', True)
-if 'sfx' not in settings.all():
-    settings.set('sfx', sfx)
-toonChatSounds = settings.get('toonChatSounds', True)
-if 'toonChatSounds' not in settings.all():
-    settings.set('toonChatSounds', toonChatSounds)
-musicVol = settings.get('musicVol', 1.0)
-if 'musicVol' not in settings.all():
-    settings.set('musicVol', musicVol)
-sfxVol = settings.get('sfxVol', 1.0)
-if 'sfxVol' not in settings.all():
-    settings.set('sfxVol', sfxVol)
-loadDisplay = settings.get('loadDisplay', 'pandagl')
-if 'loadDisplay' not in settings.all():
-    settings.set('loadDisplay', loadDisplay)
-if 'acceptingNewFriends' not in settings.all():
-    settings.set('acceptingNewFriends', {})
-if 'acceptingNonFriendWhispers' not in settings.all():
-    settings.set('acceptingNonFriendWhispers', {})
-loadPrcFileData('toonBase Settings Window Res', 'win-size %s %s' % (res[0], res[1]))
-loadPrcFileData('toonBase Settings Window FullScreen', 'fullscreen %s' % fullscreen)
-loadPrcFileData('toonBase Settings Music Active', 'audio-music-active %s' % music)
-loadPrcFileData('toonBase Settings Sound Active', 'audio-sfx-active %s' % sfx)
-loadPrcFileData('toonBase Settings Music Volume', 'audio-master-music-volume %s' % musicVol)
-loadPrcFileData('toonBase Settings Sfx Volume', 'audio-master-sfx-volume %s' % sfxVol)
-loadPrcFileData('toonBase Settings Toon Chat Sounds', 'toon-chat-sounds %s' % toonChatSounds)
-loadPrcFileData('toonBase Settings Load Display', 'load-display %s' % loadDisplay)
+preferencesFilename = ConfigVariableString(
+    'preferences-filename', 'preferences.json').getValue()
+notify.info('Reading %s...' % preferencesFilename)
+__builtin__.settings = Settings(preferencesFilename)
+if 'fullscreen' not in settings:
+    settings['fullscreen'] = False
+if 'music' not in settings:
+    settings['music'] = True
+if 'sfx' not in settings:
+    settings['sfx'] = True
+if 'musicVol' not in settings:
+    settings['musicVol'] = 1.0
+if 'sfxVol' not in settings:
+    settings['sfxVol'] = 1.0
+if 'loadDisplay' not in settings:
+    settings['loadDisplay'] = 'pandagl'
+if 'toonChatSounds' not in settings:
+    settings['toonChatSounds'] = True
+loadPrcFileData('Settings: res', 'win-size %d %d' % tuple(settings.get('res', (800, 600))))
+loadPrcFileData('Settings: fullscreen', 'fullscreen %s' % settings['fullscreen'])
+loadPrcFileData('Settings: music', 'audio-music-active %s' % settings['music'])
+loadPrcFileData('Settings: sfx', 'audio-sfx-active %s' % settings['sfx'])
+loadPrcFileData('Settings: musicVol', 'audio-master-music-volume %s' % settings['musicVol'])
+loadPrcFileData('Settings: sfxVol', 'audio-master-sfx-volume %s' % settings['sfxVol'])
+loadPrcFileData('Settings: loadDisplay', 'load-display %s' % settings['loadDisplay'])
+loadPrcFileData('Settings: toonChatSounds', 'toon-chat-sounds %s' % settings['toonChatSounds'])
 
 
 import time

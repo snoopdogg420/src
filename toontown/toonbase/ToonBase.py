@@ -65,8 +65,8 @@ class ToonBase(OTPBase.OTPBase):
 
         # Finally, choose the best resolution if we're either fullscreen, or
         # don't have one defined in our preferences:
-        fullscreen = self.settings.get('fullscreen', False)
-        if ('res' not in self.settings.all()) or fullscreen:
+        fullscreen = settings.get('fullscreen', False)
+        if ('res' not in settings) or fullscreen:
             if fullscreen:
                 # If we're fullscreen, we want to fit the entire screen:
                 res = (self.nativeWidth, self.nativeHeight)
@@ -84,7 +84,7 @@ class ToonBase(OTPBase.OTPBase):
                 res = sorted(self.resDict[ratios[nativeIndex - 1]])[0]
 
             # Store our result:
-            self.settings.set('res', res)
+            settings['res'] = res
 
             # Reload the graphics pipe:
             properties = WindowProperties()
