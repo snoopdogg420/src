@@ -65,7 +65,7 @@ contentPacksFilepath = ConfigVariableString(
     'content-packs-filepath', 'contentpacks/').getValue()
 if not os.path.exists(contentPacksFilepath):
     os.makedirs(contentPacksFilepath)
-__builtins__.contentPacksMgr = ContentPacksManager(contentPacksFilepath)
+__builtin__.contentPacksMgr = ContentPacksManager(contentPacksFilepath)
 contentPacksSortFilename = ConfigVariableString(
     'content-packs-sort-filename', 'sort.yaml').getValue()
 contentPacksMgr.readSortData(contentPacksSortFilename)
