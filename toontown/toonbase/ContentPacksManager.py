@@ -10,6 +10,10 @@ APPLICABLE_FILE_PATTERNS = ('*.mf', 'ambience.yaml')
 CONTENT_EXT_WHITELIST = ('.jpg', '.jpeg', '.rgb', '.png', '.ogg', '.ttf')
 
 
+class ContentPackError(Exception):
+    pass
+
+
 class ContentPacksManager:
     notify = directNotify.newCategory('ContentPacksManager')
     notify.setInfo(True)
@@ -130,3 +134,9 @@ class ContentPacksManager:
         with open(self.sortFilename, 'w') as f:
             for filename in self.sort:
                 f.write('- %s\n' % filename)
+
+    def getAmbience(self, group):
+        """
+        Returns the ambience configurations for the specified group.
+        """
+        return self.ambience.get(group, {})
