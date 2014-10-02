@@ -1,38 +1,39 @@
+import collections
 import json
 import os
 
 
-class Settings:
+class Settings(collections.MutableMapping):
     def __init__(self, filename):
         self.filename = filename
 
-        self.data = {}
+        self.store = {}
         self.read()
 
     def read(self):
         if os.path.exists(self.filename):
             with open(self.filename, 'r') as f:
-                self.data = json.load(f)
+                self.store = json.load(f)
         else:
             self.write()
 
     def write(self):
         with open(self.filename, 'w') as f:
-            json.dump(self.data, f)
+            json.dump(self.store, f)
 
-    def set(self, key, value):
-        self.data[key] = value
+    def __setitem__(self, key, value):
+        self.store[key] = value
         self.write()
 
-    def remove(self, key, value):
-        if key in self.data:
-            del self.data[key]
-            self.write()
+    def __delitem__(self, key):
+        del self.store[key]
+        self.write()
 
-    def get(self, key, default=None):
-        if key in self.data:
-            return self.data[key]
-        return default
+    def __getitem__(self, key):
+        return self.store[key]
 
-    def all(self):
-        return self.data.keys()
+    def __iter__(self):
+        return iter(self.store)
+
+    def __len__(self):
+        return len(self.store)

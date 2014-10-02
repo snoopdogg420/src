@@ -186,11 +186,12 @@ class DistributedRaceAI(DistributedObjectAI, FSM):
 
     def startKarts(self):
         for avatarKart in self.avatarKarts:
-            kart = self.air.doId2do[avatarKart[1]]
-            kart.sendUpdate('setInput', [1])
-            self.avatarProgress[avatarKart[0]] = 0
-            self.avatarGags[avatarKart[0]] = 0
-            self.currentlyAffectedByAnvil[avatarKart[0]]  = False
+            if avatarKart[1] in self.air.doId2do:
+                kart = self.air.doId2do[avatarKart[1]]
+                kart.sendUpdate('setInput', [1])
+                self.avatarProgress[avatarKart[0]] = 0
+                self.avatarGags[avatarKart[0]] = 0
+                self.currentlyAffectedByAnvil[avatarKart[0]]  = False
 
     def b_startRace(self, timeUntilStart):
         self.startRace(timeUntilStart)

@@ -15,16 +15,9 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
 
-        # Load the leaderboard back-up for this shard:
-        self.leaderInfo, self.trophyScores = self.load()
-
-    def save(self):
-        simbase.backups.save('trophy-mgr', (simbase.air.districtId,),
-                             (self.leaderInfo, self.trophyScores))
-
-    def load(self):
-        return simbase.backups.load('trophy-mgr', (simbase.air.districtId,),
-                                    default=(([], [], []), {}))
+        # Load the leaderboard backup for this shard:
+        self.leaderInfo, self.trophyScores = simbase.backups.load(
+            'trophy-mgr', (simbase.air.districtId,), default=(([], [], []), {}))
 
     def requestTrophyScore(self):
         avId = self.air.getAvatarIdFromSender()
@@ -78,6 +71,9 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
 
         if av is not None:
             av.d_setTrophyScore(trophyScore)
+
+        simbase.backups.save('trophy-mgr', (simbase.air.districtId,),
+                             (self.leaderInfo, self.trophyScores))
 
     def reorganize(self):
         # Sort the leader info:

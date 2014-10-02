@@ -90,12 +90,7 @@ class LevelSpec:
         return specDict[entId]
 
     def getCopyOfSpec(self, spec):
-        specCopy = {}
-        exec 'from %s import *' % self.getSpecImportsModuleName()
-        for key in spec.keys():
-            specCopy[key] = eval(repr(spec[key]))
-
-        return specCopy
+        return __import__(self.getSpecImportsModuleName(), fromlist=['*']).__dict__
 
     def getEntitySpecCopy(self, entId):
         specDict = self.entId2specDict[entId]
@@ -367,13 +362,8 @@ class LevelSpec:
             else:
                 return 0
 
-        def testPrettyString(self, prettyString = None):
-            if prettyString is None:
-                prettyString = self.getPrettyString()
-            exec prettyString
-            if self._recurKeyTest(levelSpec, self.specDict):
-                return 1
-            return
+        def testPrettyString(self, prettyString=None):
+            pass
 
         def checkSpecIntegrity(self):
             entIds = self.getGlobalEntIds()

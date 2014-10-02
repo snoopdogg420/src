@@ -6,7 +6,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownBattleGlobals
 
 
-if game.process == 'client':
+if process == 'client':
     from toontown.battle import BattleParticles
 
 

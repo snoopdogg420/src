@@ -185,10 +185,10 @@ class DistributedPairingGameAI(DistributedMinigameAI):
             self.air.writeServerEvent('suspicious', avId, 'openCardRequest from non-player av %s' % avId)
             return
         if deckOrderIndex < 0 or deckOrderIndex >= len(self.cards):
-            self.logSuspicious(avId, 'openCardRequest: invalid deckOrderIndex: %s' % deckOrderIndex)
+            self.air.writeServerEvent('suspicious', avId, 'openCardRequest: invalid deckOrderIndex: %s' % deckOrderIndex)
             return
         if bonusGlowCard < 0 or bonusGlowCard >= len(self.cards):
-            self.logSuspicious(avId, 'openCardRequest: invalid bonusGlowCard: %s' % bonusGlowCard)
+            self.air.writeServerEvent('suspicious', avId, 'openCardRequest: invalid bonusGlowCard: %s' % bonusGlowCard)
             return
         cardsToTurnDown = []
         faceUpList = self.faceUpDict[avId]

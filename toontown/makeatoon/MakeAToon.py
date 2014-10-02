@@ -95,7 +95,6 @@ class MakeAToon(StateData.StateData):
         self.notify.debug('Starting Make A Toon.')
         if base.config.GetBool('want-qa-regression', 0):
             self.notify.info('QA-REGRESSION: MAKEATOON: Starting Make A Toon')
-        base.cr.centralLogger.writeClientEvent('MAT - startingMakeAToon')
         base.camLens.setMinFov(ToontownGlobals.MakeAToonCameraFov/(4./3.))
         base.playMusic(self.music, looping=1, volume=self.musicVolume)
         camera.setPosHpr(-5.7, -12.3501, 2.15, -24.8499, 2.73, 0)
@@ -446,7 +445,6 @@ class MakeAToon(StateData.StateData):
         pass
 
     def enterGenderShop(self):
-        base.cr.centralLogger.writeClientEvent('MAT - enteringGenderShop')
         self.shop = GENDERSHOP
         if GENDERSHOP not in self.shopsVisited:
             self.shopsVisited.append(GENDERSHOP)
@@ -486,7 +484,6 @@ class MakeAToon(StateData.StateData):
         self.rotateRightButton.show()
 
     def enterBodyShop(self):
-        base.cr.centralLogger.writeClientEvent('MAT - enteringBodyShop')
         self.toon.show()
         self.shop = BODYSHOP
         self.guiTopBar['text'] = TTLocalizer.ShapeYourToonTitle
@@ -523,7 +520,6 @@ class MakeAToon(StateData.StateData):
         self.rotateRightButton.show()
 
     def enterColorShop(self):
-        base.cr.centralLogger.writeClientEvent('MAT - enteringColorShop')
         self.shop = COLORSHOP
         self.guiTopBar['text'] = TTLocalizer.PaintYourToonTitle
         self.guiTopBar['text_fg'] = (0, 1, 1, 1)
@@ -560,7 +556,6 @@ class MakeAToon(StateData.StateData):
         self.rotateRightButton.show()
 
     def enterClothesShop(self):
-        base.cr.centralLogger.writeClientEvent('MAT - enteringClothesShop')
         self.shop = CLOTHESSHOP
         self.guiTopBar['text'] = TTLocalizer.PickClothesTitle
         self.guiTopBar['text_fg'] = (1, 0.92, 0.2, 1)
@@ -602,7 +597,6 @@ class MakeAToon(StateData.StateData):
         return Task.done
 
     def enterNameShop(self):
-        base.cr.centralLogger.writeClientEvent('MAT - enteringNameShop')
         self.shop = NAMESHOP
         self.guiTopBar['text'] = TTLocalizer.NameToonTitle
         self.guiTopBar['text_fg'] = (0.0, 0.98, 0.5, 1)

@@ -25,7 +25,7 @@ if accountDBType == 'remote':
 
 # Sometimes we'll want to force a specific access level, such as on the
 # developer server:
-minAccessLevel = simbase.config.GetInt('account-server-min-access-level', 0)
+minAccessLevel = simbase.config.GetInt('min-access-level', 100)
 
 accountServerEndpoint = simbase.config.GetString(
     'account-server-endpoint', 'https://toontowninfinite.com/api/')
@@ -106,7 +106,7 @@ class AccountDB:
             self.dbm.sync()
             callback(True)
         else:
-            self.notify.warning('Unable to associate user {0} with account {1}!'.format(userId, accountId))
+            self.notify.warning('Unable to associate user %s with account %d!' % (userId, accountId))
             callback(False)
 
 
@@ -1035,7 +1035,7 @@ class ClientServicesManagerUD(DistributedObjectGlobalUD):
         elif accountDBType == 'remote':
             self.accountDB = RemoteAccountDB(self)
         else:
-            self.notify.error('Invalid accountdb-type: {0}'.format(accountDBType))
+            self.notify.error('Invalid accountdb-type: ' + accountDBType)
 
     def killConnection(self, connId, reason):
         datagram = PyDatagram()

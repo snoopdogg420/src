@@ -1,4 +1,6 @@
 from direct.showbase import GarbageReport
+from direct.distributed.PyDatagram import PyDatagram
+from direct.distributed.MsgTypes import CLIENTAGENT_EJECT
 
 from otp.ai.AIBaseGlobal import *
 from otp.ai.MagicWordGlobal import *
@@ -167,12 +169,20 @@ def maintenance(minutes):
     Initiate the maintenance message sequence. It will last for the specified
     amount of <minutes>.
     """
+    def disconnect(task):
+        dg = PyDatagram()
+        dg.addServerHeader(10, simbase.air.ourChannel, CLIENTAGENT_EJECT)
+        dg.addUint16(154)
+        dg.addString('Toontown Infinite is now closed for maintenance.')
+        simbase.air.send(dg)
+        return Task.done
+
     def countdown(minutes):
         if minutes > 0:
             system(OTPLocalizer.CRMaintenanceCountdownMessage % minutes)
         else:
             system(OTPLocalizer.CRMaintenanceMessage)
-
+            taskMgr.doMethodLater(10, disconnect, 'maintenance-disconnection')
         if minutes <= 5:
             next = 60
             minutes -= 1
@@ -235,7 +245,7 @@ def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
     if not accessLevel < invoker.getAdminAccess():
         return "The target's access level must be lower than yours!"
     if target.getAdminAccess() == accessLevel:
-        return "{0}'s access level is already {1}!".format(target.getName(), accessLevel)
+        return "%s's access level is already %d!" % (target.getName(), accessLevel)
     target.b_setAdminAccess(accessLevel)
     if showGM:
         target.b_setGM(accessLevel)
@@ -247,8 +257,8 @@ def accessLevel(accessLevel, storage='PERSISTENT', showGM=1):
             target.air.dclassesByName['AccountAI'],
             {'ADMIN_ACCESS': accessLevel})
     if not temporary:
-        target.d_setSystemMessage(0, '{0} set your access level to {1}!'.format(invoker.getName(), accessLevel))
-        return "{0}'s access level has been set to {1}.".format(target.getName(), accessLevel)
+        target.d_setSystemMessage(0, '%s set your access level to %d!' % (invoker.getName(), accessLevel))
+        return "%s's access level has been set to %d." % (target.getName(), accessLevel)
     else:
-        target.d_setSystemMessage(0, '{0} set your access level to {1} temporarily!'.format(invoker.getName(), accessLevel))
-        return "{0}'s access level has been set to {1} temporarily.".format(target.getName(), accessLevel)
+        target.d_setSystemMessage(0, '%s set your access level to %d temporarily!' % (invoker.getName(), accessLevel))
+        return "%s's access level has been set to %d temporarily." % (target.getName(), accessLevel)

@@ -1,15 +1,16 @@
-# Python
-*.py[cod]
+# Python artifacts:
+*.pyc
 
-# Eclipse IDE
+# Eclipse IDE:
 .project
 .pydevproject
 
-# Mac directory info
+# Mac directory info:
 .DS_Store
 
-# Game preferences
+# Game-specific files and directories:
 preferences.json
-
-# ppython.exe path configuration
-PPYTHON_PATH
+logs/
+screenshots/
+backups/
+contentpacks/

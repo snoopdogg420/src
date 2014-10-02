@@ -364,7 +364,6 @@ class DistributedBuildingAI(DistributedObjectAI.DistributedObjectAI):
     def becomingToonTask(self, task):
         self.fsm.request('toon')
         self.suitPlannerExt.buildingMgr.save()
-        self.trophyMgr.save()
         return Task.done
 
     def enterToon(self):

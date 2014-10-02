@@ -363,10 +363,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.musicActive:
             base.enableMusic(0)
-            base.settings.set('music', False)
+            settings['music'] = False
         else:
             base.enableMusic(1)
-            base.settings.set('music', True)
+            settings['music'] = True
         self.settingsChanged = 1
         self.__setMusicButton()
 
@@ -382,10 +382,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.sfxActive:
             base.enableSoundEffects(0)
-            base.settings.set('sfx', False)
+            settings['sfx'] = False
         else:
             base.enableSoundEffects(1)
-            base.settings.set('sfx', True)
+            settings['sfx'] = True
         self.settingsChanged = 1
         self.__setSoundFXButton()
 
@@ -393,10 +393,10 @@ class OptionsTabPage(DirectFrame):
         messenger.send('wakeup')
         if base.toonChatSounds:
             base.toonChatSounds = 0
-            base.settings.set('toonChatSounds', False)
+            settings['toonChatSounds'] = False
         else:
             base.toonChatSounds = 1
-            base.settings.set('toonChatSounds', True)
+            settings['toonChatSounds'] = True
         self.settingsChanged = 1
         self.__setToonChatSoundsButton()
 
@@ -425,31 +425,27 @@ class OptionsTabPage(DirectFrame):
 
     def __doToggleAcceptFriends(self):
         messenger.send('wakeup')
+        acceptingNewFriends = settings.get('acceptingNewFriends', {})
         if base.localAvatar.acceptingNewFriends:
             base.localAvatar.acceptingNewFriends = 0
-            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
-            acceptingNewFriends[base.localAvatar.doId] = False
-            base.settings.set('acceptingNewFriends', acceptingNewFriends)
+            acceptingNewFriends[str(base.localAvatar.doId)] = False
         else:
             base.localAvatar.acceptingNewFriends = 1
-            acceptingNewFriends = base.settings.get('acceptingNewFriends', {})
-            acceptingNewFriends[base.localAvatar.doId] = True
-            base.settings.set('acceptingNewFriends', acceptingNewFriends)
+            acceptingNewFriends[str(base.localAvatar.doId)] = True
+        settings['acceptingNewFriends'] = acceptingNewFriends
         self.settingsChanged = 1
         self.__setAcceptFriendsButton()
 
     def __doToggleAcceptWhispers(self):
         messenger.send('wakeup')
+        acceptingNonFriendWhispers = settings.get('acceptingNonFriendWhispers', {})
         if base.localAvatar.acceptingNonFriendWhispers:
             base.localAvatar.acceptingNonFriendWhispers = 0
-            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
-            acceptingNonFriendWhispers[base.localAvatar.doId] = False
-            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
+            acceptingNonFriendWhispers[str(base.localAvatar.doId)] = False
         else:
             base.localAvatar.acceptingNonFriendWhispers = 1
-            acceptingNonFriendWhispers = base.settings.get('acceptingNonFriendWhispers', {})
-            acceptingNonFriendWhispers[base.localAvatar.doId] = True
-            base.settings.set('acceptingNonFriendWhispers', acceptingNonFriendWhispers)
+            acceptingNonFriendWhispers[str(base.localAvatar.doId)] = True
+        settings['acceptingNonFriendWhispers'] = acceptingNonFriendWhispers
         self.settingsChanged = 1
         self.__setAcceptWhispersButton()
 
@@ -536,8 +532,8 @@ class OptionsTabPage(DirectFrame):
         if not self.displaySettingsChanged:
             return
         taskMgr.remove(self.DisplaySettingsTaskName)
-        base.settings.set('res', (self.displaySettingsSize[0], self.displaySettingsSize[1]))
-        base.settings.set('fullscreen', self.displaySettingsFullscreen)
+        settings['res'] = (self.displaySettingsSize[0], self.displaySettingsSize[1])
+        settings['fullscreen'] = self.displaySettingsFullscreen
         return Task.done
 
     def __handleExitShowWithConfirm(self):

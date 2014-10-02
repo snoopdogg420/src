@@ -68,7 +68,7 @@ class BanFSM(FSM):
         self.avName = av.getName()
 
     def log(self):
-        simbase.air.writeServerEvent('account_ban', self.avId, '%s|%s' % (self.accountId, self.comment))
+        simbase.air.writeServerEvent('ban', self.accountId, self.comment)
 
     def cleanup(self):
         self.air = None

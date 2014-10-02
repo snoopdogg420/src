@@ -26,7 +26,7 @@ or it may be by itself on the next line:
 **_Always_** use spaces.
 
 ### Maximum Line Length ###
-**Docstrings and comments** should be restricted to _80 characters_. Anything else should be limited to _100 characters_. **_Never_** use backslashes _(\\)_ to wrap lines.
+**Docstrings and comments** should be restricted to _80 characters_. Anything else should be limited to _100 characters_.
 
 ## Naming Conventions ##
 ### Variables ###

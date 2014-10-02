@@ -1,5 +1,6 @@
 import atexit
 from direct.directnotify import DirectNotifyGlobal
+from direct.filter.CommonFilters import CommonFilters
 from direct.gui import DirectGuiGlobals
 from direct.gui.DirectGui import *
 from direct.showbase.PythonUtil import *
@@ -65,8 +66,8 @@ class ToonBase(OTPBase.OTPBase):
 
         # Finally, choose the best resolution if we're either fullscreen, or
         # don't have one defined in our preferences:
-        fullscreen = self.settings.get('fullscreen', False)
-        if ('res' not in self.settings.all()) or fullscreen:
+        fullscreen = settings.get('fullscreen', False)
+        if ('res' not in settings) or fullscreen:
             if fullscreen:
                 # If we're fullscreen, we want to fit the entire screen:
                 res = (self.nativeWidth, self.nativeHeight)
@@ -84,7 +85,7 @@ class ToonBase(OTPBase.OTPBase):
                 res = sorted(self.resDict[ratios[nativeIndex - 1]])[0]
 
             # Store our result:
-            self.settings.set('res', res)
+            settings['res'] = res
 
             # Reload the graphics pipe:
             properties = WindowProperties()
@@ -233,6 +234,9 @@ class ToonBase(OTPBase.OTPBase):
         self.oldY = max(1, base.win.getYSize())
         self.aspectRatio = float(self.oldX) / self.oldY
         self.localAvatarStyle = None
+
+        self.filters = CommonFilters(self.win, self.cam)
+        self.filters.setBlurSharpen(1.1)
 
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
@@ -435,7 +439,7 @@ class ToonBase(OTPBase.OTPBase):
         serverPort = base.config.GetInt('server-port', 7199)
 
         # Get the number of client-agents.
-        clientagents = base.config.GetInt('client-agents', 4) - 1
+        clientagents = base.config.GetInt('client-agents', 1) - 1
 
         # Get a new port.
         serverPort += (random.randint(0, clientagents) * 100)

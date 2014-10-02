@@ -963,7 +963,6 @@ class NameShop(StateData.StateData):
         else:
             self.checkNameTyped()
         self.notify.debug('Ending Make A Toon: %s' % self.toon.style)
-        base.cr.centralLogger.writeClientEvent('MAT - endingMakeAToon: %s' % self.toon.style)
 
     def handleCreateAvatarResponse(self, avId):
         self.notify.debug('handleCreateAvatarResponse')
@@ -1009,7 +1008,7 @@ class NameShop(StateData.StateData):
 
     def storeSkipTutorialRequest(self):
         if base.forceSkipTutorial:
-            base.cr.skipTutorialRequest = True#self.requestingSkipTutorial
+            base.cr.skipTutorialRequest = True
         else:
             base.cr.skipTutorialRequest = self.requestingSkipTutorial
 

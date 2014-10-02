@@ -48,7 +48,7 @@ class HoodAI:
             lookupTable = TTLocalizer.GlobalStreetNames
         name = lookupTable.get(zoneId, '')
         if isStreet:
-            return '{0}, {1}'.format(self.getLocationName(self.zoneId), name[2])
+            return '%s, %s' % (self.getLocationName(self.zoneId), name[2])
         return name[2]
 
     def startup(self):
