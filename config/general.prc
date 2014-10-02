@@ -10,6 +10,7 @@ audio-library-name p3fmod_audio
 # Graphics:
 aux-display pandagl
 aux-display pandadx9
+aux-display p3tinydisplay
 
 # Models:
 model-cache-models #f
