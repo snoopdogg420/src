@@ -236,7 +236,6 @@ class ToonBase(OTPBase.OTPBase):
         self.localAvatarStyle = None
 
         self.filters = CommonFilters(self.win, self.cam)
-        self.filters.setBlurSharpen(1.1)
 
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
