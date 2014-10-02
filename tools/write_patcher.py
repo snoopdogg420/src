@@ -46,9 +46,13 @@ def getFileInfo(filepath):
 
 
 rootFiles = []
+panda3dFiles = []
 for include in args.includes:
     filepath = os.path.join(args.build_dir, include)
-    rootFiles.append(getFileInfo(filepath))
+    if os.dirname(filepath) == 'panda3d':
+        panda3dFiles.append(getFileInfo(filepath))
+    else:
+        rootFiles.append(getFileInfo(filepath))
     print 'Including...', include
 
 resourcesFiles = []
@@ -94,6 +98,19 @@ root.set('name', '')
 # Add all of the root files:
 for filename, size, hash in rootFiles:
     _filename = ET.SubElement(root, 'file')
+    _filename.set('name', filename)
+    _size = ET.SubElement(_filename, 'size')
+    _size.text = str(size)
+    _hash = ET.SubElement(_filename, 'hash')
+    _hash.text = str(hash)
+
+# Next, add the panda3d directory:
+panda3dRoot = ET.SubElement(patcher, 'directory')
+panda3dRoot.set('name', 'panda3d')
+
+# Add all of the panda3d files:
+for filename, size, hash in panda3dFiles:
+    _filename = ET.SubElement(panda3dRoot, 'file')
     _filename.set('name', filename)
     _size = ET.SubElement(_filename, 'size')
     _size.text = str(size)
