@@ -75,13 +75,11 @@ class NewsPageButtonManager(FSM.FSM):
             curState = fsm.getCurrentState().getName()
             if curState == 'walk':
                 if hasattr(localAvatar, 'newsPage'):
-                    base.cr.centralLogger.writeClientEvent('news gotoNewsButton clicked')
                     localAvatar.book.setPage(localAvatar.newsPage)
                     fsm.request('stickerBook')
                     self.goingToNewsPageFrom3dWorld = True
             elif curState == 'stickerBook':
                 if hasattr(localAvatar, 'newsPage'):
-                    base.cr.centralLogger.writeClientEvent('news gotoNewsButton clicked')
                     fsm.request('stickerBook')
                     if hasattr(localAvatar, 'newsPage') and localAvatar.newsPage:
                         localAvatar.book.goToNewsPage(localAvatar.newsPage)

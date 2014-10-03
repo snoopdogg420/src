@@ -3,7 +3,6 @@ import argparse
 import hashlib
 import os
 from pandac.PandaModules import *
-import pytz
 import shutil
 
 
@@ -38,7 +37,7 @@ print 'Preparing the client...'
 if os.path.exists(args.build_dir):
     shutil.rmtree(args.build_dir)
 os.mkdir(args.build_dir)
-print 'Build directory = {0}'.format(args.build_dir)
+print 'Build directory = ' + args.build_dir
 
 # Copy the provided Toontown Infinite modules:
 
@@ -105,7 +104,7 @@ for module in args.modules:
 
 # Let's write game_data.py now. game_data.py is a compile-time generated
 # collection of data that will be used by the game at runtime. It contains the
-# PRC file data, (stripped) DC file, and time zone info.
+# PRC file data, and (stripped) DC file:
 
 # First, we need to add the configuration pages:
 configData = []
@@ -114,7 +113,7 @@ with open('../config/general.prc') as f:
 
 configFileName = args.distribution + '.prc'
 configFilePath = os.path.join(args.config_dir, configFileName)
-print 'Using configuration file: {0}'.format(configFilePath)
+print 'Using configuration file: ' + configFilePath
 
 with open(configFilePath) as f:
     data = f.readlines()
@@ -122,12 +121,12 @@ with open(configFilePath) as f:
     # Replace server-version definitions with the desired server version:
     for i, line in enumerate(data):
         if 'server-version' in line:
-            data[i] = 'server-version {0}'.format(args.server_ver)
+            data[i] = 'server-version ' + args.server_ver
 
     # Add our virtual file system data:
     data.append('\n# Virtual file system...\nmodel-path /\n')
     for filepath in args.vfs:
-        data.append('vfs-mount {0} /\n'.format(filepath))
+        data.append('vfs-mount %s /\n' % filepath)
 
     configData.append('\n'.join(data))
 
@@ -137,7 +136,7 @@ filepath = os.path.join(args.src_dir, 'astron/dclass')
 for filename in os.listdir(filepath):
     if filename.endswith('.dc'):
         fullpath = str(Filename.fromOsSpecific(os.path.join(filepath, filename)))
-        print 'Reading {0}...'.format(fullpath)
+        print 'Reading %s...' % fullpath
         with open(fullpath, 'r') as f:
             data = f.read()
             for line in data.split('\n'):
@@ -145,27 +144,11 @@ for filename in os.listdir(filepath):
                     data = data.replace(line + '\n', '')
             dcData += data
 
-# Now, collect our timezone info:
-import marshal, zlib
-zoneInfo = {}
-filename = os.path.split(pytz.__file__)[0]
-for timezone in pytz.all_timezones:
-    fn = os.path.join(filename, 'zoneinfo', timezone.replace('-', '_minus_').replace('+', '_plus_') + '.py')
-    if not os.path.exists(fn):
-        print 'Unable to find timezone %s file!' % timezone
-        continue
-
-    with open(fn, 'rb') as f:
-        zoneInfo['zoneinfo/' + timezone] = zlib.compress(marshal.dumps(compile(f.read(), '', 'exec')))
-
 # Finally, write our data to game_data.py:
 print 'Writing game_data.py...'
-gameData = '''\
-CONFIG = %r
-DC = %r
-ZONEINFO = %r'''
+gameData = 'CONFIG = %r\nDC = %r\n'
 with open(os.path.join(args.build_dir, 'game_data.py'), 'wb') as f:
-    f.write(gameData % (configData, dcData.strip(), zoneInfo))
+    f.write(gameData % (configData, dcData.strip()))
 
 # We have all of the code gathered together. Let's create the multifiles now:
 if args.build_mfs:
@@ -183,6 +166,6 @@ if args.build_mfs:
         filename = phase + '.mf'
         print 'Writing...', filename
         filepath = os.path.join(dest, filename)
-        os.system('multify -c -f "{0}" "{1}"'.format(filepath, phase))
+        os.system('multify -c -f "%s" "%s"' % (filepath, phase))
 
 print 'Done preparing the client.'

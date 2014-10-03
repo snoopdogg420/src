@@ -273,5 +273,5 @@ def house(command, arg0=None):
         if not house:
             return 'Could not find your house!'
         house.b_setHouseType(arg0)
-        return 'Your house type index has been set to {0}!'.format(arg0)
+        return 'Your house type index has been set to %d!' % arg0
     return 'Invalid command!'

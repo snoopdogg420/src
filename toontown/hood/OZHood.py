@@ -18,7 +18,18 @@ class OZHood(ToonHood.ToonHood):
         self.spookySkyFile = 'phase_3.5/models/props/BR_sky'
         self.titleColor = (1.0, 0.5, 0.4, 1.0)
         self.whiteFogColor = Vec4(0.95, 0.95, 0.95, 1)
-        self.underwaterFogColor = Vec4(0.0, 0.0, 0.6, 1.0)
+
+        # Load content pack ambience settings:
+        ambience = contentPacksMgr.getAmbience('outdoor-zone')
+
+        color = ambience.get('underwater-color')
+        if color is not None:
+            try:
+                self.underwaterColor = Vec4(color['r'], color['g'], color['b'], color['a'])
+            except Exception, e:
+                raise ContentPackError(e)
+        elif self.underwaterColor is None:
+            self.underwaterColor = Vec4(0, 0, 0.6, 1)
 
     def load(self):
         ToonHood.ToonHood.load(self)
@@ -47,7 +58,7 @@ class OZHood(ToonHood.ToonHood):
 
     def setUnderwaterFog(self):
         if base.wantFog:
-            self.fog.setColor(self.underwaterFogColor)
+            self.fog.setColor(self.underwaterColor)
             self.fog.setLinearRange(0.1, 100.0)
             render.setFog(self.fog)
             self.sky.setFog(self.fog)

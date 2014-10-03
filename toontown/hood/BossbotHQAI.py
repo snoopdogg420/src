@@ -4,6 +4,7 @@ from toontown.building.DistributedBoardingPartyAI import DistributedBoardingPart
 from toontown.coghq import DistributedCogKartAI
 from toontown.hood import CogHQAI
 from toontown.suit import DistributedBossbotBossAI
+from toontown.suit import DistributedSuitPlannerAI
 from toontown.toonbase import ToontownGlobals
 
 
@@ -17,6 +18,7 @@ class BossbotHQAI(CogHQAI.CogHQAI):
 
         self.cogKarts = []
         self.courseBoardingParty = None
+        self.suitPlanners = []
 
         self.startup()
 
@@ -26,6 +28,8 @@ class BossbotHQAI(CogHQAI.CogHQAI):
         self.createCogKarts()
         if simbase.config.GetBool('want-boarding-groups', True):
             self.createCourseBoardingParty()
+        if simbase.config.GetBool('want-suit-planners', True):
+            self.createSuitPlanners()
 
     def createCogKarts(self):
         posList = (
@@ -50,3 +54,11 @@ class BossbotHQAI(CogHQAI.CogHQAI):
             cogKartIdList.append(cogKart.doId)
         self.courseBoardingParty = DistributedBoardingPartyAI(self.air, cogKartIdList, 4)
         self.courseBoardingParty.generateWithRequired(self.zoneId)
+
+    def createSuitPlanners(self):
+        suitPlanner = DistributedSuitPlannerAI.DistributedSuitPlannerAI(self.air, self.zoneId)
+        suitPlanner.generateWithRequired(self.zoneId)
+        suitPlanner.d_setZoneId(self.zoneId)
+        suitPlanner.initTasks()
+        self.suitPlanners.append(suitPlanner)
+        self.air.suitPlanners[self.zoneId] = suitPlanner

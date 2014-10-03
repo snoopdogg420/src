@@ -78,8 +78,7 @@ class DNAWindows(DNAGroup.DNAGroup):
             makeWindow(offset() + 0.66, 0, offset() + 0.66,
                        parentNode, color, scale, hpr, True)
         else:
-            raise NotImplementedError(
-                'Invalid window count {0}'.format(windowCount))
+            raise NotImplementedError('Invalid window count ' + str(windowCount))
 
     def makeFromDGI(self, dgi):
         DNAGroup.DNAGroup.makeFromDGI(self, dgi)

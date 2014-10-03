@@ -46,9 +46,13 @@ def getFileInfo(filepath):
 
 
 rootFiles = []
+panda3dFiles = []
 for include in args.includes:
     filepath = os.path.join(args.build_dir, include)
-    rootFiles.append(getFileInfo(filepath))
+    if os.dirname(filepath) == 'panda3d':
+        panda3dFiles.append(getFileInfo(filepath))
+    else:
+        rootFiles.append(getFileInfo(filepath))
     print 'Including...', include
 
 resourcesFiles = []
@@ -62,7 +66,7 @@ for filename in os.listdir(resourcesDir):
     resourcesFiles.append(getFileInfo(filepath))
     print 'Including...', filename
 
-print 'Writing {0}...'.format(args.output)
+print 'Writing %s...' % args.output
 
 # First, add the element:
 patcher = ET.Element('patcher')
@@ -100,6 +104,19 @@ for filename, size, hash in rootFiles:
     _hash = ET.SubElement(_filename, 'hash')
     _hash.text = str(hash)
 
+# Next, add the panda3d directory:
+panda3dRoot = ET.SubElement(patcher, 'directory')
+panda3dRoot.set('name', 'panda3d')
+
+# Add all of the panda3d files:
+for filename, size, hash in panda3dFiles:
+    _filename = ET.SubElement(panda3dRoot, 'file')
+    _filename.set('name', filename)
+    _size = ET.SubElement(_filename, 'size')
+    _size.text = str(size)
+    _hash = ET.SubElement(_filename, 'hash')
+    _hash.text = str(hash)
+
 # Next, add the resources directory:
 resourcesRoot = ET.SubElement(patcher, 'directory')
 resourcesRoot.set('name', 'resources')
@@ -117,4 +134,4 @@ for filename, size, hash in resourcesFiles:
 filepath = os.path.join(args.dest_dir, args.output)
 ET.ElementTree(patcher).write(filepath)
 
-print 'Done writing {0}.'.format(args.output)
+print 'Done writing %s.' % args.output

@@ -72,13 +72,12 @@ class AIBase:
             loadPrcFileData('aibase', 'textures-header-only 1')
         self.wantPets = self.config.GetBool('want-pets', 1)
         if self.wantPets:
-            if game.name == 'toontown':
-                from toontown.pets import PetConstants
-                self.petMoodTimescale = self.config.GetFloat('pet-mood-timescale', 1.0)
-                self.petMoodDriftPeriod = self.config.GetFloat('pet-mood-drift-period', PetConstants.MoodDriftPeriod)
-                self.petThinkPeriod = self.config.GetFloat('pet-think-period', PetConstants.ThinkPeriod)
-                self.petMovePeriod = self.config.GetFloat('pet-move-period', PetConstants.MovePeriod)
-                self.petPosBroadcastPeriod = self.config.GetFloat('pet-pos-broadcast-period', PetConstants.PosBroadcastPeriod)
+            from toontown.pets import PetConstants
+            self.petMoodTimescale = self.config.GetFloat('pet-mood-timescale', 1.0)
+            self.petMoodDriftPeriod = self.config.GetFloat('pet-mood-drift-period', PetConstants.MoodDriftPeriod)
+            self.petThinkPeriod = self.config.GetFloat('pet-think-period', PetConstants.ThinkPeriod)
+            self.petMovePeriod = self.config.GetFloat('pet-move-period', PetConstants.MovePeriod)
+            self.petPosBroadcastPeriod = self.config.GetFloat('pet-pos-broadcast-period', PetConstants.PosBroadcastPeriod)
         self.wantBingo = self.config.GetBool('want-fish-bingo', 1)
         self.wantKarts = self.config.GetBool('wantKarts', 1)
         self.newDBRequestGen = self.config.GetBool('new-database-request-generate', 1)
@@ -96,7 +95,7 @@ class AIBase:
         self.restart()
 
     def setupCpuAffinities(self, minChannel):
-        if game.name == 'uberDog':
+        if process == 'uberdog':
             affinityMask = self.config.GetInt('uberdog-cpu-affinity-mask', -1)
         else:
             affinityMask = self.config.GetInt('ai-cpu-affinity-mask', -1)
@@ -104,7 +103,7 @@ class AIBase:
             TrueClock.getGlobalPtr().setCpuAffinity(affinityMask)
         else:
             autoAffinity = self.config.GetBool('auto-single-cpu-affinity', 0)
-            if game.name == 'uberDog':
+            if process == 'uberdog':
                 affinity = self.config.GetInt('uberdog-cpu-affinity', -1)
                 if autoAffinity and affinity == -1:
                     affinity = 2
@@ -115,7 +114,7 @@ class AIBase:
             if affinity != -1:
                 TrueClock.getGlobalPtr().setCpuAffinity(1 << affinity)
             elif autoAffinity:
-                if game.name == 'uberDog':
+                if process == 'uberdog':
                     channelSet = int(minChannel / 1000000)
                     channelSet -= 240
                     affinity = channelSet + 3

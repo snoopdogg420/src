@@ -442,7 +442,7 @@ class NewbieQuest:
         newbieHp = self.getNewbieLevel()
         num = 0
         for av in avList:
-            if game.process == 'client':
+            if process == 'client':
                 avatar = base.cr.doId2do.get(av)
             else:
                 avatar = simbase.air.doId2do.get(av)

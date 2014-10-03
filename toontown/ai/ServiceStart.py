@@ -1,13 +1,12 @@
 import __builtin__
 
 
+__builtin__.process = 'ai'
+
+
+# Temporary hack patch:
 __builtin__.__dict__.update(__import__('pandac.PandaModules', fromlist=['*']).__dict__)
-from direct.extensions_native import CInterval_extensions
 from direct.extensions_native import HTTPChannel_extensions
-from direct.extensions_native import Mat3_extensions
-from direct.extensions_native import NodePath_extensions
-from direct.extensions_native import VBase3_extensions
-from direct.extensions_native import VBase4_extensions
 
 
 from direct.showbase import PythonUtil
@@ -36,16 +35,12 @@ if args.astron_ip: localconfig += 'air-connect %s\n' % args.astron_ip
 if args.eventlogger_ip: localconfig += 'eventlog-host %s\n' % args.eventlogger_ip
 loadPrcFileData('Command-line', localconfig)
 
-class game:
-    name = 'toontown'
-    process = 'server'
-__builtin__.game = game
 
 from otp.ai.AIBaseGlobal import *
 
 from toontown.ai.ToontownAIRepository import ToontownAIRepository
 simbase.air = ToontownAIRepository(config.GetInt('air-base-channel', 401000000),
-                                   config.GetInt('air-stateserver', 10000),
+                                   config.GetInt('air-stateserver', 4002),
                                    config.GetString('district-name', 'Devhaven'))
 host = config.GetString('air-connect', '127.0.0.1')
 port = 7100

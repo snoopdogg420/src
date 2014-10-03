@@ -42,7 +42,18 @@ class ToonHood(Hood.Hood):
           'minigame']),
          State.State('final', self.enterFinal, self.exitFinal, [])], 'start', 'final')
         self.fsm.enterInitialState()
-        return
+
+        # Load content pack ambience settings:
+        ambience = contentPacksMgr.getAmbience('general')
+
+        color = ambience.get('underwater-color')
+        if color is not None:
+            try:
+                self.underwaterColor = Vec4(color['r'], color['g'], color['b'], color['a'])
+            except Exception, e:
+                raise ContentPackError(e)
+        else:
+            self.underwaterColor = None
 
     def load(self):
         Hood.Hood.load(self)

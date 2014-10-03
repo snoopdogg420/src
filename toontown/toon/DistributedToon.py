@@ -1319,26 +1319,19 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         realIndexToSend = 0
         if type(index) == type(0) and 0 <= index and index < len(speedChatStyles):
             realIndexToSend = index
-        else:
-            base.cr.centralLogger.writeClientEvent('Hacker alert b_setSpeedChatStyleIndex invalid')
         self.setSpeedChatStyleIndex(realIndexToSend)
         self.d_setSpeedChatStyleIndex(realIndexToSend)
-        return None
 
     def d_setSpeedChatStyleIndex(self, index):
         realIndexToSend = 0
         if type(index) == type(0) and 0 <= index and index < len(speedChatStyles):
             realIndexToSend = index
-        else:
-            base.cr.centralLogger.writeClientEvent('Hacker alert d_setSpeedChatStyleIndex invalid')
         self.sendUpdate('setSpeedChatStyleIndex', [realIndexToSend])
 
     def setSpeedChatStyleIndex(self, index):
         realIndexToUse = 0
         if type(index) == type(0) and 0 <= index and index < len(speedChatStyles):
             realIndexToUse = index
-        else:
-            base.cr.centralLogger.writeClientEvent('Hacker victim setSpeedChatStyleIndex invalid attacking toon = %d' % self.doId)
         self.speedChatStyleIndex = realIndexToUse
         nameKey, arrowColor, rolloverColor, frameColor = speedChatStyles[realIndexToUse]
         self.nametag.setSpeedChatColor(VBase4(frameColor[0], frameColor[1], frameColor[2], 1))
@@ -2588,7 +2581,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if not gmType:
             gmType = self._gmType
         icons = loader.loadModel('phase_3/models/props/gm_icons.bam')
-        searchString = '**/access_level_{0}'.format(gmType)
+        searchString = '**/access_level_' + str(gmType)
         self.gmIcon = icons.find(searchString)
         np = NodePath(self.nametag.getIcon())
         if np.isEmpty():
@@ -2649,7 +2642,7 @@ def zone(zoneId):
     Changes the invoker's zone ID.
     """
     base.cr.sendSetZoneMsg(zoneId, [zoneId])
-    return 'You have been moved to zone {0}.'.format(zoneId)
+    return 'You have been moved to zone %d.' % zoneId
 
 @magicWord(category=CATEGORY_ADMINISTRATOR, types=[int])
 def promote(deptIndex):
