@@ -48,10 +48,11 @@ def getFileInfo(filepath):
 rootFiles = []
 panda3dFiles = []
 for include in args.includes:
-    if os.path.dirname(filepath) == 'panda3d':
-        panda3dFiles.append(getFileInfo(os.path.join(args.build_dir, include)))
+    filepath = os.path.join(args.build_dir, include)
+    if os.path.dirname(include) == 'panda3d':
+        panda3dFiles.append(getFileInfo(filepath))
     else:
-        rootFiles.append(getFileInfo(os.path.join(args.build_dir, include)))
+        rootFiles.append(getFileInfo(filepath))
     print 'Including...', include
 
 resourcesFiles = []
