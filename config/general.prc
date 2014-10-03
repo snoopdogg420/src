@@ -118,6 +118,10 @@ want-long-pattern-game #f
 want-talkative-tyler #f
 want-yin-yang #f
 
+# Developer options:
+want-dev #f
+want-pstats 0
+
 # Temporary:
 smooth-lag 0.4
 want-old-fireworks #t

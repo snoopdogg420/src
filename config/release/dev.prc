@@ -33,8 +33,6 @@ want-resistance-dance #t
 want-yin-yang #t
 
 # Developer options:
-want-dev #f
-want-pstats 0
 show-population #t
 force-skip-tutorial #t
 want-instant-parties #t
