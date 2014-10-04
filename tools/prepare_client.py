@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 import argparse
+import fnmatch
 import os
+import re
 import shutil
 
 
@@ -33,6 +35,9 @@ os.mkdir(args.build_dir)
 
 # Copy the desired internal modules into the build directory in their
 # "minified" form:
+includes = re.compile('|'.join(fnmatch.translate(pat) for pat in args.include))
+excludes = re.compile('|'.join(fnmatch.translate(pat) for pat in args.exclude))
+
 for module in args.modules:
     print 'Copying module...', module
 
@@ -41,14 +46,14 @@ for module in args.modules:
         if not os.path.exists(outputDir):
             os.makedirs(outputDir)
         for filename in files:
-            if filename not in args.include:
+            if includes.match(filename) is None:
                 if not filename.endswith('.py'):
                     continue
                 if filename.endswith('UD.py'):
                     continue
                 if filename.endswith('AI.py'):
                     continue
-                if filename in args.exclude:
+                if excludes.match(filename) is not None:
                     continue
             shutil.copy(os.path.join(root, filename), os.path.join(outputDir, filename))
 
