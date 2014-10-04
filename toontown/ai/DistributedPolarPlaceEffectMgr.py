@@ -12,7 +12,6 @@ class DistributedPolarPlaceEffectMgr(DistributedObject.DistributedObject):
         
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
-        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
