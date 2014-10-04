@@ -13,11 +13,11 @@ class DistributedTrickOrTreatTarget(DistributedObject.DistributedObject):
         
     def generate(self):
         DistributedObject.DistributedObject.generate(self)
-        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
         DistributedTrickOrTreatTarget.notify.debug('announceGenerate')
+        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
 
     def phraseSaid(self, phraseId):
         self.notify.debug('Checking if phrase was said')
@@ -38,9 +38,8 @@ class DistributedTrickOrTreatTarget(DistributedObject.DistributedObject):
     def d_requestScavengerHunt(self):
         self.sendUpdate('requestScavengerHunt', [])
 
-    def doScavengerHunt(self, avId, amount):
+    def doScavengerHunt(self, amount):
         DistributedTrickOrTreatTarget.notify.debug('doScavengerHunt')
-        print(avId)
         av = base.localAvatar
         av.trickOrTreatTargetMet(amount)
         

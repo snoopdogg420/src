@@ -13,29 +13,26 @@ class DistributedResistanceEmoteMgr(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.__init__(self, cr)
         
     def generate(self):
-        #if base.cr.resistanceEmoteManager != None:
-        #    base.cr.resistanceEmoteManager.delete()
-        #base.cr.resistanceEmoteManager = self
         DistributedObject.DistributedObject.generate(self)
-        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
         DistributedResistanceEmoteMgr.notify.debug('announceGenerate')
+        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
         
     def phraseSaid(self, phraseId):
         helpPhrase = 513
         if phraseId == helpPhrase:
-            self.addResistanceEmote(phraseId)
+            self.addResistanceEmote()
 
     def delete(self):
         self.ignore(SpeedChatGlobals.SCStaticTextMsgEvent)
         DistributedObject.DistributedObject.delete(self)
 
-    def addResistanceEmote(self, phraseId):
+    def addResistanceEmote(self):
         DistributedResistanceEmoteMgr.notify.debug('addResitanceEmote')
         av = base.localAvatar
         if not av.emoteAccess[RESIST_INDEX]:
-            self.sendUpdate('addResistanceEmote', [phraseId])
+            self.sendUpdate('addResistanceEmote', [])
             msgTrack = Sequence(Wait(1), Func(av.setSystemMessage, 0, TTLocalizer.ResistanceEmote1), Wait(3), Func(av.setSystemMessage, 0, TTLocalizer.ResistanceEmote2), Wait(4), Func(av.setSystemMessage, 0, TTLocalizer.ResistanceEmote3))
             msgTrack.start()

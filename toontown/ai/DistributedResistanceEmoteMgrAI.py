@@ -15,7 +15,7 @@ class DistributedResistanceEmoteMgrAI(DistributedObjectAI, FSM):
     def enterOff(self):
         self.requestDelete()
 
-    def addResistanceEmote(self, phraseId):
+    def addResistanceEmote(self):
         avId = self.air.getAvatarIdFromSender()
         av = self.air.doId2do.get(avId)
         if not av: return

@@ -1692,7 +1692,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.savedCheesyExpireTime = expireTime
         taskName = self.uniqueName('cheesy-expires')
         taskMgr.remove(taskName)
-        if effect != ToontownGlobals.CENormal:
+        if expireTime and (effect != ToontownGlobals.CENormal):
             duration = expireTime * 60 - time.time()
             if duration > 0:
                 taskMgr.doMethodLater(duration, self.__undoCheesyEffect, taskName)

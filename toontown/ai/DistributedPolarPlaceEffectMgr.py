@@ -11,15 +11,13 @@ class DistributedPolarPlaceEffectMgr(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.__init__(self, cr)
         
     def generate(self):
-        #if base.cr.PolarPlaceEffectManager != None:
-        #    base.cr.PolarPlaceEffectManager.delete()
-        #base.cr.PolarPlaceEffectManager = self
         DistributedObject.DistributedObject.generate(self)
         self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
         DistributedPolarPlaceEffectMgr.notify.debug('announceGenerate')
+        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
         
     def phraseSaid(self, phraseId):
         helpPhrase = 104
