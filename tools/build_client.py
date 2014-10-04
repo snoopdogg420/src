@@ -1,34 +1,43 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python2 -OO
+import argparse
+import imp
+import marshal
+from modulefinder import ModuleFinder
 import os
 import sys
-
-import argparse
+import zipfile
 
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--build-dir', default='build',
-                    help='The directory of which the build was prepared.')
-parser.add_argument('--output', default='GameData.pyd',
-                    help='The built file.')
-parser.add_argument('--main-module', default='infinite.base.ClientStart',
-                    help='The module to load at the start of the game.')
-parser.add_argument('modules', nargs='*', default=['shared', 'infinite'],
-                    help='The Toontown Infinite modules to be included in the build.')
+                    help='The directory in which the build files were gathered.')
+parser.add_argument('--main-module', default='toontown.toonbase.ClientStart',
+                    help='The module to import at the start of the game.')
+parser.add_argument('--output', default='GameData.zip',
+                    help="The built file's name.")
 args = parser.parse_args()
 
 print 'Building the client...'
 
-os.chdir(args.build_dir)
+mf = ModuleFinder(path=(sys.path + [os.path.realpath(args.build_dir)]))
+mf.import_hook(args.main_module)
 
-cmd = sys.executable + ' -m direct.showutil.pfreeze'
-args.modules.extend(['direct', 'pandac'])
-for module in args.modules:
-    cmd += ' -i %s.*.*' % module
-cmd += ' -i encodings.*'
-cmd += ' -i base64'
-cmd += ' -i site'
-cmd += ' -o ' + args.output
-cmd += ' ' + args.main_module
-os.system(cmd)
+modules = {'__main__': (False, compile('import ' + args.main_module, '__main__', 'exec'))}
+for modname, mod in mf.modules.items():
+    modfile = mod.__file__
+    if (modfile is None) or (not modfile.endswith('.py')):
+        continue
+    isPackage = modfile.endswith('__init__.py')
+    with open(modfile, 'r') as f:
+        code = compile(f.read(), modname, 'exec')
+    modules[modname] = (isPackage, code)
+
+with zipfile.ZipFile(os.path.join(args.build_dir, args.output), 'w') as f:
+    for modname, (isPackage, code) in modules.items():
+        data = imp.get_magic() + ('\x00'*4) + marshal.dumps(code)
+        filename = modname.replace('.', '/')
+        if isPackage:
+            filename += '/__init__'
+        f.writestr(filename + '.pyo', data)
 
 print 'Done building the client.'
