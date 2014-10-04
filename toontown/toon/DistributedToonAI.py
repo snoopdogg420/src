@@ -1681,21 +1681,23 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setCheesyEffect(self, effect, hoodId, expireTime):
         # We don't yet have a working holidayManager, and we want to keep snowman heads.
-        #if simbase.air.holidayManager and ToontownGlobals.WINTER_CAROLING not in simbase.air.holidayManager.currentHolidays and ToontownGlobals.WACKY_WINTER_CAROLING not in simbase.air.holidayManager.currentHolidays and effect == ToontownGlobals.CESnowMan:
-            #self.b_setCheesyEffect(ToontownGlobals.CENormal, hoodId, expireTime)
-            #return
+        if simbase.air.holidayManager and ToontownGlobals.WINTER_CAROLING not in simbase.air.holidayManager.currentHolidays and ToontownGlobals.WACKY_WINTER_CAROLING not in simbase.air.holidayManager.currentHolidays and effect == ToontownGlobals.CESnowMan:
+            self.b_setCheesyEffect(ToontownGlobals.CENormal, hoodId, expireTime)
+            return
+        if simbase.air.holidayManager and ToontownGlobals.HALLOWEEN_PROPS not in simbase.air.holidayManager.currentHolidays and ToontownGlobals.HALLOWEEN_COSTUMES not in simbase.air.holidayManager.currentHolidays and not simbase.air.wantHalloween and effect == ToontownGlobals.CEPumpkin:
+            self.b_setCheesyEffect(ToontownGlobals.CENormal, hoodId, expireTime)
+            return
         self.savedCheesyEffect = effect
         self.savedCheesyHoodId = hoodId
         self.savedCheesyExpireTime = expireTime
-        if self.air.doLiveUpdates:
-            taskName = self.uniqueName('cheesy-expires')
-            taskMgr.remove(taskName)
-            if effect != ToontownGlobals.CENormal:
-                duration = expireTime * 60 - time.time()
-                if duration > 0:
-                    taskMgr.doMethodLater(duration, self.__undoCheesyEffect, taskName)
-                else:
-                    self.__undoCheesyEffect(None)
+        taskName = self.uniqueName('cheesy-expires')
+        taskMgr.remove(taskName)
+        if effect != ToontownGlobals.CENormal:
+            duration = expireTime * 60 - time.time()
+            if duration > 0:
+                taskMgr.doMethodLater(duration, self.__undoCheesyEffect, taskName)
+            else:
+                self.__undoCheesyEffect(None)
         return
 
     def getCheesyEffect(self):

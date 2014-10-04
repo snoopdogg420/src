@@ -2483,14 +2483,16 @@ dclass DistributedGreenToonEffectMgr : DistributedObject {
 };
 
 dclass DistributedResistanceEmoteMgr : DistributedObject {
-  addResistanceEmote() airecv clsend;
+  addResistanceEmote(uint16 phraseId) clsend airecv;
 };
 
 dclass DistributedScavengerHuntTarget : DistributedObject {
   attemptScavengerHunt() airecv clsend;
 };
 
-dclass DistributedTrickOrTreatTarget : DistributedScavengerHuntTarget {
+dclass DistributedTrickOrTreatTarget : DistributedObject {
+  doScavengerHunt(uint32 avId, int8) broadcast;
+  requestScavengerHunt() airecv clsend;
 };
 
 dclass DistributedWinterCarolingTarget : DistributedScavengerHuntTarget {

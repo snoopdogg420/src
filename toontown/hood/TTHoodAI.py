@@ -6,6 +6,7 @@ from toontown.safezone import DistributedTrolleyAI
 from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
+from toontown.ai import DistributedTrickOrTreatTargetAI
 
 
 class TTHoodAI(HoodAI.HoodAI):
@@ -39,6 +40,10 @@ class TTHoodAI(HoodAI.HoodAI):
                 simbase.air, 2022,
                 (ToontownGlobals.ToontownCentral, TTLocalizer.NPCToonNames[2022], ('bss', 'ms', 'm', 'm', 0, 0, 0, 0, 0, 31, 0, 31, 0, 31), 'm', 1, NPCToons.NPC_YANG),
                 ToontownGlobals.ToontownCentral, posIndex=0)
+                
+        if simbase.air.wantHalloween:
+            self.TrickOrTreatTargetManager = DistributedTrickOrTreatTargetAI.DistributedTrickOrTreatTargetAI(self.air)
+            self.TrickOrTreatTargetManager.generateWithRequired(2649)
 
     def shutdown(self):
         HoodAI.HoodAI.shutdown(self)

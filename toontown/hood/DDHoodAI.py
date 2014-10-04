@@ -3,6 +3,7 @@ from toontown.hood import HoodAI
 from toontown.safezone import DistributedBoatAI
 from toontown.safezone import DistributedTrolleyAI
 from toontown.toonbase import ToontownGlobals
+from toontown.ai import DistributedTrickOrTreatTargetAI
 
 
 class DDHoodAI(HoodAI.HoodAI):
@@ -26,6 +27,10 @@ class DDHoodAI(HoodAI.HoodAI):
         if simbase.config.GetBool('want-classic-chars', True):
             if simbase.config.GetBool('want-donald-dock', True):
                 self.createClassicChar()
+                
+        if simbase.air.wantHalloween:
+            self.TrickOrTreatTargetManager = DistributedTrickOrTreatTargetAI.DistributedTrickOrTreatTargetAI(self.air)
+            self.TrickOrTreatTargetManager.generateWithRequired(1834)
 
     def createTrolley(self):
         self.trolley = DistributedTrolleyAI.DistributedTrolleyAI(self.air)

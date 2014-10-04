@@ -84,6 +84,7 @@ class ToontownAIRepository(ToontownInternalRepository):
         self.wantAchievements = self.config.GetBool('want-achievements', True)
         self.wantYinYang = self.config.GetBool('want-yin-yang', False)
         self.baseXpMultiplier = self.config.GetFloat('base-xp-multiplier', 1.0)
+        self.wantHalloween = self.config.GetBool('want-halloween', False)
 
         self.cogSuitMessageSent = False
 
