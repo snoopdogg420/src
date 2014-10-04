@@ -18,7 +18,8 @@ parser.add_argument('--exclude', '-x', action='append',
 parser.add_argument('--config-file', action='append',
                     help='Include this config file in game_data.py.')
 parser.add_argument('--vfs-mount', action='append',
-                    help='Add this file to the virtual file system.')
+                    help='Add this file to the list of files to be mounted in '
+                         'the virtual file system when the game is launched.')
 parser.add_argument('modules', nargs='*', default=['otp', 'toontown'],
                     help='The internal modules to be included in the build.')
 args = parser.parse_args()
@@ -55,40 +56,44 @@ for module in args.modules:
 # when the game is launched:
 print 'Generating game_data.py...'
 
-# Collect the config data:
-configData = []
+# Collect the config pages:
+configPages = []
 
 for filepath in args.config_file:
     with open(os.path.join(args.src_dir, filepath)) as f:
         lines = f.readlines()
 
-        # First, replace definitions of server-version with our own:
+        # Strip each line, and replace definitions of server-version with our
+        # own:
         for i, line in enumerate(lines):
-            if 'server-version' in line:
+            lines[i] = line.strip()
+            if line.startswith('server-version '):
                 lines[i] = 'server-version ' + args.server_ver
 
-        # Next, add our virtual file system mounts:
-        lines.append('\n')
-        lines.append('# Virtual file system...\n')
-        lines.append('model-path /\n')
-        for vfsMount in args.vfs_mount:
-            lines.append('vfs-mount %s /\n' % vfsMount)
+        configPages.append('\n'.join(lines))
 
-        configData.append('\n'.join(lines))
+if args.vfs_mount is not None:
+    # We need to add a config page containing our virtual file system mounts:
+    data = '# Virtual file system:\n'
+    data += 'model-path /\n'
+    for vfsMount in args.vfs_mount:
+        data += 'vfs-mount %s /\n' % vfsMount
+    configPages.append(data)
 
 # Next, collect the DC file data:
 dcData = ''
-for filename in sorted(os.listdir(os.path.join(args.src_dir, 'astron/dclass'))):
+dclassDir = os.path.join(args.src_dir, 'astron/dclass')
+for filename in sorted(os.listdir(dclassDir)):
     if not filename.endswith('.dc'):
         continue
-    with open(os.path.join(args.src_dir, 'astron/dclass', filename), 'r') as f:
+    with open(os.path.join(dclassDir, filename), 'r') as f:
         for line in f.readlines():
-            if ' import ' not in line:
+            if 'import ' not in line:
                 dcData += line
 
 # Finally, write game_data.py:
 gameData = 'CONFIG = %r\nDC = %r\n'
 with open(os.path.join(args.build_dir, 'game_data.py'), 'w') as f:
-    f.write(gameData % (configData, dcData.strip()))
+    f.write(gameData % (configPages, dcData.strip()))
 
 print 'Done preparing the client.'
