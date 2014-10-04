@@ -11,9 +11,6 @@ class DistributedResistanceEmoteMgr(DistributedObject.DistributedObject):
 
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
-        
-    def generate(self):
-        DistributedObject.DistributedObject.generate(self)
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)

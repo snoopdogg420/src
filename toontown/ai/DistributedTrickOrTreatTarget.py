@@ -10,9 +10,6 @@ class DistributedTrickOrTreatTarget(DistributedObject.DistributedObject):
         DistributedObject.DistributedObject.__init__(self, cr)
         self.triggered = False
         self.triggerDelay = 15
-        
-    def generate(self):
-        DistributedObject.DistributedObject.generate(self)
 
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
