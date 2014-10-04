@@ -38,6 +38,8 @@ class Packager:
             if (modfile is None) or (not modfile.endswith('.py')):
                 continue
             is_package = modfile.endswith('__init__.py')
+            if is_package and modname.startswith('panda3d'):
+                continue
             with open(modfile, 'r') as f:
                 code = compile(f.read(), modname, 'exec')
             self.modules[modname] = (is_package, code)
