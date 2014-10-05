@@ -4,6 +4,7 @@ import imp
 import marshal
 from modulefinder import ModuleFinder
 import os
+import struct
 import sys
 import zipfile
 
@@ -57,7 +58,13 @@ class Packager:
                 f.writestr(filename + '.pyo', data)
 
     def write_bin(self):
-        raise NotImplementedError
+        with open(os.path.join(self.build_dir, self.output), 'wb') as f:
+            for modname, (_, code) in self.modules.items():
+                code = marshal.dumps(code)
+                data = modname + '\0'
+                data += struct.pack('<i', len(code))
+                data += code
+                f.write(data)
 
 
 packager = Packager(args.build_dir, args.main_module, args.output)
