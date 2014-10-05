@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 import argparse
+import collections
 import hashlib
 import json
 import os
@@ -155,7 +156,7 @@ class ManifestJSONGenerator:
     def __init__(self, output):
         self.output = output
 
-        self.root = {}
+        self.root = collections.OrderedDict()
 
     def addSubElement(self, name, text):
         self.root[name] = text
@@ -165,6 +166,10 @@ class ManifestJSONGenerator:
 
     def addFile(self, file, parent=None):
         pass
+
+    def write(self):
+        with open(self.output, 'w') as f:
+            json.dump(self.root, f)
 
 
 print 'Writing %s...' % args.output
