@@ -10,7 +10,6 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TTDialog
 
-
 ICON_COLORS = (Vec4(0.863, 0.776, 0.769, 1.0), Vec4(0.749, 0.776, 0.824, 1.0),
                Vec4(0.749, 0.769, 0.749, 1.0), Vec4(0.843, 0.745, 0.745, 1.0))
 
@@ -217,7 +216,10 @@ class ShardPage(ShtikerPage.ShtikerPage):
         elif self.showPop:
             handler = self.choseShard
         else:
-            handler = self.shardChoiceReject
+            if localAvatar.adminAccess >= 200:
+                handler = self.choseShard
+            else:
+                handler = self.shardChoiceReject
         return handler
 
     def getCurrentZoneId(self):
