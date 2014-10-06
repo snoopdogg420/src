@@ -14,7 +14,7 @@ class ToontownDistrictAI(DistributedDistrictAI):
         DistributedDistrictAI.announceGenerate(self)
 
         # Remember the time of which this district was created:
-        self.created = int(time.mktime(time.gmtime()))
+        self.created = int(time.time())
 
         # We want to handle shard status queries so that a ShardStatusReceiver
         # being created after we're generated will know where we're at:
@@ -24,7 +24,7 @@ class ToontownDistrictAI(DistributedDistrictAI):
         status = {
             'available': bool(self.available),
             'name': self.name,
-            'created': int(time.mktime(time.gmtime()))
+            'created': int(time.time())
         }
         self.air.netMessenger.send('shardStatus', [self.air.ourChannel, status])
 
@@ -38,7 +38,7 @@ class ToontownDistrictAI(DistributedDistrictAI):
         status = {
             'available': bool(self.available),
             'name': self.name,
-            'created': int(time.mktime(time.gmtime()))
+            'created': int(time.time())
         }
         self.air.netMessenger.send('shardStatus', [self.air.ourChannel, status])
 

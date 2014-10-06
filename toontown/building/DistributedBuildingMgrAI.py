@@ -154,7 +154,7 @@ class DistributedBuildingMgrAI:
                 building.difficulty = backup.get('difficulty', 1)
                 building.numFloors = backup.get('numFloors', 1)
                 building.updateSavedBy(backup.get('savedBy'))
-                building.becameSuitTime = backup.get('becameSuitTime', time.mktime(time.gmtime()))
+                building.becameSuitTime = backup.get('becameSuitTime', time.time())
                 if (state == 'suit') and simbase.air.wantCogbuildings:
                     building.setState('suit')
                 elif (state == 'cogdo') and simbase.air.wantCogdominiums:
