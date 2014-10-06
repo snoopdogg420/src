@@ -1,4 +1,5 @@
 from direct.directnotify.DirectNotifyGlobal import directNotify
+from direct.stdpy import threading
 import errno
 from panda3d.core import TP_normal
 import select
@@ -27,6 +28,7 @@ class ToontownRPCServer:
 
         self.listenerSocket = None
         self.connections = {}
+        self.dispatchThreads = {}
 
     def getUniqueName(self):
         """
@@ -77,11 +79,44 @@ class ToontownRPCServer:
         self.listenerSocket.close()
         self.listenerSocket = None
 
+    def dispatchThread(self, socket):
+        """
+        Call dispatchUntilEmpty() on the provided socket's connection, and then
+        clean up.
+        """
+        connection = self.connections[socket]
+        connection.dispatchUntilEmpty()
+        connection.close()
+        del self.connections[socket]
+        del self.dispatchThreads[socket]
+
     def pollOnce(self):
         """
         Poll for incoming data once.
         """
-        rlist = select.select([self.listenerSocket] + self.connections.keys(), [], [])[0]
+        try:
+            rlist = select.select([self.listenerSocket] + self.connections.keys(), [], [])[0]
+        except:
+            # It's likely that one or more of our sockets is no longer valid.
+
+            # If it's our listener socket, we can't continue:
+            try:
+                self.listenerSocket.fileno()
+            except:
+                self.notify.error('The listener socket is no longer valid!')
+
+            # Otherwise, discard the faulty sockets, and wait for the next poll
+            # iteration:
+            for socket in self.connections.keys():
+                try:
+                    socket.fileno()
+                    socket.getpeername()
+                except:
+                    del self.connections[socket]
+                    if socket in self.dispatchThreads:
+                        del self.dispatchThreads[socket]
+
+            return
 
         if self.listenerSocket in rlist:
             self.handleNewConnection()
@@ -90,9 +125,11 @@ class ToontownRPCServer:
             connection = self.connections.get(socket)
             if connection is None:
                 continue
-            connection.dispatchUntilEmpty()
-            connection.close()
-            del self.connections[socket]
+            if socket in self.dispatchThreads:
+                continue
+            self.dispatchThreads[socket] = threading.Thread(
+                target=self.dispatchThread, args=[socket])
+            self.dispatchThreads[socket].start()
 
     def pollTask(self, task):
         """

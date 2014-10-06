@@ -300,10 +300,7 @@ class ToontownRPCConnection:
             request = ToontownRPCRequest(
                 self, request.get('method'), params=request.get('params') or (),
                 id=request.get('id'), notification=('id' not in request))
-
-            dispatchThread = threading.Thread(
-                target=self.dispatcher.dispatch, args=[request])
-            dispatchThread.start()
+            self.dispatcher.dispatch(request)
 
 
 class ToontownRPCRequest:
