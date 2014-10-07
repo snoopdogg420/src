@@ -128,25 +128,39 @@ class ManifestXMLGenerator:
             self.root = ElementTree.Element('patcher')
 
     def addSubElement(self, name, text):
-        element = ElementTree.SubElement(self.root, name)
+        element = self.root.find(name)
+        if element is None:
+            element = ElementTree.SubElement(self.root, name)
         element.text = text
 
     def addDirectory(self, directory, parent=None):
         if parent is None:
             parent = self.root
-        element = ElementTree.SubElement(parent, 'directory')
-        element.set('name', directory.getName())
+        name = directory.getName()
+        for element in parent.findall('directory'):
+            if element.get('name') == name:
+                break
+        else:
+            element = ElementTree.SubElement(parent, 'directory')
+            element.set('name', name)
         for _directory in directory.getDirectories():
             self.addDirectory(_directory, parent=element)
         for file in directory.getFiles():
             self.addFile(file, parent=element)
 
     def addFile(self, file, parent):
-        element = ElementTree.SubElement(parent, 'file')
-        element.set('name', file.getName())
-        size = ElementTree.SubElement(element, 'size')
+        name = file.getName()
+        for element in parent.findall('file'):
+            if element.get('name') == name:
+                size = element.find('size')
+                hash = element.find('hash')
+                break
+        else:
+            element = ElementTree.SubElement(parent, 'file')
+            element.set('name', file.getName())
+            size = ElementTree.SubElement(element, 'size')
+            hash = ElementTree.SubElement(element, 'hash')
         size.text = str(file.getSize())
-        hash = ElementTree.SubElement(element, 'hash')
         hash.text = file.getHash()
 
     def write(self):
