@@ -185,13 +185,13 @@ class ManifestJSONGenerator:
 
 print 'Writing %s...' % args.output
 
-format = os.path.splitext(args.output)[1]
-if format == '.xml':
+ext = os.path.splitext(args.output)[1]
+if ext == '.xml':
     generator = ManifestXMLGenerator(args.output)
-elif format == '.json':
+elif ext == '.json':
     generator = ManifestJSONGenerator(args.output)
 else:
-    raise NotImplementedError('Format not supported: ' + format)
+    raise NotImplementedError('Format not supported: ' + ext)
 
 generator.addSubElement('launcher-version', args.launcher_version)
 generator.addSubElement('account-server', args.account_server)
