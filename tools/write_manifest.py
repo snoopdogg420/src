@@ -8,7 +8,7 @@ from xml.etree import ElementTree
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--output', default='patcher.xml',
+parser.add_argument('--output', '-o', default='patcher.xml',
                     help='The name of the generated manifest file.')
 parser.add_argument('--ancestor',
                     help='The generated manifest file will be based off of '
@@ -138,9 +138,7 @@ class ManifestXMLGenerator:
         for file in directory.getFiles():
             self.addFile(file, parent=element)
 
-    def addFile(self, file, parent=None):
-        if parent is None:
-            parent = self.root
+    def addFile(self, file, parent):
         element = ElementTree.SubElement(parent, 'file')
         element.set('name', file.getName())
         size = ElementTree.SubElement(element, 'size')
@@ -162,10 +160,23 @@ class ManifestJSONGenerator:
         self.root[name] = text
 
     def addDirectory(self, directory, parent=None):
-        pass
+        if parent is None:
+            parent = self.root
+        element = collections.OrderedDict()
+        element['directories'] = collections.OrderedDict()
+        element['files'] = []
+        parent[directory.getName()] = element
+        for _directory in directory.getDirectories():
+            self.addDirectory(_directory, parent=element['directories'])
+        for file in directory.getFiles():
+            self.addFile(file, parent=element['files'])
 
-    def addFile(self, file, parent=None):
-        pass
+    def addFile(self, file, parent):
+        element = collections.OrderedDict()
+        element['name'] = file.getName()
+        element['size'] = file.getSize()
+        element['hash'] = file.getHash()
+        parent.append(element)
 
     def write(self):
         with open(self.output, 'w') as f:
