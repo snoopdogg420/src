@@ -119,10 +119,13 @@ for filepath in args.files:
 
 
 class ManifestXMLGenerator:
-    def __init__(self, output):
+    def __init__(self, output, ancestorFilepath=None):
         self.output = output
 
-        self.root = ElementTree.Element('patcher')
+        if ancestorFilepath is not None:
+            self.root = ElementTree.parse(ancestorFilepath).getroot()
+        else:
+            self.root = ElementTree.Element('patcher')
 
     def addSubElement(self, name, text):
         element = ElementTree.SubElement(self.root, name)
@@ -151,10 +154,14 @@ class ManifestXMLGenerator:
 
 
 class ManifestJSONGenerator:
-    def __init__(self, output):
+    def __init__(self, output, ancestorFilepath=None):
         self.output = output
 
-        self.root = collections.OrderedDict()
+        if ancestorFilepath is not None:
+            with open(ancestorFilepath, 'r') as f:
+                self.root = json.load(f, object_pairs_hook=collections.OrderedDict)
+        else:
+            self.root = collections.OrderedDict()
 
     def addSubElement(self, name, text):
         self.root[name] = text
@@ -162,21 +169,28 @@ class ManifestJSONGenerator:
     def addDirectory(self, directory, parent=None):
         if parent is None:
             parent = self.root
-        element = collections.OrderedDict()
-        element['directories'] = collections.OrderedDict()
-        element['files'] = []
-        parent[directory.getName()] = element
+        element = parent.get(directory.getName())
+        if element is None:
+            element = collections.OrderedDict()
+            element['directories'] = collections.OrderedDict()
+            element['files'] = []
+            parent[directory.getName()] = element
         for _directory in directory.getDirectories():
             self.addDirectory(_directory, parent=element['directories'])
         for file in directory.getFiles():
             self.addFile(file, parent=element['files'])
 
     def addFile(self, file, parent):
-        element = collections.OrderedDict()
-        element['name'] = file.getName()
+        name = file.getName()
+        for element in parent:
+            if element['name'] == name:
+                break
+        else:
+            element = collections.OrderedDict()
+            element['name'] = name
+            parent.append(element)
         element['size'] = file.getSize()
         element['hash'] = file.getHash()
-        parent.append(element)
 
     def write(self):
         with open(self.output, 'w') as f:
@@ -187,9 +201,9 @@ print 'Writing %s...' % args.output
 
 ext = os.path.splitext(args.output)[1]
 if ext == '.xml':
-    generator = ManifestXMLGenerator(args.output)
+    generator = ManifestXMLGenerator(args.output, ancestorFilepath=args.ancestor)
 elif ext == '.json':
-    generator = ManifestJSONGenerator(args.output)
+    generator = ManifestJSONGenerator(args.output, ancestorFilepath=args.ancestor)
 else:
     raise NotImplementedError('Format not supported: ' + ext)
 
