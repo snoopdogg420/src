@@ -11,11 +11,11 @@ import zipfile
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--build-dir', default='build',
-                    help='The directory in which the build files were gathered.')
+                    help='The directory in which the build files are located.')
 parser.add_argument('--main-module', default='toontown.toonbase.ClientStart',
-                    help='The module to import at the start of the game.')
+                    help='The module to import when the client starts.')
 parser.add_argument('output', default='GameData.zip',
-                    help="The built file's name.")
+                    help="The name of the built file.")
 args = parser.parse_args()
 
 print 'Building the client...'
@@ -27,9 +27,9 @@ class Packager:
         self.main_module = main_module
         self.output = output
 
-        self.mf = ModuleFinder(path=(sys.path + [os.path.realpath(self.build_dir)]))
-
         self.modules = {}
+
+        self.mf = ModuleFinder(path=(sys.path + [os.path.realpath(self.build_dir)]))
 
     def load_modules(self):
         self.mf.import_hook(self.main_module)
