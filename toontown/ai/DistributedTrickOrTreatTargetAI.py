@@ -9,7 +9,6 @@ class DistributedTrickOrTreatTargetAI(DistributedObjectAI, FSM):
         DistributedObjectAI.__init__(self, air)
         FSM.__init__(self, 'TrickOrTreatTargeFSM')
         self.air = air
-        self.trickOrTreatInfo = simbase.backups.load('holidays', ('halloween',), default= {})
         
     def enterOff(self):
         self.requestDelete()
@@ -19,13 +18,13 @@ class DistributedTrickOrTreatTargetAI(DistributedObjectAI, FSM):
         av = self.air.doId2do.get(avId)
         if av is None:
             return
-        zones = self.trickOrTreatInfo.get(str(avId), [])
-        if self.zoneId in zones:
+        scavengerHunt = av.getScavengerHunt()
+        if self.zoneId in scavengerHunt:
             self.sendUpdate('doScavengerHunt', [0])
         else:
-            self.trickOrTreatInfo.setdefault(str(avId), []).append(self.zoneId)
             self.sendUpdate('doScavengerHunt', [100])
-        if len(zones) == 6:
+            scavengerHunt.append(self.zoneId)
+            av.b_setScavengerHunt(scavengerHunt)
+        if len(scavengerHunt) == 6:
             av.b_setCheesyEffect(12, 0, 0)
-        simbase.backups.save('holidays', ('halloween',), self.trickOrTreatInfo)
 

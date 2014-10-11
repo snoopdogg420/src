@@ -508,6 +508,7 @@ dclass DistributedToon : DistributedPlayer {
   setSpeedChatStyleIndex(uint8 = 1) required ownsend broadcast db;
   setTrophyScore(uint16) broadcast ownrecv ram;
   setTeleportAccess(uint32[] = []) required ownrecv db;
+  setScavengerHunt(uint32[] = []) required ownrecv db;
   checkTeleportAccess(uint16) airecv ownsend;
   setTeleportOverride(uint8) clsend airecv;
   battleSOS(uint32) ownrecv clsend;

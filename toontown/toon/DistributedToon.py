@@ -1269,6 +1269,12 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def hasTeleportAccess(self, zoneId):
         return zoneId in self.teleportZoneArray
+        
+    def setScavengerHunt(self, scavengerHuntArray):
+        self.scavengerHuntArray = scavengerHuntArray
+
+    def getScavengerHunt(self):
+        return self.scavengerHuntArray
 
     def setQuestHistory(self, questList):
         self.questHistory = questList

@@ -1683,9 +1683,11 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         # We don't yet have a working holidayManager, and we want to keep snowman heads.
         if simbase.air.holidayManager and ToontownGlobals.WINTER_CAROLING not in simbase.air.holidayManager.currentHolidays and ToontownGlobals.WACKY_WINTER_CAROLING not in simbase.air.holidayManager.currentHolidays and effect == ToontownGlobals.CESnowMan:
             self.b_setCheesyEffect(ToontownGlobals.CENormal, hoodId, expireTime)
+            self.b_setScavengerHunt([])
             return
         if simbase.air.holidayManager and ToontownGlobals.HALLOWEEN_PROPS not in simbase.air.holidayManager.currentHolidays and ToontownGlobals.HALLOWEEN_COSTUMES not in simbase.air.holidayManager.currentHolidays and not simbase.air.wantHalloween and effect == ToontownGlobals.CEPumpkin:
             self.b_setCheesyEffect(ToontownGlobals.CENormal, hoodId, expireTime)
+            self.b_setScavengerHunt([])
             return
         self.savedCheesyEffect = effect
         self.savedCheesyHoodId = hoodId
@@ -1900,6 +1902,19 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def setTeleportOverride(self, flag):
         self.teleportOverride = flag
         self.b_setHoodsVisited([1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000])
+        
+    def b_setScavengerHunt(self, scavengerHuntArray):
+        self.setScavengerHunt(scavengerHuntArray)
+        self.d_setScavengerHunt(scavengerHuntArray)
+
+    def d_setScavengerHunt(self, scavengerHuntArray):
+        self.sendUpdate('setScavengerHunt', [scavengerHuntArray])
+
+    def setScavengerHunt(self, scavengerHuntArray):
+        self.scavengerHuntArray = scavengerHuntArray
+
+    def getScavengerHunt(self):
+        return self.scavengerHuntArray
 
     def b_setQuestHistory(self, questList):
         self.setQuestHistory(questList)
@@ -5113,10 +5128,13 @@ def getZone():
     zone = invoker.zoneId
     return 'ZoneID: %s' % (zone)
 
-@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
+@magicWord(category=CATEGORY_MODERATOR, types=[int])
 def nametagStyle(nametagStyle):
+    invokerAccess = spellbook.getInvokerAccess()
     if nametagStyle >= len(TTLocalizer.NametagFontNames):
         return 'Invalid nametag style.'
-    invoker = spellbook.getInvoker()
-    invoker.b_setNametagStyle(nametagStyle)
+    if nametagStyle != 0 and nametagStyle != 10 and invokerAccess == CATEGORY_MODERATOR.defaultAccess:
+        return 'Invalid access level!'
+    target = spellbook.getTarget()
+    target.b_setNametagStyle(nametagStyle)
     return 'Nametag style set to: %s.' % TTLocalizer.NametagFontNames[nametagStyle]
