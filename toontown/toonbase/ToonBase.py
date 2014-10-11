@@ -243,7 +243,6 @@ class ToonBase(OTPBase.OTPBase):
 
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
-        self.wantHalloween = self.config.GetBool('want-halloween', False)
 
     def openMainWindow(self, *args, **kw):
         result = OTPBase.OTPBase.openMainWindow(self, *args, **kw)

@@ -1813,6 +1813,10 @@ dclass DistributedNPCToonBase : DistributedNode {
   setPageNumber(int16, int8, int16) broadcast ram clsend;
   avatarEnter() airecv clsend;
   freeAvatar();
+  setHat(uint8 = 0, uint8 = 0, uint8 = 0) broadcast ram;
+  setGlasses(uint8 = 0, uint8 = 0, uint8 = 0) broadcast ram;
+  setBackpack(uint8 = 0, uint8 = 0, uint8 = 0) broadcast ram;
+  setShoes(uint8 = 0, uint8 = 0, uint8 = 0) broadcast ram;
 };
 
 dclass DistributedNPCToon : DistributedNPCToonBase {
@@ -2495,7 +2499,9 @@ dclass DistributedTrickOrTreatTarget : DistributedObject {
   requestScavengerHunt() airecv clsend;
 };
 
-dclass DistributedWinterCarolingTarget : DistributedScavengerHuntTarget {
+dclass DistributedWinterCarolingTarget : DistributedObject {
+  doScavengerHunt(int8) broadcast;
+  requestScavengerHunt() airecv clsend;
 };
 
 dclass DistributedDataStoreManager : DistributedObject {

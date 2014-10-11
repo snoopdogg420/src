@@ -7,6 +7,7 @@ from toontown.toon import NPCToons
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.ai import DistributedTrickOrTreatTargetAI
+from toontown.ai import DistributedWinterCarolingTargetAI
 
 
 class TTHoodAI(HoodAI.HoodAI):
@@ -44,6 +45,10 @@ class TTHoodAI(HoodAI.HoodAI):
         if simbase.air.wantHalloween:
             self.TrickOrTreatTargetManager = DistributedTrickOrTreatTargetAI.DistributedTrickOrTreatTargetAI(self.air)
             self.TrickOrTreatTargetManager.generateWithRequired(2649)
+        
+        if simbase.air.wantChristmas:
+            self.WinterCarolingTargetManager = DistributedWinterCarolingTargetAI.DistributedWinterCarolingTargetAI(self.air)
+            self.WinterCarolingTargetManager.generateWithRequired(2649)
 
     def shutdown(self):
         HoodAI.HoodAI.shutdown(self)

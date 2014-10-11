@@ -16,7 +16,6 @@ from panda3d.core import loadPrcFile
 if __debug__:
     loadPrcFile('config/general.prc')
     loadPrcFile('config/release/dev.prc')
-    loadPrcFile('config/holidays/halloween.prc')
 
 
 from direct.directnotify.DirectNotifyGlobal import directNotify
