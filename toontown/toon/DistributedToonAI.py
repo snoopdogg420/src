@@ -5111,10 +5111,13 @@ def getZone():
     zone = invoker.zoneId
     return 'ZoneID: %s' % (zone)
 
-@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
+@magicWord(category=CATEGORY_MODERATOR, types=[int])
 def nametagStyle(nametagStyle):
+    currentAccess = spellbook.getInvokerAccess()
     if nametagStyle >= len(TTLocalizer.NametagFontNames):
         return 'Invalid nametag style.'
-    invoker = spellbook.getInvoker()
-    invoker.b_setNametagStyle(nametagStyle)
+    if nametagStyle != 0 and nametagStyle != 10 and currentAccess == CATEGORY_MODERATOR.defaultAccess:
+        return 'Invalid access level!'
+    target = spellbook.getTarget()
+    target.b_setNametagStyle(nametagStyle)
     return 'Nametag style set to: %s.' % TTLocalizer.NametagFontNames[nametagStyle]
