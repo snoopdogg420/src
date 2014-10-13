@@ -20,9 +20,9 @@ class DistributedTrickOrTreatTargetAI(DistributedObjectAI, FSM):
             return
         scavengerHunt = av.getScavengerHunt()
         if self.zoneId in scavengerHunt:
-            self.sendUpdate('doScavengerHunt', [0, avId])
+            self.sendUpdateToAvatarId('doScavengerHunt', [0])
         else:
-            self.sendUpdate('doScavengerHunt', [100, avId])
+            self.sendUpdateToAvatarId('doScavengerHunt', [100])
             scavengerHunt.append(self.zoneId)
             av.b_setScavengerHunt(scavengerHunt)
         if len(scavengerHunt) == 6:

@@ -2496,7 +2496,7 @@ dclass DistributedScavengerHuntTarget : DistributedObject {
 };
 
 dclass DistributedTrickOrTreatTarget : DistributedObject {
-  doScavengerHunt(int8, uint32 avId) broadcast;
+  doScavengerHunt(int8);
   requestScavengerHunt() airecv clsend;
 };
 
