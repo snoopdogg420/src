@@ -1812,7 +1812,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         if self.effect:
             self.effect.stop()
         self.effect = TrickOrTreatTargetEffect(beanAmount)
-        self.effect.play()
+        #self.effect.play()
 
     def trickOrTreatMilestoneMet(self):
         if self.effect:

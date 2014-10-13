@@ -42,4 +42,4 @@ class DistributedTrickOrTreatTarget(DistributedObject.DistributedObject):
             DistributedTrickOrTreatTarget.notify.warning("couldn't find Toon %s" % avId)
             return
         toon.trickOrTreatTargetMet(amount)
-        
+        toon.effect.play()
