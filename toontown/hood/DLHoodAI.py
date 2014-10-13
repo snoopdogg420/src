@@ -26,7 +26,7 @@ class DLHoodAI(HoodAI.HoodAI):
             if simbase.config.GetBool('want-donald-dreamland', True):
                 self.createClassicChar()
         self.resistanceEmoteManager = DistributedResistanceEmoteMgrAI.DistributedResistanceEmoteMgrAI(self.air)
-        self.resistanceEmoteManager.generateWithRequired(9715)
+        self.resistanceEmoteManager.generateWithRequired(9720)
         
         if simbase.air.wantHalloween:
             self.TrickOrTreatTargetManager = DistributedTrickOrTreatTargetAI.DistributedTrickOrTreatTargetAI(self.air)

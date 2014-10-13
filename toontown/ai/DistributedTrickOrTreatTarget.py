@@ -35,8 +35,11 @@ class DistributedTrickOrTreatTarget(DistributedObject.DistributedObject):
     def d_requestScavengerHunt(self):
         self.sendUpdate('requestScavengerHunt', [])
 
-    def doScavengerHunt(self, amount):
+    def doScavengerHunt(self, amount, avId):
         DistributedTrickOrTreatTarget.notify.debug('doScavengerHunt')
-        av = base.localAvatar
-        av.trickOrTreatTargetMet(amount)
+        toon = self.cr.doId2do.get(avId)
+        if not toon:
+            DistributedTrickOrTreatTarget.notify.warning("couldn't find Toon %s" % avId)
+            return
+        toon.trickOrTreatTargetMet(amount)
         
