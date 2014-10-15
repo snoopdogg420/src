@@ -237,6 +237,9 @@ else:
 
 # Copy the necessary patcher includes:
 for include in patcherIncludes:
+    dirname = os.path.dirname(include)
+    if dirname and (not os.path.exists(dirname)):
+        os.makedirs(dirname)
     if os.path.exists(os.path.join('..', include)):
         shutil.copyfile(os.path.join('..', include), include)
 

@@ -2,10 +2,9 @@ from direct.directnotify import DirectNotifyGlobal
 from direct.gui.DirectGui import *
 from direct.task.Task import Task
 from pandac.PandaModules import *
-
-from toontown.shtiker import ShtikerPage
 from toontown.distributed import ToontownDistrictStats
 from toontown.hood import ZoneUtil
+from toontown.shtiker import ShtikerPage
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.toontowngui import TTDialog
@@ -217,7 +216,10 @@ class ShardPage(ShtikerPage.ShtikerPage):
         elif self.showPop:
             handler = self.choseShard
         else:
-            handler = self.shardChoiceReject
+            if localAvatar.adminAccess >= 200:
+                handler = self.choseShard
+            else:
+                handler = self.shardChoiceReject
         return handler
 
     def getCurrentZoneId(self):

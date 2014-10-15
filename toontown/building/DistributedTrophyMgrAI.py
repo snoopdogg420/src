@@ -51,10 +51,10 @@ class DistributedTrophyMgrAI(DistributedObjectAI):
         else:
             # Add the player to the listing if they haven't been. Otherwise,
             # update their current trophy score:
-            if av is None:
-                return
             self.trophyScores[avId] = trophyScore
             if avId not in self.leaderInfo[AV_ID_INDEX]:
+                if av is None:
+                    return
                 self.leaderInfo[AV_ID_INDEX].append(avId)
                 self.leaderInfo[NAME_INDEX].append(av.getName())
                 self.leaderInfo[SCORE_INDEX].append(trophyScore)

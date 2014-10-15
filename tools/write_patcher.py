@@ -49,7 +49,7 @@ rootFiles = []
 panda3dFiles = []
 for include in args.includes:
     filepath = os.path.join(args.build_dir, include)
-    if os.dirname(filepath) == 'panda3d':
+    if os.path.dirname(include) == 'panda3d':
         panda3dFiles.append(getFileInfo(filepath))
     else:
         rootFiles.append(getFileInfo(filepath))
