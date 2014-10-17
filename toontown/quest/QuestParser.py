@@ -1007,7 +1007,7 @@ class NPCMoviePlayer(DirectObject.DirectObject):
             def phraseSaid(phraseId):
                 toontastic = 315
                 if phraseId == toontastic:
-                    messenger.send(DistributedBlackCatMgr.DistributedBlackCatMgr.ActivateEvent)
+                    messenger.send('DistributedBlackCatMgr-activate')
 
             def enableBlackCatListen():
                 self.acceptOnce(SpeedChatGlobals.SCStaticTextMsgEvent, phraseSaid)
