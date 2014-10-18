@@ -437,7 +437,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                           'name': 'Toon Name',
                           'species': 'cat',
                           'head-color': 'Red',
-                          'max-hp': 15
+                          'max-hp': 15,
+                          'online': True
                         }
             On failure: None
         """
@@ -449,7 +450,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                 'name': fields['setName'][0],
                 'species': ToonDNA.getSpeciesName(dna.head),
                 'head-color':  TTLocalizer.NumToColor[dna.headColor],
-                'max-hp': fields['setMaxHp'][0]
+                'max-hp': fields['setMaxHp'][0],
+                'online': (avId in self.air.friendsManager.onlineToons)
             }
 
     # --- SHARDS ---
