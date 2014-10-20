@@ -333,8 +333,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def whisperSCTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
         if fromId in self.whisperRequests:
-            currStamp = time.time()
             elapsed = self.whisperRequests[fromId] - currStamp
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
@@ -344,8 +344,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def whisperSCCustomTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
         if fromId in self.whisperRequests:
-            currStamp = time.time()
             elapsed = self.whisperRequests[fromId] - currStamp
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
@@ -355,8 +355,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def whisperSCEmoteTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
         if fromId in self.whisperRequests:
-            currStamp = time.time()
             elapsed = self.whisperRequests[fromId] - currStamp
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
@@ -366,8 +366,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def sendTalkWhisper(self, toId, message):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
         if fromId in self.whisperRequests:
-            currStamp = time.time()
             elapsed = self.whisperRequests[fromId] - currStamp
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
