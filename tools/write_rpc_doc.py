@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
 import collections
 import compiler
+import re
 
 
 class CategoryParser:
@@ -152,7 +153,7 @@ class MediaWikiGenerator:
             entry = None
         if entry is not None:
             parameters = []
-            for parameter in entry.split('\n['):
+            for parameter in re.split('\\n\\[|\\n<', entry):
                 name, description = parameter.split(' = ', 1)
                 type, name = name.strip()[:-1].split(' ', 1)
                 description = ' '.join(description.split('\n'))
