@@ -492,15 +492,15 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                           flags=0, type=INVASION_TYPE_NORMAL):
         """
         Summary:
-            Starts an invasion in the provided [shardId] with the specified
+            Starts an invasion under the provided [shardId] with the specified
             configuration.
 
         Parameters:
             [int shardId] = The ID of the shard to start the invasion in.
-            [int suitDeptIndex] = The Cog department index.
-            [int suitTypeIndex] = The Cog type index.
-            [int flags] = Special invasion flags.
-            [int type] = The type of the invasion.
+            <int/NoneType suitDeptIndex> = The invading Cog's department index.
+            <int/NoneType suitTypeIndex> = The invading Cog's type index.
+            <int flags> = Extra invasion flags.
+            <int type> = The invasion type.
         """
         self.air.netMessenger.send(
             'startInvasion',
@@ -510,9 +510,10 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_stopInvasion(self, shardId):
         """
         Summary:
-            Stops any invasion currently running on the provided [shardId].
+            Stops any invasion currently running under the provided [shardId].
 
         Parameters:
-            [int shardId] = The ID of the shard running the invasion.
+            [int shardId] = The ID of the shard that is running the invasion to
+                be terminated.
         """
         self.air.netMessenger.send('stopInvasion', [shardId])
