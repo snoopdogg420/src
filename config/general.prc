@@ -58,7 +58,7 @@ egg-object-type-model <Model> { 1 }
 egg-object-type-dcs <DCS> { 1 }
 
 # Safe zones:
-want-safe-zones #t
+want-safe-zones #f
 want-toontown-central #t
 want-donalds-dock #t
 want-daisys-garden #t
@@ -94,11 +94,11 @@ want-travel-game #f
 want-game-tables #f
 
 # Cog headquarters:
-want-cog-headquarters #t
-want-sellbot-headquarters #t
-want-cashbot-headquarters #t
-want-lawbot-headquarters #t
-want-bossbot-headquarters #t
+want-cog-headquarters #f
+want-sellbot-headquarters #f
+want-cashbot-headquarters #f
+want-lawbot-headquarters #f
+want-bossbot-headquarters #f
 
 # Cashbot boss:
 want-resistance-toonup #f

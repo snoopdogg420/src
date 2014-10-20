@@ -5,6 +5,7 @@ from direct.directnotify.DirectNotifyGlobal import directNotify
 import string
 import random
 import functools
+import time
 from direct.fsm.FSM import FSM
 
 # -- FSMS --
@@ -195,8 +196,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         DistributedObjectGlobalUD.announceGenerate(self)
         self.onlineToons = []
         self.tpRequests = {}
+        self.whisperRequests = {}
         self.operations = []
         self.secret2avId = {}
+        self.delayTime = 1.0
 
     # -- Friends list --
     def requestFriendsList(self):
@@ -298,6 +301,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
     # -- Teleport and Whispers --
     def routeTeleportQuery(self, toId):
         fromId = self.air.getAvatarIdFromSender()
+        if fromId in self.tpRequests.values():
+            return
         self.tpRequests[fromId] = toId
         self.sendUpdateToAvatarId(toId, 'teleportQuery', [fromId])
         taskMgr.doMethodLater(5, self.giveUpTeleportQuery, 'tp-query-timeout-%d' % fromId, extraArgs=[fromId, toId])
@@ -328,18 +333,46 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def whisperSCTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
+        if fromId in self.whisperRequests:
+            elapsed = self.whisperRequests[fromId] - currStamp
+            if elapsed < self.delayTime:
+                self.whisperRequests[fromId] = currStamp
+                return
+        self.whisperRequests[fromId] = currStamp
         self.sendUpdateToAvatarId(toId, 'setWhisperSCFrom', [fromId, msgIndex])
 
     def whisperSCCustomTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
+        if fromId in self.whisperRequests:
+            elapsed = self.whisperRequests[fromId] - currStamp
+            if elapsed < self.delayTime:
+                self.whisperRequests[fromId] = currStamp
+                return
+        self.whisperRequests[fromId] = currStamp
         self.sendUpdateToAvatarId(toId, 'setWhisperSCCustomFrom', [fromId, msgIndex])
 
     def whisperSCEmoteTo(self, toId, msgIndex):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
+        if fromId in self.whisperRequests:
+            elapsed = self.whisperRequests[fromId] - currStamp
+            if elapsed < self.delayTime:
+                self.whisperRequests[fromId] = currStamp
+                return
+        self.whisperRequests[fromId] = currStamp
         self.sendUpdateToAvatarId(toId, 'setWhisperSCEmoteFrom', [fromId, msgIndex])
 
     def sendTalkWhisper(self, toId, message):
         fromId = self.air.getAvatarIdFromSender()
+        currStamp = time.time()
+        if fromId in self.whisperRequests:
+            elapsed = self.whisperRequests[fromId] - currStamp
+            if elapsed < self.delayTime:
+                self.whisperRequests[fromId] = currStamp
+                return
+        self.whisperRequests[fromId] = currStamp
         self.sendUpdateToAvatarId(toId, 'receiveTalkWhisper', [fromId, message])
         self.air.writeServerEvent('whisper-said', fromId, toId, message)
 
