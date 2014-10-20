@@ -69,91 +69,90 @@ class NewsManager(DistributedObject.DistributedObject):
     def sendSystemMessage(self, message, style):
         base.localAvatar.setSystemMessage(style, message)
 
-    def setInvasionStatus(self, msgType, cogType, numRemaining, skeleton):
-        self.notify.info('setInvasionStatus: msgType: %s cogType: %s, numRemaining: %s, skeleton: %s' % (msgType,
-         cogType,
-         numRemaining,
-         skeleton))
-        if cogType in SuitDNA.suitHeadTypes:
-            cogName = SuitBattleGlobals.SuitAttributes[cogType]['name']
-            cogNameP = SuitBattleGlobals.SuitAttributes[cogType]['pluralname']
-        messages = 2
-        if skeleton:
-            cogName = TTLocalizer.Skeleton
-            cogNameP = TTLocalizer.SkeletonP
+    def setInvasionStatus(self, msgType, suitType, remaining, flags):
+        if suitType in SuitDNA.suitHeadTypes:
+            suitName = SuitBattleGlobals.SuitAttributes[suitType]['name']
+            suitNamePlural = SuitBattleGlobals.SuitAttributes[suitType]['pluralname']
+        elif suitType in SuitDNA.suitDepts:
+            suitName = SuitDNA.getDeptFullname(suitType)
+            suitNamePlural = SuitDNA.getDeptFullnameP(suitType)
+
+        messages = []
+
         if msgType == ToontownGlobals.SuitInvasionBegin:
-            msg1 = TTLocalizer.SuitInvasionBegin1
-            msg2 = TTLocalizer.SuitInvasionBegin2 % cogNameP
-            self.invading = 1
-        elif msgType == ToontownGlobals.SuitInvasionUpdate:
-            msg1 = TTLocalizer.SuitInvasionUpdate1 % numRemaining
-            msg2 = TTLocalizer.SuitInvasionUpdate2 % cogNameP
+            messages.append(TTLocalizer.SuitInvasionBegin1)
+            messages.append(TTLocalizer.SuitInvasionBegin2 % suitNamePlural)
             self.invading = 1
         elif msgType == ToontownGlobals.SuitInvasionEnd:
-            msg1 = TTLocalizer.SuitInvasionEnd1 % cogName
-            msg2 = TTLocalizer.SuitInvasionEnd2
+            messages.append(TTLocalizer.SuitInvasionEnd1 % suitName)
+            messages.append(TTLocalizer.SuitInvasionEnd2)
             self.invading = 0
+        elif msgType == ToontownGlobals.SuitInvasionUpdate:
+            messages.append(TTLocalizer.SuitInvasionUpdate1)
+            messages.append(TTLocalizer.SuitInvasionUpdate2)
+            self.invading = 1
         elif msgType == ToontownGlobals.SuitInvasionBulletin:
-            msg1 = TTLocalizer.SuitInvasionBulletin1
-            msg2 = TTLocalizer.SuitInvasionBulletin2 % cogNameP
+            messages.append(TTLocalizer.SuitInvasionBulletin1)
+            messages.append(TTLocalizer.SuitInvasionBulletin2 % suitNamePlural)
             self.invading = 1
         elif msgType == ToontownGlobals.SkelecogInvasionBegin:
-            msg1 = TTLocalizer.SkelecogInvasionBegin1
-            msg2 = TTLocalizer.SkelecogInvasionBegin2
-            msg3 = TTLocalizer.SkelecogInvasionBegin3
+            messages.append(TTLocalizer.SkelecogInvasionBegin1)
+            messages.append(TTLocalizer.SkelecogInvasionBegin2)
+            messages.append(TTLocalizer.SkelecogInvasionBegin3)
             self.invading = 1
-            messages = 3
         elif msgType == ToontownGlobals.SkelecogInvasionEnd:
-            msg1 = TTLocalizer.SkelecogInvasionEnd1
-            msg2 = TTLocalizer.SkelecogInvasionEnd2
+            messages.append(TTLocalizer.SkelecogInvasionEnd1)
+            messages.append(TTLocalizer.SkelecogInvasionEnd2)
             self.invading = 0
+        elif msgType == ToontownGlobals.SkelecogInvasionBulletin:
+            messages.append(TTLocalizer.SkelecogInvasionBulletin1)
+            messages.append(TTLocalizer.SkelecogInvasionBulletin2)
+            messages.append(TTLocalizer.SkelecogInvasionBulletin3)
+            self.invading = 1
         elif msgType == ToontownGlobals.WaiterInvasionBegin:
-            msg1 = TTLocalizer.WaiterInvasionBegin1
-            msg2 = TTLocalizer.WaiterInvasionBegin2
+            messages.append(TTLocalizer.WaiterInvasionBegin1)
+            messages.append(TTLocalizer.WaiterInvasionBegin2)
             self.invading = 1
         elif msgType == ToontownGlobals.WaiterInvasionEnd:
-            msg1 = TTLocalizer.WaiterInvasionEnd1
-            msg2 = TTLocalizer.WaiterInvasionEnd2
+            messages.append(TTLocalizer.WaiterInvasionEnd1)
+            messages.append(TTLocalizer.WaiterInvasionEnd2)
             self.invading = 0
+        elif msgType == ToontownGlobals.WaiterInvasionBulletin:
+            messages.append(TTLocalizer.WaiterInvasionBulletin1)
+            messages.append(TTLocalizer.WaiterInvasionBulletin2)
+            messages.append(TTLocalizer.WaiterInvasionBulletin3)
+            self.invading = 1
         elif msgType == ToontownGlobals.V2InvasionBegin:
-            msg1 = TTLocalizer.V2InvasionBegin1
-            msg2 = TTLocalizer.V2InvasionBegin2
-            msg3 = TTLocalizer.V2InvasionBegin3
+            messages.append(TTLocalizer.V2InvasionBegin1)
+            messages.append(TTLocalizer.V2InvasionBegin2)
+            messages.append(TTLocalizer.V2InvasionBegin3)
             self.invading = 1
-            messages = 3
         elif msgType == ToontownGlobals.V2InvasionEnd:
-            msg1 = TTLocalizer.V2InvasionEnd1
-            msg2 = TTLocalizer.V2InvasionEnd2
+            messages.append(TTLocalizer.V2InvasionEnd1)
+            messages.append(TTLocalizer.V2InvasionEnd2)
             self.invading = 0
-        elif msgType == ToontownGlobals.DepartmentInvasionBegin:
-            if cogType in SuitDNA.suitDepts:
-                deptNameP = SuitDNA.getDeptFullnameP(cogType)
-            msg1 = TTLocalizer.SuitInvasionBegin1
-            msg2 = TTLocalizer.DepartmentInvasionBegin1 % deptNameP
+        elif msgType == ToontownGlobals.V2InvasionBulletin:
+            messages.append(TTLocalizer.V2InvasionBulletin1)
+            messages.append(TTLocalizer.V2InvasionBulletin2)
+            messages.append(TTLocalizer.V2InvasionBulletin3)
             self.invading = 1
-        elif msgType == ToontownGlobals.DepartmentInvasionEnd:
-            if cogType in SuitDNA.suitDepts:
-                deptName = SuitDNA.getDeptFullname(cogType)
-            msg1 = TTLocalizer.DepartmentInvasionEnd1 % deptName
-            msg2 = TTLocalizer.SuitInvasionEnd2
-            self.invading = 0
         else:
             self.notify.warning('setInvasionStatus: invalid msgType: %s' % msgType)
             return
+
+        multiplier = 1
         if self.invading:
-            mult = ToontownBattleGlobals.getInvasionMultiplier()
-        else:
-            mult = 1
-        base.localAvatar.inventory.setInvasionCreditMultiplier(mult)
-        if messages == 2:
-            Sequence(Wait(1.0), Func(base.localAvatar.setSystemMessage, 0, msg1),
-                     Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg2),
-                     name='newsManagerWait', autoPause=1).start()
-        elif messages == 3:
-            Sequence(Wait(1.0), Func(base.localAvatar.setSystemMessage, 0, msg1),
-                     Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg2),
-                     Wait(5.0), Func(base.localAvatar.setSystemMessage, 0, msg3),
-                     name='newsManagerWait', autoPause=1).start()
+            multiplier = ToontownBattleGlobals.getInvasionMultiplier()
+        base.localAvatar.inventory.setInvasionCreditMultiplier(multiplier)
+
+        track = Sequence(name='newsManagerWait', autoPause=1)
+        for i, message in enumerate(messages):
+            if i == 0:
+                track.append(Wait(1))
+            else:
+                track.append(Wait(5))
+            track.append(Func(base.localAvatar.setSystemMessage, 0, message))
+        track.start()
 
     def getInvading(self):
         return self.invading
