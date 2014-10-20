@@ -1543,6 +1543,7 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
                  'activeToons': self.activeToons[:]}
                 self.suitsKilled.append(encounter)
                 self.suitsKilledThisBattle.append(encounter)
+                self.air.suitInvasionManager.handleSuitDefeated()
             self.__removeSuit(suit)
             needUpdate = 1
             suit.resume()
