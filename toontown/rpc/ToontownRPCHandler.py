@@ -86,8 +86,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [userId].
 
         Parameters:
-            [int/str userId]  = The ID of the user to direct the message to.
-            [str message]     = The message to send.
+            [int/str userId] = The ID of the user to direct the message to.
+            [str message] = The message to send.
         """
         accountId = self.rpc_getUserAccountId(userId)
         if accountId is not None:
@@ -102,7 +102,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int accountId] = The ID of the account to direct the message to.
-            [str message]   = The message to send.
+            [str message] = The message to send.
         """
         channel = accountId + (1003L<<32)
         self.rpc_messageChannel(channel, message)
@@ -115,7 +115,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [avId].
 
         Parameters:
-            [int avId]    = The ID of the avatar to direct the message to.
+            [int avId] = The ID of the avatar to direct the message to.
             [str message] = The message to send.
         """
         channel = avId + (1001L<<32)
@@ -132,8 +132,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int channel] = The channel to direct the kick to.
-            [int code]    = The code for the kick.
-            [str reason]  = The reason for the kick.
+            [int code] = The code for the kick.
+            [str reason] = The reason for the kick.
         """
         datagram = PyDatagram()
         datagram.addServerHeader(channel, self.air.ourChannel, CLIENTAGENT_EJECT)
@@ -147,7 +147,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks all clients.
 
         Parameters:
-            [int code]   = The code for the kick.
+            [int code] = The code for the kick.
             [str reason] = The reason for the kick.
         """
         self.rpc_kickChannel(10, code, reason)
@@ -159,8 +159,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int shardId] = The ID of the shard to direct the kick to.
-            [int code]    = The code for the kick.
-            [str reason]  = The reason for the kick.
+            [int code] = The code for the kick.
+            [str reason] = The reason for the kick.
         """
         # Get the DO ID of the district object:
         districtId = shardId + 1
@@ -177,8 +177,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int/str userId] = The ID of the user to direct the kick to.
-            [int code]       = The code for the kick.
-            [str reason]     = The reason for the kick.
+            [int code] = The code for the kick.
+            [str reason] = The reason for the kick.
         """
         accountId = self.rpc_getUserAccountId(userId)
         if accountId is not None:
@@ -191,8 +191,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int accountId] = The ID of the account to direct the kick to.
-            [int code]      = The code for the kick.
-            [str reason]    = The reason for the kick.
+            [int code] = The code for the kick.
+            [str reason] = The reason for the kick.
         """
         channel = accountId + (1003L<<32)
         self.rpc_kickChannel(channel, code, reason)
@@ -203,14 +203,14 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks the client associated with the provided [avId].
 
         Parameters:
-            [int avId]    = The ID of the avatar to direct the kick to.
-            [int code]    = The code for the kick.
-            [str reason]  = The reason for the kick.
+            [int avId] = The ID of the avatar to direct the kick to.
+            [int code] = The code for the kick.
+            [str reason] = The reason for the kick.
         """
         channel = avId + (1001L<<32)
         self.rpc_kickChannel(channel, code, reason)
 
-    # --- GENERAL QUERIES ---
+    # --- QUERIES ---
 
     @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_queryObject(self, doId):
@@ -286,7 +286,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int/str userId] = The ID of the user to query the deleted avatar
-                               IDs on.
+                IDs on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
@@ -342,7 +342,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int accountId] = The ID of the account to query the deleted avatar
-                              IDs on.
+                IDs on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
@@ -412,7 +412,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int avId] = The ID of the avatar to query the deleted avatar IDs
-                         on.
+                on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
@@ -433,13 +433,14 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int avId] = The ID of the avatar to query details on.
 
         Example response:
-            On success: {
-                          'name': 'Toon Name',
-                          'species': 'cat',
-                          'head-color': 'Red',
-                          'max-hp': 15,
-                          'online': True
-                        }
+            On success:
+                {
+                   'name': 'Toon Name',
+                   'species': 'cat',
+                   'head-color': 'Red',
+                   'max-hp': 15,
+                   'online': True
+                }
             On failure: None
         """
         dclassName, fields = self.rpc_queryObject(avId)
@@ -463,17 +464,18 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             Responds with the current status of each shard that has ever been
             created in the lifetime of the UberDOG.
 
-        Example response: {
-                            401000000: {
-                              'name': 'District Name'
-                              'available': True,
-                              'created': 1409665000,
-                              'population': 150
-                            },
-                            ...
-                          }
+        Example response:
+            {
+               401000000: {
+                  'name': 'District Name'
+                  'available': True,
+                  'created': 1409665000,
+                  'population': 150
+               },
+               ...
+            }
         """
         return self.shardStatus.getShards()
 
     # --- INVASIONS ---
-    # TODO: rpc_listInvasions, rpc_startInvasion, rpc_stopInvasion
+    # TODO: rpc_startInvasion, rpc_stopInvasion
