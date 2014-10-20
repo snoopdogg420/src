@@ -1,5 +1,6 @@
 import time
 
+from toontown.battle import SuitBattleGlobals
 from toontown.suit import SuitDNA
 from toontown.suit.SuitInvasionGlobals import *
 from toontown.toonbase import ToontownGlobals
@@ -83,7 +84,7 @@ class SuitInvasionManagerAI:
             timeout = config.GetInt('invasion-timeout', 1800)
             taskMgr.doMethodLater(timeout, self.stopInvasion, 'invasionTimeout')
 
-        # self.sendInvasionStatus()
+        self.sendInvasionStatus()
         return True
 
     def stopInvasion(self, task=None):
@@ -108,7 +109,7 @@ class SuitInvasionManagerAI:
         self.remaining = 0
         self.flySuits()
 
-        # self.sendInvasionStatus()
+        self.sendInvasionStatus()
         return True
 
     def getSuitName(self):
@@ -171,4 +172,23 @@ class SuitInvasionManagerAI:
             self.stopInvasion()
         elif self.remaining == (self.total/2):
             self.notifyInvasionUpdate()
-        # self.sendInvasionStatus()
+        self.sendInvasionStatus()
+
+    def sendInvasionStatus(self):
+        if self.suitDeptIndex is not None:
+            if self.suitTypeIndex is not None:
+                type = SuitBattleGlobals.SuitAttributes[self.getSuitName()]['name']
+            else:
+                type = SuitDNA.getDeptFullname(self.getSuitName())
+        else:
+            type = None
+        status = {
+            'invasion': {
+                'type': type,
+                'flags': self.flags,
+                'remaining': self.remaining,
+                'total': self.total,
+                'start': self.start
+            }
+        }
+        self.air.netMessenger.send('shardStatus', [self.air.ourChannel, status])
