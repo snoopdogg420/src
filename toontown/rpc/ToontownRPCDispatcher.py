@@ -43,22 +43,9 @@ class ToontownRPCDispatcher:
 
         # Finally, attempt to call the method:
         try:
-            if method.deferResult:
-                # This function wishes to handle the response itself. Pass the
-                # request to it so it is capable of doing so:
-                if isinstance(params, dict):
-                    method(request, **params)
-                else:
-                    method(request, *params)
+            if isinstance(params, dict):
+                request.result(method(**params))
             else:
-                if isinstance(params, dict):
-                    result = method(**params)
-                else:
-                    result = method(*params)
+                request.result(method(*params))
         except:
             request.error(-32603, PythonUtil.describeException())
-        else:
-            # If the method isn't going to handle the response itself, send out
-            # the result ourselves:
-            if not method.deferResult:
-                request.result(result)
