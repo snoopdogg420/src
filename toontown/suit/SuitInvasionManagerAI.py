@@ -18,6 +18,17 @@ class SuitInvasionManagerAI:
         self.suitTypeIndex = None
         self.flags = 0
 
+        self.air.netMessenger.accept(
+            'startInvasion', self, self.handleStartInvasion)
+        self.air.netMessenger.accept(
+            'stopInvasion', self, self.handleStopInvasion)
+
+        # We want to handle shard status queries so that a ShardStatusReceiver
+        # being created after we're created will know where we're at:
+        self.air.netMessenger.accept('queryShardStatus', self, self.sendInvasionStatus)
+
+        self.sendInvasionStatus()
+
     def getInvading(self):
         return self.invading
 
@@ -174,21 +185,32 @@ class SuitInvasionManagerAI:
             self.notifyInvasionUpdate()
         self.sendInvasionStatus()
 
+    def handleStartInvasion(self, shardId, *args):
+        if shardId == self.air.ourChannel:
+            self.startInvasion(*args)
+
+    def handleStopInvasion(self, shardId):
+        if shardId == self.air.ourChannel:
+            self.stopInvasion()
+
     def sendInvasionStatus(self):
-        if self.suitDeptIndex is not None:
-            if self.suitTypeIndex is not None:
-                type = SuitBattleGlobals.SuitAttributes[self.getSuitName()]['name']
+        if self.invading:
+            if self.suitDeptIndex is not None:
+                if self.suitTypeIndex is not None:
+                    type = SuitBattleGlobals.SuitAttributes[self.getSuitName()]['name']
+                else:
+                    type = SuitDNA.getDeptFullname(self.getSuitName())
             else:
-                type = SuitDNA.getDeptFullname(self.getSuitName())
-        else:
-            type = None
-        status = {
-            'invasion': {
-                'type': type,
-                'flags': self.flags,
-                'remaining': self.remaining,
-                'total': self.total,
-                'start': self.start
+                type = None
+            status = {
+                'invasion': {
+                    'type': type,
+                    'flags': self.flags,
+                    'remaining': self.remaining,
+                    'total': self.total,
+                    'start': self.start
+                }
             }
-        }
+        else:
+            status = {'invasion': None}
         self.air.netMessenger.send('shardStatus', [self.air.ourChannel, status])
