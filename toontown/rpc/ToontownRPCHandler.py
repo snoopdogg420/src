@@ -470,7 +470,14 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                   'name': 'District Name'
                   'available': True,
                   'created': 1409665000,
-                  'population': 150
+                  'population': 150,
+                  'invasion': {
+                     'type': 'Flunky',
+                     'flags': 0,
+                     'remaining': 1000,
+                     'total': 1000,
+                     'start': 1409665000
+                  }
                },
                ...
             }
