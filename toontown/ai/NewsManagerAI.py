@@ -1,8 +1,18 @@
-from direct.directnotify import DirectNotifyGlobal
+from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 
+
 class NewsManagerAI(DistributedObjectAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("NewsManagerAI")
+    notify = directNotify.newCategory('NewsManagerAI')
+
+    def announceGenerate(self):
+        DistributedObjectAI.announceGenerate(self)
+
+        self.accept('avatarEntered', self.__handleAvatarEntered)
+
+    def __handleAvatarEntered(self, avatar):
+        if self.air.suitInvasionManager.getInvading():
+            self.air.suitInvasionManager.notifyInvasionBulletin(avatar.getDoId())
 
     def setPopulation(self, todo0):
         pass
