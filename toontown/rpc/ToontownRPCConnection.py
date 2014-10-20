@@ -29,10 +29,6 @@ class ToontownRPCConnection:
         self.writeThread.start()
 
     def __readHeaders(self):
-        """
-        Read a set of HTTP headers from the socket into a dictionary format.
-        This is meant for internal use only.
-        """
         # Acquire a read lock so that nothing intervenes:
         self.readLock.acquire()
 
@@ -63,10 +59,6 @@ class ToontownRPCConnection:
         return self.__parseHeaders(data)
 
     def __parseHeaders(self, data):
-        """
-        Parse the provided HTTP request data into a dictionary of headers. This
-        is meant for internal use only.
-        """
         headers = {}
 
         for i, line in enumerate(data.split('\n')):
@@ -157,10 +149,6 @@ class ToontownRPCConnection:
             return ''
 
     def __writeNow(self, data, timeout=None):
-        """
-        Write data to the socket immediately. This is meant for internal use
-        only.
-        """
         # Acquire a write lock so nothing intervenes:
         self.writeLock.acquire()
 
@@ -183,10 +171,6 @@ class ToontownRPCConnection:
         self.writeLock.release()
 
     def __writeThread(self):
-        """
-        A daemon for managing the write queue. This is meant to be run on a
-        thread internally.
-        """
         while True:
             self.writeSemaphore.acquire()
 
