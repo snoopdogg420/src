@@ -140,7 +140,7 @@ def getSuitDeptFullname(name):
 
 def getSuitType(name):
     index = suitHeadTypes.index(name)
-    return index % suitsPerDept
+    return index % suitsPerDept + 1
 
 
 def getSuitName(deptIndex, typeIndex):
