@@ -5,6 +5,7 @@ from direct.stdpy import threading2
 from otp.distributed import OtpDoGlobals
 from toontown.distributed.ShardStatusReceiver import ShardStatusReceiver
 from toontown.rpc.ToontownRPCHandlerBase import *
+from toontown.suit.SuitInvasionGlobals import SUIT_TYPE_NORMAL
 from toontown.toon import ToonDNA
 from toontown.toonbase import TTLocalizer
 
@@ -485,4 +486,33 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         return self.shardStatus.getShards()
 
     # --- INVASIONS ---
-    # TODO: rpc_startInvasion, rpc_stopInvasion
+
+    @rpcmethod(accessLevel=ADMINISTRATOR)
+    def rpc_startInvasion(self, shardId, suitDeptIndex=None, suitTypeIndex=None,
+                          flags=0, type=INVASION_TYPE_NORMAL):
+        """
+        Summary:
+            Starts an invasion in the provided [shardId] with the specified
+            configuration.
+
+        Parameters:
+            [int shardId] = The ID of the shard to start the invasion in.
+            [int suitDeptIndex] = The Cog department index.
+            [int suitTypeIndex] = The Cog type index.
+            [int flags] = Special invasion flags.
+            [int type] = The type of the invasion.
+        """
+        self.air.netMessenger.send(
+            'startInvasion',
+            [shardId, suitDeptIndex, suitTypeIndex, flags, type])
+
+    @rpcmethod(accessLevel=ADMINISTRATOR)
+    def rpc_stopInvasion(self, shardId):
+        """
+        Summary:
+            Stops any invasion currently running on the provided [shardId].
+
+        Parameters:
+            [int shardId] = The ID of the shard running the invasion.
+        """
+        self.air.netMessenger.send('stopInvasion', [shardId])
