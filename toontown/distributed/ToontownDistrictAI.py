@@ -66,5 +66,5 @@ class ToontownDistrictAI(DistributedDistrictAI):
         DistributedDistrictAI.setAvailable(self, available)
 
         # Send a shard status update containing our availability:
-        status = {'available': available}
+        status = {'available': bool(available)}
         self.air.netMessenger.send('shardStatus', [self.air.ourChannel, status])
