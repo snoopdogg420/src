@@ -4,6 +4,7 @@ from toontown.fishing import FishGlobals
 from toontown.fishing.FishBase import FishBase
 from direct.task import Task
 from toontown.toonbase import ToontownGlobals
+import random
 
 
 
@@ -139,13 +140,47 @@ class DistributedFishingSpotAI(DistributedObjectAI):
         av = self.air.doId2do[self.avId]
         
         catch = self.air.fishManager.generateCatch(av, self.air.doId2do[self.pondDoId].getArea())
+        self.tryAndTrick(catch)
         
         self.lastFish = catch
         
         self.d_setMovie(FishGlobals.PullInMovie, catch[0], catch[1], catch[2], catch[3], 0, 0)
         self.cast = False
+        
+    def parseOffer(self, value, offer):
+        if offer.startswith('-'):
+            finalOffer = value - int(offer[1:])
+            return finalOffer
+        elif offer.startswith('+'):
+            finalOffer = value + int(offer[1:])
+            return finalOffer
+        elif offer.startswith('*'):
+            finalOffer = value * int(offer[1:])
+            return finalOffer
 
-
+    def tryAndTrick(self, catch):
+        fish = FishBase(catch[1], catch[2], catch[3])
+        genus = fish.getGenus()
+        rarity = fish.getRarity()
+        value = fish.getValue()
+        weight = fish.getWeight()
+        if rarity <= 3:
+            if not value == 1:
+                offerScale = ['-1', '-1', '-1', '+0', '+0', '+1', '+2']
+                offerSuffix = random.choice(offerScale)
+                offer = self.parseOffer(value, offerSuffix)
+                return offer
+            return value
+        elif rarity > 3 and rarity <= 6:
+            if not value == 3:
+                offerScale = ['-3', '-3', '-1', '+0', '+0', '+2', '+2', '+3', '+3', '*1.5', '*3']
+                offerSuffix = random.choice(offerScale)
+                offer = self.parseOffer(value, offerSuffix)
+                return offer
+            return value
+        else:
+            return value
+            
 
     def cancelAnimation(self):
         self.d_setMovie(FishGlobals.NoMovie, 0, 0, 0, 0, 0, 0)
