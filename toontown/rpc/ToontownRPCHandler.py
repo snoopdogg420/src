@@ -456,6 +456,49 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                 'online': (avId in self.air.friendsManager.onlineToons)
             }
 
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_getAvatarDetailsByName(self, needle):
+        """
+        Summary:
+            Returns basic details on every avatar whose name contains the
+            provided [needle].
+
+        Parameters:
+            [str needle] = The case sensitive fragment to search for in each
+                avatar's name.
+
+        Example response:
+            {
+                100000001: {
+                   'name': 'Toon Name',
+                   'species': 'cat',
+                   'head-color': 'Red',
+                   'max-hp': 15,
+                   'online': True
+                },
+                100000007: {
+                   'name': 'Toon Name',
+                   'species': 'dog',
+                   'head-color': 'Brown',
+                   'max-hp': 15,
+                   'online': True
+                }
+            }
+        """
+        doId2avatarDetails = {}
+
+        doId = 100000000
+        while True:
+            dclassName, fields = self.rpc_queryObject(doId)
+            if dclassName is None:
+                break
+            if dclassName == 'DistributedToon':
+                if needle in fields.get('setName', ('',))[0]:
+                    doId2avatarDetails[doId] = self.rpc_getAvatarDetails(doId)
+            doId += 1
+
+        return doId2avatarDetails
+
     # --- SHARDS ---
 
     @rpcmethod(accessLevel=USER)
