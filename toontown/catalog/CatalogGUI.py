@@ -12,14 +12,30 @@ class CatalogGUI(NodePath):
         CatalogGlobals.CatalogNodePath.find('**/CATALOG_GUI_BKGD').copyTo(self)
         self.setScale(CatalogGlobals.CatalogBKGDScale)
 
-        self.tabButtons = {}
-        self.createTabButtons()
-
         self.arrowButtons = {}
         self.createArrowButtons()
 
+        self.currentTab = None
+        self.tabButtons = {}
+        self.createTabButtons()
+
         self.radioButtons = []
         self.createRadioButtons()
+
+        self.activePage = 0
+        self.gifting = -1
+
+    def setCurrentTab(self, tab):
+        self.currentTab = tab
+
+    def getCurrentTab(self):
+        return self.currentTab
+
+    def setActivePage(self, activePage):
+        self.activePage = activePage
+
+    def getActivePage(self):
+        return self.activePage
 
     def createTabButtons(self):
         # We need to create the tabs in reverse order...
@@ -37,6 +53,12 @@ class CatalogGUI(NodePath):
                                                             self.furnitureTabClicked)
         self.tabButtons['POPULAR_TAB'] = CatalogTabButton(self, 'BTN1',
                                                           self.popularTabClicked)
+        tabList = []
+        for tab in self.tabButtons:
+            tabList.append(self.tabButtons[tab])
+
+        for tab in self.tabButtons:
+            self.tabButtons[tab].setOtherTabs(tabList)
 
     def popularTabClicked(self):
         pass
@@ -66,10 +88,12 @@ class CatalogGUI(NodePath):
                                                               self.rightArrowClicked)
 
     def leftArrowClicked(self):
-        pass
+        if self.currentTab:
+            self.currentTab.moveLeft()
 
     def rightArrowClicked(self):
-        pass
+        if self.currentTab:
+            self.currentTab.moveRight()
 
     def createRadioButtons(self):
         byNameRadioButton = CatalogRadioButton(self, 'ByName',
@@ -90,3 +114,17 @@ class CatalogGUI(NodePath):
 
     def byCostRadioButtonClicked(self):
         pass
+
+    def enableBothArrows(self):
+        for arrow in self.arrowButtons:
+            self.arrowButtons[arrow].show()
+
+    def disableBothArrows(self):
+        for arrow in self.arrowButtons:
+            self.arrowButtons[arrow].hide()
+
+    def disableLeftArrow(self):
+        self.arrowButtons['LEFT_ARROW'].hide()
+
+    def disableRightArrow(self):
+        self.arrowButtons['RIGHT_ARROW'].hide()
