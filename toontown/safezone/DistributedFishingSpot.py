@@ -28,6 +28,9 @@ from toontown.hood import ZoneUtil
 from toontown.toontowngui import TeaserPanel
 from otp.otpbase import OTPGlobals
 from otp.otpgui import OTPDialog
+from toontown.toon import ToonDNA
+from toontown.toon import ToonHead
+from toontown.makeatoon import NameGenerator
 
 class DistributedFishingSpot(DistributedObject.DistributedObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedFishingSpot')
@@ -1081,11 +1084,22 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
     def makeWager(self, offer, value):
         self.offer = offer
         self.value = value
-        dialog = 'I can take that fish off your hands for about... %s' % offer + ' Jellybeans?'
+        avName = NameGenerator.NameGenerator()
+        name = avName.randomName()
+        coloredName = '\x01blue\x01' + name + ':'
+        dialog = coloredName + '\x01black\x01\nI can take that fish off your hands for about... %s' % offer + ' Jellybeans?'
         dialogClass = OTPGlobals.getGlobalDialogClass()
         self.wagerBox = dialogClass(message=dialog, doneEvent='WagerDecided', style=OTPDialog.YesNo)
-        self.wagerBox.show()
         self.accept('WagerDecided', self.handleResponse)
+        self.dna = ToonDNA.ToonDNA()
+        self.dna.newToonRandom()
+        self.head = ToonHead.ToonHead()
+        self.head.setupHead(self.dna, forGui=1)
+        self.head.reparentTo(self.wagerBox)
+        self.head.setScale(0.17)
+        self.head.setHpr(180, 0, 0)
+        self.head.setPos(0, 0, 0.3)
+        self.wagerBox.show()
         
     def handleResponse(self):
         doneStatus = self.wagerBox.doneStatus
@@ -1096,7 +1110,8 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
             
     def acceptWager(self):
         self.sendUpdate('acceptWager')
-        self.wagerBox.hide()
+        self.wagerBox.cleanup()
+        del self.wagerBox
         if self.value > self.offer:
             loss = self.value - self.offer
             dialog = 'Bad luck, you just lost %s' % loss + ' Jellybean in that deal.'
@@ -1111,11 +1126,13 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
         self.accept('resultAck', self.resultAck)
         
     def resultAck(self):
-        self.notifyBox.hide()
+        self.notifyBox.cleanup()
+        del self.notifyBox
         track = Sequence(Func(self.__hideLine), Func(self.__hideBob), ActorInterval(self.av, 'fish-again'), Func(self.av.loop, 'pole-neutral'))
         track.start()
         self.exitWaitForAI()
                 
     def declineWager(self):
         self.sendUpdate('declineWager')
-        self.wagerBox.hide()
+        self.wagerBox.cleanup()
+        del self.wagerBox
