@@ -158,27 +158,27 @@ class InGameEditor(AppShell):
     def selectedNodePathHook(self, nodePath):
         np = nodePath.findNetTag('entity')
         if not np.isEmpty():
-            if np.id() != nodePath.id():
+            if np.get_key() != nodePath.get_key():
                 np.select()
             else:
                 self.findEntityFromNP(np)
 
     def findEntityFromNP(self, nodePath):
-        entId = self.level.nodePathId2EntId.get(nodePath.id())
+        entId = self.level.nodePathId2EntId.get(nodePath.get_key())
         if entId:
             self.selectEntity(entId)
         else:
             for entId in self.level.levelSpec.getAllEntIds():
                 np = self.level.getEntInstanceNP(entId)
                 if np:
-                    if np.id() == nodePath.id():
+                    if np.get_key() == nodePath.get_key():
                         self.selectEntity(entId)
                         return
 
     def manipCleanupHook(self, nodePathList):
         if not nodePathList:
             return
-        entId = self.level.nodePathId2EntId.get(nodePathList[0].id())
+        entId = self.level.nodePathId2EntId.get(nodePathList[0].get_key())
         if entId:
             t = nodePathList[0].getTransform()
             entSpec = self.level.levelSpec.getEntitySpec(entId)
@@ -1022,7 +1022,7 @@ class LevelExplorerItem(TreeItem):
         return self.levelElement.getName()
 
     def GetKey(self):
-        return self.levelElement.id()
+        return self.levelElement.get_key()
 
     def IsEditable(self):
         return 1

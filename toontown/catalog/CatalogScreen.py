@@ -302,7 +302,7 @@ class CatalogScreen(DirectFrame):
                 page = self.emblemPageList[self.pageIndex]
                 newOrBackOrLoyalty = 3
             page.show()
-            for panel in self.panelDict[page.id()]:
+            for panel in self.panelDict[page.get_key()]:
                 panel.load()
                 if panel.ival:
                     panel.ival.loop()
@@ -442,9 +442,9 @@ class CatalogScreen(DirectFrame):
                 pageList.append(page)
             item.reparentTo(page)
             item.setPos(CatalogPanelCenters[i][j])
-            itemList = self.panelDict.get(page.id(), [])
+            itemList = self.panelDict.get(page.get_key(), [])
             itemList.append(item)
-            self.panelDict[page.id()] = itemList
+            self.panelDict[page.get_key()] = itemList
             j += 1
             if j == NUM_CATALOG_COLS:
                 j = 0
