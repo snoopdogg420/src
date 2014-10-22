@@ -7,6 +7,8 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.distributed.PyDatagramIterator import PyDatagramIterator
 import types
 import sys
+
+
 CatalogReverseType = None
 CatalogItemVersion = 8
 CatalogBackorderMarkup = 1.2
@@ -21,6 +23,7 @@ CatalogTypeWeekly = 1
 CatalogTypeBackorder = 2
 CatalogTypeMonthly = 3
 CatalogTypeLoyalty = 4
+
 
 class CatalogItem:
     notify = DirectNotifyGlobal.directNotify.newCategory('CatalogItem')
@@ -128,13 +131,10 @@ class CatalogItem:
         return 0
 
     def setLoyaltyRequirement(self, days):
-        self.loyaltyDays = days
+        self.loyaltyDays = 0
 
     def loyaltyRequirement(self):
-        if not hasattr(self, 'loyaltyDays'):
-            return 0
-        else:
-            return self.loyaltyDays
+        return 0
 
     def getPrice(self, catalogType):
         if catalogType == CatalogTypeBackorder:
@@ -209,7 +209,6 @@ class CatalogItem:
         mailbox.acceptItem(self, index, callback)
 
     def discardItem(self, mailbox, index, callback):
-        print 'Item discardItem'
         mailbox.discardItem(self, index, callback)
 
     def acceptItemCleanup(self):
