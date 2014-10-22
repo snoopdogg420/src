@@ -50,7 +50,7 @@ class FishTank:
         if index >= len(self.fishList):
             return 0
         else:
-            del self.fishList[i]
+            del self.fishList[index]
             return 1
 
     def generateRandomTank(self):

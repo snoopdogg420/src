@@ -18,6 +18,7 @@ class DistributedFishingSpotAI(DistributedObjectAI):
         self.posHpr = [None, None, None, None, None, None]
         self.cast = False
         self.lastFish = [None, None, None, None]
+        self.shadyOffers = {}
 
     def generate(self):
         DistributedObjectAI.generate(self)
@@ -140,12 +141,31 @@ class DistributedFishingSpotAI(DistributedObjectAI):
         av = self.air.doId2do[self.avId]
         
         catch = self.air.fishManager.generateCatch(av, self.air.doId2do[self.pondDoId].getArea())
-        self.tryAndTrick(catch)
+        fish = FishBase(catch[1], catch[2], catch[3])
         
+        shadyOffer = self.wagerFish(fish)
+        self.shadyOffers[av.doId] = [shadyOffer, catch]
+        self.sendUpdateToAvatarId(self.avId, 'makeWager', [shadyOffer, fish.getValue()])
+        
+    def declineWager(self):
+        catch = self.shadyOffers[self.avId][1]
         self.lastFish = catch
-        
         self.d_setMovie(FishGlobals.PullInMovie, catch[0], catch[1], catch[2], catch[3], 0, 0)
         self.cast = False
+        del self.shadyOffers[self.avId]
+        
+    def acceptWager(self):
+        self.cast = False
+        avId = self.air.getAvatarIdFromSender()
+        av = self.air.doId2do[avId]
+        wager = self.shadyOffers[avId][0]
+        av.addMoney(wager)
+        index = len(av.fishTank.fishList) -1
+        av.fishTank.removeFishAtIndex(index)
+        netlist = av.fishTank.getNetLists()
+        av.fishTank.makeFromNetLists(netlist[0], netlist[1], netlist[2])
+        av.d_setFishCollection(netlist[0], netlist[1], netlist[2])
+        av.d_setFishTank(netlist[0], netlist[1], netlist[2])
         
     def parseOffer(self, value, offer):
         if offer.startswith('-'):
@@ -158,8 +178,7 @@ class DistributedFishingSpotAI(DistributedObjectAI):
             finalOffer = value * int(offer[1:])
             return finalOffer
 
-    def tryAndTrick(self, catch):
-        fish = FishBase(catch[1], catch[2], catch[3])
+    def wagerFish(self, fish):
         genus = fish.getGenus()
         rarity = fish.getRarity()
         value = fish.getValue()

@@ -984,6 +984,9 @@ dclass DistributedFishingSpot : DistributedObject {
   sellFish() airecv clsend;
   sellFishComplete(uint8, uint16);
   setMovie(uint8, uint8, uint16, uint16, uint16, uint8/100, int16/100) broadcast ram;
+  makeWager(uint8, uint8);
+  acceptWager() airecv clsend;
+  declineWager() airecv clsend;
 };
 
 dclass DistributedPondBingoManager : DistributedObject {

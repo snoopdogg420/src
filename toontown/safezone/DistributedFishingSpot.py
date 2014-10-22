@@ -26,6 +26,8 @@ from direct.fsm import ClassicFSM, State
 from direct.fsm import State
 from toontown.hood import ZoneUtil
 from toontown.toontowngui import TeaserPanel
+from otp.otpbase import OTPGlobals
+from otp.otpgui import OTPDialog
 
 class DistributedFishingSpot(DistributedObject.DistributedObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedFishingSpot')
@@ -85,7 +87,7 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
           'reward',
           'leaving']),
          State.State('sellFish', self.enterSellFish, self.exitSellFish, ['waiting', 'leaving']),
-         State.State('waitForAI', self.enterWaitForAI, self.exitWaitForAI, ['reward', 'leaving']),
+         State.State('waitForAI', self.enterWaitForAI, self.exitWaitForAI, ['reward', 'leaving', 'localAdjusting']),
          State.State('reward', self.enterReward, self.exitReward, ['localAdjusting',
           'distCasting',
           'leaving',
@@ -1075,3 +1077,45 @@ class DistributedFishingSpot(DistributedObject.DistributedObject):
                 if hoodId == ToontownGlobals.MyEstate:
                     return True
         return False
+        
+    def makeWager(self, offer, value):
+        self.offer = offer
+        self.value = value
+        dialog = 'I can take that fish off your hands for about... %s' % offer + ' Jellybeans?'
+        dialogClass = OTPGlobals.getGlobalDialogClass()
+        self.wagerBox = dialogClass(message=dialog, doneEvent='WagerDecided', style=OTPDialog.YesNo)
+        self.wagerBox.show()
+        self.accept('WagerDecided', self.handleResponse)
+        
+    def handleResponse(self):
+        doneStatus = self.wagerBox.doneStatus
+        if doneStatus == 'ok':
+            self.acceptWager()
+        elif doneStatus == 'cancel':
+            self.declineWager()
+            
+    def acceptWager(self):
+        self.sendUpdate('acceptWager')
+        self.wagerBox.hide()
+        if self.value > self.offer:
+            loss = self.value - self.offer
+            dialog = 'Bad luck, you just lost %s' % loss + ' Jellybean in that deal.'
+        elif self.value == self.offer:
+            dialog = 'Good work! You sold that fish for market price!'
+        elif self.value < self.offer:
+            gain = self.offer - self.value
+            dialog = 'Amazing! You earned %s' % gain + ' extra Jellybeans!'
+        dialogClass = OTPGlobals.getGlobalDialogClass()
+        self.notifyBox = dialogClass(message=dialog, doneEvent='resultAck', style=OTPDialog.Acknowledge)
+        self.notifyBox.show()
+        self.accept('resultAck', self.resultAck)
+        
+    def resultAck(self):
+        self.notifyBox.hide()
+        track = Sequence(Func(self.__hideLine), Func(self.__hideBob), ActorInterval(self.av, 'fish-again'), Func(self.av.loop, 'pole-neutral'))
+        track.start()
+        self.exitWaitForAI()
+                
+    def declineWager(self):
+        self.sendUpdate('declineWager')
+        self.wagerBox.hide()
