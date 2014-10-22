@@ -329,7 +329,7 @@ class CatalogAccessoryItem(CatalogItem.CatalogItem):
         return article in [AShoes, ABoysShoes, AGirlsShoes]
 
     def output(self, store = -1):
-        return 'CatalogAccessoryItem(%s, %s)' % (self.accessoryType, self.formatOptionalData(store))
+        return 'CatalogAccessoryItem(%s%s)' % (self.accessoryType, self.formatOptionalData(store))
 
     def getFilename(self):
         str = AccessoryTypes[self.accessoryType][ATString]
