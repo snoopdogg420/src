@@ -85,6 +85,12 @@ class CatalogItemList:
 
         return dg.getMessage()
 
+    def generateList(self):
+        if self.__list:
+            return self.__list
+        self.__list = self.__makeList(self.store)
+        return self.__list
+
     def __decodeList(self):
         self.__list = self.__makeList(self.store)
 
@@ -224,6 +230,9 @@ class CatalogItemList:
 
     def __str__(self):
         return self.output()
+
+    def getList(self):
+        return self.__list
 
     def output(self, store = -1):
         if self.__list == None:
