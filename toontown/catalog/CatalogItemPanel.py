@@ -13,13 +13,12 @@ from CatalogFurnitureItem import getAllFurnitures
 from CatalogFurnitureItem import FLTrunk
 from toontown.toontowngui.TeaserPanel import TeaserPanel
 from otp.otpbase import OTPGlobals
-from direct.directnotify import DirectNotifyGlobal
 CATALOG_PANEL_WORDWRAP = 10
 CATALOG_PANEL_CHAT_WORDWRAP = 9
 CATALOG_PANEL_ACCESSORY_WORDWRAP = 11
 
 class CatalogItemPanel(DirectFrame):
-    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogItemPanel')
+    notify = directNotify.newCategory('CatalogItemPanel')
 
     def __init__(self, parent = aspect2d, parentCatalogScreen = None, **kw):
         optiondefs = (('item', None, DGG.INITOPT), ('type', CatalogItem.CatalogTypeUnspecified, DGG.INITOPT), ('relief', None, None))

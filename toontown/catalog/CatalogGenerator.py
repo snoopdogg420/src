@@ -1,4 +1,3 @@
-from direct.directnotify import DirectNotifyGlobal
 import CatalogItem
 import CatalogItemList
 from CatalogFurnitureItem import CatalogFurnitureItem, nextAvailableCloset, getAllClosets, get50ItemCloset, getMaxClosets, get50ItemTrunk
@@ -1482,7 +1481,7 @@ WeeklySchedule = ((100,
   nextAvailablePole))
 
 class CatalogGenerator:
-    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogGenerator')
+    notify = directNotify.newCategory('CatalogGenerator')
 
     def __init__(self):
         self.__itemLists = {}

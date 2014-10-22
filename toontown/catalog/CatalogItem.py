@@ -1,4 +1,3 @@
-from direct.directnotify import DirectNotifyGlobal
 from pandac.PandaModules import *
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
@@ -26,7 +25,7 @@ CatalogTypeLoyalty = 4
 
 
 class CatalogItem:
-    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogItem')
+    notify = directNotify.newCategory('CatalogItem')
 
     def __init__(self, *args, **kw):
         self.saleItem = 0
