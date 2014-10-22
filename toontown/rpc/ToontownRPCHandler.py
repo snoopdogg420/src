@@ -475,13 +475,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                    'head-color': 'Red',
                    'max-hp': 15,
                    'online': True
-                },
-                100000007: {
-                   'name': 'Toon Name',
-                   'species': 'dog',
-                   'head-color': 'Brown',
-                   'max-hp': 15,
-                   'online': True
                 }
             }
         """
