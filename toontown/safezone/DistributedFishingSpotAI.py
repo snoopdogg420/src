@@ -192,7 +192,7 @@ class DistributedFishingSpotAI(DistributedObjectAI):
             return value
         elif rarity > 3 and rarity <= 6:
             if not value == 3:
-                offerScale = ['-3', '-3', '-2', '-2', '-1', '+2', '+2', '+3', '+3', '*1.5', '*3']
+                offerScale = ['-3', '-3', '-2', '-2', '-1', '+2', '+2', '+3', '+3', '+3', '*3']
                 offerSuffix = random.choice(offerScale)
                 offer = self.parseOffer(value, offerSuffix)
                 return offer
