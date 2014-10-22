@@ -208,21 +208,22 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
         self.lastTime = globalClock.getFrameTime()
         isLocalToon = avId == base.localAvatar.doId
         avatar = self.cr.doId2do.get(avId)
-        self.notify.debug('setMovie: %s %s %s' % (mode, avId, isLocalToon))
         if mode == PhoneGlobals.PHONE_MOVIE_CLEAR:
-            self.notify.debug('setMovie: clear')
-            self.numHouseItems = None
             if self.phoneInUse:
                 self.clearInterval()
+            self.numHouseItems = None
             self.phoneInUse = 0
         elif mode == PhoneGlobals.PHONE_MOVIE_EMPTY:
-            self.notify.debug('setMovie: empty')
             if isLocalToon:
                 self.phoneDialog = TTDialog.TTDialog(dialogName='PhoneEmpty', style=TTDialog.Acknowledge, text=TTLocalizer.DistributedPhoneEmpty, text_wordwrap=15, fadeScreen=1, command=self.__clearDialog)
             self.numHouseItems = None
             self.phoneInUse = 0
+        elif mode == PhoneGlobals.PHONE_MOVIE_NO_HOUSE:
+            if isLocalToon:
+                self.phoneDialog = TTDialog.TTDialog(dialogName='PhoneNoHouse', style=TTDialog.Acknowledge, text=TTLocalizer.DistributedPhoneNoHouse, text_wordwrap=15, fadeScreen=1, command=self.__clearDialog)
+            self.numHouseItems = None
+            self.phoneInUse = 0
         elif mode == PhoneGlobals.PHONE_MOVIE_PICKUP:
-            self.notify.debug('setMovie: gui')
             if avatar:
                 interval = self.takePhoneInterval(avatar)
                 if isLocalToon:
