@@ -1,8 +1,8 @@
-from direct.directnotify import DirectNotifyGlobal
 from toontown.estate.DistributedClosetAI import DistributedClosetAI
 
+
 class DistributedTrunkAI(DistributedClosetAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistributedTrunkAI")
+    notify = directNotify.newCategory("DistributedTrunkAI")
 
     def setState(self, todo0, todo1, todo2, todo3, todo4, todo5, todo6, todo7):
         pass
@@ -15,4 +15,3 @@ class DistributedTrunkAI(DistributedClosetAI):
 
     def setCustomerDNA(self, todo0, todo1, todo2, todo3, todo4, todo5, todo6, todo7, todo8, todo9, todo10, todo11, todo12, todo13):
         pass
-
