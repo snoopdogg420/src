@@ -25,6 +25,7 @@ class DistributedTrickOrTreatTargetAI(DistributedObjectAI, FSM):
             self.sendUpdateToAvatarId(avId, 'doScavengerHunt', [100])
             scavengerHunt.append(self.zoneId)
             av.b_setScavengerHunt(scavengerHunt)
+            av.addMoney(100)
         if len(scavengerHunt) == 6:
             av.b_setCheesyEffect(12, 0, 0)
 
