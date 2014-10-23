@@ -1,4 +1,5 @@
 from direct.distributed.DistributedObject import DistributedObject
+from toontown.catalog.CatalogItemList import CatalogItemList
 import time
 
 
@@ -34,4 +35,5 @@ class CatalogManager(DistributedObject):
         self.sendUpdate('fetchPopularItems')
 
     def setPopularItems(self, popularItems):
-        self.popularItems = popularItems
+        self.popularItems = CatalogItemList(popularItems)
+        messenger.send('PopularItemsSet')
