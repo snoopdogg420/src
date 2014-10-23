@@ -1,3 +1,4 @@
+import datetime
 from direct.distributed.MsgTypes import CLIENTAGENT_EJECT
 from direct.distributed.PyDatagram import PyDatagram
 from direct.stdpy import threading2
@@ -8,6 +9,7 @@ from toontown.rpc.ToontownRPCHandlerBase import *
 from toontown.suit.SuitInvasionGlobals import INVASION_TYPE_NORMAL
 from toontown.toon import ToonDNA
 from toontown.toonbase import TTLocalizer
+from toontown.uberdog.ClientServicesManagerUD import executeHttpRequest
 
 
 class ToontownRPCHandler(ToontownRPCHandlerBase):
@@ -210,6 +212,79 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         channel = avId + (1001L<<32)
         self.rpc_kickChannel(channel, code, reason)
+
+    # --- BANS ---
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_banUser(self, userId, duration, reason):
+        """
+        Summary:
+            Bans the user associated with the provided [userId] for the
+            specified [duration].
+
+        Parameters:
+            [int/str userId] = The ID of the user to direct the ban to.
+            [int duration] = This ban's duration in hours. If this is 0 or less,
+                the user will be permanently banned.
+            [str reason] = A short string describing the reason for the ban.
+                This can be one of the following: 'hacking', 'language', 'other'.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        if reason not in ('hacking', 'language', 'other'):
+            return False
+        self.air.writeServerEvent('ban', userId, reason)
+        if duration > 0:
+            now = datetime.date.today()
+            release = str(now + datetime.timedelta(hours=duration))
+        else:
+            release = '0000-00-00'  # Permanent ban.
+        executeHttpRequest('accounts/ban/', Id=userId, Release=release,
+                           Reason=reason)
+        self.rpc_kickUser(userId, 152, reason)
+        return True
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_banAccount(self, accountId, duration, reason):
+        """
+        Summary:
+            Bans the user associated with the provided [accountId] for the
+            specified [duration].
+
+        Parameters:
+            [int/str accountId] = The ID of the account to direct the ban to.
+            [int duration] = This ban's duration in hours. If this is 0 or less,
+                the user will be permanently banned.
+            [str reason] = A short string describing the reason for the ban.
+                This can be one of the following: 'hacking', 'language', 'other'.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        return self.rpc_banUser(self.rpc_getAccountUserId(accountId), duration, reason)
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_banAvatar(self, avId, duration, reason):
+        """
+        Summary:
+            Bans the user associated with the provided [avId] for the specified
+            [duration].
+
+        Parameters:
+            [int/str avId] = The ID of the avatar to direct the ban to.
+            [int duration] = This ban's duration in hours. If this is 0 or less,
+                the user will be permanently banned.
+            [str reason] = A short string describing the reason for the ban.
+                This can be one of the following: 'hacking', 'language', 'other'.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        return self.rpc_banUser(self.rpc_getAvatarUserId(avId), duration, reason)
 
     # --- QUERIES ---
 
