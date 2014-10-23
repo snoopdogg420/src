@@ -18,6 +18,7 @@ from toontown.ai.QuestManagerAI import QuestManagerAI
 from toontown.ai import BankManagerAI
 from toontown.building.DistributedTrophyMgrAI import DistributedTrophyMgrAI
 from toontown.catalog.CatalogManagerAI import CatalogManagerAI
+from toontown.catalog.PopularItemManagerAI import PopularItemManagerAI
 from toontown.coghq import CountryClubManagerAI
 from toontown.coghq import FactoryManagerAI
 from toontown.coghq import LawOfficeManagerAI
@@ -118,6 +119,7 @@ class ToontownAIRepository(ToontownInternalRepository):
             self.estateManager.generateWithRequired(2)
             self.catalogManager = CatalogManagerAI(self)
             self.catalogManager.generateWithRequired(2)
+            self.popularItemManager = PopularItemManagerAI(self)
             self.deliveryManager = self.generateGlobalObject(
                 OTP_DO_ID_TOONTOWN_DELIVERY_MANAGER, 'DistributedDeliveryManager')
         if self.wantPets:
