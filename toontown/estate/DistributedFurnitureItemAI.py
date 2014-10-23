@@ -62,3 +62,10 @@ class DistributedFurnitureItemAI(DistributedSmoothNodeAI):
     def destroy(self):
         # Presently, we just delete ourselves... No real shutdown needed.
         self.requestDelete()
+
+    def delete(self):
+        if hasattr(self, 'do_deleted'):
+            return
+
+        self.do_deleted = True
+        DistributedSmoothNodeAI.delete(self)
