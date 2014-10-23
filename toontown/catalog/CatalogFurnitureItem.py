@@ -3,6 +3,7 @@ import CatalogItem
 import random
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
+
 FTModelName = 0
 FTColor = 1
 FTColorOptions = 2
@@ -18,6 +19,7 @@ FLIsTable = 32
 FLPhone = 64
 FLBillboard = 128
 FLTrunk = 256
+
 furnitureColors = [(0.792,
   0.353,
   0.29,
@@ -932,8 +934,6 @@ class CatalogFurnitureItem(CatalogAtticItem.CatalogAtticItem):
             return TTLocalizer.FurnitureYourOldBank
         elif self.getFlags() & FLTrunk:
             return TTLocalizer.FurnitureYourOldTrunk
-        else:
-            return None
         return None
 
     def notOfferedTo(self, avatar):
