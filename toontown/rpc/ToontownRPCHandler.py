@@ -224,10 +224,10 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int/str userId] = The ID of the user to direct the ban to.
-            [int duration] = This ban's duration in hours. If this is 0 or less,
+            [int duration] = The ban's duration in hours. If this is 0 or less,
                 the user will be permanently banned.
             [str reason] = A short string describing the reason for the ban.
-                This can be one of the following: 'hacking', 'language', 'other'.
+                This can be one of the following: 'hacking', 'language', 'other'
 
         Example response:
             On success: True
@@ -255,10 +255,10 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int/str accountId] = The ID of the account to direct the ban to.
-            [int duration] = This ban's duration in hours. If this is 0 or less,
+            [int duration] = The ban's duration in hours. If this is 0 or less,
                 the user will be permanently banned.
             [str reason] = A short string describing the reason for the ban.
-                This can be one of the following: 'hacking', 'language', 'other'.
+                This can be one of the following: 'hacking', 'language', 'other'
 
         Example response:
             On success: True
@@ -275,10 +275,10 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         Parameters:
             [int/str avId] = The ID of the avatar to direct the ban to.
-            [int duration] = This ban's duration in hours. If this is 0 or less,
+            [int duration] = The ban's duration in hours. If this is 0 or less,
                 the user will be permanently banned.
             [str reason] = A short string describing the reason for the ban.
-                This can be one of the following: 'hacking', 'language', 'other'.
+                This can be one of the following: 'hacking', 'language', 'other'
 
         Example response:
             On success: True
