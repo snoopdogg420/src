@@ -1,14 +1,12 @@
-from direct.directnotify.DirectNotifyGlobal import *
-
-from toontown.catalog import CatalogItem
-from toontown.catalog.CatalogFurnitureItem import CatalogFurnitureItem
 from toontown.catalog.CatalogItemList import CatalogItemList
+from toontown.catalog.CatalogFurnitureItem import CatalogFurnitureItem
+from toontown.catalog import CatalogItem
 
-
-# Mapping of DNA prop codes to furniture ID values. Use None to ignore a code:
+# Mapping of DNA prop codes to furniture ID values. Use None to ignore a code.
 DNA2Furniture = {
     'house_interiorA': None,
     'GardenA': None,
+
     'chairA': 100,
     'chair': 110,
     'regular_bed': 200,
@@ -25,14 +23,13 @@ DNA2Furniture = {
     'rug': 1000,
     'rugA': 1010,
     'rugB': 1020,
+    'cabinetYwood': 1110,
     'bookcase': 1120,
     'bookcase_low': 1130,
     'ending_table': 1200,
-    'jellybeanBank': 1300
-}
+    'jellybeanBank': 1300,
 
-if not simbase.config.GetBool('want-personal-bank', False):
-    DNA2Furniture['jellybeanBank'] = None
+}
 
 
 class DNAFurnitureReaderAI:
@@ -40,15 +37,16 @@ class DNAFurnitureReaderAI:
     # CatalogItemList representing the furniture in the DNA file. The resulting
     # list is passed to the FurnitureManager in order to initialize a blank
     # house to the default furniture arrangement.
-    notify = directNotify.newCategory('DNAFurnitureReaderAI')
+    notify = directNotify.newCategory("DNAFurnitureReaderAI")
 
-    def __init__(self, dnaData):
+    def __init__(self, dnaData, phonePos):
         self.dnaData = dnaData
+        self.phonePos = phonePos
         self.itemList = None
 
     def buildList(self):
-        self.itemList = CatalogItemList(
-            store=(CatalogItem.Customization|CatalogItem.Location))
+        self.itemList = CatalogItemList(store=(CatalogItem.Customization |
+                                               CatalogItem.Location))
 
         # Find the interior node:
         for child in self.dnaData.children:
@@ -58,6 +56,7 @@ class DNAFurnitureReaderAI:
         else:
             self.notify.error('Could not find "interior" in DNA!')
 
+        self.itemList.append(CatalogFurnitureItem(1399, posHpr=self.phonePos))
         # Every child in the interior node is a prop, thus:
         for child in interior.children:
             code = child.getCode()
@@ -72,13 +71,8 @@ class DNAFurnitureReaderAI:
 
             x, y, z = child.getPos()
             h, p, r = child.getHpr()
-
-            self.itemList.append(
-                CatalogFurnitureItem(itemId, posHpr=(x, y, z, h, p, r)))
-
-        # Add a phone to the itemList:
-        self.itemList.append(
-            CatalogFurnitureItem(1399, posHpr=(-11, 2, 0, 0, 0, 0)))
+            self.itemList.append(CatalogFurnitureItem(itemId,
+                                                      posHpr=(x, y, z, h, p, r)))
 
     def getList(self):
         if not self.itemList:
