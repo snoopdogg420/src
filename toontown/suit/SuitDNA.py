@@ -143,6 +143,10 @@ def getSuitType(name):
     return index % suitsPerDept + 1
 
 
+def getSuitName(deptIndex, typeIndex):
+    return suitHeadTypes[(suitsPerDept*deptIndex) + typeIndex]
+
+
 def getRandomSuitType(level, rng = random):
     return random.randint(max(level - 4, 1), min(level, 8))
 

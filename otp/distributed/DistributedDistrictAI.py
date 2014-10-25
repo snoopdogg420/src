@@ -1,8 +1,10 @@
-from direct.directnotify import DirectNotifyGlobal
+from direct.directnotify.DirectNotifyGlobal import directNotify
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 
+
 class DistributedDistrictAI(DistributedObjectAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistributedDistrictAI")
+    notify = directNotify.newCategory('DistributedDistrictAI')
+
     name = 'District'
     available = 0
 
@@ -31,4 +33,3 @@ class DistributedDistrictAI(DistributedObjectAI):
 
     def getAvailable(self):
         return self.available
-

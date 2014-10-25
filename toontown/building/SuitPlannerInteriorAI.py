@@ -1,10 +1,13 @@
-from otp.ai.AIBaseGlobal import *
-import random
-from toontown.suit import SuitDNA
 from direct.directnotify import DirectNotifyGlobal
-from toontown.suit import DistributedSuitAI
-import SuitBuildingGlobals
+import random
 import types
+
+import SuitBuildingGlobals
+from otp.ai.AIBaseGlobal import *
+from toontown.suit import DistributedSuitAI
+from toontown.suit import SuitDNA
+from toontown.suit.SuitInvasionGlobals import IFSkelecog, IFWaiter, IFV2
+
 
 class SuitPlannerInteriorAI:
     notify = DirectNotifyGlobal.directNotify.newCategory('SuitPlannerInteriorAI')
@@ -126,29 +129,29 @@ class SuitPlannerInteriorAI:
         return lvlList
 
     def __setupSuitInfo(self, suit, bldgTrack, suitLevel, suitType):
-        suitName, suitDept, skeleton, v2, waiter = simbase.air.suitInvasionManager.getInvadingCog()
-        if suitName and self.respectInvasions:
-            suitType = SuitDNA.getSuitType(suitName)
-            bldgTrack = SuitDNA.getSuitDept(suitName)
-            suitLevel = min(max(suitLevel, suitType), suitType + 4)
+        suitDeptIndex, suitTypeIndex, flags = simbase.air.suitInvasionManager.getInvadingCog()
+        if self.respectInvasions:
+            if suitDeptIndex is not None:
+                bldgTrack = SuitDNA.suitDepts[suitDeptIndex]
+            if suitTypeIndex is not None:
+                suitLevel = min(max(suitLevel, suitTypeIndex), suitTypeIndex + 4)
         dna = SuitDNA.SuitDNA()
         dna.newSuitRandom(suitType, bldgTrack)
         suit.dna = dna
-        self.notify.debug('Creating suit type ' + suit.dna.name + ' of level ' + str(suitLevel) + ' from type ' + str(suitType) + ' and track ' + str(bldgTrack))
         suit.setLevel(suitLevel)
-        return (skeleton, v2, waiter)
+        return flags
 
     def __genSuitObject(self, suitZone, suitType, bldgTrack, suitLevel, revives = 0):
         newSuit = DistributedSuitAI.DistributedSuitAI(simbase.air, None)
-        skel, v2, waiter = self.__setupSuitInfo(newSuit, bldgTrack, suitLevel, suitType)
-        if skel:
+        flags = self.__setupSuitInfo(newSuit, bldgTrack, suitLevel, suitType)
+        if flags & IFSkelecog:
             newSuit.setSkelecog(1)
         newSuit.setSkeleRevives(revives)
         newSuit.generateWithRequired(suitZone)
-        if v2:
-            newSuit.b_setSkeleRevives(1)
-        if waiter:
+        if flags & IFWaiter:
             newSuit.b_setWaiter(1)
+        if flags & IFV2:
+            newSuit.b_setSkeleRevives(1)
         newSuit.node().setName('suit-%s' % newSuit.doId)
         return newSuit
 

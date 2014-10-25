@@ -354,8 +354,8 @@ class LoginAccountFSM(OperationFSM):
             'ACCOUNT_AV_SET': [0] * 6,
             'ESTATE_ID': 0,
             'ACCOUNT_AV_SET_DEL': [],
-            'CREATED': time.ctime(time.mktime(time.gmtime())),
-            'LAST_LOGIN': time.ctime(time.mktime(time.gmtime())),
+            'CREATED': time.ctime(),
+            'LAST_LOGIN': time.ctime(),
             'ACCOUNT_ID': str(self.userId),
             'ACCESS_LEVEL': self.accessLevel,
             'MONEY': 0
@@ -445,12 +445,12 @@ class LoginAccountFSM(OperationFSM):
             self.csm.air.dbId,
             self.accountId,
             self.csm.air.dclassesByName['AccountUD'],
-            {'LAST_LOGIN': time.ctime(time.mktime(time.gmtime())),
+            {'LAST_LOGIN': time.ctime(),
              'ACCOUNT_ID': str(self.userId)})
 
         # We're done.
         self.csm.air.writeServerEvent('accountLogin', self.target, self.accountId, self.userId)
-        self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [int(time.mktime(time.gmtime()))])
+        self.csm.sendUpdateToChannel(self.target, 'acceptLogin', [int(time.time())])
         self.demand('Off')
 
 class CreateAvatarFSM(OperationFSM):

@@ -1,8 +1,15 @@
-import toontown.minigame.MinigameCreatorAI
-from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
 from direct.distributed.PyDatagram import *
+
 from otp.distributed.DistributedDirectoryAI import DistributedDirectoryAI
 from otp.distributed.OtpDoGlobals import *
+from toontown.distributed.ToontownInternalRepository import ToontownInternalRepository
+import toontown.minigame.MinigameCreatorAI
+
+
+if config.GetBool('want-rpc-server', False):
+    from toontown.rpc.ToontownRPCServer import ToontownRPCServer
+    from toontown.rpc.ToontownRPCHandler import ToontownRPCHandler
+
 
 class ToontownUberRepository(ToontownInternalRepository):
     def __init__(self, baseChannel, serverId):
@@ -13,6 +20,11 @@ class ToontownUberRepository(ToontownInternalRepository):
     def handleConnected(self):
         rootObj = DistributedDirectoryAI(self)
         rootObj.generateWithRequiredAndId(self.getGameDoId(), 0, 0)
+
+        if config.GetBool('want-rpc-server', False):
+            endpoint = config.GetString('rpc-server-endpoint', 'http://localhost:8080/')
+            self.rpcServer = ToontownRPCServer(endpoint, ToontownRPCHandler(self))
+            self.rpcServer.start(useTaskChain=True)
 
         self.createGlobals()
         self.notify.info('Done.')

@@ -50,6 +50,7 @@ from toontown.toonbase import ToontownAccessAI
 from toontown.toonbase import ToontownBattleGlobals
 from toontown.toonbase import ToontownGlobals
 from toontown.toonbase.ToontownGlobals import *
+from toontown.toonbase.TTLocalizerEnglish import SuitNameDropper
 
 
 if simbase.wantPets:
@@ -3121,9 +3122,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         elif type == 'building':
             returnCode = self.doBuildingTakeover(suitIndex)
         elif type == 'invasion':
-            cogDept = suitIndex / SuitDNA.suitsPerDept
-            cogType = SuitDNA.getSuitsInDept(cogDept).index(SuitDNA.suitHeadTypes[suitIndex])
-            returnCode = self.doCogInvasion(cogDept, cogType, 0, 0, 0)
+            suitDeptIndex = suitIndex / SuitDNA.suitsPerDept
+            suitTypeIndex = suitIndex % SuitDNA.suitsPerDept
+            returnCode = self.doCogInvasion(suitDeptIndex, suitTypeIndex)
         if returnCode:
             if returnCode[0] == 'success':
                 self.air.writeServerEvent('cogSummoned', self.doId, '%s|%s|%s' % (type, suitIndex, self.zoneId))
@@ -3187,30 +3188,18 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         building.cogdoTakeOver(difficulty, buildingHeight)
         return ['success', difficulty, building.doId]
 
-    def doCogInvasion(self, cogDept, cogType, isSkelecog, isV2, isWaiter, type='regular'):
-        invMgr = self.air.suitInvasionManager
-        returnCode = ''
-        suitIndex = 0
-        if invMgr.getInvading():
-            returnCode = 'busy'
-        else:
-            if cogDept >= 0 and cogDept < len(SuitDNA.suitDepts):
-                department = SuitDNA.suitDepts[cogDept]
-                suitsInDept = SuitDNA.getSuitsInDept(cogDept)
-                if cogType >= 0 and cogType < len(suitsInDept):
-                    cogName = suitsInDept[cogType]
-                    suitIndex = SuitDNA.suitHeadTypes.index(cogName)
-                else:
-                    cogName = 'any'
-            else:
-                department = 'any'
-                cogName = 'any'
+    def doCogInvasion(self, suitDeptIndex, suitTypeIndex):
+        if self.air.suitInvasionManager.getInvading():
+            return ['busy', 0, 0]
 
-            if invMgr.newInvasion(cogName, department, isSkelecog, isV2, isWaiter, type):
-                returnCode = 'success'
-            else:
-                returnCode = 'fail'
-        return [returnCode, suitIndex, 0]
+        suitName = SuitDNA.getSuitName(suitDeptIndex, suitTypeIndex)
+        suitIndex = SuitDNA.suitHeadTypes.index(suitName)
+
+        if self.air.suitInvasionManager.startInvasion(
+                suitDeptIndex=suitDeptIndex, suitTypeIndex=suitTypeIndex):
+            return ['success', suitIndex, 0]
+
+        return ['fail', suitIndex, 0]
 
     def b_setCogSummonsEarned(self, cogSummonsEarned):
         self.d_setCogSummonsEarned(cogSummonsEarned)
@@ -5057,33 +5046,23 @@ def track(command, track, value=None):
         return 'Set the experience of the %s track to: %d!' % (track, value)
     return 'Invalid command.'
 
-@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, int, int, int, int, int])
-def suit(command, suitIndex, cogType=0, isSkelecog=0, isV2=0, isWaiter=0):
+@magicWord(category=CATEGORY_ADMINISTRATOR, types=[str, str])
+def suit(command, suitName):
     invoker = spellbook.getInvoker()
     command = command.lower()
+    if suitName not in SuitDNA.suitHeadTypes:
+        return 'Invalid suit name: ' + suitName
+    suitFullName = SuitBattleGlobals.SuitAttributes[suitName]['name']
     if command == 'spawn':
-        returnCode = invoker.doSummonSingleCog(int(suitIndex))
+        returnCode = invoker.doSummonSingleCog(SuitDNA.suitHeadTypes.index(suitName))
         if returnCode[0] == 'success':
-            return 'Successfully spawned suit with index %d!' % suitIndex
-        return "Couldn't spawn suit with index %d." % suitIndex
+            return 'Successfully spawned: ' + suitFullName
+        return "Couldn't spawn: " + suitFullName
     elif command == 'building':
-        returnCode = invoker.doBuildingTakeover(suitIndex)
+        returnCode = invoker.doBuildingTakeover(SuitDNA.suitHeadTypes.index(suitName))
         if returnCode[0] == 'success':
-            return 'Successfully spawned building with index %d!' % suitIndex
-        return "Couldn't spawn building with index %d." % suitIndex
-    elif command == 'invasion':
-        returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog,
-            isV2, isWaiter)
-        return returnCode
-    elif command == 'mega':
-        returnCode = invoker.doCogInvasion(suitIndex, cogType, isSkelecog,
-            isV2, isWaiter, type='mega')
-        return returnCode
-    elif command == 'invasionend':
-        returnCode = 'Ending Invasion..'
-        simbase.air.suitInvasionManager.cleanupTasks()
-        simbase.air.suitInvasionManager.cleanupInvasion()
-        return returnCode
+            return 'Successfully spawned a Cog building with: ' + suitFullName
+        return "Couldn't spawn a Cog building with: " + suitFullName
     else:
         return 'Invalid command.'
 
@@ -5111,10 +5090,13 @@ def getZone():
     zone = invoker.zoneId
     return 'ZoneID: %s' % (zone)
 
-@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
+@magicWord(category=CATEGORY_MODERATOR, types=[int])
 def nametagStyle(nametagStyle):
+    currentAccess = spellbook.getInvokerAccess()
     if nametagStyle >= len(TTLocalizer.NametagFontNames):
         return 'Invalid nametag style.'
-    invoker = spellbook.getInvoker()
-    invoker.b_setNametagStyle(nametagStyle)
+    if nametagStyle != 0 and nametagStyle != 10 and currentAccess == CATEGORY_MODERATOR.defaultAccess:
+        return 'Invalid access level!'
+    target = spellbook.getTarget()
+    target.b_setNametagStyle(nametagStyle)
     return 'Nametag style set to: %s.' % TTLocalizer.NametagFontNames[nametagStyle]
