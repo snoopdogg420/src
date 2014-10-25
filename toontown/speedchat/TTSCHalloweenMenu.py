@@ -3,7 +3,7 @@ from otp.speedchat.SCMenu import SCMenu
 from otp.speedchat.SCMenuHolder import SCMenuHolder
 from otp.speedchat.SCStaticTextTerminal import SCStaticTextTerminal
 from otp.otpbase import OTPLocalizer
-HalloweenMenu = [(OTPLocalizer.HalloweenMenuSections[0], [30250, 30251, 30252])]
+HalloweenMenu = [(OTPLocalizer.HalloweenMenuSections[0], [30250, 30251, 30252, 10003])]
 
 class TTSCHalloweenMenu(SCMenu):
 

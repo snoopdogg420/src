@@ -9,17 +9,16 @@ class DistributedGreenToonEffectMgr(DistributedObject.DistributedObject):
 
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
-
-        def phraseSaid(phraseId):
-            greenPhrase = 30450
-            if phraseId == greenPhrase:
-                self.addGreenToonEffect()
-
-        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, phraseSaid)
-
+        
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
         DistributedGreenToonEffectMgr.notify.debug('announceGenerate')
+        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
+        
+    def phraseSaid(self, phraseId):
+        greenPhrase = 30450
+        if phraseId == greenPhrase:
+            self.addGreenToonEffect()
 
     def delete(self):
         self.ignore(SpeedChatGlobals.SCStaticTextMsgEvent)
