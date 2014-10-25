@@ -123,7 +123,10 @@ class CatalogFlooringItem(CatalogSurfaceItem):
         CatalogAtticItem.CatalogAtticItem.encodeDatagram(self, dg, store)
         dg.addUint16(self.patternIndex)
         if store & CatalogItem.Customization:
-            dg.addUint8(self.colorIndex)
+            colorIndex = self.colorIndex
+            if self.colorIndex is None:
+                colorIndex = 0
+            dg.addUint8(colorIndex)
 
 
 def getFloorings(*indexList):

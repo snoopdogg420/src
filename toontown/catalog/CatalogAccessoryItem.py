@@ -218,9 +218,6 @@ class CatalogAccessoryItem(CatalogItem.CatalogItem):
         avatar.d_catalogGenAccessories()
         return ToontownGlobals.P_ItemAvailable
 
-    def getDeliveryTime(self):
-        return 60
-
     def getPicture(self, avatar):
         model = self.loadModel()
         spin = 1
@@ -329,7 +326,7 @@ class CatalogAccessoryItem(CatalogItem.CatalogItem):
         return article in [AShoes, ABoysShoes, AGirlsShoes]
 
     def output(self, store = -1):
-        return 'CatalogAccessoryItem(%s, %s)' % (self.accessoryType, self.formatOptionalData(store))
+        return 'CatalogAccessoryItem(%s%s)' % (self.accessoryType, self.formatOptionalData(store))
 
     def getFilename(self):
         str = AccessoryTypes[self.accessoryType][ATString]

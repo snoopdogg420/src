@@ -2182,22 +2182,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setDeliverySchedule(self, onOrder, doUpdateLater = True):
         self.setBothSchedules(onOrder, None)
-        return
-        self.onOrder = CatalogItemList.CatalogItemList(onOrder, store=CatalogItem.Customization | CatalogItem.DeliveryDate)
-        if hasattr(self, 'name'):
-            if doUpdateLater and self.air.doLiveUpdates and hasattr(self, 'air'):
-                taskName = self.uniqueName('next-delivery')
-                taskMgr.remove(taskName)
-                now = int(time.time() / 60 + 0.5)
-                nextItem = None
-                nextTime = self.onOrder.getNextDeliveryDate()
-                nextItem = self.onOrder.getNextDeliveryItem()
-                if nextItem != None:
-                    pass
-                if nextTime != None:
-                    duration = max(10.0, nextTime * 60 - time.time())
-                    taskMgr.doMethodLater(duration, self.__deliverPurchase, taskName)
-        return
 
     def getDeliverySchedule(self):
         return self.onOrder.getBlob(store=CatalogItem.Customization | CatalogItem.DeliveryDate)
@@ -2257,7 +2241,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         now = int(time.time() / 60 + 0.5)
         delivered, remaining = self.onOrder.extractDeliveryItems(now)
         deliveredGifts, remainingGifts = self.onGiftOrder.extractDeliveryItems(now)
-        simbase.air.deliveryManager.sendDeliverGifts(self.getDoId(), now)
+        #simbase.air.deliveryManager.sendDeliverGifts(self.getDoId(), now)
         giftItem = CatalogItemList.CatalogItemList(deliveredGifts, store=CatalogItem.Customization | CatalogItem.DeliveryDate)
         if len(giftItem) > 0:
             self.air.writeServerEvent('Getting Gift', self.doId, 'sender %s receiver %s gift %s' % (giftItem[0].giftTag, self.doId, giftItem[0].getName()))
@@ -2268,22 +2252,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setGiftSchedule(self, onGiftOrder, doUpdateLater = True):
         self.setBothSchedules(None, onGiftOrder)
-        return
-        self.onGiftOrder = CatalogItemList.CatalogItemList(onGiftOrder, store=CatalogItem.Customization | CatalogItem.DeliveryDate)
-        if doUpdateLater and self.air.doLiveUpdates and hasattr(self, 'air') and hasattr(self, 'name'):
-            taskName = self.uniqueName('next-gift')
-            taskMgr.remove(taskName)
-            now = int(time.time() / 60 + 0.5)
-            nextItem = None
-            nextTime = self.onGiftOrder.getNextDeliveryDate()
-            nextItem = self.onGiftOrder.getNextDeliveryItem()
-            if nextItem != None:
-                pass
-            if nextTime != None:
-                duration = max(10.0, nextTime * 60 - time.time())
-                duration += 30
-                taskMgr.doMethodLater(duration, self.__deliverGiftPurchase, taskName)
-        return
 
     def getGiftSchedule(self):
         return self.onGiftOrder.getBlob(store=CatalogItem.Customization | CatalogItem.DeliveryDate)
@@ -2317,11 +2285,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.checkMailboxFullIndicator()
 
     def checkMailboxFullIndicator(self):
-        if self.houseId and hasattr(self, 'air'):
-            if self.air:
-                house = self.air.doId2do.get(self.houseId)
-                if house and house.mailbox:
-                    house.mailbox.b_setFullIndicator(len(self.mailboxContents) != 0 or self.numMailItems or self.getNumInvitesToShowInMailbox() or len(self.awardMailboxContents) != 0)
+        pass
 
     def setMailboxContents(self, mailboxContents):
         self.notify.debug('Setting mailboxContents to %s.' % mailboxContents)

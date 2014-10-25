@@ -125,3 +125,6 @@ want-pstats 0
 # Temporary:
 smooth-lag 0.4
 want-old-fireworks #t
+
+# Live updates:
+want-live-updates #t

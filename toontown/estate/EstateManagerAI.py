@@ -236,14 +236,14 @@ class LoadEstateFSM(FSM):
 
 class EstateManagerAI(DistributedObjectAI):
     notify = DirectNotifyGlobal.directNotify.newCategory("EstateManagerAI")
-    
+
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
 
         self.estate2toons = {}
         self.toon2estate = {}
         self.estate2timeout = {}
-        
+
     def getEstateZone(self, avId):
         senderId = self.air.getAvatarIdFromSender()
         accId = self.air.getAccountIdFromSender()

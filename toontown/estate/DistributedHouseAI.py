@@ -1,12 +1,16 @@
-from direct.directnotify import DirectNotifyGlobal
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from toontown.estate.DistributedHouseInteriorAI import DistributedHouseInteriorAI
 from toontown.estate.DistributedHouseDoorAI import DistributedHouseDoorAI
+from toontown.estate.DistributedMailboxAI import DistributedMailboxAI
 from toontown.building import DoorTypes
+from toontown.catalog.CatalogItemList import CatalogItemList
 from otp.ai.MagicWordGlobal import *
+from toontown.catalog.CatalogFurnitureItem import *
+from toontown.catalog.CatalogItem import Customization, WindowPlacement, Location
+
 
 class DistributedHouseAI(DistributedObjectAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistributedHouseAI")
+    notify = directNotify.newCategory("DistributedHouseAI")
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
@@ -17,25 +21,27 @@ class DistributedHouseAI(DistributedObjectAI):
         self.name = ''
         self.color = 0
         self.housePos = 0
-        self.isInteriorInitialized = 1 # Only fresh DB houses are not inited.
+        self.gender = 1
+        self.isInteriorInitialized = 1
 
-        self.atticItems = ''
-        self.interiorItems = ''
-        self.atticItems = ''
-        self.interiorWallpaper = ''
-        self.atticWallpaper = ''
-        self.interiorWindows = ''
-        self.atticWindows = ''
-        self.deletedItems = ''
+        self.atticItems = CatalogItemList(store=Customization)
+        self.interiorItems = CatalogItemList(store=Customization)
+        self.interiorWallpaper = CatalogItemList(store=Customization)
+        self.atticWallpaper = CatalogItemList(store=Customization)
+        self.interiorWindows = CatalogItemList(store=Customization)
+        self.atticWindows = CatalogItemList(store=Customization)
+        self.deletedItems = CatalogItemList(store=Customization)
 
     def announceGenerate(self):
         DistributedObjectAI.announceGenerate(self)
         self.interiorZone = self.air.allocateZone()
 
-        self.door = DistributedHouseDoorAI(simbase.air, self.getDoId(), DoorTypes.EXT_STANDARD)
+        self.door = DistributedHouseDoorAI(self.air, self.getDoId(), DoorTypes.EXT_STANDARD)
+        self.door.setSwing(3)
         self.door.generateWithRequired(self.zoneId)
 
-        self.interiorDoor = DistributedHouseDoorAI(simbase.air, self.getDoId(), DoorTypes.INT_STANDARD)
+        self.interiorDoor = DistributedHouseDoorAI(self.air, self.getDoId(), DoorTypes.INT_STANDARD)
+        self.interiorDoor.setSwing(3)
         self.interiorDoor.setOtherDoor(self.door)
         self.interiorDoor.generateWithRequired(self.interiorZone)
 
@@ -45,6 +51,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.interior.setHouseIndex(self.housePos)
         self.interior.setHouseId(self.getDoId())
         self.interior.generateWithRequired(self.interiorZone)
+
+        if self.avatarId:
+            self.mailbox = DistributedMailboxAI(self.air, self)
+            self.mailbox.generateWithRequired(self.zoneId)
 
         if not self.isInteriorInitialized:
             self.notify.info('Initializing interior...')
@@ -58,6 +68,8 @@ class DistributedHouseAI(DistributedObjectAI):
         self.door.requestDelete()
         self.interiorDoor.requestDelete()
         self.interior.requestDelete()
+        if self.avatarId:
+            self.mailbox.requestDelete()
         self.air.deallocateZone(self.interiorZone)
         DistributedObjectAI.delete(self)
 
@@ -139,8 +151,14 @@ class DistributedHouseAI(DistributedObjectAI):
     def getColor(self):
         return self.color
 
+    def setGender(self, genderIndex):
+        self.gender = genderIndex
+
+    def getGender(self):
+        return self.gender
+
     def setAtticItems(self, atticItems):
-        self.atticItems = atticItems
+        self.atticItems = CatalogItemList(atticItems, store=Customization)
 
     def d_setAtticItems(self, atticItems):
         self.sendUpdate('setAtticItems', [atticItems])
@@ -150,10 +168,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setAtticItems(atticItems)
 
     def getAtticItems(self):
-        return self.atticItems
+        return self.atticItems.getBlob()
 
     def setInteriorItems(self, interiorItems):
-        self.interiorItems = interiorItems
+        self.interiorItems = CatalogItemList(interiorItems, store=Customization | Location)
 
     def d_setInteriorItems(self, interiorItems):
         self.sendUpdate('setInteriorItems', [interiorItems])
@@ -163,10 +181,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setInteriorItems(interiorItems)
 
     def getInteriorItems(self):
-        return self.interiorItems
+        return self.interiorItems.getBlob()
 
     def setAtticWallpaper(self, atticWallpaper):
-        self.atticWallpaper = atticWallpaper
+        self.atticWallpaper = CatalogItemList(atticWallpaper, store=Customization)
 
     def d_setAtticWallpaper(self, atticWallpaper):
         self.sendUpdate('setAtticWallpaper', [atticWallpaper])
@@ -176,10 +194,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setAtticWallpaper(atticWallpaper)
 
     def getAtticWallpaper(self):
-        return self.atticWallpaper
+        return self.atticWallpaper.getBlob()
 
     def setInteriorWallpaper(self, interiorWallpaper):
-        self.interiorWallpaper = interiorWallpaper
+        self.interiorWallpaper = CatalogItemList(interiorWallpaper, store=Customization)
 
     def d_setInteriorWallpaper(self, interiorWallpaper):
         self.sendUpdate('setInteriorWallpaper', [interiorWallpaper])
@@ -189,10 +207,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setInteriorWallpaper(interiorWallpaper)
 
     def getInteriorWallpaper(self):
-        return self.interiorWallpaper
+        return self.interiorWallpaper.getBlob()
 
     def setAtticWindows(self, atticWindows):
-        self.atticWindows = atticWindows
+        self.atticWindows = CatalogItemList(atticWindows, store=Customization)
 
     def d_setAtticWindows(self, atticWindows):
         self.sendUpdate('setAtticWindows', [atticWindows])
@@ -202,10 +220,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setAtticWindows(atticWindows)
 
     def getAtticWindows(self):
-        return self.atticWindows
+        return self.atticWindows.getBlob()
 
     def setInteriorWindows(self, interiorWindows):
-        self.interiorWindows = interiorWindows
+        self.interiorWindows = CatalogItemList(interiorWindows, store=Customization | WindowPlacement)
 
     def d_setInteriorWindows(self, interiorWindows):
         self.sendUpdate('setInteriorWindows', [interiorWindows])
@@ -215,10 +233,10 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setInteriorWindows(interiorWindows)
 
     def getInteriorWindows(self):
-        return self.interiorWindows
+        return self.interiorWindows.getBlob()
 
     def setDeletedItems(self, deletedItems):
-        self.deletedItems = deletedItems
+        self.deletedItems = CatalogItemList(deletedItems, store=Customization)
 
     def d_setDeletedItems(self, deletedItems):
         self.sendUpdate('setDeletedItems', [deletedItems])
@@ -228,7 +246,7 @@ class DistributedHouseAI(DistributedObjectAI):
         self.d_setDeletedItems(deletedItems)
 
     def getDeletedItems(self):
-        return self.deletedItems
+        return self.deletedItems.getBlob()
 
     def setInteriorInitialized(self, initialized):
         self.isInteriorInitialized = initialized
@@ -252,26 +270,39 @@ class DistributedHouseAI(DistributedObjectAI):
     def setHouseReady(self):
         pass
 
-@magicWord(category=CATEGORY_CREATIVE, types=[str, str])
-def house(command, arg0=None):
-    """
-    A command set for houses.
-    """
-    command = command.lower()
-    invoker = spellbook.getInvoker()
-    if arg0 is None:
-        return 'Missing second argument!'
-    if command == 'type':
-        try:
-            arg0 = int(arg0)
-        except:
-            return 'House type index must be an integer.'
-        if not 0 <= arg0 <= 5:
-            return 'Invalid house type index.'
-        houseId = invoker.getHouseId()
-        house = simbase.air.doId2do.get(houseId)
-        if not house:
-            return 'Could not find your house!'
-        house.b_setHouseType(arg0)
-        return 'Your house type index has been set to %d!' % arg0
-    return 'Invalid command!'
+    def addAtticItem(self, item):
+        self.interior.furnitureManager.saveToHouse()
+        if item.getFlags() & FLTrunk:
+            self.atticItems.append(item)
+        elif item.replacesExisting() and item.hasExisting():
+            if item.getFlags() & FLCloset:
+                closets = ClosetToClothes.keys()
+                for itItem in self.interiorItems:
+                    if itItem.furnitureType in closets:
+                        posHpr = itItem.posHpr
+                        self.interiorItems.remove(itItem)
+                        item.posHpr = posHpr
+                        self.interiorItems.append(item)
+                        break
+                for itItem in self.atticItems:
+                    if itItem.furnitureType in closets:
+                        self.atticItems.remove(itItem)
+                        self.atticItems.append(item)
+                        break
+        else:
+            self.atticItems.append(item)
+        self.d_setAtticItems(self.atticItems.getBlob())
+        self.d_setInteriorItems(self.interiorItems.getBlob())
+        self.interior.furnitureManager.loadFromHouse()
+
+    def addWindow(self, item):
+        self.interior.furnitureManager.saveToHouse()
+        self.atticWindows.append(item)
+        self.d_setAtticWindows(self.atticWindows.getBlob())
+        self.interior.furnitureManager.loadFromHouse()
+
+    def addWallpaper(self, item):
+        self.interior.furnitureManager.saveToHouse()
+        self.atticWallpaper.append(item)
+        self.d_setAtticWallpaper(self.atticWallpaper.getBlob())
+        self.interior.furnitureManager.loadFromHouse()

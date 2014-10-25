@@ -13,13 +13,12 @@ from CatalogFurnitureItem import getAllFurnitures
 from CatalogFurnitureItem import FLTrunk
 from toontown.toontowngui.TeaserPanel import TeaserPanel
 from otp.otpbase import OTPGlobals
-from direct.directnotify import DirectNotifyGlobal
 CATALOG_PANEL_WORDWRAP = 10
 CATALOG_PANEL_CHAT_WORDWRAP = 9
 CATALOG_PANEL_ACCESSORY_WORDWRAP = 11
 
 class CatalogItemPanel(DirectFrame):
-    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogItemPanel')
+    notify = directNotify.newCategory('CatalogItemPanel')
 
     def __init__(self, parent = aspect2d, parentCatalogScreen = None, **kw):
         optiondefs = (('item', None, DGG.INITOPT), ('type', CatalogItem.CatalogTypeUnspecified, DGG.INITOPT), ('relief', None, None))
@@ -81,6 +80,8 @@ class CatalogItemPanel(DirectFrame):
                 picture.setScale(0.15)
             self.items = [self['item']]
             self.variantPictures = [(picture, self.ival)]
+            if self.ival:
+                self.ival.loop()
         self.typeLabel = DirectLabel(parent=self, relief=None, pos=(0, 0, 0.24), scale=TTLocalizer.CIPtypeLabel, text=self['item'].getTypeName(), text_fg=(0.95, 0.95, 0, 1), text_shadow=(0, 0, 0, 1), text_font=ToontownGlobals.getInterfaceFont(), text_wordwrap=CATALOG_PANEL_WORDWRAP)
         self.auxText = DirectLabel(parent=self, relief=None, scale=0.05, pos=(-0.2, 0, 0.16))
         self.auxText.setHpr(0, 0, -30)
@@ -309,14 +310,14 @@ class CatalogItemPanel(DirectFrame):
         else:
             auxText = ''
         isNameTag = typeCode == CatalogItemTypes.NAMETAG_ITEM
-        if isNameTag and not localAvatar.getGameAccess() == OTPGlobals.AccessFull:
+        if isNameTag and not base.localAvatar.getGameAccess() == OTPGlobals.AccessFull:
             if self['item'].nametagStyle == 100:
-                if localAvatar.getFont() == ToontownGlobals.getToonFont():
+                if base.localAvatar.getFont() == ToontownGlobals.getToonFont():
                     auxText = TTLocalizer.CatalogCurrent
                     self.buyButton['state'] = DGG.DISABLED
             elif self['item'].getPrice(self['type']) > base.localAvatar.getMoney() + base.localAvatar.getBankMoney():
                 self.buyButton['state'] = DGG.DISABLED
-        elif isNameTag and self['item'].nametagStyle == localAvatar.getNametagStyle():
+        elif isNameTag and self['item'].nametagStyle == base.localAvatar.getNametagStyle():
             auxText = TTLocalizer.CatalogCurrent
             self.buyButton['state'] = DGG.DISABLED
         elif self['item'].reachedPurchaseLimit(base.localAvatar):
@@ -529,3 +530,6 @@ class CatalogItemPanel(DirectFrame):
             self.ival = item.changeIval(volume=0)
             self.ival.loop()
         return
+
+    def lockItem(self):
+        self.buyButton['state'] = DGG.DISABLED

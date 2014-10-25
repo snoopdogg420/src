@@ -31,7 +31,7 @@ class CatalogGardenStarterItem(CatalogItem.CatalogItem):
 
     def recordPurchase(self, avatar, optional):
         if avatar:
-            estate = simbase.air.estateMgr.estate.get(avatar.doId)
+            estate = simbase.air.estateManager._lookupEstate(avatar.doId)
             if estate:
                 estate.placeStarterGarden(avatar.doId)
             else:
@@ -69,9 +69,6 @@ class CatalogGardenStarterItem(CatalogItem.CatalogItem):
 
     def encodeDatagram(self, dg, store):
         CatalogItem.CatalogItem.encodeDatagram(self, dg, store)
-
-    def getDeliveryTime(self):
-        return 1
 
     def isRental(self):
         return 0

@@ -10,7 +10,9 @@ from pandac.PandaModules import *
 import DistributedFurnitureItem
 import PhoneGlobals
 from toontown.catalog import CatalogItem
-from toontown.catalog import CatalogScreen
+from toontown.catalog.CatalogGUI import CatalogGUI
+from toontown.catalog.CatalogItemListGUI import CatalogItemListGUI
+from toontown.catalog.CatalogItemSorter import CatalogItemSorter
 from toontown.quest import Quests
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
@@ -177,10 +179,10 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
         self.ignore(self.phoneSphereEnterEvent)
         self.cr.playGame.getPlace().detectedPhoneCollision()
         self.hasLocalAvatar = 1
-        self.sendUpdate('avatarEnter', [])
+        self.sendUpdate('avatarEnter')
 
     def __handlePhoneDone(self):
-        self.sendUpdate('avatarExit', [])
+        self.sendUpdate('avatarExit')
         self.ignore(self.phoneGuiDoneEvent)
         self.phoneGui = None
 
@@ -208,21 +210,22 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
         self.lastTime = globalClock.getFrameTime()
         isLocalToon = avId == base.localAvatar.doId
         avatar = self.cr.doId2do.get(avId)
-        self.notify.debug('setMovie: %s %s %s' % (mode, avId, isLocalToon))
         if mode == PhoneGlobals.PHONE_MOVIE_CLEAR:
-            self.notify.debug('setMovie: clear')
-            self.numHouseItems = None
             if self.phoneInUse:
                 self.clearInterval()
+            self.numHouseItems = None
             self.phoneInUse = 0
         elif mode == PhoneGlobals.PHONE_MOVIE_EMPTY:
-            self.notify.debug('setMovie: empty')
             if isLocalToon:
                 self.phoneDialog = TTDialog.TTDialog(dialogName='PhoneEmpty', style=TTDialog.Acknowledge, text=TTLocalizer.DistributedPhoneEmpty, text_wordwrap=15, fadeScreen=1, command=self.__clearDialog)
             self.numHouseItems = None
             self.phoneInUse = 0
+        elif mode == PhoneGlobals.PHONE_MOVIE_NO_HOUSE:
+            if isLocalToon:
+                self.phoneDialog = TTDialog.TTDialog(dialogName='PhoneNoHouse', style=TTDialog.Acknowledge, text=TTLocalizer.DistributedPhoneNoHouse, text_wordwrap=15, fadeScreen=1, command=self.__clearDialog)
+            self.numHouseItems = None
+            self.phoneInUse = 0
         elif mode == PhoneGlobals.PHONE_MOVIE_PICKUP:
-            self.notify.debug('setMovie: gui')
             if avatar:
                 interval = self.takePhoneInterval(avatar)
                 if isLocalToon:
@@ -232,7 +235,6 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
                 self.playInterval(interval, elapsed, avatar)
                 self.phoneInUse = 1
         elif mode == PhoneGlobals.PHONE_MOVIE_HANGUP:
-            self.notify.debug('setMovie: gui')
             if avatar:
                 interval = self.replacePhoneInterval(avatar)
                 self.playInterval(interval, elapsed, avatar)
@@ -244,10 +246,74 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
     def __showPhoneGui(self):
         if self.toonScale:
             self.sendUpdate('setNewScale', [self.toonScale[0], self.toonScale[1], self.toonScale[2]])
-        self.phoneGui = CatalogScreen.CatalogScreen(phone=self, doneEvent=self.phoneGuiDoneEvent)
-        self.phoneGui.show()
+
+        self.phoneGui = CatalogGUI(self, doneEvent=self.phoneGuiDoneEvent)
+        # Hide the phone until we get our popular items set.
+        self.phoneGui.hide()
+        self.__generateCatalogPages()
+
+        self.acceptOnce('PopularItemsSet', self.__setPopularItems)
+        self.cr.catalogManager.fetchPopularItems()
+
         self.accept(self.phoneGuiDoneEvent, self.__handlePhoneDone)
         self.accept('phoneAsleep', self.__handlePhoneAsleep)
+
+    def __generateCatalogPages(self):
+        itemList = base.localAvatar.monthlyCatalog.generateList()
+        itemList += base.localAvatar.weeklyCatalog.generateList()
+        itemList += base.localAvatar.backCatalog.generateList()
+
+        sortedItems = CatalogItemSorter(itemList).sortItems()
+
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in sortedItems['FURNITURE']:
+            catalogItemList.addItem(item, 'Furniture')
+        for item in sortedItems['UNSORTED']:
+            catalogItemList.addItem(item, 'Unsorted Items')
+        self.phoneGui.tabButtons['FURNITURE_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        self.phoneGui.tabButtons['FURNITURE_TAB'].tabClicked()
+
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in sortedItems['EMOTIONS']:
+            catalogItemList.addItem(item, 'Emotions')
+        self.phoneGui.tabButtons['EMOTE_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        self.phoneGui.tabButtons['EMOTE_TAB'].tabClicked()
+
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in sortedItems['SPECIAL']:
+            catalogItemList.addItem(item, 'Special')
+        self.phoneGui.tabButtons['SPECIAL_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        self.phoneGui.tabButtons['SPECIAL_TAB'].tabClicked()
+
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in sortedItems['CLOTHING']:
+            catalogItemList.addItem(item, 'Clothing')
+        self.phoneGui.tabButtons['CLOTHING_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        self.phoneGui.tabButtons['CLOTHING_TAB'].tabClicked()
+
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in sortedItems['PHRASES']:
+            catalogItemList.addItem(item, 'Phrases')
+        self.phoneGui.tabButtons['PHRASES_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        self.phoneGui.tabButtons['PHRASES_TAB'].tabClicked()
+
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in sortedItems['NAMETAG']:
+            catalogItemList.addItem(item, 'Nametag')
+        self.phoneGui.tabButtons['NAMETAG_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        self.phoneGui.tabButtons['NAMETAG_TAB'].tabClicked()
+
+    def __setPopularItems(self):
+        # Generate a list of popular items.
+        itemList = self.cr.catalogManager.popularItems.generateList()
+        catalogItemList = CatalogItemListGUI(self.phoneGui)
+        for item in itemList:
+            catalogItemList.addItem(item, 'Popular')
+        self.phoneGui.tabButtons['POPULAR_TAB'].setCatalogItemPages(catalogItemList.generatePages())
+        # Now that the popular items are set we can show the CatalogGUI
+        self.phoneGui.show()
+        # We want our default tab to be the popular tab. We need to click it twice to prevent a glitch.
+        self.phoneGui.tabButtons['POPULAR_TAB'].tabClicked()
 
     def __handlePhoneAsleep(self):
         self.ignore('phoneAsleep')
@@ -263,10 +329,8 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
     def requestGiftPurchase(self, item, targetDoID, callback, optional = -1):
         blob = item.getBlob(store=CatalogItem.Customization)
         context = self.getCallbackContext(callback, [item])
-        self.sendUpdate('requestGiftPurchaseMessage', [context,
-         targetDoID,
-         blob,
-         optional])
+        self.sendUpdate('requestGiftPurchaseMessage', [context, targetDoID,
+                                                       blob, optional])
 
     def requestPurchaseResponse(self, context, retcode):
         self.doCallbackContext(context, [retcode])
@@ -367,3 +431,6 @@ class DistributedPhone(DistributedFurnitureItem.DistributedFurnitureItem):
 
         ringIval = Parallel(Func(base.playSfx, self.ringSfx), shakeSeq, Func(phone.setR, 0))
         self.playInterval(ringIval, 0.0, None)
+
+    def purchaseItemComplete(self):
+        self.phoneGui.updateItems()

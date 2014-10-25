@@ -1,125 +1,213 @@
-from direct.directnotify.DirectNotifyGlobal import *
-from direct.distributed import ClockDelta
-from direct.task.Task import Task
-
-from ClosetGlobals import *
 from toontown.estate.DistributedFurnitureItemAI import DistributedFurnitureItemAI
-from toontown.toon import ToonDNA
+from toontown.toon.ToonDNA import ToonDNA
+from direct.distributed.ClockDelta import globalClockDelta
+import ClosetGlobals
 
 
 class DistributedClosetAI(DistributedFurnitureItemAI):
-    notify = directNotify.newCategory('DistributedClosetAI"')
+    notify = directNotify.newCategory('DistributedClosetAI')
 
-    def __init__(self, air, furnitureMgr, catalogItem, ownerId):
-        DistributedFurnitureItemAI.__init__(self, air, furnitureMgr, catalogItem)
+    def __init__(self, air, furnitureMgr, itemType):
+        DistributedFurnitureItemAI.__init__(self, air, furnitureMgr, itemType)
 
-        self.ownerId = ownerId
-        self.busy = 0
-        self.customerId = 0
+        self.avId = None
         self.customerDNA = None
+        self.topList = []
+        self.botList = []
+        self.gender = 'm'
+        self.removedBottoms = []
+        self.removedTops = []
 
-    def setOwnerId(self, ownerId):
-        self.ownerId = ownerId
+    def generate(self):
+        if self.furnitureMgr.ownerId:
+            owner = self.air.doId2do.get(self.furnitureMgr.ownerId)
+            if owner:
+                self.topList = owner.clothesTopsList
+                self.botList = owner.clothesBottomsList
+                self.gender = owner.dna.gender
+            else:
+                self.air.dbInterface.queryObject(self.air.dbId, self.furnitureMgr.ownerId, self.__gotOwner)
+
+    def __gotOwner(self, dclass, fields):
+        if dclass != self.air.dclassesByName['DistributedToonAI']:
+            return
+        self.botList = fields['setClothesBottomsList'][0]
+        self.topList = fields['setClothesTopsList'][0]
+        dna = ToonDNA(str=fields['setDNAString'][0])
+        self.gender = dna.gender
 
     def getOwnerId(self):
-        return self.ownerId
+        return self.furnitureMgr.ownerId
+
+    def __verifyAvatarInMyZone(self, av):
+        return av.getLocation() == self.getLocation()
 
     def enterAvatar(self):
         avId = self.air.getAvatarIdFromSender()
+        if self.avId:
+            if self.avId == avId:
+                self.air.writeServerEvent('suspicious', avId, 'Tried to use closet twice!')
+            self.sendUpdateToAvatarId(avId, 'freeAvatar', [])
+            return
         av = self.air.doId2do.get(avId)
         if not av:
+            self.air.writeServerEvent('suspicious', avId, 'Not in same shard as closet!')
             return
-        if not self.busy:
-            self.setState(
-                OPEN, avId, self.ownerId, av.dna.gender,
-                av.clothesTopsList, av.clothesBottomsList)
-            self.busy = avId
-            self.customerId = avId
-            self.customerDNA = ToonDNA.ToonDNA()
-            self.customerDNA.makeFromNetString(av.dna.makeNetString())
-            taskMgr.doMethodLater(TIMEOUT_TIME, self.__timeout, self.uniqueName('timeout'))
-        else:
-            self.freeAvatar(avId)
-
-    def __timeout(self, task):
-        self.setMovie(CLOSET_MOVIE_TIMEOUT, self.busy)
-        av = self.air.doId2do.get(self.customerId)
-        self.busy = 0
-        self.customerId = 0
-        self.customerDNA = None
-        taskMgr.remove(self.uniqueName('timeout'))
-        self.setState(
-            CLOSED, self.customerId, self.ownerId, av.dna.gender,
-            av.clothesTopsList, av.clothesBottomsList)
-        self.setMovie(CLOSET_MOVIE_CLEAR, 0)
-        return Task.done
-
-    def freeAvatar(self, avId):
-        self.sendUpdateToAvatarId(avId, 'freeAvatar')
-
-    def removeItem(self, trashItem, t_or_b):
-        av = self.air.doId2do.get(self.customerId)
-        if not av:
+        if not self.__verifyAvatarInMyZone(av):
+            self.air.writeServerEvent('suspicious', avId, 'Not in same zone as closet!')
             return
-        dna = ToonDNA.ToonDNA()
-        dna.makeFromNetString(trashItem)
-        if t_or_b == SHIRT:
-            av.removeItemInClothesTopsList(
-                dna.topTex, dna.topTexColor, dna.sleeveTex, dna.sleeveTexColor)
-            av.d_setClothesTopsList(av.clothesTopsList)
-        else:
-            av.removeItemInClothesBottomsList(dna.botTex, dna.botTexColor)
-            av.d_setClothesBottomsList(av.clothesBottomsList)
+        self.customerDNA = av.dna
+        self.avId = avId
+        self.d_setState(ClosetGlobals.OPEN, avId, self.furnitureMgr.ownerId, self.gender, self.topList, self.botList)
 
-    def setDNA(self, dnaString, finished, whichItems):
+    def removeItem(self, item, topOrBottom):
         avId = self.air.getAvatarIdFromSender()
-        if avId != self.customerId:
-            if self.customerId:
-                self.air.writeServerEvent('suspicious', avId, 'DistributedClosetAI.setDNA customer is %s' % self.customerId)
-                self.notify.warning('customerId: %s, but got setDNA for: %s' % (self.customerId, avId))
+        if avId != self.furnitureMgr.ownerId:
+            self.air.writeServerEvent('suspicious', avId, 'Tried to remove item from someone else\'s closet!')
             return
-        testDNA = ToonDNA.ToonDNA()
-        if not testDNA.isValidNetString(dnaString):
-            self.air.writeServerEvent('suspicious', avId, 'DistributedClosetAI.setDNA: invalid dna: %s' % dnaString)
+        if avId != self.avId:
+            self.air.writeServerEvent('suspicious', avId, 'Tried to remove item while not interacting with closet!')
             return
         av = self.air.doId2do.get(avId)
         if not av:
+            self.air.writeServerEvent('suspicious', avId, 'Tried to interact with a closet from another shard!')
             return
-        if (finished == 2) and (whichItems > 0):
-            av.b_setDNAString(dnaString)
-            self.air.writeServerEvent('changeClothes', avId, '%s|%s|%s' % (self.doId, whichItems, self.customerDNA.asTuple()))
-        elif finished == 1:
-            if self.customerDNA:
-                av.b_setDNAString(self.customerDNA.makeNetString())
+        tempDna = ToonDNA()
+        if not tempDna.isValidNetString(item):
+            self.air.writeServerEvent('suspicious', avId, 'Sent an invalid DNA string!')
+            return
+        tempDna.makeFromNetString(item)
+        if topOrBottom == ClosetGlobals.SHIRT:
+            self.removedTops.append([tempDna.topTex, tempDna.topTexColor, tempDna.sleeveTex, tempDna.sleeveTexColor])
+        elif topOrBottom == ClosetGlobals.SHORTS:
+            self.removedBottoms.append([tempDna.botTex, tempDna.botTexColor])
         else:
-            self.sendUpdate('setCustomerDNA', [avId, dnaString])
-        if finished == 0:
+            self.air.writeServerEvent('suspicious', avId, 'Set an invalid topOrBottom value!')
             return
-        if self.busy == avId:
-            self.completePurchase(avId)
-        elif self.busy:
-            self.air.writeServerEvent('suspicious', avId, 'DistributedClosetAI.setDNA busy with %s' % self.busy)
-            self.notify.warning('setDNA from unknown avId: %s busy: %s' % (avId, self.busy))
 
-    def setState(self, mode, avId, ownerId, gender, topList, bottomList):
-        self.sendUpdateToAvatarId(
-            avId, 'setState',
-            args=[mode, avId, ownerId, gender, topList, bottomList])
+    def __checkValidDNAChange(self, av, testDNA):
+        if testDNA.head != av.dna.head:
+            return False
+        if testDNA.torso != av.dna.torso:
+            if av.dna.gender == 'm':
+                return False
+            elif testDNA.torso[0] != av.dna.torso[0]:
+                return False
+        if testDNA.legs != av.dna.legs:
+            return False
+        if testDNA.gender != av.dna.gender:
+            return False
+        if testDNA.armColor != av.dna.armColor:
+            return False
+        if testDNA.gloveColor != av.dna.gloveColor:
+            return False
+        if testDNA.legColor != av.dna.legColor:
+            return False
+        if testDNA.headColor != av.dna.headColor:
+            return False
+        return True
 
-    def setMovie(self, mode, avId):
-        timestamp = ClockDelta.globalClockDelta.getRealNetworkTime(bits=32)
-        self.sendUpdate('setMovie', args=[mode, avId, timestamp])
-
-    def completePurchase(self, avId):
+    def setDNA(self, dnaString, finished, whichItem):
+        avId = self.air.getAvatarIdFromSender()
+        if avId != self.avId:
+            self.air.writeServerEvent('suspicious', avId, 'Tried to set DNA from closet while not using it!')
+            return
         av = self.air.doId2do.get(avId)
         if not av:
+            self.air.writeServerEvent('suspicious', avId, 'Interacted with a closet from another shard!')
             return
-        self.setMovie(CLOSET_MOVIE_COMPLETE, avId)
-        self.busy = 0
-        self.customerId = 0
-        self.customerDNA = None
-        taskMgr.remove(self.uniqueName('timeout'))
-        self.setState(
-            CLOSED, avId, self.ownerId, av.dna.gender,
-            av.clothesTopsList, av.clothesBottomsList)
-        self.setMovie(CLOSET_MOVIE_CLEAR, 0)
+        if not self.__verifyAvatarInMyZone(av):
+            self.air.writeServerEvent('suspicious', avId, 'Tried to setDNA while in another zone!')
+            return
+        testDna = ToonDNA()
+        if not testDna.isValidNetString(dnaString):
+            self.air.writeServerEvent('suspicious', avId, 'Tried to set invalid DNA at a closet!')
+            return
+        if not finished:
+            testDna.makeFromNetString(dnaString)
+            if not self.__checkValidDNAChange(av, testDna):
+                    self.air.writeServerEvent('suspicious', avId, 'Tried to change their DNA temporarily!')
+                    return
+            self.sendUpdate('setCustomerDNA', [avId, dnaString])
+            return
+        elif finished == 1:
+            self.d_setMovie(ClosetGlobals.CLOSET_MOVIE_COMPLETE, avId, globalClockDelta.getRealNetworkTime())
+            self.resetMovie()
+            self.d_setState(ClosetGlobals.CLOSED, 0, self.furnitureMgr.ownerId, self.gender, self.topList, self.botList)
+            av.b_setDNAString(self.customerDNA.makeNetString())
+            self.removedBottoms = []
+            self.removedTops = []
+            self.customerDNA = None
+            self.avId = None
+        elif finished == 2:
+            if avId != self.furnitureMgr.ownerId:
+                self.air.writeServerEvent('suspicious', avId, 'Tried to set their clothes from somebody else\'s closet!')
+                return
+            testDna.makeFromNetString(dnaString)
+            if whichItem & ClosetGlobals.SHIRT:
+                success = av.replaceItemInClothesTopsList(testDna.topTex, testDna.topTexColor, testDna.sleeveTex, testDna.sleeveTexColor, self.customerDNA.topTex, self.customerDNA.topTexColor, self.customerDNA.sleeveTex, self.customerDNA.sleeveTexColor)
+                if success:
+                    self.customerDNA.topTex = testDna.topTex
+                    self.customerDNA.topTexColor = testDna.topTexColor
+                    self.customerDNA.sleeveTex = testDna.sleeveTex
+                    self.customerDNA.sleeveTexColor = testDna.sleeveTexColor
+                else:
+                    self.air.writeServerEvent('suspicious', avId, 'Tried to set their shirt to a shirt they don\'t own!')
+            if whichItem & ClosetGlobals.SHORTS:
+                success = av.replaceItemInClothesBottomsList(testDna.botTex, testDna.botTexColor, self.customerDNA.botTex, self.customerDNA.botTexColor)
+                if success:
+                    self.customerDNA.botTex = testDna.botTex
+                    self.customerDNA.botTexColor = testDna.botTexColor
+                    if self.customerDNA.torso != testDna.torso:
+                            if self.customerDNA.gender == 'm':
+                                self.air.writeServerEvent('suspicious', avId, 'Tried to change their torso size!')
+                                return
+                            elif self.customerDNA.torso[0] != testDna.torso[0]:
+                                self.air.writeServerEvent('suspicious', avId, 'Tried to change their torso size!')
+                                return
+                    self.customerDNA.torso = testDna.torso
+                else:
+                    self.air.writeServerEvent('suspicious', avId, 'Tried to set their shorts to a pair they don\'t own!')
+            for bottom in self.removedBottoms:
+                botTex, botTexColor = bottom
+                success = av.removeItemInClothesBottomsList(botTex, botTexColor)
+                if not success:
+                    self.air.writeServerEvent('suspicious', avId, 'Tried to remove a bottom they didn\'t have!')
+            for top in self.removedTops:
+                topTex, topTexColor, sleeveTex, sleeveTexColor = top
+                success = av.removeItemInClothesTopsList(topTex, topTexColor, sleeveTex, sleeveTexColor)
+                if not success:
+                    self.air.writeServerEvent('suspicious', avId, 'Tried to remove a top they didn\'t have!')
+            av.b_setDNAString(self.customerDNA.makeNetString())
+            av.b_setClothesTopsList(av.getClothesTopsList())
+            av.b_setClothesBottomsList(av.getClothesBottomsList())
+            self.topList = av.getClothesTopsList()
+            self.botList = av.getClothesBottomsList()
+            self.removedBottoms = []
+            self.removedTops = []
+            self.d_setMovie(ClosetGlobals.CLOSET_MOVIE_COMPLETE, avId, globalClockDelta.getRealNetworkTime())
+            self.resetMovie()
+            self.d_setState(ClosetGlobals.CLOSED, 0, self.furnitureMgr.ownerId, self.gender, self.topList, self.botList)
+            self.customerDNA = None
+            self.avId = None
+
+    def setState(self, todo0, todo1, todo2, todo3, todo4, todo5):
+        pass
+
+    def d_setState(self, mode, avId, ownerId, gender, topList, botList):
+        self.sendUpdate('setState', [mode, avId, ownerId, gender, topList, botList])
+
+    def d_setMovie(self, movie, avId, time):
+        self.sendUpdate('setMovie', [movie, avId, time])
+
+    def resetMovie(self):
+        taskMgr.doMethodLater(1, self.d_setMovie, 'resetMovie-%d' % self.getDoId(), extraArgs=[ClosetGlobals.CLOSET_MOVIE_CLEAR, 0, globalClockDelta.getRealNetworkTime()])
+
+    def setMovie(self, todo0, todo1, todo2):
+        pass
+
+    def resetItemLists(self):
+        pass
+
+    def setCustomerDNA(self, todo0, todo1):
+        pass

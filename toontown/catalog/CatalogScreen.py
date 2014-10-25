@@ -1,5 +1,4 @@
 from direct.actor import Actor
-from direct.directnotify import DirectNotifyGlobal
 from direct.gui.DirectGui import *
 from direct.gui.DirectScrolledList import *
 from pandac.PandaModules import *
@@ -31,7 +30,7 @@ CatalogPanelColors = {CatalogItemTypes.FURNITURE_ITEM: Vec4(0.733, 0.78, 0.933, 
  CatalogItemTypes.WINDOW_ITEM: Vec4(0.827, 0.91, 0.659, 1.0)}
 
 class CatalogScreen(DirectFrame):
-    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogScreen')
+    notify = directNotify.newCategory('CatalogScreen')
 
     def __init__(self, parent = aspect2d, **kw):
         guiItems = loader.loadModel('phase_5.5/models/gui/catalog_gui')
@@ -302,7 +301,7 @@ class CatalogScreen(DirectFrame):
                 page = self.emblemPageList[self.pageIndex]
                 newOrBackOrLoyalty = 3
             page.show()
-            for panel in self.panelDict[page.id()]:
+            for panel in self.panelDict[page.get_key()]:
                 panel.load()
                 if panel.ival:
                     panel.ival.loop()
@@ -442,9 +441,9 @@ class CatalogScreen(DirectFrame):
                 pageList.append(page)
             item.reparentTo(page)
             item.setPos(CatalogPanelCenters[i][j])
-            itemList = self.panelDict.get(page.id(), [])
+            itemList = self.panelDict.get(page.get_key(), [])
             itemList.append(item)
-            self.panelDict[page.id()] = itemList
+            self.panelDict[page.get_key()] = itemList
             j += 1
             if j == NUM_CATALOG_COLS:
                 j = 0

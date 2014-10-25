@@ -45,8 +45,7 @@ class CatalogGardenItem(CatalogItem.CatalogItem):
     def recordPurchase(self, avatar, optional):
         if avatar:
             avatar.addGardenItem(self.gardenIndex, self.numItems)
-        if 1:
-            return ToontownGlobals.P_ItemAvailable
+        return ToontownGlobals.P_ItemAvailable
 
     def getPicture(self, avatar):
         photoModel = GardenGlobals.Specials[self.gardenIndex]['photoModel']
@@ -122,12 +121,6 @@ class CatalogGardenItem(CatalogItem.CatalogItem):
 
     def getRequestPurchaseErrorTextTimeout(self):
         return 20
-
-    def getDeliveryTime(self):
-        if self.gardenIndex == GardenGlobals.GardenAcceleratorSpecial:
-            return 24 * 60
-        else:
-            return 0
 
     def getPurchaseLimit(self):
         if self.gardenIndex == GardenGlobals.GardenAcceleratorSpecial:

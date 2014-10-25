@@ -6807,6 +6807,7 @@ DistributedMailboxWaiting = 'Your mailbox is empty right now, but the package yo
 DistributedMailboxReady = 'Your order has arrived!'
 DistributedMailboxNotOwner = 'Sorry, this is not your mailbox.'
 DistributedPhoneEmpty = "You can use any phone to order special items for you and your house.  New items will become available to order over time.\n\nYou don't have any items available to order right now, but check back later!"
+DistributedPhoneNoHouse = 'You must have a house to use the catalog!'
 Clarabelle = 'Clarabelle'
 MailboxExitButton = 'Close Mailbox'
 MailboxAcceptButton = 'Take this item'

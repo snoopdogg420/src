@@ -1,4 +1,3 @@
-from direct.directnotify import DirectNotifyGlobal
 import CatalogItem
 import CatalogItemList
 from CatalogFurnitureItem import CatalogFurnitureItem, nextAvailableCloset, getAllClosets, get50ItemCloset, getMaxClosets, get50ItemTrunk
@@ -512,24 +511,24 @@ MonthlySchedule = ((7,
    CatalogGardenItem(103, 1),
    CatalogGardenItem(104, 1),
    CatalogToonStatueItem(105, endPoseIndex=108),
-   CatalogRentalItem(1, 2880, 1000),
-   CatalogGardenStarterItem(),
+   #CatalogRentalItem(1, 2880, 1000), # TODO
+   #CatalogGardenStarterItem(), # TODO
    CatalogNametagItem(100),
    CatalogNametagItem(0),
-   CatalogClothingItem(1608, 0, 720),
-   CatalogClothingItem(1605, 0, 720),
-   CatalogClothingItem(1602, 0, 720),
-   CatalogClothingItem(1607, 0, 540),
-   CatalogClothingItem(1604, 0, 540),
-   CatalogClothingItem(1601, 0, 540),
-   CatalogClothingItem(1606, 0, 360),
-   CatalogClothingItem(1603, 0, 360),
-   CatalogClothingItem(1600, 0, 360),
-   CatalogEmoteItem(20, 90),
-   CatalogEmoteItem(21, 180),
-   CatalogEmoteItem(22, 360),
-   CatalogEmoteItem(23, 540),
-   CatalogEmoteItem(24, 720))),
+   CatalogClothingItem(1608, 0, 0),
+   CatalogClothingItem(1605, 0, 0),
+   CatalogClothingItem(1602, 0, 0),
+   CatalogClothingItem(1607, 0, 0),
+   CatalogClothingItem(1604, 0, 0),
+   CatalogClothingItem(1601, 0, 0),
+   CatalogClothingItem(1606, 0, 0),
+   CatalogClothingItem(1603, 0, 0),
+   CatalogClothingItem(1600, 0, 0),
+   CatalogEmoteItem(20, 0),
+   CatalogEmoteItem(21, 0),
+   CatalogEmoteItem(22, 0),
+   CatalogEmoteItem(23, 0),
+   CatalogEmoteItem(24, 0))),
  (5,
   26,
   6,
@@ -1482,7 +1481,7 @@ WeeklySchedule = ((100,
   nextAvailablePole))
 
 class CatalogGenerator:
-    notify = DirectNotifyGlobal.directNotify.newCategory('CatalogGenerator')
+    notify = directNotify.newCategory('CatalogGenerator')
 
     def __init__(self):
         self.__itemLists = {}
