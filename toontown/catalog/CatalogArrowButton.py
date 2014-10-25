@@ -14,3 +14,8 @@ class CatalogArrowButton(NodePath):
         self.hoverNode = CatalogGlobals.CatalogNodePath.find('**/arrow_OVR_'+nodeName).copyTo(self)
 
         self.arrowButton = DirectButton(parent=self, relief=None, image=(self.normalNode, self.clickedNode, self.hoverNode), command=self.clickEvent)
+
+    def cleanup(self):
+        self.arrowButton.destroy()
+
+        NodePath.removeNode(self)

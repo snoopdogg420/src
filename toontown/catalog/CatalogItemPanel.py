@@ -530,3 +530,6 @@ class CatalogItemPanel(DirectFrame):
             self.ival = item.changeIval(volume=0)
             self.ival.loop()
         return
+
+    def lockItem(self):
+        self.buyButton['state'] = DGG.DISABLED

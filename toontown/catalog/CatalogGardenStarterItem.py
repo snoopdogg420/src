@@ -70,9 +70,6 @@ class CatalogGardenStarterItem(CatalogItem.CatalogItem):
     def encodeDatagram(self, dg, store):
         CatalogItem.CatalogItem.encodeDatagram(self, dg, store)
 
-    def getDeliveryTime(self):
-        return 1
-
     def isRental(self):
         return 0
 

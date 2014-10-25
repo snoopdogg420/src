@@ -1034,9 +1034,6 @@ class CatalogFurnitureItem(CatalogAtticItem.CatalogAtticItem):
                 avatar.b_setMaxBankMoney(self.getMaxBankMoney())
         return retcode
 
-    def getDeliveryTime(self):
-        return 24 * 60
-
     def getPicture(self, avatar):
         model = self.loadModel()
         spin = 1

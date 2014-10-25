@@ -12,6 +12,7 @@ class CatalogItemPage(NodePath):
         self.pageNum = pageNum
         self.category = category
         self.catalogItems = []
+        self.itemFrames = []
         self.textNode = None
 
     def addCatalogItem(self, item):
@@ -34,3 +35,22 @@ class CatalogItemPage(NodePath):
             itemFrame = CatalogItemPanel(parent=self, parentCatalogScreen=self.parent, item=item)
             itemFrame.load()
             itemFrame.setPos(*CatalogGlobals.CatalogPropPos[x])
+            self.itemFrames.append(itemFrame)
+
+    def lockItems(self):
+        for itemFrame in self.itemFrames:
+            itemFrame.lockItem()
+
+    def updateItems(self, gifting):
+        for itemFrame in self.itemFrames:
+            itemFrame.updateButtons(gifting)
+
+    def cleanup(self):
+        for item in self.catalogItems:
+            if hasattr(item, 'destroy'):
+                item.destroy()
+
+        for itemFrame in self.itemFrames:
+            itemFrame.destroy()
+
+        NodePath.removeNode(self)

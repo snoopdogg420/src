@@ -106,9 +106,6 @@ class CatalogRentalItem(CatalogItem.CatalogItem):
         dg.addUint16(self.duration)
         dg.addUint16(self.typeIndex)
 
-    def getDeliveryTime(self):
-        return 1
-
     def isRental(self):
         return 1
 

@@ -153,7 +153,7 @@ class CatalogItem:
         return int(self.getBasePrice() * CatalogSaleMarkdown)
 
     def getDeliveryTime(self):
-        return 0
+        return 1
 
     def getPicture(self, avatar):
         self.hasPicture = True

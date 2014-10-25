@@ -31,3 +31,8 @@ class CatalogRadioButton(NodePath):
 
     def disable(self):
         self.statusIndicator.hide()
+
+    def cleanup(self):
+        self.radioButton.destroy()
+
+        NodePath.removeNode(self)

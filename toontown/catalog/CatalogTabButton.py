@@ -66,7 +66,22 @@ class CatalogTabButton(NodePath):
         self.updateArrows()
 
     def moveRight(self):
-        print 'MOVERIGHT'
         self.activePage += 1
         self.showPages()
         self.updateArrows()
+
+    def lockItems(self):
+        for page in self.catalogItemPages:
+            page.lockItems()
+
+    def updateItems(self, gifting):
+        for page in self.catalogItemPages:
+            page.updateItems(gifting)
+
+    def cleanup(self):
+        for page in self.catalogItemPages:
+            page.cleanup()
+
+        self.tabButton.destroy()
+
+        NodePath.removeNode(self)

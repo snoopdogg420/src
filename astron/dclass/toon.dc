@@ -2170,6 +2170,7 @@ dclass DistributedPhone : DistributedFurnitureItem {
   requestPurchaseResponse(uint16, int8);
   requestGiftPurchaseMessage(uint16, uint32, blob, int32) airecv clsend;
   requestGiftPurchaseResponse(uint16, int8);
+  purchaseItemComplete();
 };
 
 dclass DistributedFireworkShow : DistributedObject {

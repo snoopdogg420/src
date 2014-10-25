@@ -46,9 +46,6 @@ class DistributedTrunkAI(DistributedClosetAI):
     def __verifyAvatarInMyZone(self, av):
         return av.getLocation() == self.getLocation()
 
-    def resetMovie(self):
-        taskMgr.doMethodLater(1, self.d_setMovie, 'resetMovie-%d' % self.getDoId(), extraArgs=[ClosetGlobals.CLOSET_MOVIE_CLEAR, 0, globalClockDelta.getRealNetworkTime()])
-
     def setState(self, mode, avId, ownerId, gender, hatList, glassesList, backpackList, shoesList):
         self.sendUpdate('setState', [mode, avId, ownerId, gender, hatList, glassesList, backpackList, shoesList])
 

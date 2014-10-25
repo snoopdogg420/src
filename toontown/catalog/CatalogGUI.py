@@ -1,16 +1,24 @@
-from pandac.PandaModules import NodePath
+from pandac.PandaModules import NodePath, Vec4
+from direct.showbase.DirectObject import DirectObject
+from direct.gui.DirectButton import DirectButton
 from toontown.catalog.CatalogTabButton import CatalogTabButton
 from toontown.catalog.CatalogArrowButton import CatalogArrowButton
 from toontown.catalog.CatalogRadioButton import CatalogRadioButton
 from toontown.catalog import CatalogGlobals
+from toontown.toonbase import ToontownGlobals
+from toontown.toonbase import TTLocalizer
 
 
-class CatalogGUI(NodePath):
-    def __init__(self):
+class CatalogGUI(NodePath, DirectObject):
+    def __init__(self, phone, doneEvent=None):
         NodePath.__init__(self, aspect2d.attachNewNode('CatalogGUI'))
+        DirectObject.__init__(self)
 
         CatalogGlobals.CatalogNodePath.find('**/CATALOG_GUI_BKGD').copyTo(self)
         self.setScale(CatalogGlobals.CatalogBKGDScale)
+
+        self.phone = phone
+        self.doneEvent = doneEvent
 
         self.arrowButtons = {}
         self.createArrowButtons()
@@ -20,10 +28,20 @@ class CatalogGUI(NodePath):
         self.createTabButtons()
 
         self.radioButtons = []
-        self.createRadioButtons()
+        # self.createRadioButtons()
 
         self.activePage = 0
         self.gifting = -1
+
+        guiItems = loader.loadModel('phase_5.5/models/gui/catalog_gui')
+        hangupGui = guiItems.find('**/hangup')
+        hangupRolloverGui = guiItems.find('**/hangup_rollover')
+        self.hangup = DirectButton(self, relief=None, pos=(2.28, 0, -1.3),
+                                   image=[hangupGui, hangupRolloverGui, hangupRolloverGui, hangupGui],
+                                   text=['', TTLocalizer.CatalogHangUp, TTLocalizer.CatalogHangUp],
+                                   text_fg=Vec4(1), text_scale=0.07, text_pos=(0.0, 0.14),
+                                   command=self.hangUp)
+        guiItems.removeNode()
 
     def setCurrentTab(self, tab):
         self.currentTab = tab
@@ -61,25 +79,25 @@ class CatalogGUI(NodePath):
             self.tabButtons[tab].setOtherTabs(tabList)
 
     def popularTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def furnitureTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def emoteTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def phrasesTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def clothingTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def nametagTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def specialTabClicked(self):
-        pass
+        messenger.send('wakeup')
 
     def createArrowButtons(self):
         self.arrowButtons['LEFT_ARROW'] = CatalogArrowButton(self, 'LT',
@@ -88,10 +106,12 @@ class CatalogGUI(NodePath):
                                                               self.rightArrowClicked)
 
     def leftArrowClicked(self):
+        messenger.send('wakeup')
         if self.currentTab:
             self.currentTab.moveLeft()
 
     def rightArrowClicked(self):
+        messenger.send('wakeup')
         if self.currentTab:
             self.currentTab.moveRight()
 
@@ -128,3 +148,53 @@ class CatalogGUI(NodePath):
 
     def disableRightArrow(self):
         self.arrowButtons['RIGHT_ARROW'].hide()
+
+    def show(self):
+        self.accept('CatalogItemPurchaseRequest', self.__handlePurchaseRequest)
+        base.setBackgroundColor(Vec4(0.570312, 0.449219, 0.164062, 1.0))
+        NodePath.show(self)
+        render.hide()
+
+    def hide(self):
+        self.ignore('CatalogItemPurchaseRequest')
+        base.setBackgroundColor(ToontownGlobals.DefaultBackgroundColor)
+        NodePath.hide(self)
+        render.show()
+
+    def unload(self):
+        self.hide()
+
+        for arrow in self.arrowButtons:
+            self.arrowButtons[arrow].cleanup()
+
+        for tab in self.tabButtons:
+            self.tabButtons[tab].cleanup()
+
+        for radio in self.radioButtons:
+            radio.cleanup()
+
+        self.hangup.destroy()
+
+        self.destroy()
+
+    def destroy(self):
+        NodePath.removeNode(self)
+
+    def hangUp(self):
+        self.unload()
+        print self.doneEvent
+        messenger.send(self.doneEvent)
+
+    def __handlePurchaseRequest(self, item):
+        item.requestPurchase(self.phone, self.__handlePurchaseResponse)
+
+    def __handlePurchaseResponse(self, retCode, item):
+        self.lockItems()
+
+    def lockItems(self):
+        for tab in self.tabButtons:
+            self.tabButtons[tab].lockItems()
+
+    def updateItems(self):
+        for tab in self.tabButtons:
+            self.tabButtons[tab].updateItems(self.gifting)
