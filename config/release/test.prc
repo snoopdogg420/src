@@ -8,7 +8,7 @@ shard-low-pop 100
 shard-mid-pop 150
 
 # Core features:
-want-housing #f
+want-housing #t
 want-pets #f
 want-parties #f
 want-cogdominiums #f
