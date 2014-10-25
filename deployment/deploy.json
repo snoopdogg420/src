@@ -52,7 +52,7 @@
 	"python275.dll",
 	"ssleay32.dll",
 	"unicodedata.pyd",
-	"panda3d/___init__.pyc",
+	"panda3d/__init__.pyc",
 	"panda3d/core.pyd",
 	"panda3d/direct.pyd",
 	"panda3d/egg.pyd",
