@@ -204,6 +204,9 @@ class DistributedToonUD(DistributedObjectUD):
 
     def checkTeleportAccess(self, todo0):
         pass
+        
+    def setScavengerHunt(self, todo0):
+        pass
 
     def battleSOS(self, todo0):
         pass

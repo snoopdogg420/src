@@ -20,23 +20,21 @@ def getDustCloudIval(toon):
 
 class DistributedBlackCatMgr(DistributedObject.DistributedObject):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedBlackCatMgr')
-    ActivateEvent = 'DistributedBlackCatMgr-activate'
 
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
 
     def announceGenerate(self):
-        DistributedBlackCatMgr.notify.debug('announceGenerate')
         DistributedObject.DistributedObject.announceGenerate(self)
-        self.acceptOnce(DistributedBlackCatMgr.ActivateEvent, self.d_requestBlackCatTransformation)
+        DistributedBlackCatMgr.notify.debug('announceGenerate')
+        self.acceptOnce('DistributedBlackCatMgr-activate', self.d_requestBlackCatTransformation)
         self.dustCloudIval = None
-        return
 
     def delete(self):
         if self.dustCloudIval:
             self.dustCloudIval.finish()
         del self.dustCloudIval
-        self.ignore(DistributedBlackCatMgr.ActivateEvent)
+        self.ignore('DistributedBlackCatMgr-activate')
         DistributedObject.DistributedObject.delete(self)
 
     def d_requestBlackCatTransformation(self):

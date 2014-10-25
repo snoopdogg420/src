@@ -12,16 +12,15 @@ class DistributedResistanceEmoteMgr(DistributedObject.DistributedObject):
     def __init__(self, cr):
         DistributedObject.DistributedObject.__init__(self, cr)
 
-        def phraseSaid(phraseId):
-            helpPhrase = 513
-            if phraseId == helpPhrase:
-                self.addResistanceEmote()
-
-        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, phraseSaid)
-
     def announceGenerate(self):
         DistributedObject.DistributedObject.announceGenerate(self)
         DistributedResistanceEmoteMgr.notify.debug('announceGenerate')
+        self.accept(SpeedChatGlobals.SCStaticTextMsgEvent, self.phraseSaid)
+        
+    def phraseSaid(self, phraseId):
+        helpPhrase = 513
+        if phraseId == helpPhrase:
+            self.addResistanceEmote()
 
     def delete(self):
         self.ignore(SpeedChatGlobals.SCStaticTextMsgEvent)
