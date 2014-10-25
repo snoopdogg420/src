@@ -12,7 +12,7 @@ shard-low-pop 50
 shard-mid-pop 100
 
 # RPC:
-want-rpc-server #t
+want-rpc-server #f
 rpc-server-endpoint http://localhost:8080/
 
 # DClass files (in reverse order):
