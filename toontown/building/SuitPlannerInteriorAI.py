@@ -134,7 +134,9 @@ class SuitPlannerInteriorAI:
             if suitDeptIndex is not None:
                 bldgTrack = SuitDNA.suitDepts[suitDeptIndex]
             if suitTypeIndex is not None:
-                suitLevel = min(max(suitLevel, suitTypeIndex), suitTypeIndex + 4)
+                suitName = SuitDNA.getSuitName(suitDeptIndex, suitTypeIndex)
+                suitType = SuitDNA.getSuitType(suitName)
+                suitLevel = min(max(suitLevel, suitType), suitType + 4)
         dna = SuitDNA.SuitDNA()
         dna.newSuitRandom(suitType, bldgTrack)
         suit.dna = dna
