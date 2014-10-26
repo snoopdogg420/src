@@ -42,8 +42,6 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
 
         self.items = []
 
-        self.hasCloset = False
-
         # Initialize the above variables:
         self.loadFromHouse()
 
@@ -101,6 +99,8 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
             item.destroy()
         self.items = []
 
+        items.removeDuplicates(FLCloset)
+
         for item in items:
             if item.getFlags() & FLTrunk:
                 if self.house.gender is 0:
@@ -110,14 +110,11 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
                     item.furnitureType -= 10
                 do = DistributedTrunkAI(self.air, self, item)
             elif item.getFlags() & FLCloset:
-                if self.hasCloset:
-                    continue
                 if self.house.gender is 0:
                     if item.furnitureType - 500 < 10:
                         item.furnitureType += 10
                 elif item.furnitureType - 500 > 10:
                     item.furnitureType -= 10
-                self.hasCloset = True
                 do = DistributedClosetAI(self.air, self, item)
             elif item.getFlags() & FLBank:
                 continue # We dont want banks in the estates.
