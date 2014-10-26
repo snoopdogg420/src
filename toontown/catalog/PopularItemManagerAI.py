@@ -25,9 +25,14 @@ class PopularItemManagerAI:
     def __init__(self, air):
         self.air = air
 
+        self.popularItemDict = {}
+
     def avBoughtItem(self, item):
         # Load the current popularItems
-        popularItems = simbase.backups.load('catalog', ('popular-items',), default=({}))
+        try:
+            popularItems = simbase.backups.load('catalog', ('popular-items',), default=({}))
+        except ValueError:
+            pass
 
         itemOutput = item.output()
 
@@ -41,13 +46,19 @@ class PopularItemManagerAI:
             popularItems[itemOutput] += 1
 
         # Save it.
-        simbase.backups.save('catalog', ('popular-items',), (popularItems))
+        try:
+            simbase.backups.save('catalog', ('popular-items',), (popularItems))
+        except ValueError:
+            pass
 
     def requestPopularItems(self):
         # Load the current popularItems
-        popularItems = simbase.backups.load('catalog', ('popular-items',), default=({}))
+        try:
+            self.popularItemDict = simbase.backups.load('catalog', ('popular-items',), default=({}))
+        except ValueError:
+            pass
 
-        sortedItems = [(x,y) for y,x in sorted([(y,x) for x,y in popularItems.items()],reverse=True)]
+        sortedItems = [(x,y) for y,x in sorted([(y,x) for x,y in self.popularItemDict.items()],reverse=True)]
 
         finalItems = []
         if len(sortedItems) <= 12:
