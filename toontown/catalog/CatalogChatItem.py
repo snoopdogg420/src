@@ -27,6 +27,9 @@ class CatalogChatItem(CatalogItem.CatalogItem):
 
     def getDisplayName(self):
         return OTPLocalizer.CustomSCStrings[self.customIndex]
+        
+    def getDeliveryTime(self):
+        return 0
 
     def recordPurchase(self, avatar, optional):
         if avatar.customMessages.count(self.customIndex) != 0:
