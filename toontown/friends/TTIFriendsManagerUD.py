@@ -335,7 +335,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         fromId = self.air.getAvatarIdFromSender()
         currStamp = time.time()
         if fromId in self.whisperRequests:
-            elapsed = self.whisperRequests[fromId] - currStamp
+            elapsed = currStamp - self.whisperRequests[fromId]
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
                 return
@@ -346,7 +346,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         fromId = self.air.getAvatarIdFromSender()
         currStamp = time.time()
         if fromId in self.whisperRequests:
-            elapsed = self.whisperRequests[fromId] - currStamp
+            elapsed = currStamp - self.whisperRequests[fromId]
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
                 return
@@ -357,7 +357,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         fromId = self.air.getAvatarIdFromSender()
         currStamp = time.time()
         if fromId in self.whisperRequests:
-            elapsed = self.whisperRequests[fromId] - currStamp
+            elapsed = currStamp - self.whisperRequests[fromId]
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
                 return
@@ -368,7 +368,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         fromId = self.air.getAvatarIdFromSender()
         currStamp = time.time()
         if fromId in self.whisperRequests:
-            elapsed = self.whisperRequests[fromId] - currStamp
+            elapsed = currStamp - self.whisperRequests[fromId]
             if elapsed < self.delayTime:
                 self.whisperRequests[fromId] = currStamp
                 return
