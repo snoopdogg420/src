@@ -67,11 +67,6 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
 
         self.wallpaper = CatalogItemList(self.house.getInteriorWallpaper(),
                                          store=CatalogItem.Customization)
-
-        print self.wallpaper.generateList()
-        for shit in self.wallpaper.generateList():
-            print shit.getSurfaceType()
-
         self.applyWallpaper()
         self.windows = CatalogItemList(self.house.getInteriorWindows(),
                                        store=CatalogItem.Customization |
