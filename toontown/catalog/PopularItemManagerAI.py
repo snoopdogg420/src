@@ -32,7 +32,7 @@ class PopularItemManagerAI:
         try:
             popularItems = simbase.backups.load('catalog', ('popular-items',), default=({}))
         except ValueError:
-            pass
+            return
 
         itemOutput = item.output()
 
