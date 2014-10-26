@@ -96,6 +96,7 @@ class SuitInvasionManagerAI:
             taskMgr.doMethodLater(timeout, self.stopInvasion, 'invasionTimeout')
 
         self.sendInvasionStatus()
+        self.air.districtStats.b_setInvasionStatus(suitDeptIndex + 1)
         return True
 
     def stopInvasion(self, task=None):
@@ -121,6 +122,7 @@ class SuitInvasionManagerAI:
         self.flySuits()
 
         self.sendInvasionStatus()
+        self.air.districtStats.b_setInvasionStatus(0)
         return True
 
     def getSuitName(self):
