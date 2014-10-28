@@ -19,7 +19,7 @@ class CatalogPetTrickItem(CatalogItem.CatalogItem):
     def reachedPurchaseLimit(self, avatar):
         if self in avatar.onOrder or self in avatar.mailboxContents or self in avatar.onGiftOrder or self in avatar.awardMailboxContents or self in avatar.onAwardOrder:
             return 1
-        return self.trickId in avatar.petTrickPhrases
+        return 1
 
     def getAcceptItemErrorText(self, retcode):
         if retcode == ToontownGlobals.P_ItemAvailable:
