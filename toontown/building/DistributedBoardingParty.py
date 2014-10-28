@@ -130,7 +130,7 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
             self.notify.debug('new info posted on some other group')
         return
 
-    def postInvite(self, leaderId, inviterId):
+    def postInvite(self, leaderId, inviterId, merger):
         self.notify.debug('post Invite')
         if not base.cr.avatarFriendsManager.checkIgnored(inviterId):
             inviter = base.cr.doId2do.get(inviterId)
@@ -138,7 +138,7 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
                 if self.inviterPanels.isInvitingPanelUp() or self.inviterPanels.isInvitationRejectedPanelUp():
                     self.inviterPanels.forceCleanup()
                 self.groupInviteePanel = GroupInvitee.GroupInvitee()
-                self.groupInviteePanel.make(self, inviter, leaderId)
+                self.groupInviteePanel.make(self, inviter, leaderId, merger)
                 if base.config.GetBool('reject-boarding-group-invites', 0):
                     self.groupInviteePanel.forceCleanup()
                     self.groupInviteePanel = None
@@ -205,6 +205,8 @@ class DistributedBoardingParty(DistributedObject.DistributedObject, BoardingPart
                 rejectText = TTLocalizer.BoardingInviteePendingIvite % avatarNameText
             if reason == BoardingPartyBase.BOARDCODE_IN_ELEVATOR:
                 rejectText = TTLocalizer.BoardingInviteeInElevator % avatarNameText
+            if reason == BoardingPartyBase.BOARDCODE_GROUPS_TO_LARGE: # JBS
+                rejectText = TTLocalizer.BoardingGroupsToLarge % avatarNameText
         if self.inviterPanels.isInvitingPanelIdCorrect(avId) or avId == localAvatar.doId:
             self.inviterPanels.destroyInvitingPanel()
         self.showMe(rejectText)
