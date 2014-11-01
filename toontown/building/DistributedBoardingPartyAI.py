@@ -99,7 +99,9 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                 leaderId = self.avIdDict[inviterId]
 
                 if (len(self.getGroupMemberList(leaderId) + len(self.getGroupMemberList(inviteeLeaderId))) < self.maxSize):
-                    invitee = simbase.air.doId2do.get(inviteeLeaderId)    # JBS
+                    # Lets send the invitation to the leader instead of the person clicked on...  JBS
+                    invitee = simbase.air.doId2do.get(inviteeLeaderId)
+                    inviteeId = inviteeLeaderId
                 else:
                     reason = BoardingPartyBase.BOARDCODE_GROUPS_TO_LARGE
                     self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
@@ -119,6 +121,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
             self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
             self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
             return
+        # Lets see what they are doing...
         inviteeOkay = self.checkBoard(inviteeId, self.elevatorIdList[0])
         reason = 0
         if inviteeOkay == REJECT_NOTPAID:
@@ -142,18 +145,25 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                         reason = BoardingPartyBase.BOARDCODE_PROMOTION
                     self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviterId, reason, self.elevatorIdList[0]])
                     return
+        # Is the inviter already part of a group?
         if inviterId in self.avIdDict:
             self.notify.debug('old group')
+            # Everything is indexed by the leaders
             leaderId = self.avIdDict[inviterId]
             groupList = self.groupListDict.get(leaderId)
             if groupList:
                 self.notify.debug('got group list')
+                # Only the leader of a group can invite somebody who was kicked out back in
                 if inviterId == leaderId:
+                    # The invitee was kicked out so lets let them back in again
                     if inviteeId in groupList[2]:
                         groupList[2].remove(inviteeId)
+                # Is the group already oversized?
                 if len(self.getGroupMemberList(leaderId)) >= self.maxSize:
                     self.sendUpdate('postSizeReject', [leaderId, inviterId, inviteeId])
+                # I need to think about what they are trying to solve..
                 elif inviterId not in groupList[1] and inviterId not in groupList[2]:
+                    # If the invitee isn't already in the group, add them..
                     if inviteeId not in groupList[1]:
                         groupList[1].append(inviteeId)
                     self.groupListDict[leaderId] = groupList
@@ -162,17 +172,20 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                         self.air.writeServerEvent('suspicious: inviter', inviterId, ' tried to invite %s who already exists in the avIdDict.' % inviteeId)
                     self.avIdDict[inviteeId] = leaderId
                     self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId])
+                    # notify everybody of the invitation..
                     for memberId in groupList[0]:
                         if not memberId == inviterId:
                             self.sendUpdateToAvatarId(memberId, 'postMessageInvited', [inviteeId, inviterId])
-
+                # The inviter was kicked.. so, we cannot let them back in since they are not the leader...           
                 elif inviterId in groupList[2]:
                     self.sendUpdate('postKickReject', [leaderId, inviterId, inviteeId])
         else:
+            # This seems like an odd thing for hackers to be abusing which tells me disney had a bug in boarding parties for a while...
             if inviteeId in self.avIdDict:
                 self.notify.warning('inviter %s tried to invite %s who already exists in avIdDict.' % (inviterId, inviteeId))
                 self.air.writeServerEvent('suspicious: inviter', inviterId, ' tried to invite %s who already exists in the avIdDict.' % inviteeId)
             self.notify.debug('new group')
+            # The inviter is now the leader of the new group
             leaderId = inviterId
             self.avIdDict[inviterId] = inviterId
             self.avIdDict[inviteeId] = inviterId
