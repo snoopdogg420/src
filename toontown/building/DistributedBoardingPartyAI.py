@@ -87,6 +87,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         self.notify.debug('requestInvite %s' % inviteeId)
         inviterId = self.air.getAvatarIdFromSender()
         invitee = simbase.air.doId2do.get(inviteeId)
+        merger = False
         if invitee and invitee.battleId != 0:
             reason = BoardingPartyBase.BOARDCODE_BATTLE
             self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
@@ -94,7 +95,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
             return
         if self.hasActiveGroup(inviteeId):
             # We could make the assumption both are in the avIdDict but I'd prefer not to blow up the district
-            if base.config.GetBool('boarding-group-merges', 0) && (inviteeId in self.avIdDict) && (inviterId in self.avIdDict):  # JBS
+nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (inviteeId in self.avIdDict) && (inviterId in self.avIdDict):  # JBS
                 inviteeLeaderId = self.avIdDict[inviteeId]
                 leaderId = self.avIdDict[inviterId]
 
@@ -102,6 +103,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                     # Lets send the invitation to the leader instead of the person clicked on...  JBS
                     invitee = simbase.air.doId2do.get(inviteeLeaderId)
                     inviteeId = inviteeLeaderId
+                    merger = True
                 else:
                     reason = BoardingPartyBase.BOARDCODE_GROUPS_TO_LARGE
                     self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
@@ -121,9 +123,10 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
             self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
             self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
             return
-        # Lets see what they are doing...
+        # Lets see what the invitee is currently doing
         inviteeOkay = self.checkBoard(inviteeId, self.elevatorIdList[0])
         reason = 0
+        # Oh, for the days when we are charging for this game.. :)
         if inviteeOkay == REJECT_NOTPAID:
             reason = BoardingPartyBase.BOARDCODE_NOT_PAID
             self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
@@ -161,7 +164,10 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                 # Is the group already oversized?
                 if len(self.getGroupMemberList(leaderId)) >= self.maxSize:
                     self.sendUpdate('postSizeReject', [leaderId, inviterId, inviteeId])
-                # I need to think about what they are trying to solve..
+                # Make sure the inviter is not already a invitee in
+                # the same group.   Once again, I have to believe they
+                # were coding around a bug where people were able to
+                # invite themselves.
                 elif inviterId not in groupList[1] and inviterId not in groupList[2]:
                     # If the invitee isn't already in the group, add them..
                     if inviteeId not in groupList[1]:
@@ -171,7 +177,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                         self.notify.warning('inviter %s tried to invite %s who already exists in the avIdDict.' % (inviterId, inviteeId))
                         self.air.writeServerEvent('suspicious: inviter', inviterId, ' tried to invite %s who already exists in the avIdDict.' % inviteeId)
                     self.avIdDict[inviteeId] = leaderId
-                    self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId])
+                    self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId, merger])
                     # notify everybody of the invitation..
                     for memberId in groupList[0]:
                         if not memberId == inviterId:
@@ -180,7 +186,9 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                 elif inviterId in groupList[2]:
                     self.sendUpdate('postKickReject', [leaderId, inviterId, inviteeId])
         else:
-            # This seems like an odd thing for hackers to be abusing which tells me disney had a bug in boarding parties for a while...
+            # This seems like an odd thing for hackers to be abusing
+            # which tells me disney had a bug in boarding parties for a
+            # while... 
             if inviteeId in self.avIdDict:
                 self.notify.warning('inviter %s tried to invite %s who already exists in avIdDict.' % (inviterId, inviteeId))
                 self.air.writeServerEvent('suspicious: inviter', inviterId, ' tried to invite %s who already exists in the avIdDict.' % inviteeId)
@@ -191,7 +199,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
             self.avIdDict[inviteeId] = inviterId
             self.groupListDict[leaderId] = [[leaderId], [inviteeId], []]
             self.addWacthAvStatus(leaderId)
-            self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId])
+            self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId, false])
 
     def requestCancelInvite(self, inviteeId):
         inviterId = self.air.getAvatarIdFromSender()
