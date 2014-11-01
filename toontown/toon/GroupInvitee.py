@@ -24,7 +24,7 @@ class GroupInvitee(ToonHeadDialog.ToonHeadDialog):
         self.party = party
         if merger:
           text = TTLocalizer.BoardingInviteeMergeMessage % self.avName
-        else
+        else:
           text = TTLocalizer.BoardingInviteeMessage % self.avName
         style = TTDialog.TwoChoice
         buttonTextList = [OTPLocalizer.FriendInviteeOK, OTPLocalizer.FriendInviteeNo]
