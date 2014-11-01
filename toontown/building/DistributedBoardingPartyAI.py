@@ -83,6 +83,18 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         self.ignore(self.air.getAvatarExitEvent(avId))
         self.ignore(self.staticGetLogicalZoneChangeEvent(avId))
 
+    # BoardingParty data model
+    #
+    # groupList[0] - people in the group
+    # groupList[1] - people invited to the group
+    # groupList[2] - people kicked from the group
+    #
+    # avIdDict - lookup from player to the leader of the group they are in
+    #     if you are in a group or have been invited to a group, you
+    #     are in this dictionary with a pointer to the leader of the
+    #     group.   The only exception to this is if you were invited
+    #     to merge groups.
+           
     def requestInvite(self, inviteeId):
         self.notify.debug('requestInvite %s' % inviteeId)
         inviterId = self.air.getAvatarIdFromSender()
@@ -90,28 +102,8 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         merger = False
         if invitee and invitee.battleId != 0:
             reason = BoardingPartyBase.BOARDCODE_BATTLE
-            self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
+1           self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
             self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
-            return
-        if self.hasActiveGroup(inviteeId):
-            # We could make the assumption both are in the avIdDict but I'd prefer not to blow up the district
-nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (inviteeId in self.avIdDict) && (inviterId in self.avIdDict):  # JBS
-                inviteeLeaderId = self.avIdDict[inviteeId]
-                leaderId = self.avIdDict[inviterId]
-
-                if (len(self.getGroupMemberList(leaderId) + len(self.getGroupMemberList(inviteeLeaderId))) < self.maxSize):
-                    # Lets send the invitation to the leader instead of the person clicked on...  JBS
-                    invitee = simbase.air.doId2do.get(inviteeLeaderId)
-                    inviteeId = inviteeLeaderId
-                    merger = True
-                else:
-                    reason = BoardingPartyBase.BOARDCODE_GROUPS_TO_LARGE
-                    self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
-                    self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
-            else:
-                reason = BoardingPartyBase.BOARDCODE_DIFF_GROUP
-                self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
-                self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
             return
         if self.hasPendingInvite(inviteeId):
             reason = BoardingPartyBase.BOARDCODE_PENDING_INVITE
@@ -123,6 +115,27 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
             self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
             self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
             return
+        if self.hasActiveGroup(inviteeId):
+            # We could make the assumption both are in the avIdDict but I'd prefer not to blow up the district
+            if base.config.GetBool('boarding-group-merges', 0) && self.hasActiveGroup(inviterId):
+                inviteeLeaderId = self.avIdDict[inviteeId]
+                leaderId = self.avIdDict[inviterId]
+
+                if (len(self.getGroupMemberList(leaderId) + len(self.getGroupMemberList(inviteeLeaderId))) < self.maxSize):
+                    # Lets send the invitation to the leader instead of the person clicked on...
+                    invitee = simbase.air.doId2do.get(inviteeLeaderId)
+                    inviteeId = inviteeLeaderId
+                    merger = True
+                else:
+                    reason = BoardingPartyBase.BOARDCODE_GROUPS_TO_LARGE
+                    self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
+                    self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
+                    return
+            else:
+                reason = BoardingPartyBase.BOARDCODE_DIFF_GROUP
+                self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
+                self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
+                return
         # Lets see what the invitee is currently doing
         inviteeOkay = self.checkBoard(inviteeId, self.elevatorIdList[0])
         reason = 0
@@ -131,6 +144,7 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
             reason = BoardingPartyBase.BOARDCODE_NOT_PAID
             self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
             return
+        # I know there is an unexpected issue here when we are merging groups... lets think about this really hard..
         if len(self.elevatorIdList) == 1:
             if inviteeOkay:
                 if inviteeOkay == REJECT_MINLAFF:
@@ -148,13 +162,13 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
                         reason = BoardingPartyBase.BOARDCODE_PROMOTION
                     self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviterId, reason, self.elevatorIdList[0]])
                     return
-        # Is the inviter already part of a group?
+        # Is the inviter already in the avIdDict?  It follows they either must be in a group or have a pending invite... 
         if inviterId in self.avIdDict:
             self.notify.debug('old group')
             # Everything is indexed by the leaders
             leaderId = self.avIdDict[inviterId]
             groupList = self.groupListDict.get(leaderId)
-            if groupList:
+            if groupList:  # One would hope we have a group...
                 self.notify.debug('got group list')
                 # Only the leader of a group can invite somebody who was kicked out back in
                 if inviterId == leaderId:
@@ -164,12 +178,17 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
                 # Is the group already oversized?
                 if len(self.getGroupMemberList(leaderId)) >= self.maxSize:
                     self.sendUpdate('postSizeReject', [leaderId, inviterId, inviteeId])
-                # Make sure the inviter is not already a invitee in
-                # the same group.   Once again, I have to believe they
-                # were coding around a bug where people were able to
-                # invite themselves.
+                elif merger:
+                    # We cannot muck with the avIdDict because they are pointing to their original groups. 
+                    # We shall stash away the info into a different dictionary
+                    self.mergeDict[inviteeId] = leaderId
+                    self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId, true])
+                    # notify everybody of the invitation..
+                    for memberId in groupList[0]:
+                        if not memberId == inviterId:
+                            self.sendUpdateToAvatarId(memberId, 'postMessageInvited', [inviteeId, inviterId])
                 elif inviterId not in groupList[1] and inviterId not in groupList[2]:
-                    # If the invitee isn't already in the group, add them..
+                    # If the invitee isn't already in the group, add them.. paranoid programming or hacking around bugs?
                     if inviteeId not in groupList[1]:
                         groupList[1].append(inviteeId)
                     self.groupListDict[leaderId] = groupList
@@ -177,7 +196,7 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
                         self.notify.warning('inviter %s tried to invite %s who already exists in the avIdDict.' % (inviterId, inviteeId))
                         self.air.writeServerEvent('suspicious: inviter', inviterId, ' tried to invite %s who already exists in the avIdDict.' % inviteeId)
                     self.avIdDict[inviteeId] = leaderId
-                    self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId, merger])
+                    self.sendUpdateToAvatarId(inviteeId, 'postInvite', [leaderId, inviterId, false])
                     # notify everybody of the invitation..
                     for memberId in groupList[0]:
                         if not memberId == inviterId:
@@ -203,6 +222,7 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
 
     def requestCancelInvite(self, inviteeId):
         inviterId = self.air.getAvatarIdFromSender()
+        # todo .. deal with group merge cancels
         if inviterId in self.avIdDict:
             leaderId = self.avIdDict[inviterId]
             groupList = self.groupListDict.get(leaderId)
@@ -214,6 +234,22 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
         inviteeId = self.air.getAvatarIdFromSender()
         self.notify.debug('requestAcceptInvite leader%s inviter%s invitee%s' % (leaderId, inviterId, inviteeId))
         if inviteeId in self.avIdDict:
+            if inviteeId in self.mergeDict:
+                # Clean things up in case we are confused
+                self.mergeDict.pop(inviteeId)
+                if leaderId not in self.avIdDict or not self.isInGroup(inviteeId, leaderId):
+                    self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
+                    return
+                if not self.hasActiveGroup(inviteeId):
+                    self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
+                    return
+                memberList = self.getGroupMemberList(inviteeId)
+                for memberId in memberList:
+                    self.addToGroup(leaderId, memberId, 0)
+                self.groupListDict.pop(inviteeId)
+                group = self.groupListDict.get(leaderId)
+                self.sendUpdate('postGroupInfo', [leaderId, group[0], group[1], group[2]])
+                return
             if self.hasActiveGroup(inviteeId):
                 self.sendUpdateToAvatarId(inviteeId, 'postAlreadyInGroup', [])
                 return
@@ -241,6 +277,8 @@ nnnnexsb            if base.config.GetBool('boarding-group-merges', 0) && (invit
 
     def requestRejectInvite(self, leaderId, inviterId):
         inviteeId = self.air.getAvatarIdFromSender()
+        if inviteeId in self.mergeDict:
+            self.mergeDict.pop(inviteeId)  # Do I still want to call removeFromGroup()?  we shall let testing decide
         self.removeFromGroup(leaderId, inviteeId)
         self.sendUpdateToAvatarId(inviterId, 'postInviteDelcined', [inviteeId])
 
