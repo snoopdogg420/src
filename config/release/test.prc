@@ -24,6 +24,3 @@ want-chestnut-park-construction #t
 # Temporary:
 want-phone-quest #f
 
-# Holidays
-want-halloween #t
-active-holidays 26, 27, 13
