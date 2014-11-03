@@ -2,6 +2,7 @@ from direct.task.Task import Task
 import math
 from pandac.PandaModules import Point3, Point2
 
+from toontown.margins import MarginGlobals
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import Nametag
 from toontown.nametag import NametagGlobals
@@ -111,7 +112,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
 
         # When a chat balloon is active, we need a slightly higher priority in
         # the margin system:
-        self.setPriority(1)
+        self.setPriority(MarginGlobals.MP_normal)
 
         if self.arrow is not None:
             self.arrow.removeNode()
@@ -131,7 +132,7 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
     def drawNametag(self):
         Nametag.Nametag.drawNametag(self)
 
-        self.setPriority(0)
+        self.setPriority(MarginGlobals.MP_low)
 
         # Add an arrow:
         self.arrow = NametagGlobals.arrowModel.copyTo(self.contents)
