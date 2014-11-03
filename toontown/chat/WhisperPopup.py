@@ -1,4 +1,4 @@
-from panda3d.core import PGButton
+from panda3d.core import TextNode, PGButton
 
 from toontown.chat import ChatGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
