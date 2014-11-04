@@ -81,6 +81,18 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         self.rpc_messageChannel(channel, message)
 
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
+    def rpc_messageStaff(self, message):
+        """
+        Summary:
+            Broadcasts a [message] to all clients whose access levels are
+            higher than that of a user.
+
+        Parameters:
+            [str message] = The message to broadcast.
+        """
+        self.rpc_messageChannel(OtpDoGlobals.OTP_STAFF_CHANNEL, message)
+
     @rpcmethod(accessLevel=ADMINISTRATOR)
     def rpc_messageUser(self, userId, message):
         """
