@@ -34,7 +34,7 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
         self.textNode = TextNode('text')
         self.textNode.setWordwrap(self.TEXT_WORD_WRAP)
-        self.textNode.setTextColor(self.whisperColor[self.clickState][0])
+        self.textNode.setTextColor(self.whisperColor[PGButton.SInactive][0])
         self.textNode.setFont(self.font)
         self.textNode.setText(self.text)
 
@@ -112,7 +112,7 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
     def applyClickState(self, clickState):
         if self.chatBalloon is not None:
-            foreground, background = self.whisperColor[self.clickState]
+            foreground, background = self.whisperColor[clickState]
             self.chatBalloon.setForeground(foreground)
             self.chatBalloon.setBackground(background)
 
