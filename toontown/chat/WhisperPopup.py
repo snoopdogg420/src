@@ -91,6 +91,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
         # Update the click region if necessary:
         if self.getCell() is not None:
             self.updateClickRegion()
+        else:
+            self.region.setActive(False)
 
     def manage(self, marginManager):
         MarginVisible.manage(self, marginManager)
@@ -140,7 +142,12 @@ class WhisperPopup(Clickable2d, MarginVisible):
             bottom = -top
 
             self.setClickRegionFrame(left, right, bottom, top)
+            self.region.setActive(True)
+        else:
+            self.region.setActive(False)
 
     def marginVisibilityChanged(self):
         if self.getCell() is not None:
             self.updateClickRegion()
+        else:
+            self.region.setActive(False)

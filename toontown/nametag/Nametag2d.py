@@ -68,6 +68,7 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
             bottom = -top
 
             self.setClickRegionFrame(left, right, bottom, top)
+            self.region.setActive(True)
         elif self.panel is not None:
             centerX = (self.textNode.getLeft()+self.textNode.getRight()) / 2.0
             centerY = (self.textNode.getBottom()+self.textNode.getTop()) / 2.0
@@ -78,6 +79,9 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
             top = centerY + (self.panelHeight/2.0)
 
             self.setClickRegionFrame(left, right, bottom, top)
+            self.region.setActive(True)
+        else:
+            self.region.setActive(False)
 
     def isClickable(self):
         if self.getChatText() and self.hasChatButton():
@@ -107,6 +111,8 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
 
         if self.getCell() is not None:
             self.updateClickRegion()
+        else:
+            self.region.setActive(False)
 
     def tick(self, task):
         if (self.avatar is None) or self.avatar.isEmpty():
@@ -220,3 +226,5 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
     def marginVisibilityChanged(self):
         if self.getCell() is not None:
             self.updateClickRegion()
+        else:
+            self.region.setActive(False)
