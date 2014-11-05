@@ -112,7 +112,8 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         if self.getCell() is not None:
             self.updateClickRegion()
         else:
-            self.region.setActive(False)
+            if self.region is not None:
+                self.region.setActive(False)
 
     def tick(self, task):
         if (self.avatar is None) or self.avatar.isEmpty():
@@ -227,4 +228,5 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         if self.getCell() is not None:
             self.updateClickRegion()
         else:
-            self.region.setActive(False)
+            if self.region is not None:
+                self.region.setActive(False)
