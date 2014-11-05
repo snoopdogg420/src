@@ -99,7 +99,9 @@ class NametagGroup:
         if self.avatar == NametagGlobals.me:
             return Task.done
 
-        if self.getChatText() and NametagGlobals.forceOnscreenChat:
+        if NametagGlobals.force2dNametags:
+            visible3d = False
+        elif self.getChatText() and NametagGlobals.forceOnscreenChat:
             visible3d = False
         elif (not NametagGlobals.want2dNametags) or self.avatar.isHidden():
             visible3d = True

@@ -5,6 +5,7 @@ from direct.showbase import DirectObject
 from pandac.PandaModules import *
 
 from toontown.effects import DistributedFireworkShow
+from toontown.nametag import NametagGlobals
 from toontown.parties import DistributedPartyFireworksActivity
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
@@ -65,6 +66,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         base.render.hide()
         base.setBackgroundColor(0.05, 0.15, 0.4)
         base.setCellsActive([base.rightCells[0]], 0)
+        NametagGlobals.setForce2dNametags(True)
         self.__isOpen = 1
         self.__setButtonVisibility()
         self.show()
@@ -99,6 +101,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         if gsg:
             base.render.prepareScene(gsg)
         base.setCellsActive([base.rightCells[0]], 1)
+        NametagGlobals.setForce2dNametags(False)
         self.__isOpen = 0
         self.hide()
         self.hideButton()
