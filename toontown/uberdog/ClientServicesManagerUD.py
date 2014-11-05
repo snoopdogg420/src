@@ -7,14 +7,15 @@ from direct.fsm.FSM import FSM
 import hashlib
 import hmac
 import json
-from otp.ai.MagicWordGlobal import *
 from pandac.PandaModules import *
 import time
+import urllib2
+
+from otp.ai.MagicWordGlobal import *
+from otp.distributed import OtpDoGlobals
 from toontown.makeatoon.NameGenerator import NameGenerator
 from toontown.toon.ToonDNA import ToonDNA
-import urllib2
 from toontown.toonbase import TTLocalizer
-import hmac
 
 
 # Import from PyCrypto only if we are using a database that requires it. This
@@ -420,6 +421,14 @@ class LoginAccountFSM(OperationFSM):
             CLIENTAGENT_OPEN_CHANNEL)
         datagram.addChannel(self.csm.GetAccountConnectionChannel(self.accountId))
         self.csm.air.send(datagram)
+
+        # Add this connection to extra channels which may be useful:
+        if self.accessLevel > 100:
+            datagram = PyDatagram()
+            datagram.addServerHeader(self.target, self.csm.air.ourChannel,
+                                     CLIENTAGENT_OPEN_CHANNEL)
+            datagram.addChannel(OtpDoGlobals.OTP_STAFF_CHANNEL)
+            self.csm.air.send(datagram)
 
         # Now set their sender channel to represent their account affiliation:
         datagram = PyDatagram()
