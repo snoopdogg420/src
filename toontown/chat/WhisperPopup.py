@@ -22,6 +22,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.whisperType = whisperType
         self.timeout = timeout
 
+        self.active = False
+
         self.senderName = ''
         self.fromId = 0
         self.isPlayer = 0
