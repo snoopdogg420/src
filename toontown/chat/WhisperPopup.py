@@ -125,10 +125,11 @@ class WhisperPopup(Clickable2d, MarginVisible):
         Clickable2d.setClickState(self, clickState)
 
     def enterDepressed(self):
-        base.playSfx(NametagGlobals.clickSound)
+        if self.isClickable():
+            base.playSfx(NametagGlobals.clickSound)
 
     def enterRollover(self):
-        if self.lastClickState != PGButton.SDepressed:
+        if self.isClickable() and (self.lastClickState != PGButton.SDepressed):
             base.playSfx(NametagGlobals.rolloverSound)
 
     def updateClickRegion(self):
