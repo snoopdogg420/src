@@ -135,6 +135,7 @@ from toontown.estate import DistributedFurnitureManager/AI
 from toontown.estate import DistributedFurnitureItem/AI
 from toontown.estate import DistributedBank/AI
 from toontown.toon import DistributedNPCBanker/AI
+from toontown.toon import DistributedNPCCoBanker/AI
 from toontown.estate import DistributedCloset/AI
 from toontown.estate import DistributedTrunk/AI
 from toontown.estate import DistributedPhone/AI
@@ -1840,6 +1841,9 @@ dclass DistributedNPCBanker : DistributedNPCToonBase {
   setMovie(uint8, uint32, int16) broadcast ram;
   setMovieDone() airecv clsend;
   transferMoney(int16) airecv clsend;
+};
+
+dclass DistributedNPCCoBanker : DistributedNPCToonBase {
 };
 
 dclass DistributedNPCSpecialQuestGiver : DistributedNPCToonBase {

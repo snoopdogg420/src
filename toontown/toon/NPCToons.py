@@ -72,6 +72,7 @@ NPC_SMART = 13
 NPC_BANKER = 14
 NPC_YIN = 15
 NPC_YANG = 16
+NPC_CO_BANKER = 17
 CLERK_COUNTDOWN_TIME = 120
 TAILOR_COUNTDOWN_TIME = 300
 RTDNAFile = '/RTDNAFile.txt'
@@ -99,6 +100,7 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     import DistributedNPCBankerAI
     import DistributedNPCYinAI
     import DistributedNPCYangAI
+    import DistributedNPCCoBankerAI
     canonicalZoneId, name, dnaType, gender, protected, type = desc
     if type == NPC_REGULAR:
         npc = DistributedNPCToonAI.DistributedNPCToonAI(air, npcId, questCallback=questCallback)
@@ -134,6 +136,8 @@ def createNPC(air, npcId, desc, zoneId, posIndex = 0, questCallback = None):
     elif type == NPC_YANG:
         if simbase.air.wantYinYang:
             npc = DistributedNPCYangAI.DistributedNPCYangAI(air, npcId)
+    elif type == NPC_CO_BANKER:
+        npc = DistributedNPCCoBankerAI.DistributedNPCCoBankerAI(air, npcId)
     else:
         print 'createNPC() error!!!'
     npc.setName(name)
@@ -260,6 +264,25 @@ NPCToonDict = {20000: (-1,
          'm',
          1,
          NPC_SPECIALQUESTGIVER),
+ 997: (2514,
+       lnames[997],
+       ('hss',
+        'ls',
+        'l',
+        'f',
+        4,
+        0,
+        4,
+        4,
+        0,
+        3,
+        0,
+        3,
+        1,
+        18),
+       'f',
+       1,
+       NPC_CO_BANKER),
  998: (2000,
        lnames[998],
        'r',

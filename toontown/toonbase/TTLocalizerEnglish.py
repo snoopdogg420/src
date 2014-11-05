@@ -6968,6 +6968,7 @@ CatalogCurrentButtonText = 'To Current Items'
 CatalogPastButtonText = 'To Past Items'
 TutorialHQOfficerName = 'HQ Harry'
 NPCToonNames = {20000: 'Tutorial Tom',
+ 997: 'Banker Barbara',
  998: 'Talkative Tyler',
  999: 'Toon Tailor',
  1000: lToonHQ,
@@ -7622,9 +7623,8 @@ NPCToonNames = {20000: 'Tutorial Tom',
  7007: 'Dewin Tymme',
  7008: 'Ima Cagedtoon',
  7009: 'Jimmy Thelock',
-# Start with 91913.
-91917: 'Magic Cat',
-91918: 'Trap Cat'}
+ 91917: 'Magic Cat',
+ 91918: 'Trap Cat'}
 zone2TitleDict = {2513: ('Toon Hall', ''),
  2514: ('Toontown Bank', ''),
  2516: ('Toontown School House', ''),
