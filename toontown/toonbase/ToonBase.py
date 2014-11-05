@@ -236,10 +236,6 @@ class ToonBase(OTPBase.OTPBase):
         self.localAvatarStyle = None
 
         self.filters = CommonFilters(self.win, self.cam)
-        fog = Fog('AmbientFog')
-        fog.setColor(Vec4(0, 0, 0, 1))
-        fog.setLinearRange(0, 400)
-        render.setFog(fog)
 
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
