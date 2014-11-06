@@ -2,6 +2,7 @@ import datetime
 from direct.distributed.MsgTypes import CLIENTAGENT_EJECT
 from direct.distributed.PyDatagram import PyDatagram
 from direct.stdpy import threading2
+import re
 
 from otp.distributed import OtpDoGlobals
 from toontown.distributed.ShardStatusReceiver import ShardStatusReceiver
@@ -544,40 +545,24 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             }
 
     @rpcmethod(accessLevel=MODERATOR)
-    def rpc_getAvatarDetailsByName(self, needle):
+    def rpc_findAvatars(self, name):
         """
         Summary:
-            Returns basic details on every avatar whose name contains the
-            provided [needle].
+            Responds with at most 50 IDs of each avatar whose name matches, or
+            contains part of the provided [name].
 
         Parameters:
-            [str needle] = The case sensitive fragment to search for in each
-                avatar's name.
+            [str name] = The string to filter avatars by name with. This is
+                case insensitive.
 
-        Example response:
-            {
-                100000001: {
-                   'name': 'Toon Name',
-                   'species': 'cat',
-                   'head-color': 'Red',
-                   'max-hp': 15,
-                   'online': True
-                }
-            }
+        Example response: [100000001, ...]
         """
-        doId2avatarDetails = {}
-
-        doId = 100000000
-        while True:
-            dclassName, fields = self.rpc_queryObject(doId)
-            if dclassName is None:
-                break
-            if dclassName == 'DistributedToon':
-                if needle in fields.get('setName', ('',))[0]:
-                    doId2avatarDetails[doId] = self.rpc_getAvatarDetails(doId)
-            doId += 1
-
-        return doId2avatarDetails
+        if not config.GetBool('want-mongo-client', False):
+            return []
+        self.air.mongodb.astron.objects.ensure_index('fields.setName')
+        exp = re.compile('.*%s.*' % name, re.IGNORECASE)
+        results = self.air.mongodb.astron.objects.find({'fields.setName._0': exp})
+        return [avatar['_id'] for avatar in results.limit(50)]
 
     # --- SHARDS ---
 
