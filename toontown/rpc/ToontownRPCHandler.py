@@ -85,8 +85,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_messageStaff(self, message):
         """
         Summary:
-            Broadcasts a [message] to all clients whose access levels are
-            higher than that of a user.
+            Broadcasts a [message] to any client whose access level is higher
+            than that of a standard user.
 
         Parameters:
             [str message] = The message to broadcast.
