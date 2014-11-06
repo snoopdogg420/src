@@ -1,4 +1,5 @@
 from direct.distributed.PyDatagram import *
+import urlparse
 
 from otp.distributed.DistributedDirectoryAI import DistributedDirectoryAI
 from otp.distributed.OtpDoGlobals import *
@@ -10,10 +11,23 @@ if config.GetBool('want-rpc-server', False):
     from toontown.rpc.ToontownRPCServer import ToontownRPCServer
     from toontown.rpc.ToontownRPCHandler import ToontownRPCHandler
 
+if config.GetBool('want-mongo-client', False):
+    import pymongo
+
 
 class ToontownUberRepository(ToontownInternalRepository):
     def __init__(self, baseChannel, serverId):
         ToontownInternalRepository.__init__(self, baseChannel, serverId, dcSuffix='UD')
+
+        if config.GetBool('want-mongo-client', False):
+            url = config.GetString('mongodb-url', 'mongodb://localhost')
+            replicaset = config.GetString('mongodb-replicaset', '')
+            if replicaset:
+                self.mongo = pymongo.MongoClient(url, replicaset=replicaset)
+            else:
+                self.mongo = pymongo.MongoClient(url)
+            db = (urlparse.urlparse(url).path or '/test')[1:]
+            self.mongodb = self.mongo[db]
 
         self.notify.setInfo(True)
 
