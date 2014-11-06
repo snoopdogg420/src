@@ -35,6 +35,70 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         return data
 
+    # --- GENERAL ---
+
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
+    def rpc_queryObject(self, doId):
+        """
+        Summary:
+            Queries all database fields of the object associated with the
+            provided [doId].
+
+        Parameters:
+            [int doId] = The ID of the object to query database fields on.
+
+        Example response:
+            On success: ['DistributedObject', {'fieldName': ('arg1', ...), ...}]
+            On failure: [None, None]
+        """
+        unblocked = threading2.Event()
+        result = []
+
+        def callback(dclass, fields):
+            if dclass is not None:
+                dclass = dclass.getName()
+            result.extend([dclass, fields])
+            unblocked.set()
+
+
+        self.air.dbInterface.queryObject(self.air.dbId, doId, callback)
+
+        # Block until the callback is executed:
+        unblocked.wait()
+
+        return result
+
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
+    def rpc_setField(self, doId, dclassName, fieldName, args=[]):
+        """
+        Summary:
+            Set the value of the field associated with [fieldName] on the
+            suggested object.
+
+        Parameters:
+            [int doId] = The ID of the object whose field is being modified.
+            [str dclassName] = The name of the object's DClass.
+            [str fieldName] = The name of the field to be modified.
+            [list args] = The value of the field.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        # Ensure that the provided DClass exists:
+        if dclassName not in self.air.dclassesByName:
+            dclassName += 'UD'
+            if dclassName not in self.air.dclassesByName:
+                return False
+
+        dclass = self.air.dclassesByName[dclassName]
+
+        datagram = dclass.aiFormatUpdate(
+            fieldName, doId, doId, self.air.ourChannel, args)
+        self.air.send(datagram)
+
+        return True
+
     # --- MESSAGES ---
 
     @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
@@ -298,39 +362,6 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             On failure: False
         """
         return self.rpc_banUser(self.rpc_getAvatarUserId(avId), duration, reason)
-
-    # --- QUERIES ---
-
-    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
-    def rpc_queryObject(self, doId):
-        """
-        Summary:
-            Queries all database fields of the object associated with the
-            provided [doId].
-
-        Parameters:
-            [int doId] = The ID of the object to query database fields on.
-
-        Example response:
-            On success: ['DistributedObject', {'fieldName': ('arg1', ...), ...}]
-            On failure: [None, None]
-        """
-        unblocked = threading2.Event()
-        result = []
-
-        def callback(dclass, fields):
-            if dclass is not None:
-                dclass = dclass.getName()
-            result.extend([dclass, fields])
-            unblocked.set()
-
-
-        self.air.dbInterface.queryObject(self.air.dbId, doId, callback)
-
-        # Block until the callback is executed:
-        unblocked.wait()
-
-        return result
 
     # --- USERS ---
 
