@@ -49,10 +49,12 @@ def help(wordName=None):
         return "What were you interested getting help for?"
     word = spellbook.words.get(wordName.lower())   # look it up by its lower case value
     if not word:
+        accessLevel = spellbook.getInvoker().getAdminAccess()
         wname = wordName.lower()
         for key in spellbook.words:
-            if wname in key:
-                return 'Did you mean %s' % (spellbook.words.get(key).name)
+            if spellbook.words.get(key).access <= accessLevel:
+                if wname in key:
+                    return 'Did you mean %s' % (spellbook.words.get(key).name)
         return 'I have no clue what %s is refering to' % (wordName)
     return word.doc
             

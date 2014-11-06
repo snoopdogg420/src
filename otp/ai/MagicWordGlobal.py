@@ -41,11 +41,13 @@ class Spellbook:
 
     def doWord(self, wordName, args):
         word = self.words.get(wordName.lower())   # look it up by its lower case value
+
         if not word:
             wname = wordName.lower()
             for key in self.words:
-                if wname in key:
-                    return 'Did you mean %s' % (self.words.get(key).name)
+                if self.words.get(key).access <= self.getInvokerAccess():
+                    if wname in key:
+                        return 'Did you mean %s' % (self.words.get(key).name)
             if not word:
                 return
 
