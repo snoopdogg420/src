@@ -1937,6 +1937,7 @@ AvatarPanelCogLevel = 'Level: %s'
 AvatarPanelCogDetailClose = lClose
 AvatarPanelDetail = 'Toon Details'
 AvatarPanelGroupInvite = 'Invite'
+AvatarPanelGroupMerge = 'Merge Groups'
 AvatarPanelGroupRetract = 'Retract Invitation'
 AvatarPanelGroupMember = 'Already In Group'
 AvatarPanelGroupMemberKick = 'Remove'
