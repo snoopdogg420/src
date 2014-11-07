@@ -25,8 +25,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_ping(self, data):
         """
         Summary:
-            Responds with the [data] that was sent. This method exists only for
-            testing purposes.
+            Responds with the provided [data]. This method exists for testing
+            purposes.
 
         Parameters:
             [any data] = The data to be given back in response.
@@ -41,7 +41,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_queryObject(self, doId):
         """
         Summary:
-            Queries all database fields of the object associated with the
+            Responds with the values of all database fields associated with the
             provided [doId].
 
         Parameters:
@@ -51,8 +51,9 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             On success: ['DistributedObject', {'fieldName': ('arg1', ...), ...}]
             On failure: [None, None]
         """
-        unblocked = threading2.Event()
         result = []
+        unblocked = threading2.Event()
+
 
         def callback(dclass, fields):
             if dclass is not None:
@@ -72,20 +73,20 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_setField(self, doId, dclassName, fieldName, args=[]):
         """
         Summary:
-            Set the value of the field associated with [fieldName] on the
-            suggested object.
+            Set the value of the field named [fieldName] on the suggested
+            object.
 
         Parameters:
             [int doId] = The ID of the object whose field is being modified.
             [str dclassName] = The name of the object's DClass.
             [str fieldName] = The name of the field to be modified.
-            [list args] = The value of the field.
+            [list args] = The new value for the field.
 
         Example response:
             On success: True
             On failure: False
         """
-        # Ensure that the provided DClass exists:
+        # Ensure the provided DClass actually exists:
         if dclassName not in self.air.dclassesByName:
             dclassName += 'UD'
             if dclassName not in self.air.dclassesByName:
@@ -138,7 +139,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [int shardId] = The ID of the shard to direct the message to.
             [str message] = The message to broadcast.
         """
-        # Get the DO ID of the district object:
+        # Get the ID of the ToontownDistrict object:
         districtId = shardId + 1
 
         # Use it to get the uber zone's channel:
@@ -166,7 +167,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [userId].
 
         Parameters:
-            [int/str userId] = The ID of the user to direct the message to.
+            [int/str userId] = The ID of the user to send the message to.
             [str message] = The message to send.
         """
         accountId = self.rpc_getUserAccountId(userId)
@@ -181,7 +182,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [accountId].
 
         Parameters:
-            [int accountId] = The ID of the account to direct the message to.
+            [int accountId] = The ID of the account to send the message to.
             [str message] = The message to send.
         """
         channel = accountId + (1003L<<32)
@@ -195,7 +196,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [avId].
 
         Parameters:
-            [int avId] = The ID of the avatar to direct the message to.
+            [int avId] = The ID of the avatar to send the message to.
             [str message] = The message to send.
         """
         channel = avId + (1001L<<32)
@@ -211,7 +212,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [channel].
 
         Parameters:
-            [int channel] = The channel to direct the kick to.
+            [int channel] = The channel to kick.
             [int code] = The code for the kick.
             [str reason] = The reason for the kick.
         """
@@ -238,11 +239,11 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks all clients under the provided [shardId].
 
         Parameters:
-            [int shardId] = The ID of the shard to direct the kick to.
+            [int shardId] = The ID of the shard to kick.
             [int code] = The code for the kick.
             [str reason] = The reason for the kick.
         """
-        # Get the DO ID of the district object:
+        # Get the ID of the ToontownDistrict object:
         districtId = shardId + 1
 
         # Use it to get the uber zone's channel:
@@ -256,7 +257,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks the client associated with the provided [userId].
 
         Parameters:
-            [int/str userId] = The ID of the user to direct the kick to.
+            [int/str userId] = The ID of the user to kick.
             [int code] = The code for the kick.
             [str reason] = The reason for the kick.
         """
@@ -270,7 +271,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks the client associated with the provided [accountId].
 
         Parameters:
-            [int accountId] = The ID of the account to direct the kick to.
+            [int accountId] = The ID of the account to kick.
             [int code] = The code for the kick.
             [str reason] = The reason for the kick.
         """
@@ -283,7 +284,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         Summary: Kicks the client associated with the provided [avId].
 
         Parameters:
-            [int avId] = The ID of the avatar to direct the kick to.
+            [int avId] = The ID of the avatar to kick.
             [int code] = The code for the kick.
             [str reason] = The reason for the kick.
         """
@@ -300,11 +301,12 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             specified [duration].
 
         Parameters:
-            [int/str userId] = The ID of the user to direct the ban to.
+            [int/str userId] = The ID of the user to ban.
             [int duration] = The ban's duration in hours. If this is 0 or less,
                 the user will be permanently banned.
-            [str reason] = A short string describing the reason for the ban.
-                This can be one of the following: 'hacking', 'language', 'other'
+            [str reason] = A short description of why this user is being
+                banned. This can be one of the following values: 'hacking',
+                'language', 'other'.
 
         Example response:
             On success: True
@@ -312,7 +314,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         if reason not in ('hacking', 'language', 'other'):
             return False
-        self.air.writeServerEvent('ban', userId, reason)
+        self.air.writeServerEvent('ban', userId, duration, reason)
         if duration > 0:
             now = datetime.date.today()
             release = str(now + datetime.timedelta(hours=duration))
@@ -331,17 +333,20 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             specified [duration].
 
         Parameters:
-            [int/str accountId] = The ID of the account to direct the ban to.
+            [int accountId] = The ID of the account associated with the user to
+                ban.
             [int duration] = The ban's duration in hours. If this is 0 or less,
                 the user will be permanently banned.
-            [str reason] = A short string describing the reason for the ban.
-                This can be one of the following: 'hacking', 'language', 'other'
+            [str reason] = A short description of why this user is being
+                banned. This can be one of the following values: 'hacking',
+                'language', 'other'.
 
         Example response:
             On success: True
             On failure: False
         """
-        return self.rpc_banUser(self.rpc_getAccountUserId(accountId), duration, reason)
+        userId = self.rpc_getAccountUserId(accountId)
+        return self.rpc_banUser(userId, duration, reason)
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_banAvatar(self, avId, duration, reason):
@@ -351,24 +356,29 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             [duration].
 
         Parameters:
-            [int/str avId] = The ID of the avatar to direct the ban to.
+            [int/str avId] = The ID of the avatar associated with the user to
+                be banned.
             [int duration] = The ban's duration in hours. If this is 0 or less,
                 the user will be permanently banned.
-            [str reason] = A short string describing the reason for the ban.
-                This can be one of the following: 'hacking', 'language', 'other'
+            [str reason] = A short description of why this user is being
+                banned. This can be one of the following values: 'hacking',
+                'language', 'other'.
 
         Example response:
             On success: True
             On failure: False
         """
-        return self.rpc_banUser(self.rpc_getAvatarUserId(avId), duration, reason)
+        userId = self.rpc_getAvatarUserId(avId)
+        return self.rpc_banUser(userId, duration, reason)
 
     # --- USERS ---
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getUserAccountId(self, userId):
         """
-        Summary: Returns the account ID associated with the provided [userId].
+        Summary:
+            Responds with the ID of the account associated with the provided
+            [userId].
 
         Parameters:
             [int/str userId] = The ID of the user to query the account ID on.
@@ -384,10 +394,11 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_getUserAvatars(self, userId):
         """
         Summary:
-            Returns a list of avatar IDs associated with the provided [userId].
+            Responds with a list of avatar IDs associated with the provided
+            [userId].
 
         Parameters:
-            [int/str userId] = The ID of the user to query the avatar IDs on.
+            [int/str userId] = The ID of the user to query the avatars on.
 
         Example response:
             On success: [0, 100000001, 0, 0, 0, 0]
@@ -401,12 +412,13 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_getUserDeletedAvatars(self, userId):
         """
         Summary:
-            Returns a list of deleted avatar IDs associated with the provided
-            [userId], along with the time at which they were deleted.
+            Responds with a list of deleted avatar IDs associated with the
+            provided [userId], along with the time at which each avatar was
+            deleted.
 
         Parameters:
-            [int/str userId] = The ID of the user to query the deleted avatar
-                IDs on.
+            [int/str userId] = The ID of the user to query the deleted avatars
+                on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
@@ -421,7 +433,9 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAccountUserId(self, accountId):
         """
-        Summary: Returns the user ID associated with the provided [accountId].
+        Summary:
+            Responds with the ID of the user associated with the provided
+            [accountId].
 
         Parameters:
             [int accountId] = The ID of the account to query the user ID on.
@@ -432,14 +446,13 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         dclassName, fields = self.rpc_queryObject(accountId)
         if dclassName == 'Account':
-            # TODO: Change the ACCOUNT_ID field to USER_ID for clarity.
             return fields['ACCOUNT_ID']
 
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAccountAvatars(self, accountId):
         """
         Summary:
-            Returns a list of avatar IDs associated with the provided
+            Responds with a list of avatar IDs associated with the provided
             [accountId].
 
         Parameters:
@@ -457,12 +470,13 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_getAccountDeletedAvatars(self, accountId):
         """
         Summary:
-            Returns a list of deleted avatar IDs associated with the provided
-            [accountId], along with the time at which they were deleted.
+            Responds with a list of deleted avatar IDs associated with the
+            provided [accountId], along with the time at which each avatar was
+            deleted.
 
         Parameters:
-            [int accountId] = The ID of the account to query the deleted avatar
-                IDs on.
+            [int accountId] = The ID of the account to query the deleted
+                avatars on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
@@ -477,7 +491,9 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAvatarUserId(self, avId):
         """
-        Summary: Returns the user ID associated with the provided [avId].
+        Summary:
+            Responds with the ID of the user associated with the provided
+            [avId].
 
         Parameters:
             [int avId] = The ID of the avatar to query the user ID on.
@@ -493,7 +509,9 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     @rpcmethod(accessLevel=MODERATOR)
     def rpc_getAvatarAccountId(self, avId):
         """
-        Summary: Returns the account ID associated with the provided [avId].
+        Summary:
+            Responds with the ID of the account associated with the provided
+            [avId].
 
         Parameters:
             [int avId] = The ID of the avatar to query the account ID on.
@@ -510,7 +528,8 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_getAvatarAvatars(self, avId):
         """
         Summary:
-            Returns a list of avatar IDs associated with the provided [avId].
+            Responds with a list of avatar IDs associated with the provided
+            [avId].
 
         Parameters:
             [int avId] = The ID of the avatar to query the avatar IDs on.
@@ -527,12 +546,12 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_getAvatarDeletedAvatars(self, avId):
         """
         Summary:
-            Returns a list of deleted avatar IDs associated with the provided
-            [avId], along with the time at which they were deleted.
+            Responds with a list of deleted avatar IDs associated with the
+            provided [avId], along with the time at which each avatar was
+            deleted.
 
         Parameters:
-            [int avId] = The ID of the avatar to query the deleted avatar IDs
-                on.
+            [int avId] = The ID of the avatar to query the deleted avatars on.
 
         Example response:
             On success: [[100000001, 1409665000], ...]
@@ -546,11 +565,11 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
     def rpc_getAvatarDetails(self, avId):
         """
         Summary:
-            Returns basic details on the avatar associated with the provided
-            [avId].
+            Responds with basic details on the avatar associated with the
+            provided [avId].
 
         Parameters:
-            [int avId] = The ID of the avatar to query details on.
+            [int avId] = The ID of the avatar to query basic details on.
 
         Example response:
             On success:
@@ -565,35 +584,41 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         dclassName, fields = self.rpc_queryObject(avId)
         if dclassName == 'DistributedToon':
+            result = {}
+
+            result['name'] = fields['setName'][0]
+
             dna = ToonDNA.ToonDNA()
             dna.makeFromNetString(fields['setDNAString'][0])
-            return {
-                'name': fields['setName'][0],
-                'species': ToonDNA.getSpeciesName(dna.head),
-                'head-color':  TTLocalizer.NumToColor[dna.headColor],
-                'max-hp': fields['setMaxHp'][0],
-                'online': (avId in self.air.friendsManager.onlineToons)
-            }
+            result['species'] = ToonDNA.getSpeciesName(dna.head)
+
+            result['head-color'] = TTLocalizer.NumToColor[dna.headColor]
+            result['max-hp'] = fields['setMaxHp'][0]
+            result['online'] = (avId in self.air.friendsManager.onlineToons)
+
+            return result
 
     @rpcmethod(accessLevel=MODERATOR)
-    def rpc_findAvatars(self, name):
+    def rpc_findAvatarsByName(self, needle):
         """
         Summary:
-            Responds with at most 50 IDs of each avatar whose name matches, or
-            contains part of the provided [name].
+            Responds with the IDs of each avatar whose name matches, or
+            contains the provided [needle].
 
         Parameters:
-            [str name] = The string to filter avatars by name with. This is
+            [str needle] = The string to filter avatars by name with. This is
                 case insensitive.
 
         Example response: [100000001, ...]
         """
         if not config.GetBool('want-mongo-client', False):
             return []
+        if not needle:
+            return []
         self.air.mongodb.astron.objects.ensure_index('fields.setName')
-        exp = re.compile('.*%s.*' % name, re.IGNORECASE)
-        results = self.air.mongodb.astron.objects.find({'fields.setName._0': exp})
-        return [avatar['_id'] for avatar in results.limit(50)]
+        exp = re.compile('.*%s.*' % needle, re.IGNORECASE)
+        result = self.air.mongodb.astron.objects.find({'fields.setName._0': exp})
+        return [avatar['_id'] for avatar in result]
 
     # --- SHARDS ---
 
