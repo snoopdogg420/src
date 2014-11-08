@@ -13,6 +13,9 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
     TEXT_WORD_WRAP = 8
 
+    QUIT_BUTTON_SCALE = 12
+    QUIT_BUTTON_SHIFT = (0.035, 0, 0.035)
+
     def __init__(self, text, font, whisperType, timeout=10):
         Clickable2d.__init__(self, 'WhisperPopup')
         MarginVisible.__init__(self)
@@ -39,6 +42,7 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.textNode.setText(self.text)
 
         self.chatBalloon = None
+        self.quitButton = None
 
         self.timeoutTaskName = self.getUniqueName() + '-timeout'
         self.timeoutTask = None
@@ -61,6 +65,10 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.chatBalloon.removeNode()
             self.chatBalloon = None
 
+        if self.quitButton is not None:
+            self.quitButton.removeNode()
+            self.quitButton = None
+
         self.textNode = None
 
         Clickable2d.destroy(self)
@@ -72,6 +80,10 @@ class WhisperPopup(Clickable2d, MarginVisible):
         if self.chatBalloon is not None:
             self.chatBalloon.removeNode()
             self.chatBalloon = None
+
+        if self.quitButton is not None:
+            self.quitButton.removeNode()
+            self.quitButton = None
 
         self.contents.node().removeAllChildren()
 
@@ -95,6 +107,18 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
         # Translate the chat balloon along the inverse:
         self.chatBalloon.setPos(self.chatBalloon, -center)
+
+        # Draw the quit button:
+        quitButtonNode = NametagGlobals.quitButton[PGButton.SReady]
+        self.quitButton = quitButtonNode.copyTo(self.contents)
+        self.quitButton.setScale(self.QUIT_BUTTON_SCALE)
+
+        # Move the quit button to the top right of the TextNode:
+        self.quitButton.setPos(self.contents.getRelativePoint(
+            self.chatBalloon.textNodePath, (right, 0, top)))
+
+        # Apply the quit button shift:
+        self.quitButton.setPos(self.quitButton, self.QUIT_BUTTON_SHIFT)
 
         # Update the click region if necessary:
         if self.getCell() is not None:
