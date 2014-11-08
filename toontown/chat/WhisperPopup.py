@@ -48,6 +48,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
         self.update()
 
+        self.accept('MarginVisible-update', self.update)
+
     def destroy(self):
         self.ignoreAll()
 
@@ -67,6 +69,12 @@ class WhisperPopup(Clickable2d, MarginVisible):
         return 'WhisperPopup-' + str(id(self))
 
     def update(self):
+        if self.chatBalloon is not None:
+            self.chatBalloon.removeNode()
+            self.chatBalloon = None
+
+        self.contents.node().removeAllChildren()
+
         if self.isClickable():
             foreground, background = self.whisperColor[self.clickState]
         else:

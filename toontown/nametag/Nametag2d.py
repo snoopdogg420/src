@@ -32,6 +32,8 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         self.contents.setScale(self.CONTENTS_SCALE)
         self.hideThought()
 
+        self.accept('MarginVisible-update', self.update)
+
     def destroy(self):
         self.ignoreAll()
 
