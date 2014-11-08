@@ -19,11 +19,15 @@ class WhiteList:
         return text
 
     def isWord(self, text):
-        text = self.cleanText(text)
-        i = bisect_left(self.words, text)
-        if i == self.numWords:
-            return False
-        return self.words[i] == text
+        try:
+            text = self.cleanText(text)
+            i = bisect_left(self.words, text)
+            if i == self.numWords:
+                return False
+            return self.words[i] == text
+        except UnicodeDecodeError:
+            return False  # Lets not open ourselves up to obscure keyboards...
+      
 
     def isPrefix(self, text):
         text = self.cleanText(text)
