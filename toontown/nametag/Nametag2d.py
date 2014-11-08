@@ -83,7 +83,8 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
             self.setClickRegionFrame(left, right, bottom, top)
             self.region.setActive(True)
         else:
-            self.region.setActive(False)
+            if self.region is not None:
+                self.region.setActive(False)
 
     def isClickable(self):
         if self.getChatText() and self.hasChatButton():

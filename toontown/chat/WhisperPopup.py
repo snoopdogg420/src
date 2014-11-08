@@ -262,7 +262,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.setClickRegionFrame(left, right, bottom, top)
             self.region.setActive(True)
         else:
-            self.region.setActive(False)
+            if self.region is not None:
+                self.region.setActive(False)
 
         self.quitButton.updateClickRegion()
 
