@@ -110,6 +110,9 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.timeoutTaskName = self.getUniqueName() + '-timeout'
         self.timeoutTask = None
 
+        self.quitEvent = self.getUniqueName() + '-quit'
+        self.accept(self.quitEvent, self.destroy)
+
         self.setPriority(MarginGlobals.MP_high)
         self.setVisible(True)
 
@@ -181,6 +184,9 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
         # Apply the quit button shift:
         quitButtonNodePath.setPos(quitButtonNodePath, self.QUIT_BUTTON_SHIFT)
+
+        # Allow the quit button to close this whisper:
+        self.quitButton.setClickEvent(self.quitEvent)
 
         # Update the click region if necessary:
         if self.getCell() is not None:
