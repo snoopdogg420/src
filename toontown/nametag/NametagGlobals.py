@@ -31,6 +31,8 @@ thoughtBalloonHeight = 0
 noButton = (None, None, None, None)
 pageButton = (None, None, None, None)
 quitButton = (None, None, None, None)
+quitButtonWidth = 0
+quitButtonHeight = 0
 
 rolloverSound = None
 clickSound = None
@@ -83,7 +85,10 @@ def setPageButton(normal, down, rollover, disabled):
 
 def setQuitButton(normal, down, rollover, disabled):
     global quitButton
+    global quitButtonWidth
+    global quitButtonHeight
     quitButton = (normal, down, rollover, disabled)
+    quitButtonWidth, quitButtonHeight = getModelWidthHeight(normal)
 
 
 def setRolloverSound(sound):

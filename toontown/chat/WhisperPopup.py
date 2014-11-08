@@ -8,13 +8,76 @@ from toontown.nametag import NametagGlobals
 from toontown.toontowngui.Clickable2d import Clickable2d
 
 
+class WhisperQuitButton(Clickable2d):
+    CONTENTS_SCALE = 12
+
+    def __init__(self):
+        Clickable2d.__init__(self, 'WhisperQuitButton')
+
+        self.contents.setScale(self.CONTENTS_SCALE)
+
+        self.nodePath = None
+
+        self.update()
+
+    def destroy(self):
+        self.ignoreAll()
+
+        if self.nodePath is not None:
+            self.nodePath.removeNode()
+            self.nodePath = None
+
+        Clickable2d.destroy(self)
+
+    def getUniqueName(self):
+        return 'WhisperQuitButton-' + str(id(self))
+
+    def update(self):
+        if self.nodePath is not None:
+            self.nodePath.removeNode()
+            self.nodePath = None
+
+        self.contents.node().removeAllChildren()
+
+        quitButtonNode = NametagGlobals.quitButton[self.clickState]
+        self.nodePath = quitButtonNode.copyTo(self.contents)
+
+    def applyClickState(self, clickState):
+        if self.nodePath is not None:
+            self.nodePath.removeNode()
+            self.nodePath = None
+
+        quitButtonNode = NametagGlobals.quitButton[clickState]
+        self.nodePath = quitButtonNode.copyTo(self.contents)
+
+    def setClickState(self, clickState):
+        self.applyClickState(clickState)
+
+        Clickable2d.setClickState(self, clickState)
+
+    def enterDepressed(self):
+        base.playSfx(NametagGlobals.clickSound)
+
+    def enterRollover(self):
+        if self.lastClickState != PGButton.SDepressed:
+            base.playSfx(NametagGlobals.rolloverSound)
+
+    def updateClickRegion(self):
+        if self.nodePath is not None:
+            right = NametagGlobals.quitButtonWidth / 2.0
+            left = -right
+            top = NametagGlobals.quitButtonHeight / 2.0
+            bottom = -top
+
+            self.setClickRegionFrame(left, right, bottom, top)
+
+
 class WhisperPopup(Clickable2d, MarginVisible):
     CONTENTS_SCALE = 0.25
 
     TEXT_WORD_WRAP = 8
 
-    QUIT_BUTTON_SCALE = 12
-    QUIT_BUTTON_SHIFT = (0.035, 0, 0.035)
+    QUIT_BUTTON_SHIFT = (0.42, 0, 0.42)
 
     def __init__(self, text, font, whisperType, timeout=10):
         Clickable2d.__init__(self, 'WhisperPopup')
@@ -66,7 +129,7 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.chatBalloon = None
 
         if self.quitButton is not None:
-            self.quitButton.removeNode()
+            self.quitButton.destroy()
             self.quitButton = None
 
         self.textNode = None
@@ -82,7 +145,7 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.chatBalloon = None
 
         if self.quitButton is not None:
-            self.quitButton.removeNode()
+            self.quitButton.destroy()
             self.quitButton = None
 
         self.contents.node().removeAllChildren()
@@ -109,16 +172,15 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
         # Draw the quit button:
-        quitButtonNode = NametagGlobals.quitButton[PGButton.SReady]
-        self.quitButton = quitButtonNode.copyTo(self.contents)
-        self.quitButton.setScale(self.QUIT_BUTTON_SCALE)
+        self.quitButton = WhisperQuitButton()
+        quitButtonNodePath = self.contents.attachNewNode(self.quitButton)
 
         # Move the quit button to the top right of the TextNode:
-        self.quitButton.setPos(self.contents.getRelativePoint(
+        quitButtonNodePath.setPos(self.contents.getRelativePoint(
             self.chatBalloon.textNodePath, (right, 0, top)))
 
         # Apply the quit button shift:
-        self.quitButton.setPos(self.quitButton, self.QUIT_BUTTON_SHIFT)
+        quitButtonNodePath.setPos(quitButtonNodePath, self.QUIT_BUTTON_SHIFT)
 
         # Update the click region if necessary:
         if self.getCell() is not None:
@@ -178,6 +240,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.region.setActive(True)
         else:
             self.region.setActive(False)
+
+        self.quitButton.updateClickRegion()
 
     def marginVisibilityChanged(self):
         if self.getCell() is not None:
