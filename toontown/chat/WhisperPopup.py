@@ -11,10 +11,13 @@ from toontown.toontowngui.Clickable2d import Clickable2d
 class WhisperQuitButton(Clickable2d):
     CONTENTS_SCALE = 12
 
-    def __init__(self):
+    def __init__(self, whisperPopup):
         Clickable2d.__init__(self, 'WhisperQuitButton')
 
+        self.whisperPopup = whisperPopup
+
         self.contents.setScale(self.CONTENTS_SCALE)
+        self.contents.hide()
 
         self.nodePath = None
 
@@ -52,6 +55,13 @@ class WhisperQuitButton(Clickable2d):
 
     def setClickState(self, clickState):
         self.applyClickState(clickState)
+
+        if self.isHovering() or self.whisperPopup.isHovering():
+            self.contents.show()
+        elif self.clickState == PGButton.SDepressed:
+            self.contents.show()
+        else:
+            self.contents.hide()
 
         Clickable2d.setClickState(self, clickState)
 
@@ -175,7 +185,7 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
         # Draw the quit button:
-        self.quitButton = WhisperQuitButton()
+        self.quitButton = WhisperQuitButton(self)
         quitButtonNodePath = self.contents.attachNewNode(self.quitButton)
 
         # Move the quit button to the top right of the TextNode:
@@ -224,6 +234,13 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.applyClickState(clickState)
         else:
             self.applyClickState(PGButton.SInactive)
+
+        if self.isHovering() or self.quitButton.isHovering():
+            self.quitButton.contents.show()
+        elif self.quitButton.getClickState() == PGButton.SDepressed:
+            self.quitButton.contents.show()
+        else:
+            self.quitButton.contents.hide()
 
         Clickable2d.setClickState(self, clickState)
 

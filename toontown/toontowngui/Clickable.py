@@ -59,6 +59,9 @@ class Clickable(FSM, PandaNode, DirectObject):
     def isClickable(self):
         return self.active
 
+    def isHovering(self):
+        return self.__hovering
+
     def setClickState(self, clickState):
         self.lastClickState = self.clickState
         self.clickState = clickState
@@ -104,7 +107,8 @@ class Clickable(FSM, PandaNode, DirectObject):
 
     def __handleMouseLeave(self, region, button):
         self.__hovering = False
-        self.setClickState(PGButton.SReady)
+        if self.clickState != PGButton.SDepressed:
+            self.setClickState(PGButton.SReady)
 
     def __handleMouseDown(self, region, button):
         self.setClickState(PGButton.SDepressed)
