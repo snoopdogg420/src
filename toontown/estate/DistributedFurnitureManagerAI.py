@@ -11,7 +11,7 @@ from DistributedFurnitureItemAI import DistributedFurnitureItemAI
 from DistributedPhoneAI import DistributedPhoneAI
 from DistributedClosetAI import DistributedClosetAI
 from DistributedTrunkAI import DistributedTrunkAI
-
+from otp.ai.MagicWordGlobal import *
 
 class FurnitureError(Exception):
     def __init__(self, code):
@@ -477,3 +477,72 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
             if window.placement == slot:
                 return window
         return None
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[])
+def findCloset():
+    """
+    find the closet
+    """
+    target = spellbook.getTarget()
+    if not target:
+        target = spellbook.getInvoker()
+    if not target:
+        return "Strange.. who are we talking about?"
+
+    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
+        return "no houses in the state"
+
+    for house in target.estate.houses:
+        if house.doId == target.houseId:
+            fm = house.interior.furnitureManager
+            for item in fm.items:
+                if item.catalogItem.getFlags() & FLCloset:
+                    return 'items: %s'%(str(item.catalogItem))
+            for item in fm.atticItems:
+                if item.getFlags() & FLCloset:
+                    return 'atticItems: %s'%(str(item))
+    return "I cannot find your closet"
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[])
+def recoverCloset():
+    """
+    recover the closet
+    """
+    target = spellbook.getTarget()
+    if not target:
+        target = spellbook.getInvoker()
+    if not target:
+        return "Strange.. who are we talking about?"
+
+    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
+        return "no houses in the state"
+
+    for house in target.estate.houses:
+        if house.doId == target.houseId:
+            fm = house.interior.furnitureManager
+            for item in fm.items:
+                if item.catalogItem.getFlags() & FLCloset:
+                    fm.moveItemToAttic(item.doId);
+                    return "Moved the closet"
+    return "I cannot find your closet"
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[])
+def fillAttic():
+    """
+    move everything to the attic
+    """
+    target = spellbook.getTarget()
+    if not target:
+        target = spellbook.getInvoker()
+    if not target:
+        return "Strange.. who are we talking about?"
+
+    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
+        return "no houses in the state"
+
+    for house in target.estate.houses:
+        if house.doId == target.houseId:
+            fm = house.interior.furnitureManager
+            for item in fm.items:
+                fm.moveItemToAttic(item.doId);
+    return "everything has been moved to the attic"
