@@ -497,7 +497,10 @@ def findCloset():
             fm = house.interior.furnitureManager
             for item in fm.items:
                 if item.catalogItem.getFlags() & FLCloset:
-                    return str(item.catalogItem)
+                    return 'items: %s'%(str(item.catalogItem))
+            for item in fm.atticItems:
+                if item.getFlags() & FLCloset:
+                    return 'atticItems: %s'%(str(item))
     return "I cannot find your closet"
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[])
