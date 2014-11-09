@@ -495,9 +495,10 @@ def findCloset():
             for item in fm.items:
                 if item.catalogItem.getFlags() & FLCloset:
                     return str(item.catalogItem)
+    return "I cannot find your closet"
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[])
-def fillCloset():
+def recoverCloset():
     target = spellbook.getTarget()
     if not target:
         target = spellbook.getInvoker()
@@ -511,4 +512,7 @@ def fillCloset():
         if house.doId == target.houseId:
             fm = house.interior.furnitureManager
             for item in fm.items:
-                fm.moveItemToAttic(item.doId);
+                if item.catalogItem.getFlags() & FLCloset:
+                    fm.moveItemToAttic(item.doId);
+                    return "Moved the closet"
+    return "I cannot find your closet"
