@@ -11,9 +11,6 @@ from DistributedFurnitureItemAI import DistributedFurnitureItemAI
 from DistributedPhoneAI import DistributedPhoneAI
 from DistributedClosetAI import DistributedClosetAI
 from DistributedTrunkAI import DistributedTrunkAI
-
-import pdb
-
 from otp.ai.MagicWordGlobal import *
 
 class FurnitureError(Exception):
