@@ -89,14 +89,24 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
     QUIT_BUTTON_SHIFT = (0.42, 0, 0.42)
 
-    def __init__(self, text, font, whisperType, timeout=10):
+    WHISPER_TIMEOUT_MIN = 10
+    WHISPER_TIMEOUT_MAX = 20
+
+    def __init__(self, text, font, whisperType, timeout=None):
         Clickable2d.__init__(self, 'WhisperPopup')
         MarginVisible.__init__(self)
 
         self.text = text
         self.font = font
         self.whisperType = whisperType
-        self.timeout = timeout
+        if timeout is None:
+            self.timeout = len(text) * 0.33
+            if self.timeout < self.WHISPER_TIMEOUT_MIN:
+                self.timeout = self.WHISPER_TIMEOUT_MIN
+            elif self.timeout > self.WHISPER_TIMEOUT_MAX:
+                self.timeout = self.WHISPER_TIMEOUT_MAX
+        else:
+            self.timeout = timeout
 
         self.active = False
 
