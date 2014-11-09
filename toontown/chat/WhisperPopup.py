@@ -1,4 +1,4 @@
-from panda3d.core import TextNode, PGButton
+from panda3d.core import TextNode, PGButton, Point3
 
 from toontown.chat import ChatGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
@@ -209,7 +209,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.quitButton.setClickEvent(self.quitEvent)
 
         # Update the click region if necessary:
-        if self.getCell() is not None:
+        if self.cell is not None:
+            self.reposition()
             self.updateClickRegion()
         else:
             if self.region is not None:
@@ -279,8 +280,30 @@ class WhisperPopup(Clickable2d, MarginVisible):
             self.quitButton.updateClickRegion()
 
     def marginVisibilityChanged(self):
-        if self.getCell() is not None:
+        if self.cell is not None:
+            self.reposition()
             self.updateClickRegion()
         else:
             if self.region is not None:
                 self.region.setActive(False)
+
+    def reposition(self):
+        origin = Point3()
+
+        self.contents.setPos(origin)
+
+        left, right, bottom, top = self.textNode.getFrameActual()
+        if self.cell in base.bottomCells:
+            # Move the origin to the bottom center of the chat balloon:
+            origin = self.contents.getRelativePoint(
+                self.chatBalloon.textNodePath, ((left+right) / 2.0, 0, bottom))
+        elif self.cell in base.leftCells:
+            # Move the origin to the left center of the chat balloon:
+            origin = self.contents.getRelativePoint(
+                self.chatBalloon.textNodePath, (left, 0, (bottom+top) / 2.0))
+        elif self.cell in base.rightCells:
+            # Move the origin to the right center of the chat balloon:
+            origin = self.contents.getRelativePoint(
+                self.chatBalloon.textNodePath, (right, 0, (bottom+top) / 2.0))
+
+        self.contents.setPos(self.contents, -origin)

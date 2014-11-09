@@ -1,6 +1,6 @@
 from direct.task.Task import Task
 import math
-from panda3d.core import PGButton, VBase4, DepthWriteAttrib
+from panda3d.core import PGButton, VBase4, DepthWriteAttrib, Point3
 
 from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.margins import MarginGlobals
@@ -28,6 +28,7 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         self.actualChatText = ''
 
         self.arrow = None
+        self.textNodePath = None
 
         self.contents.setScale(self.CONTENTS_SCALE)
         self.hideThought()
@@ -38,6 +39,10 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         self.ignoreAll()
 
         Nametag.destroy(self)
+
+        if self.textNodePath is not None:
+            self.textNodePath.removeNode()
+            self.textNodePath = None
 
         if self.arrow is not None:
             self.arrow.removeNode()
@@ -112,7 +117,8 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
 
         Nametag.update(self)
 
-        if self.getCell() is not None:
+        if self.cell is not None:
+            self.reposition()
             self.updateClickRegion()
         else:
             if self.region is not None:
@@ -122,7 +128,7 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         if (self.avatar is None) or self.avatar.isEmpty():
             return Task.cont
 
-        if (self.getCell() is None) or (self.arrow is None):
+        if (self.cell is None) or (self.arrow is None):
             return Task.cont
 
         location = self.avatar.getPos(NametagGlobals.me)
@@ -145,6 +151,10 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
 
         # Set our priority in the margin system:
         self.setPriority(MarginGlobals.MP_normal)
+
+        if self.textNodePath is not None:
+            self.textNodePath.removeNode()
+            self.textNodePath = None
 
         if self.arrow is not None:
             self.arrow.removeNode()
@@ -180,6 +190,10 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         # Set our priority in the margin system:
         self.setPriority(MarginGlobals.MP_low)
 
+        if self.textNodePath is not None:
+            self.textNodePath.removeNode()
+            self.textNodePath = None
+
         if self.arrow is not None:
             self.arrow.removeNode()
             self.arrow = None
@@ -201,10 +215,10 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         self.textNode.setTextColor(foreground)
 
         # Attach the TextNode:
-        textNodePath = self.contents.attachNewNode(self.textNode, 1)
-        textNodePath.setTransparency(foreground[3] < 1)
-        textNodePath.setAttrib(DepthWriteAttrib.make(0))
-        textNodePath.setY(self.TEXT_Y_OFFSET)
+        self.textNodePath = self.contents.attachNewNode(self.textNode, 1)
+        self.textNodePath.setTransparency(foreground[3] < 1)
+        self.textNodePath.setAttrib(DepthWriteAttrib.make(0))
+        self.textNodePath.setY(self.TEXT_Y_OFFSET)
 
         # Attach a panel behind the TextNode:
         self.panel = NametagGlobals.cardModel.copyTo(self.contents, 0)
@@ -228,8 +242,43 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         self.arrow.setColor(self.nametagColor[0][0])
 
     def marginVisibilityChanged(self):
-        if self.getCell() is not None:
+        if self.cell is not None:
+            self.reposition()
             self.updateClickRegion()
         else:
             if self.region is not None:
                 self.region.setActive(False)
+
+    def reposition(self):
+        origin = Point3()
+
+        self.contents.setPos(origin)
+
+        if self.chatBalloon is not None:
+            nodePath = self.chatBalloon.textNodePath
+
+            left, right, bottom, top = self.chatTextNode.getFrameActual()
+        elif self.panel is not None:
+            nodePath = self.textNodePath
+
+            left, right, bottom, top = self.textNode.getFrameActual()
+
+            # Compensate for the arrow:
+            bottom -= self.ARROW_SCALE
+        else:
+            return
+
+        if self.cell in base.bottomCells:
+            # Move the origin to the bottom center of the node path:
+            origin = self.contents.getRelativePoint(
+                nodePath, ((left+right) / 2.0, 0, bottom))
+        elif self.cell in base.leftCells:
+            # Move the origin to the left center of the node path:
+            origin = self.contents.getRelativePoint(
+                nodePath, (left, 0, (bottom+top) / 2.0))
+        elif self.cell in base.rightCells:
+            # Move the origin to the right center of the node path:
+            origin = self.contents.getRelativePoint(
+                nodePath, (right, 0, (bottom+top) / 2.0))
+
+        self.contents.setPos(self.contents, -origin)
