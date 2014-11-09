@@ -250,6 +250,9 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
                 self.region.setActive(False)
 
     def reposition(self):
+        if self.contents is None:
+            return
+
         origin = Point3()
 
         self.contents.setPos(origin)
