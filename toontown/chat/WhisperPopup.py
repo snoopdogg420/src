@@ -265,7 +265,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
             if self.region is not None:
                 self.region.setActive(False)
 
-        self.quitButton.updateClickRegion()
+        if self.quitButton is not None:
+            self.quitButton.updateClickRegion()
 
     def marginVisibilityChanged(self):
         if self.getCell() is not None:
