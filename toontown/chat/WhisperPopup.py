@@ -85,6 +85,7 @@ class WhisperQuitButton(Clickable2d):
 class WhisperPopup(Clickable2d, MarginVisible):
     CONTENTS_SCALE = 0.25
 
+    TEXT_MAX_ROWS = 6
     TEXT_WORD_WRAP = 8
 
     QUIT_BUTTON_SHIFT = (0.42, 0, 0.42)
@@ -173,6 +174,20 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
         self.contents.node().removeAllChildren()
 
+        self.draw()
+
+        if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
+            self.reposition()
+            self.updateClickRegion()
+        else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
+            if self.region is not None:
+                self.region.setActive(False)
+
+    def draw(self):
         if self.isClickable():
             foreground, background = self.whisperColor[self.clickState]
         else:
@@ -207,14 +222,6 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
         # Allow the quit button to close this whisper:
         self.quitButton.setClickEvent(self.quitEvent)
-
-        # Update the click region if necessary:
-        if self.cell is not None:
-            self.reposition()
-            self.updateClickRegion()
-        else:
-            if self.region is not None:
-                self.region.setActive(False)
 
     def manage(self, marginManager):
         MarginVisible.manage(self, marginManager)
@@ -281,9 +288,13 @@ class WhisperPopup(Clickable2d, MarginVisible):
 
     def marginVisibilityChanged(self):
         if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
             self.reposition()
             self.updateClickRegion()
         else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
             if self.region is not None:
                 self.region.setActive(False)
 
@@ -294,6 +305,25 @@ class WhisperPopup(Clickable2d, MarginVisible):
         origin = Point3()
 
         self.contents.setPos(origin)
+
+        if self.chatBalloon is not None:
+            self.chatBalloon.removeNode()
+            self.chatBalloon = None
+
+        if self.quitButton is not None:
+            self.quitButton.destroy()
+            self.quitButton = None
+
+        self.contents.node().removeAllChildren()
+
+        if (self.cell in base.leftCells) or (self.cell in base.rightCells):
+            textWidth = self.textNode.calcWidth(self.text)
+            if (textWidth / self.TEXT_WORD_WRAP) > self.TEXT_MAX_ROWS:
+                self.textNode.setWordwrap(textWidth / (self.TEXT_MAX_ROWS-0.5))
+        else:
+            self.textNode.setWordwrap(self.TEXT_WORD_WRAP)
+
+        self.draw()
 
         left, right, bottom, top = self.textNode.getFrameActual()
         if self.cell in base.bottomCells:

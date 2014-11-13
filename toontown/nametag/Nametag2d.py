@@ -118,9 +118,13 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         Nametag.update(self)
 
         if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
             self.reposition()
             self.updateClickRegion()
         else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
             if self.region is not None:
                 self.region.setActive(False)
 
@@ -243,9 +247,13 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
 
     def marginVisibilityChanged(self):
         if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
             self.reposition()
             self.updateClickRegion()
         else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
             if self.region is not None:
                 self.region.setActive(False)
 
