@@ -242,10 +242,30 @@ class TrunkGUI(StateData.StateData):
         self.glasses = []
         self.backpacks = []
         self.shoes = []
-        self.hats.append((self.toon.hat[0], self.toon.hat[1], self.toon.hat[2]))
-        self.glasses.append((self.toon.glasses[0], self.toon.glasses[1], self.toon.glasses[2]))
-        self.backpacks.append((self.toon.backpack[0], self.toon.backpack[1], self.toon.backpack[2]))
-        self.shoes.append((self.toon.shoes[0], self.toon.shoes[1], self.toon.shoes[2]))
+
+        self.hats.append((0, 0, 0))
+        self.glasses.append((0, 0, 0))
+        self.backpacks.append((0, 0, 0))
+        self.shoes.append((0, 0, 0))
+
+        self.hatChoice = 0
+        self.glassesChoice = 0
+        self.backpackChoice = 0
+        self.shoesChoice = 0
+
+        if (self.toon.hat[0] != 0 or self.toon.hat[1] != 0 or self.toon.hat[2] != 0):
+              self.hatChoice = 1
+              self.hats.append((self.toon.hat[0], self.toon.hat[1], self.toon.hat[2]))
+        if (self.toon.glasses[0] != 0 or self.toon.glasses[1] != 0 or self.toon.glasses[2] != 0):
+              self.glassesChoice = 1
+              self.glasses.append((self.toon.glasses[0], self.toon.glasses[1], self.toon.glasses[2]))
+        if (self.toon.backpack[0] != 0 or self.toon.backpack[1] != 0 or self.toon.backpack[2] != 0):
+              self.backpackChoice = 1
+              self.backpacks.append((self.toon.backpack[0], self.toon.backpack[1], self.toon.backpack[2]))
+        if (self.toon.shoes[0] != 0 or self.toon.shoes[1] != 0 or self.toon.shoes[2] != 0):
+              self.shoesChoice = 1
+              self.shoes.append((self.toon.shoes[0], self.toon.shoes[1], self.toon.shoes[2]))
+
         i = 0
         while i < len(self.hatList):
             self.hats.append((self.hatList[i], self.hatList[i + 1], self.hatList[i + 2]))
@@ -266,10 +286,6 @@ class TrunkGUI(StateData.StateData):
             self.shoes.append((self.shoesList[i], self.shoesList[i + 1], self.shoesList[i + 2]))
             i = i + 3
 
-        self.hatChoice = 0
-        self.glassesChoice = 0
-        self.backpackChoice = 0
-        self.shoesChoice = 0
         self.swapHat(0)
         self.swapGlasses(0)
         self.swapBackpack(0)
