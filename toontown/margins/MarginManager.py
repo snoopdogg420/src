@@ -24,22 +24,18 @@ class MarginManager(PandaNode):
         return cell
 
     def removeCell(self, cell):
-        if cell not in self.cells:
-            return
-
-        self.cells.remove(cell)
-        self.reorganize()
+        if cell in self.cells:
+            self.cells.remove(cell)
+            self.reorganize()
 
     def addVisible(self, visible):
         self.visibles.add(visible)
         self.reorganize()
 
     def removeVisible(self, visible):
-        if visible not in self.visibles:
-            return
-
-        self.visibles.remove(visible)
-        self.reorganize()
+        if visible in self.visibles:
+            self.visibles.remove(visible)
+            self.reorganize()
 
     def getActiveCells(self):
         return [cell for cell in self.cells if cell.getActive()]
