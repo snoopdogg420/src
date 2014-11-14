@@ -10,10 +10,7 @@ class NametagFloat2d(NametagFloat3d):
     def update(self):
         NametagFloat3d.update(self)
 
-        if self.getChatText() and self.hasChatButton():
-            self.updateClickRegion()
-        else:
-            self.region.setActive(False)
+        self.updateClickRegion()
 
     def setClickRegionFrame(self, left, right, bottom, top):
         mat = self.contents.getNetTransform().getMat()
