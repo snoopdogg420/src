@@ -101,6 +101,19 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
 
         items.removeDuplicates(FLCloset)
 
+        # Due to a bug, some people are missing their closets...
+        hasCloset = False
+        for item in items:
+            if item.getFlags() & FLCloset:
+                hasCloset = True
+                break
+
+        if not hasCloset:
+            item = CatalogFurnitureItem(500)  # the basic closet...
+            item.posHpr = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+            items.append(item)
+            # Since we have modified the items list, should we save it back to the house?
+
         for item in items:
             if item.getFlags() & FLTrunk:
                 if self.house.gender is 0:
@@ -520,10 +533,11 @@ def recoverCloset():
     for house in target.estate.houses:
         if house.doId == target.houseId:
             fm = house.interior.furnitureManager
-            for item in fm.items:
+            for item in reversed(fm.items):
                 if item.catalogItem.getFlags() & FLCloset:
                     fm.moveItemToAttic(item.doId);
                     return "Moved the closet"
+            fm.saveToHouse()
     return "I cannot find your closet"
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[])
@@ -543,6 +557,31 @@ def fillAttic():
     for house in target.estate.houses:
         if house.doId == target.houseId:
             fm = house.interior.furnitureManager
-            for item in fm.items:
+            for item in reversed(fm.items):
                 fm.moveItemToAttic(item.doId);
+            fm.saveToHouse()
     return "everything has been moved to the attic"
+
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[])
+def emptyHouse():
+    """
+    delete everything in the house
+    """
+    target = spellbook.getTarget()
+    if not target:
+        target = spellbook.getInvoker()
+    if not target:
+        return "Strange.. who are we talking about?"
+
+    if not hasattr(target, "estate") or not hasattr(target.estate, "houses"):
+        return "no houses in the state"
+
+    for house in target.estate.houses:
+        if house.doId == target.houseId:
+            fm = house.interior.furnitureManager
+            for item in reversed(fm.items):
+                item.destroy()
+                fm.items.remove(item)
+            fm.saveToHouse()
+    return "The house is empty"
