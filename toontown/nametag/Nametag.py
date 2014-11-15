@@ -213,7 +213,7 @@ class Nametag:
                     self.CHAT_BALLOON_ALPHA)
             self.chatBalloon.setForeground(foreground)
             self.chatBalloon.setBackground(background)
-            self.chatBalloon.setButton(self.chatButton[self.clickState])
+            self.chatBalloon.setButton(self.chatButton[clickState])
         elif self.panel is not None:
             foreground, background = self.nametagColor[clickState]
             self.setForeground(foreground)

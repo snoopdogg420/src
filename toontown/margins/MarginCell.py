@@ -10,6 +10,9 @@ class MarginCell(NodePath):
         self.contentNodePath = None
 
     def setActive(self, active):
+        if not active:
+            self.setContent(None)
+
         self.active = active
 
     def getActive(self):
