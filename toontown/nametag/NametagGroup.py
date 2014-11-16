@@ -97,14 +97,14 @@ class NametagGroup:
             return Task.cont
 
         chatText = self.getChatText()
-        if self.avatar == NametagGlobals.me:
+        if NametagGlobals.forceOnscreenChat and chatText:
+            visible3d = False
+        elif self.avatar == NametagGlobals.me:
             if chatText and (not base.cam.node().isInView(self.avatar.getPos(base.cam))):
                 visible3d = False
             else:
                 visible3d = True
         elif NametagGlobals.force2dNametags:
-            visible3d = False
-        elif NametagGlobals.forceOnscreenChat and chatText:
             visible3d = False
         elif (not NametagGlobals.want2dNametags) and (not chatText):
             visible3d = True

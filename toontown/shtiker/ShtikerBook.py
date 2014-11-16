@@ -67,6 +67,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
         base.setBackgroundColor(0.05, 0.15, 0.4)
         base.setCellsActive([base.rightCells[0]], 0)
         NametagGlobals.setForce2dNametags(True)
+        NametagGlobals.setForceOnscreenChat(True)
         self.__isOpen = 1
         self.__setButtonVisibility()
         self.show()
@@ -102,6 +103,7 @@ class ShtikerBook(DirectFrame, StateData.StateData):
             base.render.prepareScene(gsg)
         base.setCellsActive([base.rightCells[0]], 1)
         NametagGlobals.setForce2dNametags(False)
+        NametagGlobals.setForceOnscreenChat(False)
         self.__isOpen = 0
         self.hide()
         self.hideButton()
