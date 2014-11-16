@@ -317,7 +317,8 @@ class WhisperPopup(Clickable2d, MarginVisible):
         self.contents.node().removeAllChildren()
 
         if (self.cell in base.leftCells) or (self.cell in base.rightCells):
-            textWidth = self.textNode.calcWidth(self.text)
+            text = self.text.replace('\x01WLDisplay\x01', '').replace('\x02', '')
+            textWidth = self.textNode.calcWidth(text)
             if (textWidth / self.TEXT_WORD_WRAP) > self.TEXT_MAX_ROWS:
                 self.textNode.setWordwrap(textWidth / (self.TEXT_MAX_ROWS-0.5))
         else:
