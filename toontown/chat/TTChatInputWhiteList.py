@@ -87,7 +87,7 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
             else:
                 messenger.send('wakeup')
                 messenger.send('enterNormalChat')
-        catch UnicodeDecodeError:
+        except UnicodeDecodeError:
             return
 
     def destroy(self):
@@ -210,7 +210,7 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
                         newwords[-1] = '\x01WLDisplay\x01' + lastword + '\x02'
                     else:
                         newwords[-1] = '\x01WLEnter\x01' + lastword + '\x02'
-                catch UnicodeDecodeError:
+                except UnicodeDecodeError:
                     self.okayToSubmit = False
             newtext = ' '.join(newwords)
             self.chatEntry.set(newtext)
