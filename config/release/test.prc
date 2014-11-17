@@ -9,7 +9,7 @@ shard-mid-pop 150
 
 # Core features:
 want-housing #t
-want-pets #f
+want-pets #t
 want-parties #f
 want-cogdominiums #f
 want-achievements #f
