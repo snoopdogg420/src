@@ -1269,7 +1269,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def hasTeleportAccess(self, zoneId):
         return zoneId in self.teleportZoneArray
-        
+
     def setScavengerHunt(self, scavengerHuntArray):
         self.scavengerHuntArray = scavengerHuntArray
 
@@ -1750,9 +1750,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             elif self.isLocal():
                 base.cr.addPetToFriendsMap()
             return
-
-        def getPetId(self):
-            return self.petId
 
         def getPetId(self):
             return self.petId

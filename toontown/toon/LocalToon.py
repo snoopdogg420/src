@@ -1962,12 +1962,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         if self.questMap:
             self.questMap.stop()
 
-    def getPetId(self):
-        return False
-
-    def hasPet(self):
-        return False
-
     def setAchievements(self, achievements):
         if base.wantAchievements:
             if self.canEarnAchievements:
