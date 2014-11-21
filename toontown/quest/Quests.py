@@ -4303,6 +4303,23 @@ class CogSuitPartReward(Reward):
          'part': self.getCogPartName()}
 
 
+class BuffReward(Reward):
+    def sendRewardAI(self, av):
+        av.addBuff(self.getBuffId(), self.getBuffTime())
+
+    def getBuffId(self):
+        return self.reward[0]
+
+    def getBuffTime(self):
+        return self.reward[1]
+
+    def getString(self):
+        return TTLocalizer.getBuffString(self.getBuffId(), self.getBuffTime())
+
+    def getPosterString(self):
+        return TTLocalizer.getBuffPosterString(self.getBuffId())
+
+
 def getRewardClass(id):
     reward = RewardDict.get(id)
     if reward:
@@ -4646,7 +4663,13 @@ RewardDict = {
     2968: (CheesyEffectReward, ToontownGlobals.CEFlatProfile, 1, 43200),
     2969: (CheesyEffectReward, ToontownGlobals.CETransparent, 1, 43200),
     2970: (CheesyEffectReward, ToontownGlobals.CENoColor, 1, 43200),
-    2971: (CheesyEffectReward, ToontownGlobals.CEInvisible, 1, 43200) }
+    2971: (CheesyEffectReward, ToontownGlobals.CEInvisible, 1, 43200),
+    # Buff rewards (BuffID, Time)
+    3001: (BuffReward, ToontownGlobals.BMovementSpeed, 30),
+    3002: (BuffReward, ToontownGlobals.BMovementSpeed, 60),
+    3003: (BuffReward, ToontownGlobals.BMovementSpeed, 180),
+    3004: (BuffReward, ToontownGlobals.BMovementSpeed, 360) }
+
 
 def getNumTiers():
     return len(RequiredRewardTrackDict) - 1
@@ -4716,7 +4739,7 @@ OptionalRewardTrackDict = {
     DL_TIER + 1: (1000, 607, 607, 607, 607, 608, 608, 608, 608, 2923, 2924, 2927, 2928, 2929, 2930, 2931),
     DL_TIER + 2: (608, 608, 608, 608, 609, 609, 609, 609, 2941, 2942, 2943, 2944, 2947, 2948, 2949, 2950, 2951),
     DL_TIER + 3: (1000, 609, 609, 609, 609, 609, 609, 2961, 2962, 2963, 2964, 2965, 2966, 2967, 2968, 2969, 2970, 2971),
-    ELDER_TIER: (1000, 1000, 610, 611, 612, 613, 614, 615, 616, 617, 618, 2961, 2962, 2963, 2964, 2965, 2966, 2967, 2968, 2969, 2970, 2971) }
+    ELDER_TIER: (3001, 3002, 3003, 3004) }#(1000, 1000, 610, 611, 612, 613, 614, 615, 616, 617, 618, 2961, 2962, 2963, 2964, 2965, 2966, 2967, 2968, 2969, 2970, 2971) } #, 3001, 3002, 3003, 3004) }
 
 def isRewardOptional(tier, rewardId):
     return tier in OptionalRewardTrackDict and rewardId in OptionalRewardTrackDict[tier]

@@ -9806,4 +9806,11 @@ YangEnjoy = 'Enjoy! You are now permanently a polar bear.'
 YangGoodbye = 'Okay, then. See you later!'
 
 # Buffs
-BMovementSpeed = 'Increased movement speed.'
+
+BMovementSpeed = 'Increased movement speed'
+
+def getBuffString(buffId, buffTime):
+    return BMovementSpeed + ' for %s %s.' % (buffTime, 'minutes')
+
+def getBuffPosterString(buffId):
+    return 'Reward: %s.' % BMovementSpeed

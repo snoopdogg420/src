@@ -6,6 +6,7 @@ from direct.distributed.PyDatagram import PyDatagram
 from direct.task import Task
 from pandac.PandaModules import *
 import random
+import time
 import re
 
 import Experience
@@ -4262,11 +4263,20 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
         return 0
 
+    def addBuff(self, id, duration):
+        timestamp = int(time.time()) + (duration * 60)
+        self.buffs.insert(id, timestamp)
+        self.b_setBuffs(self.buffs)
+
+    def removeBuff(self, id):
+        self.buffs[id] = 0
+        self.d_setBuffs(self.buffs)
+
     def setBuffs(self, buffs):
         self.buffs = buffs
 
     def d_setBuffs(self, buffs):
-        self.sendUpdate('setBuffs', buffs)
+        self.sendUpdate('setBuffs', [buffs])
 
     def b_setBuffs(self, buffs):
         self.setBuffs(buffs)

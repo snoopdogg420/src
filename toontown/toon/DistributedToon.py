@@ -2622,7 +2622,13 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def setBuffs(self, buffs):
         self.buffs = buffs
+        for id, status in enumerate(self.buffs):
+            self.handleBuff(id, status)
 
+    def handleBuff(self, id, status):
+        print 'got buff with id: %s' % id
+        if status:
+            print 'buff is active'
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
