@@ -4264,11 +4264,17 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         return 0
 
     def addBuff(self, id, duration):
-        timestamp = int(time.time()) + (duration * 60)
-        self.buffs.insert(id, timestamp)
+        buffCount = len(self.buffs)
+        if buffCount <= id:
+            self.buffs.extend([0] * (buffCount-id))
+        timestamp = int(time.time()) + (duration*60)
+        self.buffs[id] = timestamp
         self.b_setBuffs(self.buffs)
 
     def removeBuff(self, id):
+        if len(self.buffs) <= id:
+            self.notify.warning('tried to remove non-existent buff %d on avatar %d.' % (id, self.doId))
+            return
         self.buffs[id] = 0
         self.d_setBuffs(self.buffs)
 
