@@ -66,6 +66,7 @@ if base.wantKarts:
 if (__debug__):
     import pdb
 
+
 class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, DistributedSmoothNode.DistributedSmoothNode, DelayDeletable):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedToon')
     partyNotify = DirectNotifyGlobal.directNotify.newCategory('DistributedToon_Party')
@@ -2627,12 +2628,19 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def applyBuffs(self):
         for id, timestamp in enumerate(self.buffs):
             if id == ToontownGlobals.BMovementSpeed:
-                if timestamp:
-                    self.controlManager.setSpeeds(
-                        ToontownGlobals.ToonForwardSpeed * ToontownGlobals.BMovementSpeedMultiplier,
-                        ToontownGlobals.ToonJumpForce,
-                        ToontownGlobals.ToonReverseSpeed * ToontownGlobals.BMovementSpeedMultiplier,
-                        ToontownGlobals.ToonRotateSpeed * ToontownGlobals.BMovementSpeedMultiplier)
+                if not timestamp:
+                    return
+                if self.zoneId is None:
+                    return
+                if ZoneUtil.isDynamicZone(self.zoneId):
+                    return
+                if ZoneUtil.getWhereName(self.zoneId, True) not in ('playground', 'street', 'toonInterior', 'cogHQExterior', 'factoryExterior'):
+                    return
+                self.controlManager.setSpeeds(
+                    ToontownGlobals.ToonForwardSpeed * ToontownGlobals.BMovementSpeedMultiplier,
+                    ToontownGlobals.ToonJumpForce,
+                    ToontownGlobals.ToonReverseSpeed * ToontownGlobals.BMovementSpeedMultiplier,
+                    ToontownGlobals.ToonRotateSpeed * ToontownGlobals.BMovementSpeedMultiplier)
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
