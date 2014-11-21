@@ -4271,15 +4271,22 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.buffs[id] = timestamp
         self.b_setBuffs(self.buffs)
 
-    def removeBuff(self, id):
+    def removeBuffTask(self, task, id):
         if len(self.buffs) <= id:
             self.notify.warning('tried to remove non-existent buff %d on avatar %d.' % (id, self.doId))
-            return
+            return task.done
         self.buffs[id] = 0
         self.d_setBuffs(self.buffs)
+        return task.done
 
     def setBuffs(self, buffs):
         self.buffs = buffs
+        for id, timestamp in enumerate(self.buffs):
+            if timestamp:
+                taskName = self.uniqueName('removeBuff-%s' % id)
+                taskMgr.remove(taskName)
+                delayTime = max(timestamp - int(time.time()), 0)
+                taskMgr.doMethodLater(delayTime, self.removeBuffTask, taskName, extraArgs=[id])
 
     def d_setBuffs(self, buffs):
         self.sendUpdate('setBuffs', [buffs])
