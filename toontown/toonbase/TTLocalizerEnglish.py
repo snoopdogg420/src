@@ -9813,4 +9813,4 @@ def getBuffString(buffId, buffTime):
     return BMovementSpeed + ' for %s %s.' % (buffTime, 'minutes')
 
 def getBuffPosterString(buffId):
-    return 'Reward: %s.' % BMovementSpeed
+    return 'Reward: %s' % BMovementSpeed
