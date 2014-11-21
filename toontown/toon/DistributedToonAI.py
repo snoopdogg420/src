@@ -4266,7 +4266,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def addBuff(self, id, duration):
         buffCount = len(self.buffs)
         if buffCount <= id:
-            self.buffs.extend([0] * (buffCount-id))
+            self.buffs.extend([0] * ((id+1) - buffCount))
         timestamp = int(time.time()) + (duration*60)
         self.buffs[id] = timestamp
         self.b_setBuffs(self.buffs)
