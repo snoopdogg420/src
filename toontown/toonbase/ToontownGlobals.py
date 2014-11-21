@@ -1677,4 +1677,4 @@ AV_TOUCH_COUNT_TIME = 300
 
 # Buffs...
 
-BRunSpeed = 0
+BMovementSpeed = 0

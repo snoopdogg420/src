@@ -9804,3 +9804,6 @@ YangAlreadyWhite = "You're already white!"
 YangPickColor = 'Are you sure you want to be a polar bear?'
 YangEnjoy = 'Enjoy! You are now permanently a polar bear.'
 YangGoodbye = 'Okay, then. See you later!'
+
+# Buffs
+BMovementSpeed = 'Increased movement speed.'
