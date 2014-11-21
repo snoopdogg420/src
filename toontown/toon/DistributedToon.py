@@ -195,6 +195,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.achievements = []
         self.canEarnAchievements = False
         self.promotionStatus = [0, 0, 0, 0]
+        self.buffs = []
 
     def disable(self):
         for soundSequence in self.soundSequenceList:
@@ -1269,7 +1270,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def hasTeleportAccess(self, zoneId):
         return zoneId in self.teleportZoneArray
-        
+
     def setScavengerHunt(self, scavengerHuntArray):
         self.scavengerHuntArray = scavengerHuntArray
 
@@ -2630,6 +2631,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
     def setAchievements(self, achievements):
         self.achievements = achievements
         messenger.send(localAvatar.uniqueName('achievementsChange'))
+
+    def setBuffs(self, buffs):
+        self.buffs = buffs
 
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)

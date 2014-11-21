@@ -191,6 +191,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.teleportOverride = 0
         self._gmDisabled = False
         self.promotionStatus = [0, 0, 0, 0]
+        self.buffs = []
 
     def generate(self):
         DistributedPlayerAI.DistributedPlayerAI.generate(self)
@@ -1903,7 +1904,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
     def setTeleportOverride(self, flag):
         self.teleportOverride = flag
         self.b_setHoodsVisited([1000,2000,3000,4000,5000,6000,7000,8000,9000,10000,11000,12000,13000])
-        
+
     def b_setScavengerHunt(self, scavengerHuntArray):
         self.setScavengerHunt(scavengerHuntArray)
         self.d_setScavengerHunt(scavengerHuntArray)
@@ -4260,6 +4261,16 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
             return 1
 
         return 0
+
+    def setBuffs(self, buffs):
+        self.buffs = buffs
+
+    def d_setBuffs(self, buffs):
+        self.sendUpdate('setBuffs', buffs)
+
+    def b_setBuffs(self, buffs):
+        self.setBuffs(buffs)
+        self.d_setBuffs(buffs)
 
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
