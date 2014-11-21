@@ -2622,13 +2622,17 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def setBuffs(self, buffs):
         self.buffs = buffs
-        for id, status in enumerate(self.buffs):
-            self.handleBuff(id, status)
+        self.applyBuffs()
 
-    def handleBuff(self, id, status):
-        print 'got buff with id: %s' % id
-        if status:
-            print 'buff is active'
+    def applyBuffs(self):
+        for id, timestamp in enumerate(self.buffs):
+            if id == ToontownGlobals.BMovementSpeed:
+                if timestamp:
+                    self.controlManager.setSpeeds(
+                        ToontownGlobals.ToonForwardSpeed * ToontownGlobals.BMovementSpeedMultiplier,
+                        ToontownGlobals.ToonJumpForce,
+                        ToontownGlobals.ToonReverseSpeed * ToontownGlobals.BMovementSpeedMultiplier,
+                        ToontownGlobals.ToonRotateSpeed * ToontownGlobals.BMovementSpeedMultiplier)
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
