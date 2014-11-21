@@ -9807,10 +9807,13 @@ YangGoodbye = 'Okay, then. See you later!'
 
 # Buffs
 
-BMovementSpeed = 'Increased movement speed'
 
 def getBuffString(buffId, buffTime):
-    return BMovementSpeed + ' for %s %s.' % (buffTime, 'minutes')
+    if buffTime < 60:
+        return 'Your movement speed will be slightly increased for the next %d minutes.' % buffTime
+    else:
+        return 'Your movement speed will be slightly increased for the next %d hours.' % (buffTime / 60)
+
 
 def getBuffPosterString(buffId):
-    return 'Reward: %s' % BMovementSpeed
+    return 'Reward: Increased movement speed'
