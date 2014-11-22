@@ -64,7 +64,7 @@ class TutorialFSM(FSM):
     def enterTunnel(self):
         npcDesc = NPCToons.NPCToonDict.get(20001)
         self.flippy = NPCToons.createNPC(self.air, 20001, npcDesc, self.zones['street'], 0)
-        
+
         if simbase.air.wantHalloween:
             self.BlackCatManager = DistributedBlackCatMgrAI.DistributedBlackCatMgrAI(self.air)
             self.BlackCatManager.generateWithRequired(self.zones['street'])
@@ -122,9 +122,9 @@ class TutorialManagerAI(DistributedObjectAI):
 
         def handleTutorialSkipped(av):
             av.b_setTutorialAck(1)
-            av.b_setQuestHistory([110, 100])
-            av.addQuest((110, Quests.getQuestFromNpcId(110), Quests.getQuestToNpcId(110), Quests.getQuestReward(110, av), 0), 0)
-            self.air.questManager.toonRodeTrolleyFirstTime(av)
+            av.b_setQuests([[110, 1, 1000, 100, 1]])
+            av.b_setQuestHistory([101])
+            av.b_setRewardHistory(1, [])
 
 
         # We must wait for the avatar to be generated:
