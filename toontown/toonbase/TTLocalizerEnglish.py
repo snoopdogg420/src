@@ -9807,13 +9807,17 @@ YangGoodbye = 'Okay, then. See you later!'
 
 # Buffs
 
+buffIdStrings = {
+  0: ('Your movement speed will be slightly increased for the next %d %s.',
+      'Reward: Increased movement speed')
+}
 
 def getBuffString(buffId, buffTime):
     if buffTime < 60:
-        return 'Your movement speed will be slightly increased for the next %d minutes.' % buffTime
+        return buffIdStrings[buffId][0] % (buffTime, 'minutes')
     else:
-        return 'Your movement speed will be slightly increased for the next %d hours.' % (buffTime / 60)
+        return buffIdStrings[buffId][0] % (buffTime / 60, 'hours')
 
 
 def getBuffPosterString(buffId):
-    return 'Reward: Increased movement speed'
+    return buffIdStrings[buffId][1]
