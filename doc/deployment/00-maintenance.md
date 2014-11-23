@@ -28,6 +28,8 @@ The following is a list of configuration variables that must be present in the
                                    the access tokens that are generated in
                                    calls to the web server's RPC methods.
 
+- - -
+
 ## Running the Script ##
 To begin the maintenance process, simply run a command similar to the
 following:
