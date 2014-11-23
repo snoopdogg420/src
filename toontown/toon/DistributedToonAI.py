@@ -4278,6 +4278,11 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.buffs[id] = 0
         self.d_setBuffs(self.buffs)
 
+    def hasBuff(self, id):
+        if len(self.buffs) <= id:
+            return False
+        return self.buffs[id] != 0
+
     def setBuffs(self, buffs):
         self.buffs = buffs
         for id, timestamp in enumerate(self.buffs):
