@@ -7,6 +7,7 @@ made available to the supported platforms via the official launcher.
 - - -
 
 ## The Process ##
-1. [Going down for maintenance](00-maintenance.md)
-2. [Updating the server](01-server.md)
-3. [Updating the client](02-client.md)
+
+1. Going down for maintenance
+2. Updating the server
+3. Updating the client
