@@ -1,9 +1,9 @@
 Going down for Maintenance
 ==========================
 Before the server or client can be updated, players must notified of the
-impending downtime, the players must be disconnected from the game, and logins
-must be disabled. This describes the process of *going down for maintenance*,
-and is the first step in the deployment process.
+impending downtime and disconnected from the game, and logins must be disabled.
+This describes the process of *going down for maintenance*, and is the first
+step in the deployment process.
 
 - - -
 
