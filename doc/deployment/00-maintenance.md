@@ -14,7 +14,7 @@ down for maintenance*, and is the first step in the deployment process.
 - - -
 
 ## Configuration Requirements ##
-Thw following is a list of configuration variables that must be present in the
+The following is a list of configuration variables that must be present in the
 ```deployment/deploy.json``` configuration file:
 * **maintenance-countdown-duration** - The duration (in minutes) of the
                                        maintenance countdown.
@@ -30,7 +30,5 @@ Thw following is a list of configuration variables that must be present in the
 ## Running the Script ##
 To begin the maintenance process, simply run a command similar to the
 following:
-
-On Windows: ```ppython deployment/maintenance.py```
-
-On Linux: ```./deployment/maintenance.py```
+* On Windows: ```ppython deployment/maintenance.py```
+* On Linux: ```./deployment/maintenance.py```
