@@ -1,7 +1,7 @@
 Going down for Maintenance
 ==========================
 Before the server or client can be updated, players must be disconnected from
-the game, and clients must be disabled. The describes the process of *going
+the game, and logins must be disabled. This describes the process of *going
 down for maintenance*, and is the first step in the deployment process.
 
 - - -
@@ -30,5 +30,7 @@ Thw following is a list of configuration variables that must be present in the
 ## Running the Script ##
 To begin the maintenance process, simply run a command similar to the
 following:
+
 On Windows: ```ppython deployment/maintenance.py```
+
 On Linux: ```./deployment/maintenance.py```
