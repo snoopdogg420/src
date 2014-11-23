@@ -1,17 +1,9 @@
-from pandac.PandaModules import Point3
+from panda3d.core import Point3
 
-from toontown.nametag.NametagFloat3d import NametagFloat3d
+from toontown.toontowngui.Clickable import Clickable
 
 
-class NametagFloat2d(NametagFloat3d):
-    def doBillboardEffect(self):
-        pass
-
-    def update(self):
-        NametagFloat3d.update(self)
-
-        self.updateClickRegion()
-
+class Clickable2d(Clickable):
     def setClickRegionFrame(self, left, right, bottom, top):
         mat = self.contents.getNetTransform().getMat()
 

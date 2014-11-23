@@ -1,24 +1,33 @@
 from direct.task.Task import Task
 import math
-from pandac.PandaModules import BillboardEffect, Vec3, Quat, Point3, Point2
+from panda3d.core import BillboardEffect, Vec3, Point3, PGButton, VBase4
+from panda3d.core import DepthWriteAttrib
 
-from toontown.nametag import Nametag
+from toontown.chat.ChatBalloon import ChatBalloon
 from toontown.nametag import NametagGlobals
+from toontown.nametag.Nametag import Nametag
+from toontown.toontowngui.Clickable3d import Clickable3d
 
 
-class Nametag3d(Nametag.Nametag):
+class Nametag3d(Nametag, Clickable3d):
     SCALING_MIN_DISTANCE = 1
     SCALING_MAX_DISTANCE = 50
     SCALING_FACTOR = 0.065
 
     def __init__(self):
-        Nametag.Nametag.__init__(self)
+        Nametag.__init__(self)
+        Clickable3d.__init__(self, 'Nametag3d')
 
         self.distance = 0
-        self.scale = 1
 
         self.billboardOffset = 3
         self.doBillboardEffect()
+
+    def destroy(self):
+        self.ignoreAll()
+
+        Nametag.destroy(self)
+        Clickable3d.destroy(self)
 
     def getUniqueName(self):
         return 'Nametag3d-' + str(id(self))
@@ -50,27 +59,48 @@ class Nametag3d(Nametag.Nametag):
             left = self.chatBalloon.center[0] - (self.chatBalloon.width/2)
             right = left + self.chatBalloon.width
 
-            # Calculate the bottom of the region based on constants, with 2.4
-            # being the padded height of a one line message:
+            # Calculate the bottom of the region based on constants.
+            # 2.4 is the padded height of a single-line message:
             bottom = NametagGlobals.chatBalloon3dHeight - 2.4
             top = bottom + self.chatBalloon.height
 
-            self.setClickRegion(left, right, bottom, top)
+            self.setClickRegionFrame(left, right, bottom, top)
         elif self.panel is not None:
-            rightD = self.panelWidth / 2
-            leftD = -rightD
-            topD = self.panelHeight / 2
-            bottomD = -topD
+            centerX = (self.textNode.getLeft()+self.textNode.getRight()) / 2.0
+            centerY = (self.textNode.getBottom()+self.textNode.getTop()) / 2.0
 
-            xCenter = (self.textNode.getLeft()+self.textNode.getRight()) / 2
-            yCenter = (self.textNode.getTop()+self.textNode.getBottom()) / 2
+            left = centerX - (self.panelWidth/2.0)
+            right = centerX + (self.panelWidth/2.0)
+            bottom = centerY - (self.panelHeight/2.0)
+            top = centerY + (self.panelHeight/2.0)
 
-            left = xCenter + leftD
-            right = xCenter + rightD
-            bottom = yCenter + bottomD
-            top = yCenter + topD
+            self.setClickRegionFrame(left, right, bottom, top)
 
-            self.setClickRegion(left, right, bottom, top)
+    def isClickable(self):
+        if self.getChatText() and self.hasChatButton():
+            return True
+        return NametagGlobals.wantActiveNametags and Clickable3d.isClickable(self)
+
+    def setClickState(self, clickState):
+        if self.isClickable():
+            self.applyClickState(clickState)
+        else:
+            self.applyClickState(PGButton.SInactive)
+
+        Clickable3d.setClickState(self, clickState)
+
+    def enterDepressed(self):
+        if self.isClickable():
+            base.playSfx(NametagGlobals.clickSound)
+
+    def enterRollover(self):
+        if self.isClickable() and (self.lastClickState != PGButton.SDepressed):
+            base.playSfx(NametagGlobals.rolloverSound)
+
+    def update(self):
+        self.contents.node().removeAllChildren()
+
+        Nametag.update(self)
 
     def tick(self, task):
         distance = self.contents.getPos(base.cam).length()
@@ -80,55 +110,70 @@ class Nametag3d(Nametag.Nametag):
         elif distance > self.SCALING_MAX_DISTANCE:
             distance = self.SCALING_MAX_DISTANCE
 
-        if distance == self.distance:
-            if self.active or (self.getChatText() and self.hasChatButton()):
-                self.updateClickRegion()
-            return Task.cont
+        if distance != self.distance:
+            self.contents.setScale(math.sqrt(distance) * self.SCALING_FACTOR)
+            self.distance = distance
 
-        self.distance = distance
-
-        self.scale = math.sqrt(distance) * self.SCALING_FACTOR
-        self.contents.setScale(self.scale)
-
-        if self.active or (self.getChatText() and self.hasChatButton()):
-            self.updateClickRegion()
+        self.updateClickRegion()
 
         return Task.cont
 
-    def setClickRegion(self, left, right, bottom, top):
-        # Get a transform matrix to position the points correctly according to
-        # the nametag node:
-        transform = self.contents.getNetTransform()
-
-        # Get the inverse of the camera transform matrix:
-        # Needed so that the camera transform will not be applied to the region
-        # points twice.
-        camTransform = base.cam.getNetTransform()
-        camTransform = camTransform.getInverse()
-
-        # Compose the inverse of the camera transform and the nametag node
-        # transform:
-        transform = camTransform.compose(transform)
-        transform = transform.setQuat(Quat())
-
-        # Get the actual matrix of the transform above:
-        mat = transform.getMat()
-
-        # Transform the specified points to the new matrix:
-        camSpaceTopLeft = mat.xformPoint(Point3(float(left), 0, float(top)))
-        camSpaceBottomRight = mat.xformPoint(Point3(float(right), 0, float(bottom)))
-
-        screenSpaceTopLeft = Point2()
-        screenSpaceBottomRight = Point2()
-
-        # Project the converted points onto the lens:
-        lens = base.camLens
-        if not (lens.project(Point3(camSpaceTopLeft), screenSpaceTopLeft) and
-                lens.project(Point3(camSpaceBottomRight), screenSpaceBottomRight)):
-            self.region.setActive(False)
+    def drawChatBalloon(self, model, modelWidth, modelHeight):
+        if self.chatFont is None:
+            # We can't draw this without a font.
             return
-        left, top = screenSpaceTopLeft
-        right, bottom = screenSpaceBottomRight
 
-        self.region.setFrame(left, right, bottom, top)
-        self.region.setActive(True)
+        if self.isClickable():
+            foreground, background = self.chatColor[self.clickState]
+        else:
+            foreground, background = self.chatColor[PGButton.SInactive]
+        if self.chatType == NametagGlobals.SPEEDCHAT:
+            background = self.speedChatColor
+        if background[3] > self.CHAT_BALLOON_ALPHA:
+            background = VBase4(
+                background[0], background[1], background[2],
+                self.CHAT_BALLOON_ALPHA)
+        self.chatBalloon = ChatBalloon(
+            model, modelWidth, modelHeight, self.chatTextNode,
+            foreground=foreground, background=background,
+            reversed=self.chatReversed,
+            button=self.chatButton[self.clickState])
+        self.chatBalloon.reparentTo(self.contents)
+
+    def drawNametag(self):
+        if self.font is None:
+            # We can't draw this without a font.
+            return
+
+        # Attach the icon:
+        if self.icon is not None:
+            self.contents.attachNewNode(self.icon)
+
+        if self.isClickable():
+            foreground, background = self.nametagColor[self.clickState]
+        else:
+            foreground, background = self.nametagColor[PGButton.SInactive]
+
+        # Set the color of the TextNode:
+        self.textNode.setTextColor(foreground)
+
+        # Attach the TextNode:
+        textNodePath = self.contents.attachNewNode(self.textNode, 1)
+        textNodePath.setTransparency(foreground[3] < 1)
+        textNodePath.setAttrib(DepthWriteAttrib.make(0))
+        textNodePath.setY(self.TEXT_Y_OFFSET)
+
+        # Attach a panel behind the TextNode:
+        self.panel = NametagGlobals.cardModel.copyTo(self.contents, 0)
+        self.panel.setColor(background)
+        self.panel.setTransparency(background[3] < 1)
+
+        # Reposition the panel:
+        x = (self.textNode.getLeft()+self.textNode.getRight()) / 2.0
+        z = (self.textNode.getBottom()+self.textNode.getTop()) / 2.0
+        self.panel.setPos(x, 0, z)
+
+        # Resize the panel:
+        self.panelWidth = self.textNode.getWidth() + self.PANEL_X_PADDING
+        self.panelHeight = self.textNode.getHeight() + self.PANEL_Z_PADDING
+        self.panel.setScale(self.panelWidth, 1, self.panelHeight)

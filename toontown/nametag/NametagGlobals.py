@@ -31,6 +31,8 @@ thoughtBalloonHeight = 0
 noButton = (None, None, None, None)
 pageButton = (None, None, None, None)
 quitButton = (None, None, None, None)
+quitButtonWidth = 0
+quitButtonHeight = 0
 
 rolloverSound = None
 clickSound = None
@@ -38,6 +40,7 @@ clickSound = None
 me = None
 want2dNametags = True
 forceOnscreenChat = False
+force2dNametags = False
 wantActiveNametags = True
 
 
@@ -82,7 +85,10 @@ def setPageButton(normal, down, rollover, disabled):
 
 def setQuitButton(normal, down, rollover, disabled):
     global quitButton
+    global quitButtonWidth
+    global quitButtonHeight
     quitButton = (normal, down, rollover, disabled)
+    quitButtonWidth, quitButtonHeight = getModelWidthHeight(normal)
 
 
 def setRolloverSound(sound):
@@ -108,6 +114,11 @@ def setWant2dNametags(value):
 def setForceOnscreenChat(value):
     global forceOnscreenChat
     forceOnscreenChat = value
+
+
+def setForce2dNametags(value):
+    global force2dNametags
+    force2dNametags = value
 
 
 def setWantActiveNametags(value):

@@ -96,24 +96,27 @@ class NametagGroup:
         if (self.avatar is None) or (self.avatar.isEmpty()):
             return Task.cont
 
-        if self.avatar == NametagGlobals.me:
-            return Task.done
-
         chatText = self.getChatText()
-        if (not NametagGlobals.want2dNametags) and (not chatText):
+        if NametagGlobals.forceOnscreenChat and chatText:
+            visible3d = False
+        elif self.avatar == NametagGlobals.me:
+            if chatText and (not base.cam.node().isInView(self.avatar.getPos(base.cam))):
+                visible3d = False
+            else:
+                visible3d = True
+        elif NametagGlobals.force2dNametags:
+            visible3d = False
+        elif (not NametagGlobals.want2dNametags) and (not chatText):
             visible3d = True
-        elif chatText and NametagGlobals.forceOnscreenChat:
-            visible3d = False
         elif self.avatar.isHidden():
-            visible3d = False
+            visible3d = True
         else:
             visible3d = base.cam.node().isInView(self.avatar.getPos(base.cam))
 
         if visible3d != self.visible3d:
             self.visible3d = visible3d
-            for nametag in self.nametags:
-                if isinstance(nametag, MarginVisible):
-                    nametag.setVisible(not self.visible3d)
+            if self.nametag2d is not None:
+                self.nametag2d.setVisible(not visible3d)
 
         return Task.cont
 

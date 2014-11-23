@@ -22,7 +22,7 @@ class Spellbook:
         self.currentTarget = None
 
     def addWord(self, word):
-        self.words[word.name] = word
+        self.words[word.name.lower()] = word  # lets make this stuff case insensitive
 
     def process(self, invoker, target, incantation):
         self.currentInvoker = invoker
@@ -40,9 +40,17 @@ class Spellbook:
             self.currentTarget = None
 
     def doWord(self, wordName, args):
-        word = self.words.get(wordName)
+        word = self.words.get(wordName.lower())   # look it up by its lower case value
+
         if not word:
-            return
+            if process == 'ai':
+                wname = wordName.lower()
+                for key in self.words:
+                    if self.words.get(key).access <= self.getInvokerAccess():
+                        if wname in key:
+                            return 'Did you mean %s' % (self.words.get(key).name)
+            if not word:
+                return
 
         ensureAccess(word.access)
         if self.getTarget() and self.getTarget() != self.getInvoker():

@@ -1,13 +1,16 @@
 from direct.task.Task import Task
 import math
-from pandac.PandaModules import Point3, Point2
+from panda3d.core import PGButton, VBase4, DepthWriteAttrib, Point3
 
+from toontown.chat.ChatBalloon import ChatBalloon
+from toontown.margins import MarginGlobals
 from toontown.margins.MarginVisible import MarginVisible
-from toontown.nametag import Nametag
 from toontown.nametag import NametagGlobals
+from toontown.nametag.Nametag import Nametag
+from toontown.toontowngui.Clickable2d import Clickable2d
 
 
-class Nametag2d(Nametag.Nametag, MarginVisible):
+class Nametag2d(Nametag, Clickable2d, MarginVisible):
     CONTENTS_SCALE = 0.25
 
     CHAT_TEXT_WORD_WRAP = 8
@@ -18,22 +21,34 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
     ARROW_SCALE = 1.5
 
     def __init__(self):
-        Nametag.Nametag.__init__(self)
+        Nametag.__init__(self)
+        Clickable2d.__init__(self, 'Nametag2d')
         MarginVisible.__init__(self)
-
-        self.arrow = None
-
-        self.hideThought()
-        self.contents.setScale(self.CONTENTS_SCALE)
 
         self.actualChatText = ''
 
+        self.arrow = None
+        self.textNodePath = None
+
+        self.contents.setScale(self.CONTENTS_SCALE)
+        self.hideThought()
+
+        self.accept('MarginVisible-update', self.update)
+
     def destroy(self):
-        Nametag.Nametag.destroy(self)
+        self.ignoreAll()
+
+        Nametag.destroy(self)
+
+        if self.textNodePath is not None:
+            self.textNodePath.removeNode()
+            self.textNodePath = None
 
         if self.arrow is not None:
             self.arrow.removeNode()
             self.arrow = None
+
+        Clickable2d.destroy(self)
 
     def getUniqueName(self):
         return 'Nametag2d-' + str(id(self))
@@ -48,76 +63,123 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         return NametagGlobals.chatBalloon2dHeight
 
     def setChatText(self, chatText):
-        Nametag.Nametag.setChatText(self, chatText)
-
         self.actualChatText = chatText
+
+        Nametag.setChatText(self, chatText)
 
     def updateClickRegion(self):
         if self.chatBalloon is not None:
-            right = self.chatBalloon.width / 2
+            right = self.chatBalloon.width / 2.0
             left = -right
-            top = self.chatBalloon.height / 2
+            top = self.chatBalloon.height / 2.0
             bottom = -top
 
-            self.setClickRegion(left, right, bottom, top)
+            self.setClickRegionFrame(left, right, bottom, top)
+            self.region.setActive(True)
         elif self.panel is not None:
-            rightD = self.panelWidth / 2
-            leftD = -rightD
-            topD = self.panelHeight / 2
-            bottomD = -topD
+            centerX = (self.textNode.getLeft()+self.textNode.getRight()) / 2.0
+            centerY = (self.textNode.getBottom()+self.textNode.getTop()) / 2.0
 
-            xCenter = (self.textNode.getLeft()+self.textNode.getRight()) / 2
-            yCenter = (self.textNode.getTop()+self.textNode.getBottom()) / 2
+            left = centerX - (self.panelWidth/2.0)
+            right = centerX + (self.panelWidth/2.0)
+            bottom = centerY - (self.panelHeight/2.0)
+            top = centerY + (self.panelHeight/2.0)
 
-            left = xCenter + leftD
-            right = xCenter + rightD
-            bottom = yCenter + bottomD
-            top = yCenter + topD
-
-            self.setClickRegion(left, right, bottom, top)
-
-    def considerUpdateClickRegion(self):
-        active = self.active or (self.getChatText() and self.hasChatButton())
-        if active and (self.getCell() is not None):
-            self.updateClickRegion()
+            self.setClickRegionFrame(left, right, bottom, top)
+            self.region.setActive(True)
         else:
             if self.region is not None:
                 self.region.setActive(False)
 
-    def update(self):
-        Nametag.Nametag.update(self)
+    def isClickable(self):
+        if self.getChatText() and self.hasChatButton():
+            return True
+        return NametagGlobals.wantActiveNametags and Clickable2d.isClickable(self)
 
-        self.considerUpdateClickRegion()
+    def setClickState(self, clickState):
+        if self.isClickable():
+            self.applyClickState(clickState)
+        else:
+            self.applyClickState(PGButton.SInactive)
+
+        Clickable2d.setClickState(self, clickState)
+
+    def enterDepressed(self):
+        if self.isClickable():
+            base.playSfx(NametagGlobals.clickSound)
+
+    def enterRollover(self):
+        if self.isClickable() and (self.lastClickState != PGButton.SDepressed):
+            base.playSfx(NametagGlobals.rolloverSound)
+
+    def update(self):
+        self.contents.node().removeAllChildren()
+
+        Nametag.update(self)
+
+        if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
+            self.reposition()
+            self.updateClickRegion()
+        else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
+            if self.region is not None:
+                self.region.setActive(False)
 
     def tick(self, task):
         if (self.avatar is None) or self.avatar.isEmpty():
             return Task.cont
 
-        if (self.getCell() is None) or (self.arrow is None):
+        if (self.cell is None) or (self.arrow is None):
             return Task.cont
 
         location = self.avatar.getPos(NametagGlobals.me)
         rotation = NametagGlobals.me.getQuat(base.cam)
-
         camSpacePos = rotation.xform(location)
+
         arrowRadians = math.atan2(camSpacePos[0], camSpacePos[1])
         arrowDegrees = (arrowRadians/math.pi) * 180
-
         self.arrow.setR(arrowDegrees - 90)
+
         return Task.cont
 
     def drawChatBalloon(self, model, modelWidth, modelHeight):
+        if self.chatFont is None:
+            # We can't draw this without a font.
+            return
+
+        # Prefix the nametag text:
         self.chatTextNode.setText(self.getText() + ': ' + self.actualChatText)
 
-        # When a chat balloon is active, we need a slightly higher priority in
-        # the margin system:
-        self.setPriority(1)
+        # Set our priority in the margin system:
+        self.setPriority(MarginGlobals.MP_normal)
+
+        if self.textNodePath is not None:
+            self.textNodePath.removeNode()
+            self.textNodePath = None
 
         if self.arrow is not None:
             self.arrow.removeNode()
             self.arrow = None
 
-        Nametag.Nametag.drawChatBalloon(self, model, modelWidth, modelHeight)
+        if self.isClickable():
+            foreground, background = self.chatColor[self.clickState]
+        else:
+            foreground, background = self.chatColor[PGButton.SInactive]
+        if self.chatType == NametagGlobals.SPEEDCHAT:
+            background = self.speedChatColor
+        if background[3] > self.CHAT_BALLOON_ALPHA:
+            background = VBase4(
+                background[0], background[1], background[2],
+                self.CHAT_BALLOON_ALPHA)
+        self.chatBalloon = ChatBalloon(
+            model, modelWidth, modelHeight, self.chatTextNode,
+            foreground=foreground, background=background,
+            reversed=self.chatReversed,
+            button=self.chatButton[self.clickState])
+        self.chatBalloon.reparentTo(self.contents)
 
         # Calculate the center of the TextNode:
         left, right, bottom, top = self.chatTextNode.getFrameActual()
@@ -129,9 +191,53 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
     def drawNametag(self):
-        Nametag.Nametag.drawNametag(self)
+        # Set our priority in the margin system:
+        self.setPriority(MarginGlobals.MP_low)
 
-        self.setPriority(0)
+        if self.textNodePath is not None:
+            self.textNodePath.removeNode()
+            self.textNodePath = None
+
+        if self.arrow is not None:
+            self.arrow.removeNode()
+            self.arrow = None
+
+        if self.font is None:
+            # We can't draw this without a font.
+            return
+
+        # Attach the icon:
+        if self.icon is not None:
+            self.contents.attachNewNode(self.icon)
+
+        if self.isClickable():
+            foreground, background = self.nametagColor[self.clickState]
+        else:
+            foreground, background = self.nametagColor[PGButton.SInactive]
+
+        # Set the color of the TextNode:
+        self.textNode.setTextColor(foreground)
+
+        # Attach the TextNode:
+        self.textNodePath = self.contents.attachNewNode(self.textNode, 1)
+        self.textNodePath.setTransparency(foreground[3] < 1)
+        self.textNodePath.setAttrib(DepthWriteAttrib.make(0))
+        self.textNodePath.setY(self.TEXT_Y_OFFSET)
+
+        # Attach a panel behind the TextNode:
+        self.panel = NametagGlobals.cardModel.copyTo(self.contents, 0)
+        self.panel.setColor(background)
+        self.panel.setTransparency(background[3] < 1)
+
+        # Reposition the panel:
+        x = (self.textNode.getLeft()+self.textNode.getRight()) / 2.0
+        z = (self.textNode.getBottom()+self.textNode.getTop()) / 2.0
+        self.panel.setPos(x, 0, z)
+
+        # Resize the panel:
+        self.panelWidth = self.textNode.getWidth() + self.PANEL_X_PADDING
+        self.panelHeight = self.textNode.getHeight() + self.PANEL_Z_PADDING
+        self.panel.setScale(self.panelWidth, 1, self.panelHeight)
 
         # Add an arrow:
         self.arrow = NametagGlobals.arrowModel.copyTo(self.contents)
@@ -139,26 +245,51 @@ class Nametag2d(Nametag.Nametag, MarginVisible):
         self.arrow.setScale(self.ARROW_SCALE)
         self.arrow.setColor(self.nametagColor[0][0])
 
-    def setClickRegion(self, left, right, bottom, top):
-        # Get a transform matrix to position the points correctly according to
-        # the nametag node:
-        transform = self.contents.getNetTransform()
-
-        # Get the actual matrix of the transform above:
-        mat = transform.getMat()
-
-        # Transform the specified points to the new matrix:
-        camSpaceTopLeft = mat.xformPoint(Point3(left, 0, top))
-        camSpaceBottomRight = mat.xformPoint(Point3(right, 0, bottom))
-
-        screenSpaceTopLeft = Point2(camSpaceTopLeft[0], camSpaceTopLeft[2])
-        screenSpaceBottomRight = Point2(camSpaceBottomRight[0], camSpaceBottomRight[2])
-
-        left, top = screenSpaceTopLeft
-        right, bottom = screenSpaceBottomRight
-
-        self.region.setFrame(left, right, bottom, top)
-        self.region.setActive(True)
-
     def marginVisibilityChanged(self):
-        self.considerUpdateClickRegion()
+        if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
+            self.reposition()
+            self.updateClickRegion()
+        else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
+            if self.region is not None:
+                self.region.setActive(False)
+
+    def reposition(self):
+        if self.contents is None:
+            return
+
+        origin = Point3()
+
+        self.contents.setPos(origin)
+
+        if self.chatBalloon is not None:
+            nodePath = self.chatBalloon.textNodePath
+
+            left, right, bottom, top = self.chatTextNode.getFrameActual()
+        elif self.panel is not None:
+            nodePath = self.textNodePath
+
+            left, right, bottom, top = self.textNode.getFrameActual()
+
+            # Compensate for the arrow:
+            bottom -= self.ARROW_SCALE
+        else:
+            return
+
+        if self.cell in base.bottomCells:
+            # Move the origin to the bottom center of the node path:
+            origin = self.contents.getRelativePoint(
+                nodePath, ((left+right) / 2.0, 0, bottom))
+        elif self.cell in base.leftCells:
+            # Move the origin to the left center of the node path:
+            origin = self.contents.getRelativePoint(
+                nodePath, (left, 0, (bottom+top) / 2.0))
+        elif self.cell in base.rightCells:
+            # Move the origin to the right center of the node path:
+            origin = self.contents.getRelativePoint(
+                nodePath, (right, 0, (bottom+top) / 2.0))
+
+        self.contents.setPos(self.contents, -origin)

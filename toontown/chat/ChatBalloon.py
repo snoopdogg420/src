@@ -74,11 +74,11 @@ class ChatBalloon(NodePath):
         self.textNodePath.setY(self.TEXT_Y_OFFSET)
         self.textNodePath.setX(self.textNodePath, -(self.textWidth/2))
         if self.textWidth == self.TEXT_MIN_WIDTH:
-            centerX = (self.TEXT_MIN_WIDTH-self.textNode.getWidth()) / 2
+            centerX = (self.TEXT_MIN_WIDTH-self.textNode.getWidth()) / 2.0
             self.textNodePath.setX(self.textNodePath, centerX)
         self.textNodePath.setZ(top, -self.BALLOON_Z_PADDING + self.TEXT_Z_OFFSET)
         if self.textHeight == self.TEXT_MIN_HEIGHT:
-            centerZ = (ChatBalloon.TEXT_MIN_HEIGHT-self.textNode.getHeight()) / 2
+            centerZ = (ChatBalloon.TEXT_MIN_HEIGHT-self.textNode.getHeight()) / 2.0
             self.textNodePath.setZ(self.textNodePath, -centerZ)
         self.textNodePath.setX(self.textNodePath, self.TEXT_X_OFFSET)
 

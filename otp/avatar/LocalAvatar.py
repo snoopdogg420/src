@@ -767,8 +767,11 @@ class LocalAvatar(DistributedAvatar.DistributedAvatar, DistributedSmoothNode.Dis
         if not self.__disableSmartCam:
             self.ccTrav.traverse(self.__geom)
             if self.camCollisionQueue.getNumEntries() > 0:
-                self.camCollisionQueue.sortEntries()
-                self.handleCameraObstruction(self.camCollisionQueue.getEntry(0))
+                try:
+                    self.camCollisionQueue.sortEntries()
+                    self.handleCameraObstruction(self.camCollisionQueue.getEntry(0))
+                except AssertionError:  # FIXME: Hacky.
+                    pass
             if not self.__onLevelGround:
                 self.handleCameraFloorInteraction()
         if not self.__idealCameraObstructed:

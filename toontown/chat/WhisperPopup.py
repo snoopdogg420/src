@@ -1,92 +1,197 @@
-from direct.fsm.FSM import FSM
-from pandac.PandaModules import *
+from panda3d.core import TextNode, PGButton, Point3
 
 from toontown.chat import ChatGlobals
 from toontown.chat.ChatBalloon import ChatBalloon
+from toontown.margins import MarginGlobals
 from toontown.margins.MarginVisible import MarginVisible
 from toontown.nametag import NametagGlobals
-from direct.showbase.DirectObject import DirectObject
+from toontown.toontowngui.Clickable2d import Clickable2d
 
-class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
+
+class WhisperQuitButton(Clickable2d):
+    CONTENTS_SCALE = 12
+
+    def __init__(self, whisperPopup):
+        Clickable2d.__init__(self, 'WhisperQuitButton')
+
+        self.whisperPopup = whisperPopup
+
+        self.contents.setScale(self.CONTENTS_SCALE)
+        self.contents.hide()
+
+        self.nodePath = None
+
+        self.update()
+
+    def destroy(self):
+        self.ignoreAll()
+
+        if self.nodePath is not None:
+            self.nodePath.removeNode()
+            self.nodePath = None
+
+        Clickable2d.destroy(self)
+
+    def getUniqueName(self):
+        return 'WhisperQuitButton-' + str(id(self))
+
+    def update(self):
+        if self.nodePath is not None:
+            self.nodePath.removeNode()
+            self.nodePath = None
+
+        self.contents.node().removeAllChildren()
+
+        quitButtonNode = NametagGlobals.quitButton[self.clickState]
+        self.nodePath = quitButtonNode.copyTo(self.contents)
+
+    def applyClickState(self, clickState):
+        if self.nodePath is not None:
+            self.nodePath.removeNode()
+            self.nodePath = None
+
+        quitButtonNode = NametagGlobals.quitButton[clickState]
+        self.nodePath = quitButtonNode.copyTo(self.contents)
+
+    def setClickState(self, clickState):
+        self.applyClickState(clickState)
+
+        if self.isHovering() or self.whisperPopup.isHovering():
+            self.contents.show()
+        elif self.clickState == PGButton.SDepressed:
+            self.contents.show()
+        else:
+            self.contents.hide()
+
+        Clickable2d.setClickState(self, clickState)
+
+    def enterDepressed(self):
+        base.playSfx(NametagGlobals.clickSound)
+
+    def enterRollover(self):
+        if self.lastClickState != PGButton.SDepressed:
+            base.playSfx(NametagGlobals.rolloverSound)
+
+    def updateClickRegion(self):
+        if self.nodePath is not None:
+            right = NametagGlobals.quitButtonWidth / 2.0
+            left = -right
+            top = NametagGlobals.quitButtonHeight / 2.0
+            bottom = -top
+
+            self.setClickRegionFrame(left, right, bottom, top)
+
+
+class WhisperPopup(Clickable2d, MarginVisible):
     CONTENTS_SCALE = 0.25
 
+    TEXT_MAX_ROWS = 6
     TEXT_WORD_WRAP = 8
 
-    def __init__(self, text, font, whisperType, timeout=10):
-        FSM.__init__(self, 'whisper')
-        PandaNode.__init__(self, 'whisper')
+    QUIT_BUTTON_SHIFT = (0.42, 0, 0.42)
+
+    WHISPER_TIMEOUT_MIN = 10
+    WHISPER_TIMEOUT_MAX = 20
+
+    def __init__(self, text, font, whisperType, timeout=None):
+        Clickable2d.__init__(self, 'WhisperPopup')
         MarginVisible.__init__(self)
-        DirectObject.__init__(self)
 
         self.text = text
         self.font = font
         self.whisperType = whisperType
-        self.timeout = timeout
+        if timeout is None:
+            self.timeout = len(text) * 0.33
+            if self.timeout < self.WHISPER_TIMEOUT_MIN:
+                self.timeout = self.WHISPER_TIMEOUT_MIN
+            elif self.timeout > self.WHISPER_TIMEOUT_MAX:
+                self.timeout = self.WHISPER_TIMEOUT_MAX
+        else:
+            self.timeout = timeout
 
         self.active = False
+
         self.senderName = ''
         self.fromId = 0
         self.isPlayer = 0
 
-        self.lastClickState = PGButton.SInactive
-        self.clickState = PGButton.SInactive
-        self.pendingClickState = PGButton.SInactive
-
-        self.clickEvent = ''
-        self.clickExtraArgs = []
-
-        self.contents = NodePath.anyPath(self).attachNewNode('contents')
         self.contents.setScale(self.CONTENTS_SCALE)
 
         self.whisperColor = ChatGlobals.WhisperColors[self.whisperType]
 
         self.textNode = TextNode('text')
         self.textNode.setWordwrap(self.TEXT_WORD_WRAP)
-        self.textNode.setTextColor(self.whisperColor[self.clickState][0])
+        self.textNode.setTextColor(self.whisperColor[PGButton.SInactive][0])
         self.textNode.setFont(self.font)
         self.textNode.setText(self.text)
 
         self.chatBalloon = None
-
-        self.setPriority(2)
-        self.setVisible(True)
+        self.quitButton = None
 
         self.timeoutTaskName = self.getUniqueName() + '-timeout'
         self.timeoutTask = None
 
-        # Create the click region:
-        self.regionName = self.getUniqueName() + '-region'
-        self.region = MouseWatcherRegion(self.regionName, 0, 0, 0, 0)
-        base.mouseWatcherNode.addRegion(self.region)
+        self.quitEvent = self.getUniqueName() + '-quit'
+        self.accept(self.quitEvent, self.destroy)
 
-        # Accept the mouse events:
-        self.accept(base.mouseWatcherNode.getEnterPattern().replace('%r', self.regionName), self.__handleMouseEnter)
-        self.accept(base.mouseWatcherNode.getLeavePattern().replace('%r', self.regionName), self.__handleMouseLeave)
-        self.accept(base.mouseWatcherNode.getButtonDownPattern().replace('%r', self.regionName), self.__handleMouseDown)
-        self.accept(base.mouseWatcherNode.getButtonUpPattern().replace('%r', self.regionName), self.__handleMouseUp)
+        self.setPriority(MarginGlobals.MP_high)
+        self.setVisible(True)
 
         self.update()
 
+        self.accept('MarginVisible-update', self.update)
+
     def destroy(self):
+        self.ignoreAll()
+
         if self.timeoutTask is not None:
             taskMgr.remove(self.timeoutTask)
             self.timeoutTask = None
 
-        self.chatBalloon = None
+        if self.chatBalloon is not None:
+            self.chatBalloon.removeNode()
+            self.chatBalloon = None
 
-        if self.textNode is not None:
-            self.textNode = None
+        if self.quitButton is not None:
+            self.quitButton.destroy()
+            self.quitButton = None
 
-        if self.contents is not None:
-            self.contents.removeNode()
-            self.contents = None
+        self.textNode = None
+
+        Clickable2d.destroy(self)
 
     def getUniqueName(self):
         return 'WhisperPopup-' + str(id(self))
 
     def update(self):
-        foreground, background = self.whisperColor[self.clickState]
+        if self.chatBalloon is not None:
+            self.chatBalloon.removeNode()
+            self.chatBalloon = None
 
+        if self.quitButton is not None:
+            self.quitButton.destroy()
+            self.quitButton = None
+
+        self.contents.node().removeAllChildren()
+
+        self.draw()
+
+        if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
+            self.reposition()
+            self.updateClickRegion()
+        else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
+            if self.region is not None:
+                self.region.setActive(False)
+
+    def draw(self):
+        if self.isClickable():
+            foreground, background = self.whisperColor[self.clickState]
+        else:
+            foreground, background = self.whisperColor[PGButton.SInactive]
         self.chatBalloon = ChatBalloon(
             NametagGlobals.chatBalloon2dModel,
             NametagGlobals.chatBalloon2dWidth,
@@ -104,8 +209,19 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         # Translate the chat balloon along the inverse:
         self.chatBalloon.setPos(self.chatBalloon, -center)
 
-        # Update the click region if necessary:
-        self.considerUpdateClickRegion()
+        # Draw the quit button:
+        self.quitButton = WhisperQuitButton(self)
+        quitButtonNodePath = self.contents.attachNewNode(self.quitButton)
+
+        # Move the quit button to the top right of the TextNode:
+        quitButtonNodePath.setPos(self.contents.getRelativePoint(
+            self.chatBalloon.textNodePath, (right, 0, top)))
+
+        # Apply the quit button shift:
+        quitButtonNodePath.setPos(quitButtonNodePath, self.QUIT_BUTTON_SHIFT)
+
+        # Allow the quit button to close this whisper:
+        self.quitButton.setClickEvent(self.quitEvent)
 
     def manage(self, marginManager):
         MarginVisible.manage(self, marginManager)
@@ -122,115 +238,106 @@ class WhisperPopup(FSM, PandaNode, MarginVisible, DirectObject):
         self.senderName = senderName
         self.fromId = fromId
         self.isPlayer = isPlayer
-        self.active = True
-        self.clickEvent = 'clickedWhisper'
-        self.clickExtraArgs = [self.fromId, self.isPlayer]
-        self.region.setActive(True)
-        self.setClickState(PGButton.SReady)
+        self.setClickEvent('clickedWhisper', extraArgs=[fromId, isPlayer])
+        self.setActive(True)
 
-    def setLastClickState(self, lastClickState):
-        self.lastClickState = lastClickState
-
-    def getLastClickState(self):
-        return self.lastClickState
-
-    def setClickState(self, clickState):
-        self.lastClickState = self.clickState
-        self.clickState = clickState
-
+    def applyClickState(self, clickState):
         if self.chatBalloon is not None:
-            foreground, background = self.whisperColor[self.clickState]
+            foreground, background = self.whisperColor[clickState]
             self.chatBalloon.setForeground(foreground)
             self.chatBalloon.setBackground(background)
 
-        if self.clickState == PGButton.SReady:
-            self.request('Normal')
-        elif self.clickState == PGButton.SDepressed:
-            self.request('Down')
-        elif self.clickState == PGButton.SRollover:
-            self.request('Rollover')
-        elif self.clickState == PGButton.SInactive:
-            self.request('Disabled')
+    def setClickState(self, clickState):
+        if self.isClickable():
+            self.applyClickState(clickState)
+        else:
+            self.applyClickState(PGButton.SInactive)
 
-    def getClickState(self):
-        return self.clickState
+        if self.isHovering() or self.quitButton.isHovering():
+            self.quitButton.contents.show()
+        elif self.quitButton.getClickState() == PGButton.SDepressed:
+            self.quitButton.contents.show()
+        else:
+            self.quitButton.contents.hide()
 
-    def setPendingClickState(self, pendingClickState):
-        self.pendingClickState = pendingClickState
+        Clickable2d.setClickState(self, clickState)
 
-    def getPendingClickState(self):
-        return self.pendingClickState
-
-    def enterNormal(self):
-        if self.lastClickState == PGButton.SDepressed:
-            messenger.send(self.clickEvent, self.clickExtraArgs)
-
-    def enterDown(self):
-        base.playSfx(NametagGlobals.clickSound)
+    def enterDepressed(self):
+        if self.isClickable():
+            base.playSfx(NametagGlobals.clickSound)
 
     def enterRollover(self):
-        if self.lastClickState == PGButton.SDepressed:
-            messenger.send(self.clickEvent, self.clickExtraArgs)
-        else:
+        if self.isClickable() and (self.lastClickState != PGButton.SDepressed):
             base.playSfx(NametagGlobals.rolloverSound)
-
-    def enterDisabled(self):
-        pass
-
-    def __handleMouseEnter(self, region, extra):
-        self.pendingClickState = PGButton.SRollover
-        if self.clickState == PGButton.SReady:
-            self.setClickState(PGButton.SRollover)
-
-    def __handleMouseLeave(self, region, extra):
-        self.pendingClickState = PGButton.SReady
-        if self.clickState == PGButton.SRollover:
-            self.setClickState(PGButton.SReady)
-
-    def __handleMouseDown(self, region, button):
-        if self.clickState == PGButton.SRollover:
-            self.setClickState(PGButton.SDepressed)
-
-    def __handleMouseUp(self, region, button):
-        if self.clickState == PGButton.SDepressed:
-            self.setClickState(self.pendingClickState)
 
     def updateClickRegion(self):
         if self.chatBalloon is not None:
-            right = self.chatBalloon.width / 2
+            right = self.chatBalloon.width / 2.0
             left = -right
-            top = self.chatBalloon.height / 2
+            top = self.chatBalloon.height / 2.0
             bottom = -top
 
-            self.setClickRegion(left, right, bottom, top)
-
-    def considerUpdateClickRegion(self):
-        if self.active and (self.getCell() is not None):
-            self.updateClickRegion()
+            self.setClickRegionFrame(left, right, bottom, top)
+            self.region.setActive(True)
         else:
             if self.region is not None:
                 self.region.setActive(False)
 
-    def setClickRegion(self, left, right, bottom, top):
-        # Get a transform matrix to position the points correctly according to
-        # the nametag node:
-        transform = self.contents.getNetTransform()
-
-        # Get the actual matrix of the transform above:
-        mat = transform.getMat()
-
-        # Transform the specified points to the new matrix:
-        camSpaceTopLeft = mat.xformPoint(Point3(left, 0, top))
-        camSpaceBottomRight = mat.xformPoint(Point3(right, 0, bottom))
-
-        screenSpaceTopLeft = Point2(camSpaceTopLeft[0], camSpaceTopLeft[2])
-        screenSpaceBottomRight = Point2(camSpaceBottomRight[0], camSpaceBottomRight[2])
-
-        left, top = screenSpaceTopLeft
-        right, bottom = screenSpaceBottomRight
-
-        self.region.setFrame(left, right, bottom, top)
-        self.region.setActive(True)
+        if self.quitButton is not None:
+            self.quitButton.updateClickRegion()
 
     def marginVisibilityChanged(self):
-        self.considerUpdateClickRegion()
+        if self.cell is not None:
+            # We're in the margin display. Reposition our content, and update
+            # the click region:
+            self.reposition()
+            self.updateClickRegion()
+        else:
+            # We aren't in the margin display. Disable the click region if one
+            # is present:
+            if self.region is not None:
+                self.region.setActive(False)
+
+    def reposition(self):
+        if self.contents is None:
+            return
+
+        origin = Point3()
+
+        self.contents.setPos(origin)
+
+        if self.chatBalloon is not None:
+            self.chatBalloon.removeNode()
+            self.chatBalloon = None
+
+        if self.quitButton is not None:
+            self.quitButton.destroy()
+            self.quitButton = None
+
+        self.contents.node().removeAllChildren()
+
+        if (self.cell in base.leftCells) or (self.cell in base.rightCells):
+            text = self.text.replace('\x01WLDisplay\x01', '').replace('\x02', '')
+            textWidth = self.textNode.calcWidth(text)
+            if (textWidth / self.TEXT_WORD_WRAP) > self.TEXT_MAX_ROWS:
+                self.textNode.setWordwrap(textWidth / (self.TEXT_MAX_ROWS-0.5))
+        else:
+            self.textNode.setWordwrap(self.TEXT_WORD_WRAP)
+
+        self.draw()
+
+        left, right, bottom, top = self.textNode.getFrameActual()
+        if self.cell in base.bottomCells:
+            # Move the origin to the bottom center of the chat balloon:
+            origin = self.contents.getRelativePoint(
+                self.chatBalloon.textNodePath, ((left+right) / 2.0, 0, bottom))
+        elif self.cell in base.leftCells:
+            # Move the origin to the left center of the chat balloon:
+            origin = self.contents.getRelativePoint(
+                self.chatBalloon.textNodePath, (left, 0, (bottom+top) / 2.0))
+        elif self.cell in base.rightCells:
+            # Move the origin to the right center of the chat balloon:
+            origin = self.contents.getRelativePoint(
+                self.chatBalloon.textNodePath, (right, 0, (bottom+top) / 2.0))
+
+        self.contents.setPos(self.contents, -origin)

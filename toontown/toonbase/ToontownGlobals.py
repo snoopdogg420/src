@@ -1674,3 +1674,8 @@ AV_TOUCH_CHECK_DIST_Z = 5.0
 AV_TOUCH_CHECK_TIMELIMIT_CL = 0.002
 AV_TOUCH_COUNT_LIMIT = 5
 AV_TOUCH_COUNT_TIME = 300
+
+# Buffs...
+
+BMovementSpeed = 0
+BMovementSpeedMultiplier = 1.3
