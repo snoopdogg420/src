@@ -9804,3 +9804,20 @@ YangAlreadyWhite = "You're already white!"
 YangPickColor = 'Are you sure you want to be a polar bear?'
 YangEnjoy = 'Enjoy! You are now permanently a polar bear.'
 YangGoodbye = 'Okay, then. See you later!'
+
+# Buffs
+
+buffIdStrings = {
+  0: ('Your movement speed will be slightly increased for the next %d %s.',
+      'Reward: Increased movement speed')
+}
+
+def getBuffString(buffId, buffTime):
+    if buffTime < 60:
+        return buffIdStrings[buffId][0] % (buffTime, 'minutes')
+    else:
+        return buffIdStrings[buffId][0] % (buffTime / 60, 'hours')
+
+
+def getBuffPosterString(buffId):
+    return buffIdStrings[buffId][1]

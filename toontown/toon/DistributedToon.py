@@ -66,6 +66,7 @@ if base.wantKarts:
 if (__debug__):
     import pdb
 
+
 class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, DistributedSmoothNode.DistributedSmoothNode, DelayDeletable):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedToon')
     partyNotify = DirectNotifyGlobal.directNotify.newCategory('DistributedToon_Party')
@@ -100,22 +101,10 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.disguisePage = None
         self.sosPage = None
         self.gardenPage = None
-        self.cogTypes = [0,
-         0,
-         0,
-         0]
-        self.cogLevels = [0,
-         0,
-         0,
-         0]
-        self.cogParts = [0,
-         0,
-         0,
-         0]
-        self.cogMerits = [0,
-         0,
-         0,
-         0]
+        self.cogTypes = [0, 0, 0, 0]
+        self.cogLevels = [0, 0, 0, 0]
+        self.cogParts = [0, 0, 0, 0]
+        self.cogMerits = [0, 0, 0, 0]
         self.savedCheesyEffect = ToontownGlobals.CENormal
         self.savedCheesyHoodId = 0
         self.savedCheesyExpireTime = 0
@@ -195,6 +184,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.achievements = []
         self.canEarnAchievements = False
         self.promotionStatus = [0, 0, 0, 0]
+        self.buffs = []
 
     def disable(self):
         for soundSequence in self.soundSequenceList:
@@ -1270,7 +1260,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def hasTeleportAccess(self, zoneId):
         return zoneId in self.teleportZoneArray
-        
+
     def setScavengerHunt(self, scavengerHuntArray):
         self.scavengerHuntArray = scavengerHuntArray
 
@@ -2632,6 +2622,26 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.achievements = achievements
         messenger.send(localAvatar.uniqueName('achievementsChange'))
 
+    def setBuffs(self, buffs):
+        self.buffs = buffs
+        self.applyBuffs()
+
+    def applyBuffs(self):
+        for id, timestamp in enumerate(self.buffs):
+            if id == ToontownGlobals.BMovementSpeed:
+                if not timestamp:
+                    return
+                if self.zoneId is None:
+                    return
+                if ZoneUtil.isDynamicZone(self.zoneId):
+                    return
+                if ZoneUtil.getWhereName(self.zoneId, True) not in ('playground', 'street', 'toonInterior', 'cogHQExterior', 'factoryExterior'):
+                    return
+                self.controlManager.setSpeeds(
+                    ToontownGlobals.ToonForwardSpeed * ToontownGlobals.BMovementSpeedMultiplier,
+                    ToontownGlobals.ToonJumpForce,
+                    ToontownGlobals.ToonReverseSpeed * ToontownGlobals.BMovementSpeedMultiplier,
+                    ToontownGlobals.ToonRotateSpeed * ToontownGlobals.BMovementSpeedMultiplier)
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():

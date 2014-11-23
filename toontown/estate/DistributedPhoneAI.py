@@ -47,7 +47,7 @@ class DistributedPhoneAI(DistributedFurnitureItemAI):
             taskMgr.doMethodLater(1, self.__resetMovie, 'resetMovie-%d' % self.getDoId(), extraArgs=[])
             return
 
-        self.air.questManager.toonUsedPhone(av)
+        self.air.questManager.toonUsedPhone(avId)
         self.avId = avId
         self.d_setMovie(PhoneGlobals.PHONE_MOVIE_PICKUP, avId, globalClockDelta.getRealNetworkTime(bits=32))
 
