@@ -14,6 +14,12 @@ step in the deployment process.
 
 - - -
 
+## Module Requirements ##
+The following is a list of Python modules that are required to run the
+```maintenance.py``` script:
+* **PyCrypto** - A package containing various cryptographic modules.
+* **JSONRPClib** - An implementation of the JSON-RPC specification
+
 ## Configuration Requirements ##
 The following is a list of configuration variables that must be present in the
 ```deployment/deploy.json``` configuration file:
