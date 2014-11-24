@@ -3,6 +3,7 @@ from toontown.hood import HoodAI
 from toontown.safezone import DistributedTrolleyAI
 from toontown.toonbase import ToontownGlobals
 from toontown.ai import DistributedTrickOrTreatTargetAI
+from toontown.ai import DistributedWinterCarolingTargetAI
 
 
 class MMHoodAI(HoodAI.HoodAI):
@@ -28,6 +29,10 @@ class MMHoodAI(HoodAI.HoodAI):
         if simbase.air.wantHalloween:
             self.TrickOrTreatTargetManager = DistributedTrickOrTreatTargetAI.DistributedTrickOrTreatTargetAI(self.air)
             self.TrickOrTreatTargetManager.generateWithRequired(4835)
+        
+        if simbase.air.wantChristmas:
+            self.WinterCarolingTargetManager = DistributedWinterCarolingTargetAI.DistributedWinterCarolingTargetAI(self.air)
+            self.WinterCarolingTargetManager.generateWithRequired(4614)
 
     def createTrolley(self):
         self.trolley = DistributedTrolleyAI.DistributedTrolleyAI(self.air)

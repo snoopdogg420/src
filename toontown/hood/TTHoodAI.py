@@ -48,7 +48,7 @@ class TTHoodAI(HoodAI.HoodAI):
         
         if simbase.air.wantChristmas:
             self.WinterCarolingTargetManager = DistributedWinterCarolingTargetAI.DistributedWinterCarolingTargetAI(self.air)
-            self.WinterCarolingTargetManager.generateWithRequired(2649)
+            self.WinterCarolingTargetManager.generateWithRequired(2659)
 
     def shutdown(self):
         HoodAI.HoodAI.shutdown(self)
