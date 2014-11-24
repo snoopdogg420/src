@@ -70,6 +70,56 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         return result
 
     @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
+    def rpc_updateObject(self, doId, dclassName, newFields, oldFields=None):
+        """
+        Summary:
+            Update the field(s) of the object associated with the provided
+            [doId]. If <oldFields> is provided, then this method will fail if
+            the object's current fields don't match.
+
+        Parameters:
+            [int doId] = The ID of the object whose fields are to be updated.
+            [str dclassName] = The name of the object's DClass.
+            [dict newFields] = The new field values.
+            <dict oldFields> = The old field values to assert.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        # Ensure that the provided DClass exists:
+        if dclassName not in self.air.dclassesByName:
+            dclassName += 'UD'
+            if dclassName not in self.air.dclassesByName:
+                return False
+
+        dclass = self.air.dclassesByName[dclassName]
+
+        if oldFields is None:
+            self.air.dbInterface.updateObject(
+                self.air.dbId, doId, dclass, newFields)
+            return True
+
+        result = [True]
+        unblocked = threading2.Event()
+
+
+        def callback(fields):
+            if fields is not None:
+                result[0] = False
+            unblocked.set()
+
+
+        self.air.dbInterface.updateObject(
+            self.air.dbId, doId, dclass, newFields, oldFields=oldFields,
+            callback=callback)
+
+        # Block until the callback is executed:
+        unblocked.wait()
+
+        return result[0]
+
+    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
     def rpc_setField(self, doId, dclassName, fieldName, args=[]):
         """
         Summary:
@@ -86,7 +136,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
             On success: True
             On failure: False
         """
-        # Ensure the provided DClass actually exists:
+        # Ensure that the provided DClass exists:
         if dclassName not in self.air.dclassesByName:
             dclassName += 'UD'
             if dclassName not in self.air.dclassesByName:
@@ -681,3 +731,45 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
                 be terminated.
         """
         self.air.netMessenger.send('stopInvasion', [shardId])
+
+    # --- NAME APPROVAL ---
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_approveName(self, avId):
+        """
+        Summary:
+            Approves the pending name of the avatar associated with the
+            provided [avId].
+
+        Parameters:
+            [int avId] = The ID of the avatar whose pending name is to be
+                approved.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        newFields = {'WishNameState': 'APPROVED'}
+        oldFields = {'WishNameState': 'PENDING'}
+        return self.rpc_updateObject(
+            avId, 'DistributedToonUD', newFields, oldFields=oldFields)
+
+    @rpcmethod(accessLevel=MODERATOR)
+    def rpc_rejectName(self, avId):
+        """
+        Summary:
+            Rejects the pending name of the avatar associated with the provided
+            [avId].
+
+        Parameters:
+            [int avId] = The ID of the avatar whose pending name is to be
+                rejected.
+
+        Example response:
+            On success: True
+            On failure: False
+        """
+        newFields = {'WishNameState': 'REJECTED'}
+        oldFields = {'WishNameState': 'PENDING'}
+        return self.rpc_updateObject(
+            avId, 'DistributedToonUD', newFields, oldFields=oldFields)

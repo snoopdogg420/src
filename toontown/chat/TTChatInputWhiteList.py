@@ -78,14 +78,17 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
         self.typeGrabbed = 0
 
     def typeCallback(self, extraArgs):
-        if self.typeGrabbed:
+        try:
+            if self.typeGrabbed:
+                return
+            self.applyFilter(extraArgs)
+            if localAvatar.chatMgr.chatInputWhiteList.isActive():
+                return
+            else:
+                messenger.send('wakeup')
+                messenger.send('enterNormalChat')
+        except UnicodeDecodeError:
             return
-        self.applyFilter(extraArgs)
-        if localAvatar.chatMgr.chatInputWhiteList.isActive():
-            return
-        else:
-            messenger.send('wakeup')
-            messenger.send('enterNormalChat')
 
     def destroy(self):
         self.chatEntry.destroy()
@@ -200,12 +203,15 @@ class TTChatInputWhiteList(ChatInputWhiteListFrame):
 
             if not strict:
                 lastword = words[-1]
-                if lastword == '' or self.whiteList.isPrefix(lastword) or not base.cr.whiteListChatEnabled:
-                    newwords[-1] = lastword
-                elif flag:
-                    newwords[-1] = '\x01WLDisplay\x01' + lastword + '\x02'
-                else:
-                    newwords[-1] = '\x01WLEnter\x01' + lastword + '\x02'
+                try:
+                    if lastword == '' or self.whiteList.isPrefix(lastword) or not base.cr.whiteListChatEnabled:
+                        newwords[-1] = lastword
+                    elif flag:
+                        newwords[-1] = '\x01WLDisplay\x01' + lastword + '\x02'
+                    else:
+                        newwords[-1] = '\x01WLEnter\x01' + lastword + '\x02'
+                except UnicodeDecodeError:
+                    self.okayToSubmit = False
             newtext = ' '.join(newwords)
             self.chatEntry.set(newtext)
         self.chatEntry.guiItem.setAcceptEnabled(self.okayToSubmit)
