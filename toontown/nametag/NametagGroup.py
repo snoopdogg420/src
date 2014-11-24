@@ -100,7 +100,8 @@ class NametagGroup:
         if NametagGlobals.forceOnscreenChat and chatText:
             visible3d = False
         elif self.avatar == NametagGlobals.me:
-            if chatText and (not base.cam.node().isInView(self.avatar.getPos(base.cam))):
+            if (chatText and (self.chatType == NametagGlobals.CHAT_BALLOON)) and (
+                not base.cam.node().isInView(self.avatar.getPos(base.cam))):
                 visible3d = False
             else:
                 visible3d = True
