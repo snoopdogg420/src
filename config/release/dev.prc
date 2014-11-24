@@ -35,7 +35,6 @@ want-resistance-dance #t
 
 # Optional:
 want-yin-yang #t
-boarding-group-merges #t
 
 # Developer options:
 show-population #t
