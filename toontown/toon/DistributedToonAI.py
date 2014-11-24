@@ -2111,6 +2111,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         for i in xrange(len(msgs)):
             if msgs[i][0] == textId:
                 msgs[i][1] += 1
+                if msgs[i][1] > 32767:
+                    msgs[i][1] = 32767
                 self.b_setResistanceMessages(msgs)
                 return
 
@@ -4503,11 +4505,12 @@ def sos(count, name):
     return "You were given %d %s SOS cards." % (count, name)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
-def unites(value=99):
+def unites(value=32767):
     """
     Restock all resistance messages.
     """
     invoker = spellbook.getInvoker()
+    value = min(value, 32767)
     invoker.restockAllResistanceMessages(value)
     return 'Restocked %d unites!' % value
 
