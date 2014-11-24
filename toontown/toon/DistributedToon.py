@@ -514,7 +514,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                 self.sendUpdate('setSleepAutoReply', [base.localAvatar.doId], fromAV)
         newText, scrubbed = self.scrubTalk(chat, mods)
         self.displayTalkWhisper(fromAV, avatarName, chat, mods)
-        self.notify.warning('receiveWhisperTalk(%s,%s,%s,%s,%s,%s)'%(fromAV, avatarName, fromAC, self.doId, self.getName(), newText))
+        print 'receiveWhisperTalk(%s,%s,%s,%s,%s,%s)'%(fromAV, avatarName, fromAC, self.doId, self.getName(), newText)
         base.talkAssistant.receiveWhisperTalk(fromAV, avatarName, fromAC, None, self.doId, self.getName(), newText)
         return
 
