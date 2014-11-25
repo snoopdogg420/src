@@ -27,8 +27,8 @@ The following is a list of configuration variables that must be present in the
                                        maintenance countdown.
 * **maintenance-lock-time** - The minute during the countdown at which the
                               account server will begin to reject login
-                              attempts by accounts of the ```user``` access
-                              level.
+                              attempts made by accounts of the ```user```
+                              access level.
 * **maintenance-lock-message** - The message to display upon login rejection
                                  by the account server. If this is ```null```
                                  then the default message will be used.
