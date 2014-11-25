@@ -25,21 +25,21 @@ The following is a list of configuration variables that must be present in the
 ```deployment/deploy.json``` configuration file:
 * **maintenance-countdown-duration** - The duration (in minutes) of the
                                        maintenance countdown.
-* **maintenance-server-lock-time** - The minute during the countdown at which
-                                     the account server will begin to reject
-                                     logins.
-* **maintenance-server-lock-message** - The message to display upon login while
-*                                       the account server is rejecting logins.
-                                        Have this be ```null``` for the default
-                                        message.
-* **gameserver-rpc-endpoint** - The game server's RPC endpoint URL.
-* **gameserver-rpc-token-secret** - The secret key that will be used to encrypt
-                                    the access tokens that are generated in
-                                    calls to the game server's RPC methods.
-* **webserver-rpc-endpoint** - The web server's RPC endpoint URL.
-* **webserver-rpc-token-secret** - The secret key that will be used to encrypt
-                                   the access tokens that are generated in
-                                   calls to the web server's RPC methods.
+* **maintenance-lock-time** - The minute during the countdown at which the
+                              account server will begin to reject login
+                              attempts by accounts of the ```user``` access
+                              level.
+* **maintenance-lock-message** - The message to display upon login rejection
+                                 by the account server. If this is ```null```
+                                 then the default message will be used.
+* **game-rpc-endpoint** - The game server's RPC endpoint.
+* **game-rpc-token-secret** - The secret key that will be used to encrypt the
+                              access tokens that are generated in calls to the
+                              game server's RPC methods.
+* **web-rpc-endpoint** - The web server's RPC endpoint.
+* **web-rpc-token-secret** - The secret key that will be used to encrypt the
+                             access tokens that are generated in calls to the
+                             web server's RPC methods.
 
 - - -
 
