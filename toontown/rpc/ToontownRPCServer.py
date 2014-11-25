@@ -20,7 +20,7 @@ class ToontownRPCServer:
 
         # We only support the http scheme:
         if url.scheme != 'http':
-            self.notify.warning('Invalid scheme for endpoint: ' + str(url.scheme))
+            self.notify.error('Invalid scheme for endpoint: ' + str(url.scheme))
 
         # Parse the hostname, and port:
         self.hostname = url.hostname or 'localhost'
