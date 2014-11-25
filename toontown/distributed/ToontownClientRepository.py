@@ -231,17 +231,17 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         for av in avList:
             if av.position == index:
                 avatarChoice = av
-                self.notify.warning('================')
-                self.notify.warning('Chose avatar id: %s' % av.id)
-                self.notify.warning('Chose avatar name: %s' % av.name)
+                print '================'
+                print 'Chose avatar id: %s' % av.id
+                print 'Chose avatar name: %s' % av.name
                 dna = ToonDNA.ToonDNA()
                 dna.makeFromNetString(av.dna)
-                self.notify.warning('Chose avatar dna: %s' % (dna.asTuple(),))
-                self.notify.warning('Chose avatar position: %s' % av.position)
-                self.notify.info('isPaid: %s' % self.isPaid())
-                self.notify.info('freeTimeLeft: %s' % self.freeTimeLeft())
-                self.notify.info('allowSecretChat: %s' % self.allowSecretChat())
-                self.notify.warning('================')
+                print 'Chose avatar dna: %s' % (dna.asTuple(),)
+                print 'Chose avatar position: %s' % av.position
+                print 'isPaid: %s' % self.isPaid()
+                print 'freeTimeLeft: %s' % self.freeTimeLeft()
+                print 'allowSecretChat: %s' % self.allowSecretChat()
+                print '================'
 #                print "__handleAvatarChooserDone: %s, %s, %s, %s\n"%(av.id, av.name, dna.asTuple(), av.position)
 
         if done == 'chose':
