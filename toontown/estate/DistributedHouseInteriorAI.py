@@ -1,26 +1,29 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from DistributedFurnitureManagerAI import *
+from toontown.catalog import CatalogItem
 from toontown.catalog.CatalogWindowItem import CatalogWindowItem
 from toontown.catalog.CatalogWallpaperItem import CatalogWallpaperItem
+from toontown.catalog.CatalogMouldingItem import CatalogMouldingItem
+from toontown.catalog.CatalogFlooringItem import CatalogFlooringItem
+from toontown.catalog.CatalogWainscotingItem import CatalogWainscotingItem
 from DNAFurnitureReaderAI import DNAFurnitureReaderAI
 from toontown.dna.DNAParser import *
-
-# The house interior DNA files for each
-houseInteriors = [
-    'phase_5.5/dna/house_interior3.pdna',
-    'phase_5.5/dna/house_interior4.pdna',
-    'phase_5.5/dna/house_interior5.pdna',
-    'phase_5.5/dna/house_interior7.pdna',
-    'phase_5.5/dna/house_interior8.pdna',
-    'phase_5.5/dna/house_interior10.pdna',
-]
+import HouseGlobals
+import random
 
 defaultWindows = [
-    CatalogWindowItem(20, placement=0),
+    CatalogWindowItem(20, placement=2), CatalogWindowItem(20, placement=4)
 ]
 
 defaultWallpaper = [
-    CatalogWallpaperItem(1100, 0, 1000, 0),
+    CatalogWallpaperItem(1110, 0, 1010, 0),
+    CatalogMouldingItem(1000, 2),
+    CatalogFlooringItem(1000, 4),
+    CatalogWainscotingItem(1010, 4),
+    CatalogWallpaperItem(1110, 0, 1010, 0),
+    CatalogMouldingItem(1000, 2),
+    CatalogFlooringItem(1000, 4),
+    CatalogWainscotingItem(1010, 4),
 ]
 
 
@@ -50,14 +53,17 @@ class DistributedHouseInteriorAI(DistributedObjectAI):
 
     def initialize(self):
         # Get DNA file appropriate to this house...
-        dnaFile = houseInteriors[self.houseIndex]
+        interior = random.choice(HouseGlobals.interiors)
+        
+        dnaFile = interior[0]
+        phonePos = interior[4]
 
         # Load DNA...
         dnaStorage = DNAStorage()
         dnaData = loadDNAFileAI(dnaStorage, dnaFile)
 
         # Read it into furniture...
-        furnitureReader = DNAFurnitureReaderAI(dnaData, [-11, 2, 0, 0, 0, 0])
+        furnitureReader = DNAFurnitureReaderAI(dnaData, phonePos)
 
         # Set furniture:
         self.furnitureManager.setItems(furnitureReader.getBlob())
