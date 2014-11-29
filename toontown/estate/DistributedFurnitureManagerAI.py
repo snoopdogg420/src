@@ -108,7 +108,7 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
                 hasCloset = True
                 break
 
-        if not hasCloset:
+        if not hasCloset and self.ownerId != 0:
             item = CatalogFurnitureItem(500)  # the basic closet...
             item.posHpr = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
             items.append(item)
