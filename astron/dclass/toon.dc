@@ -312,6 +312,7 @@ from toontown.cogdominium import DistCogdoCraneMoneyBag/AI
 from toontown.cogdominium import DistCogdoCraneCog/AI
 from toontown.parties.GlobalPartyManager/AI/UD import GlobalPartyManager/AI/UD
 from toontown.event import DistributedEvent/AI
+from toontown.event import DistributedExperimentEvent/AI
 
 struct GiftItem {
   blob Item;
@@ -3410,3 +3411,7 @@ dclass DistributedSillyMeterMgr : DistributedPhaseEventMgr {
 
 dclass DistributedEvent : DistributedObject {
 };
+
+dclass DistributedExperimentEvent : DistributedEvent {
+};
+
