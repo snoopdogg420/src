@@ -150,7 +150,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
                                 except Exception, e:
                                     print e
 
-        return
+        self.event = None
 
     def congratulations(self, avatarChoice):
         self.acceptedScreen = loader.loadModel('phase_3/models/gui/toon_council')

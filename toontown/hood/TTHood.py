@@ -33,12 +33,6 @@ class TTHood(ToonHood.ToonHood):
         self.parentFSM.getStateNamed('TTHood').removeChild(self.fsm)
         ToonHood.ToonHood.unload(self)
 
-    def enter(self, *args):
-        ToonHood.ToonHood.enter(self, *args)
-
-    def exit(self):
-        ToonHood.ToonHood.exit(self)
-
     def skyTrack(self, task):
         return SkyUtil.cloudSkyTrack(task)
 

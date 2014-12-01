@@ -18,6 +18,7 @@ from toontown.building import ToonInterior
 from toontown.hood import QuietZoneState
 from toontown.dna.DNAParser import *
 from direct.stdpy.file import *
+from toontown.town import TownBattle
 
 class SafeZoneLoader(StateData.StateData):
     notify = DirectNotifyGlobal.directNotify.newCategory('SafeZoneLoader')
@@ -33,15 +34,17 @@ class SafeZoneLoader(StateData.StateData):
          State.State('golfcourse', self.enterGolfcourse, self.exitGolfcourse, ['quietZone', 'playground']),
          State.State('final', self.enterFinal, self.exitFinal, ['start'])], 'start', 'final')
         self.placeDoneEvent = 'placeDone'
+        self.townBattleDoneEvent = 'town-battle-done'
         self.place = None
         self.playgroundClass = None
-        return
 
     def load(self):
         self.music = base.loadMusic(self.musicFile)
         self.activityMusic = base.loadMusic(self.activityMusicFile)
         self.createSafeZone(self.dnaFile)
         self.parentFSMState.addChild(self.fsm)
+        self.townBattle = TownBattle.TownBattle(self.townBattleDoneEvent)
+        self.townBattle.load()
 
     def unload(self):
         self.parentFSMState.removeChild(self.fsm)
@@ -259,4 +262,7 @@ class SafeZoneLoader(StateData.StateData):
         base.transitions.fadeOut(t=0)
 
     def exitGolfcourse(self):
+        pass
+
+    def townBattleDoneEvent(self):
         pass

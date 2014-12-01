@@ -166,6 +166,7 @@ CLEAR_OUT_TOON_BLDG_TIME = 4
 TO_SUIT_BLDG_TIME = 8
 
 buildingMinMax = {
+    ToontownGlobals.ToontownCentral: (0, 0),
     ToontownGlobals.SillyStreet: (config.GetInt('silly-street-building-min', 0),
                                   config.GetInt('silly-street-building-max', 3)),
     ToontownGlobals.LoopyLane: (config.GetInt('loopy-lane-building-min', 0),
@@ -208,6 +209,7 @@ buildingMinMax = {
 }
 
 buildingChance = {
+    ToontownGlobals.ToontownCentral: 0.0,
     ToontownGlobals.SillyStreet: config.GetFloat('silly-street-building-chance', 2.0),
     ToontownGlobals.LoopyLane: config.GetFloat('loopy-lane-building-chance', 2.0),
     ToontownGlobals.PunchlinePlace: config.GetFloat('punchline-place-building-chance', 2.0),

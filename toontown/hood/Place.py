@@ -125,12 +125,12 @@ class Place(StateData.StateData, FriendsListManager.FriendsListManager):
         localCallbacks.clear()
         return
 
-    def setState(self, state):
+    def setState(self, state, args=[]):
         if hasattr(self, 'fsm'):
             curState = self.fsm.getName()
             if state == 'pet' or curState == 'pet':
                 self.preserveFriendsList()
-            self.fsm.request(state)
+            self.fsm.request(state, args)
 
     def getState(self):
         if hasattr(self, 'fsm'):

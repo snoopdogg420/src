@@ -2,7 +2,7 @@ from direct.interval.IntervalGlobal import *
 from pandac.PandaModules import *
 from toontown.toonbase.ToonBaseGlobal import *
 from direct.directnotify import DirectNotifyGlobal
-from toontown.hood import Place
+from toontown.battle import BattlePlace
 from direct.showbase import DirectObject
 from direct.fsm import StateData
 from direct.fsm import ClassicFSM, State
@@ -23,11 +23,11 @@ from toontown.quest import Quests
 from toontown.battle import BattleParticles
 from toontown.dna.DNAParser import DNABulkLoader
 
-class Playground(Place.Place):
+class Playground(BattlePlace.BattlePlace):
     notify = DirectNotifyGlobal.directNotify.newCategory('Playground')
 
     def __init__(self, loader, parentFSM, doneEvent):
-        Place.Place.__init__(self, loader, doneEvent)
+        BattlePlace.BattlePlace.__init__(self, loader, doneEvent)
         self.tfaDoneEvent = 'tfaDoneEvent'
         self.fsm = ClassicFSM.ClassicFSM('Playground', [
             State.State('start',
@@ -53,7 +53,9 @@ class Playground(Place.Place):
                             'quest',
                             'purchase',
                             'stopped',
-                            'fishing']),
+                            'fishing',
+                            'battle',
+                            'WaitForBattle']),
             State.State('stickerBook',
                         self.enterStickerBook,
                         self.exitStickerBook, [
@@ -188,7 +190,9 @@ class Playground(Place.Place):
             State.State('final',
                         self.enterFinal,
                         self.exitFinal, [
-                            'start'])],
+                            'start']),
+            State.State('WaitForBattle', self.enterWaitForBattle, self.exitWaitForBattle, ['battle', 'walk']),
+            State.State('battle', self.enterBattle, self.exitBattle, ['walk', 'teleportOut', 'died'])],
             'start', 'final')
         self.parentFSM = parentFSM
         self.tunnelOriginList = []
@@ -291,7 +295,7 @@ class Playground(Place.Place):
         self.loader.music.stop()
 
     def load(self):
-        Place.Place.load(self)
+        BattlePlace.BattlePlace.load(self)
         self.parentFSM.getStateNamed('playground').addChild(self.fsm)
 
     def unload(self):
@@ -306,7 +310,7 @@ class Playground(Place.Place):
             self.deathAckBox = None
         TTDialog.cleanupDialog('globalDialog')
         self.ignoreAll()
-        Place.Place.unload(self)
+        BattlePlace.BattlePlace.unload(self)
         return
 
     def showTreasurePoints(self, points):
@@ -497,7 +501,7 @@ class Playground(Place.Place):
             self.ignore('deathAck')
             self.deathAckBox.cleanup()
             self.deathAckBox = None
-        Place.Place.enterWalk(self, teleportIn)
+        BattlePlace.BattlePlace.enterWalk(self, teleportIn)
         return
 
     def enterDeathAck(self, requestStatus):
@@ -580,7 +584,7 @@ class Playground(Place.Place):
             x, y, z, h, p, r = base.cr.hoodMgr.getPlaygroundCenterFromId(self.loader.hood.id)
         base.localAvatar.detachNode()
         base.localAvatar.setPosHpr(render, x, y, z, h, p, r)
-        Place.Place.enterTeleportIn(self, requestStatus)
+        BattlePlace.BattlePlace.enterTeleportIn(self, requestStatus)
         return
 
     def __cleanupDialog(self, value):
@@ -620,7 +624,7 @@ class Playground(Place.Place):
         return Task.done
 
     def enterTeleportOut(self, requestStatus):
-        Place.Place.enterTeleportOut(self, requestStatus, self.__teleportOutDone)
+        BattlePlace.BattlePlace.enterTeleportOut(self, requestStatus, self.__teleportOutDone)
 
     def __teleportOutDone(self, requestStatus):
         teleportDebug(requestStatus, 'Playground.__teleportOutDone(%s)' % (requestStatus,))
@@ -643,7 +647,7 @@ class Playground(Place.Place):
         return
 
     def exitTeleportOut(self):
-        Place.Place.exitTeleportOut(self)
+        BattlePlace.BattlePlace.exitTeleportOut(self)
 
     def createPlayground(self, dnaFile):
         dnaBulk = DNABulkLoader(self.loader.dnaStore, (self.safeZoneStorageDNAFile,))
@@ -695,3 +699,7 @@ class Playground(Place.Place):
 
     def exitTFAReject(self):
         pass
+
+    def enterZone(self, zoneId):
+        pass
+

@@ -3410,6 +3410,7 @@ dclass DistributedSillyMeterMgr : DistributedPhaseEventMgr {
 };
 
 dclass DistributedEvent : DistributedObject {
+  start() broadcast;
 };
 
 dclass DistributedExperimentEvent : DistributedEvent {

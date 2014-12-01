@@ -8,6 +8,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.ai import DistributedTrickOrTreatTargetAI
 from toontown.ai import DistributedWinterCarolingTargetAI
+from toontown.event import DistributedExperimentEventAI
 
 
 class TTHoodAI(HoodAI.HoodAI):
@@ -18,6 +19,7 @@ class TTHoodAI(HoodAI.HoodAI):
 
         self.trolley = None
         self.classicChar = None
+        self.experimentEvent = None
 
         self.startup()
 
@@ -41,14 +43,17 @@ class TTHoodAI(HoodAI.HoodAI):
                 simbase.air, 2022,
                 (ToontownGlobals.ToontownCentral, TTLocalizer.NPCToonNames[2022], ('bss', 'ms', 'm', 'm', 0, 0, 0, 0, 0, 31, 0, 31, 0, 31), 'm', 1, NPCToons.NPC_YANG),
                 ToontownGlobals.ToontownCentral, posIndex=0)
-                
+
         if simbase.air.wantHalloween:
             self.TrickOrTreatTargetManager = DistributedTrickOrTreatTargetAI.DistributedTrickOrTreatTargetAI(self.air)
             self.TrickOrTreatTargetManager.generateWithRequired(2649)
-        
+
         if simbase.air.wantChristmas:
             self.WinterCarolingTargetManager = DistributedWinterCarolingTargetAI.DistributedWinterCarolingTargetAI(self.air)
             self.WinterCarolingTargetManager.generateWithRequired(2649)
+
+        if simbase.config.GetBool('want-experiment-event'):
+            self.createExperimentEvent()
 
     def shutdown(self):
         HoodAI.HoodAI.shutdown(self)
@@ -72,3 +77,8 @@ class TTHoodAI(HoodAI.HoodAI):
                 butterfly = DistributedButterflyAI(self.air, playground, i, self.zoneId)
                 butterfly.generateWithRequired(self.zoneId)
                 butterfly.start()
+
+    def createExperimentEvent(self):
+        self.experimentEvent = DistributedExperimentEventAI.DistributedExperimentEventAI(self.air)
+        self.experimentEvent.generateWithRequired(self.zoneId)
+        self.experimentEvent.start()

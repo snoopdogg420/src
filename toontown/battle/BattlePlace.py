@@ -5,10 +5,6 @@ from toontown.toonbase import ToontownGlobals
 
 
 class BattlePlace(Place.Place):
-
-    def __init__(self, loader, doneEvent):
-        Place.Place.__init__(self, loader, doneEvent)
-
     def load(self):
         Place.Place.load(self)
         Toon.loadBattleAnims()
@@ -108,6 +104,8 @@ class BattlePlace(Place.Place):
         hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
         hood = ToontownGlobals.dnaMap[hoodId]
         phase = ToontownGlobals.streetPhaseMap[hoodId]
+        if zoneId == 2000:
+            phase = 4
         if hoodId == zoneId:
             zoneId = 'sz'
         return 'phase_%s/dna/%s_%s.pdna' % (phase, hood, zoneId)

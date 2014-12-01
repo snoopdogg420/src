@@ -10,7 +10,8 @@ class GagshopBuildingAI:
         self.air = air
         self.exteriorZone = exteriorZone
         self.interiorZone = interiorZone
-        self.setup(blockNumber)
+        self.blockNumber = blockNumber
+        self.setup(self.blockNumber)
 
     def cleanup(self):
         for npc in self.npcs:
@@ -42,3 +43,13 @@ class GagshopBuildingAI:
         insideDoor.generateWithRequired(self.interiorZone)
         self.door = door
         self.insideDoor = insideDoor
+
+    def getBlock(self):
+        return self.blockNumber, self.interiorZone
+
+    def isSuitBlock(self):
+        return False
+
+    def isEstablishedSuitBlock(self):
+        return False
+
