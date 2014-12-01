@@ -2,6 +2,7 @@ from toontown.event.DistributedEventAI import DistributedEventAI
 from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
 from toontown.dna.DNAStorage import DNAStorage
 from toontown.dna.DNAParser import loadDNAFileAI
+import time
 
 
 class DistributedExperimentEventAI(DistributedEventAI):
@@ -18,7 +19,12 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner.d_setZoneId(self.zoneId)
         self.suitPlanner.initTasks()
 
+        self.createBlimp()
+
         DistributedEventAI.start(self)
+
+    def createBlimp(self):
+        self.sendUpdate('createBlimp', [int(time.time())])
 
     def setVisGroups(self, visGroups):
         self.sendUpdate('setVisGroups', [visGroups])
