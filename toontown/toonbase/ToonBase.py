@@ -241,6 +241,8 @@ class ToonBase(OTPBase.OTPBase):
         # Free black/white Toons:
         self.wantYinYang = config.GetBool('want-yin-yang', False)
 
+        self.musicLocked = False
+
     def openMainWindow(self, *args, **kw):
         result = OTPBase.OTPBase.openMainWindow(self, *args, **kw)
         self.setCursorAndIcon()
@@ -524,8 +526,15 @@ class ToonBase(OTPBase.OTPBase):
             config.GetInt('shard-high-pop', ToontownGlobals.HIGH_POP)
         )
 
-    def playMusic(self, music, looping = 0, interrupt = 1, volume = None, time = 0.0):
-        OTPBase.OTPBase.playMusic(self, music, looping, interrupt, volume, time)
+    def lockMusic(self):
+        self.musicLocked = True
+
+    def unlockMusic(self):
+        self.musicLocked = False
+
+    def playMusic(self, music, looping = 0, interrupt = 1, volume = None, time = 0.0, playLocked = False):
+        if not self.musicLocked or playLocked:
+            OTPBase.OTPBase.playMusic(self, music, looping, interrupt, volume, time)
 
     # OS X Specific Actions
     def exitOSX(self):

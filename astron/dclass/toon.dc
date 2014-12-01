@@ -3416,8 +3416,8 @@ dclass DistributedNPCEvent : DistributedNPCToon {
 };
 
 dclass DistributedEvent : DistributedObject {
-  start() broadcast;
-  setVisGroups(uint32[]) broadcast;
+  start() broadcast ram;
+  setVisGroups(uint32[]) broadcast ram;
 };
 
 dclass DistributedExperimentEvent : DistributedEvent {
