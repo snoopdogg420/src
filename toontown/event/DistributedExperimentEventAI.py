@@ -13,15 +13,12 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner = None
 
     def start(self):
-        taskMgr.doMethodLater(0.5, self.createSuitPlanner, 'csp-%s' % self.doId)
-
-        DistributedEventAI.start(self)
-
-    def createSuitPlanner(self, task):
         self.suitPlanner = DistributedSuitPlannerAI(self.air, self.zoneId, self.setupDNA)
         self.suitPlanner.generateWithRequired(self.zoneId)
         self.suitPlanner.d_setZoneId(self.zoneId)
         self.suitPlanner.initTasks()
+
+        DistributedEventAI.start(self)
 
     def setVisGroups(self, visGroups):
         self.sendUpdate('setVisGroups', [visGroups])
