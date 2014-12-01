@@ -11,7 +11,7 @@ class DistributedExperimentEvent(DistributedEvent):
     notify = directNotify.newCategory('DistributedExperimentEvent')
 
     def announceGenerate(self):
-        self.cr.event = self
+        DistributedEvent.announceGenerate(self)
 
         dnaStore = DNAStorage()
         dnaFileName = ZoneUtil.genDNAFileName(self.zoneId)
@@ -27,11 +27,16 @@ class DistributedExperimentEvent(DistributedEvent):
             for i in xrange(visGroup.getNumVisibles()):
                 visibles.append(int(visGroup.visibles[i]))
             visibles.append(ZoneUtil.getBranchZone(visZoneId))
+            zoneVisDict[visZoneId] = visibles
+
+        self.cr.sendSetZoneMsg(self.zoneId, zoneVisDict.values()[0])
 
         self.cr.playGame.hood.startSpookySky()
         render.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
         aspect2d.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
 
     def delete(self):
+        DistributedEvent.delete(self)
+
         render.setColorScale(Vec4(1, 1, 1, 1))
         aspect2d.setColorScale(Vec4(1, 1, 1, 1))

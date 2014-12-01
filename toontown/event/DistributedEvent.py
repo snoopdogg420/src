@@ -6,3 +6,9 @@ class DistributedEvent(DistributedObject):
 
     def start(self):
         pass
+
+    def announceGenerate(self):
+        self.cr.event = self
+
+    def delete(self):
+        self.cr.event = None
