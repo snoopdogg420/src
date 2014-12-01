@@ -2642,6 +2642,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                     ToontownGlobals.ToonReverseSpeed * ToontownGlobals.BMovementSpeedMultiplier,
                     ToontownGlobals.ToonRotateSpeed * ToontownGlobals.BMovementSpeedMultiplier)
 
+    def setClientInterest(self, zoneId):
+        self.cr.sendSetZoneMsg(zoneId)
+
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
     """
@@ -2668,3 +2671,7 @@ def promote(deptIndex):
     invoker = spellbook.getInvoker()
     invoker.sendUpdate('requestPromotion', [deptIndex])
     return 'Your promotion request has been sent.'
+
+@magicWord(category=CATEGORY_COMMUNITY_MANAGER)
+def printDna():
+    return str(base.localAvatar.style)

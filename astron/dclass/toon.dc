@@ -311,6 +311,7 @@ from toontown.cogdominium import DistCogdoCrane/AI
 from toontown.cogdominium import DistCogdoCraneMoneyBag/AI
 from toontown.cogdominium import DistCogdoCraneCog/AI
 from toontown.parties.GlobalPartyManager/AI/UD import GlobalPartyManager/AI/UD
+from toontown.toon import DistributedNPCEvent/AI
 from toontown.event import DistributedEvent/AI
 from toontown.event import DistributedExperimentEvent/AI
 
@@ -629,6 +630,7 @@ dclass DistributedToon : DistributedPlayer {
   flagAv(uint32, uint16, string []) airecv ownsend;
   setAnimalSound(uint8 index) ram broadcast ownrecv;
   setBuffs(uint32[] = []) required ownrecv db;
+  setClientInterest(uint32 zoneId) ownrecv;
 };
 
 dclass DistributedCCharBase : DistributedObject {
@@ -3409,8 +3411,13 @@ dclass DistributedTrashcanZeroMgr : DistributedPhaseEventMgr {
 dclass DistributedSillyMeterMgr : DistributedPhaseEventMgr {
 };
 
+dclass DistributedNPCEvent : DistributedNPCToon {
+  requestEvent(uint32 avId) clsend airecv;
+};
+
 dclass DistributedEvent : DistributedObject {
   start() broadcast;
+  setVisGroups(uint32[]) broadcast;
 };
 
 dclass DistributedExperimentEvent : DistributedEvent {

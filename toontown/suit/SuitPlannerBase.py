@@ -516,11 +516,14 @@ class SuitPlannerBase:
     def genDNAFileName(self):
         zoneId = ZoneUtil.getCanonicalZoneId(self.getZoneId())
         hoodId = ZoneUtil.getCanonicalHoodId(zoneId)
-        hood = ToontownGlobals.dnaMap[hoodId]
-        phase = ToontownGlobals.streetPhaseMap[hoodId]
+        hood = ToontownGlobals.dnaMap.get(hoodId)
+        phase = ToontownGlobals.streetPhaseMap.get(hoodId, 4)
         if zoneId == 2000:
             phase = 4
         if hoodId == zoneId:
+            zoneId = 'sz'
+        if not hood:
+            hood = 'toontown_central'
             zoneId = 'sz'
         return 'phase_%s/dna/%s_%s.pdna' % (phase, hood, zoneId)
 

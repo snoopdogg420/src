@@ -4296,6 +4296,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.setBuffs(buffs)
         self.d_setBuffs(buffs)
 
+    def setClientInterest(self, zoneId):
+        self.sendUpdate('setClientInterest', [zoneId])
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
 def cheesyEffect(value, hood=0, expire=0):

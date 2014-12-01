@@ -11,3 +11,10 @@ class DistributedEventAI(DistributedObjectAI):
 
     def start(self):
         self.sendUpdate('start', [])
+
+    def setParticipants(self, participants):
+        self.participants = participants
+
+        for avId in self.participants:
+            av = self.air.doId2do[avId]
+            av.setClientInterest(self.zoneId)
