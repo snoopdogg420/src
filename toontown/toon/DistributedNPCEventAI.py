@@ -19,14 +19,16 @@ class DistributedNPCEventAI(DistributedNPCToonAI):
         self.eventManager = eventManager
 
     def requestJoin(self, avId):
-        self.participants.append(avId)
-        self.sendUpdate('notifyJoin', [avId])
-        self.d_setParticipants(self.participants)
+        if avId not in self.participants:
+            self.participants.append(avId)
+            self.sendUpdate('notifyJoin', [avId])
+            self.d_setParticipants(self.participants)
 
     def requestLeave(self, avId):
-        self.participants.remove(avId)
-        self.sendUpdate('notifyLeave', [avId])
-        self.d_setParticipants(self.participants)
+        if avId in self.participants:
+            self.participants.remove(avId)
+            self.sendUpdate('notifyLeave', [avId])
+            self.d_setParticipants(self.participants)
 
     def d_setParticipants(self, participants):
         self.sendUpdate('setParticipants', [participants])
@@ -34,7 +36,7 @@ class DistributedNPCEventAI(DistributedNPCToonAI):
     def setCountdownStartTime(self, time):
         self.sendUpdate('setCountdownStartTime', [time])
 
-    def startEvent(self):
+    def startEvent(self, task):
         if self.participants:
             self.eventManager.createEvent(self.participants)
             self.participants = []
