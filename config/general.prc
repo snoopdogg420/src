@@ -119,6 +119,7 @@ want-talkative-tyler #f
 want-yin-yang #f
 
 # Developer options:
+notify-level info
 want-dev #f
 want-pstats 0
 

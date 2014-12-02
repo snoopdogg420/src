@@ -1,6 +1,5 @@
-
-
 class TalkMessage:
+    notify = directNotify.newCategory('TalkMessage')
 
     def __init__(self, messageId, timeStamp, body, senderAvatarId, senderAvatarName, senderAccountId, senderAccountName, receiverAvatarId, receiverAvatarName, receiverAccountId, receiverAccountName, talkType, extraInfo = None):
         self.timeStamp = timeStamp
@@ -17,7 +16,7 @@ class TalkMessage:
         self.extraInfo = extraInfo
         self.messageId = messageId
         if senderAvatarName:
-             print 'TalkMessage(%s, %s, %s, %s, %s, %s %s, %s, %s)'%(body, senderAvatarId, senderAvatarName, senderAccountId, senderAccountName, receiverAvatarId, receiverAvatarName, receiverAccountId, receiverAccountName)
+            self.notify.info('%r, %r, %r, %r, %r, %r, %r, %r, %r' % (body, senderAvatarId, senderAvatarName, senderAccountId, senderAccountName, receiverAvatarId, receiverAvatarName, receiverAccountId, receiverAccountName))
 
     def getMessageId(self):
         return self.messageId
