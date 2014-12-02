@@ -3412,7 +3412,12 @@ dclass DistributedSillyMeterMgr : DistributedPhaseEventMgr {
 };
 
 dclass DistributedNPCEvent : DistributedNPCToon {
-  requestEvent(uint32 avId) clsend airecv;
+  requestJoin(uint32 avId) clsend airecv;
+  requestLeave(uint32 avId) clsend airecv;
+  notifyJoin(uint32 avId) broadcast;
+  notifyLeave(uint32 avId) broadcast;
+  setParticipants(uint32[]) broadcast ram;
+  setCountdownStartTime(int32) broadcast ram;
 };
 
 dclass DistributedEvent : DistributedObject {
