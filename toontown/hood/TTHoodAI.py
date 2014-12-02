@@ -82,5 +82,5 @@ class TTHoodAI(HoodAI.HoodAI):
     def createExperimentEvent(self):
         self.eventManager = EventManagerAI(self.air, self.zoneId,
                                            DistributedExperimentEventAI, 91919)
-        self.eventManager.npc.d_setPos(-61.495, -9.070, 1.227)
-        self.eventManager.npc.d_setH(272.923)
+        self.eventManager.npc.d_setPos(-17, 43, 0.036)
+        self.eventManager.npc.d_setH(512.285)
