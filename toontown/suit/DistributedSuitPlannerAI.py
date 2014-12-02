@@ -112,8 +112,6 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         self.suitCountAdjust = 0
 
     def resetSuitHoodInfo(self, zoneId):
-        print zoneId
-
         for index in xrange(len(self.SuitHoodInfo)):
             currHoodInfo = self.SuitHoodInfo[index]
             if currHoodInfo[self.SUIT_HOOD_INFO_ZONE] == zoneId:
