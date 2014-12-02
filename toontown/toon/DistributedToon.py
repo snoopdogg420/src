@@ -476,9 +476,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def setTalk(self, fromAV, fromAC, avatarName, chat, mods, flags):
         if fromAV == 0:
-            self.notify.info('setTalk: %r, %r, %r' % self.doId, self.name, chat)
+            print 'setTalk: %r, %r, %r' % (self.doId, self.name, chat)
         else:
-            self.notify.info('setTalk: %r, %r, %r' % fromAV, avatarName, chat)
+            print 'setTalk: %r, %r, %r' % (fromAV, avatarName, chat)
 
         if base.cr.avatarFriendsManager.checkIgnored(fromAV):
             self.d_setWhisperIgnored(fromAV)
@@ -513,7 +513,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
                 self.sendUpdate('setSleepAutoReply', [base.localAvatar.doId], fromAV)
         newText, scrubbed = self.scrubTalk(chat, mods)
         self.displayTalkWhisper(fromAV, avatarName, chat, mods)
-        self.notify.info('receiveWhisperTalk: %r, %r, %r, %r, %r, %r, %r' % (fromAV, avatarName, fromAC, None, self.doId, self.getName(), newText))
+        print 'receiveWhisperTalk: %r, %r, %r, %r, %r, %r, %r' % (fromAV, avatarName, fromAC, None, self.doId, self.getName(), newText)
         base.talkAssistant.receiveWhisperTalk(fromAV, avatarName, fromAC, None, self.doId, self.getName(), newText)
 
     def setSleepAutoReply(self, fromId):
