@@ -567,7 +567,7 @@ class Avatar(Actor, ShadowCaster):
                     self.setChatAbsolute(self.__chatMessage, self.__chatFlags, dialogue)
                     self.__chatSet = 1
                 if pageNumber < self.nametag.getNumChatPages():
-                    if self.__chatQuitButton:
+                    if (self.__chatAddressee == base.localAvatar.doId) and self.__chatQuitButton:
                         if pageNumber == self.nametag.getNumChatPages() - 1:
                             self.nametag.setChatButton(NametagGlobals.quitButton)
                     self.nametag.setChatPageIndex(pageNumber)

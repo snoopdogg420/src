@@ -13,6 +13,7 @@ want-pets #f
 want-parties #f
 want-cogdominiums #f
 want-achievements #f
+boarding-group-merges #t
 
 # Sellbot boss:
 disable-sos-card 91917
