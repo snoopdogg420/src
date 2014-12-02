@@ -345,11 +345,6 @@ class TalkAssistant(DirectObject.DirectObject):
 
     def receiveWhisperTalk(self, avatarId, avatarName, accountId, accountName, toId, toName, message, scrubbed = 0):
         error = None
-        print 'receiveWhisperTalk %s %s %s %s %s' % (avatarId,
-         avatarName,
-         accountId,
-         accountName,
-         message)
         if not avatarName and avatarId:
             avatarName = self.findAvatarName(avatarId)
         if not accountName and accountId:

@@ -13,8 +13,6 @@ class TalkMessage:
         self.talkType = talkType
         self.extraInfo = extraInfo
         self.messageId = messageId
-        if senderAvatarName:
-            print 'TalkMessage: %r, %r, %r, %r, %r, %r, %r, %r, %r' % (body, senderAvatarId, senderAvatarName, senderAccountId, senderAccountName, receiverAvatarId, receiverAvatarName, receiverAccountId, receiverAccountName)
 
     def getMessageId(self):
         return self.messageId
