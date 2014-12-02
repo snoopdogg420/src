@@ -120,7 +120,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
             return
         if self.hasActiveGroup(inviteeId):
             # We could make the assumption both are in the avIdDict but I'd prefer not to blow up the district
-            if simbase.config.GetBool('boarding-group-merges', 0) and self.hasActiveGroup(inviterId):
+            if self.hasActiveGroup(inviterId):
                 inviteeLeaderId = self.avIdDict[inviteeId]
                 leaderId = self.avIdDict[inviterId]
 
