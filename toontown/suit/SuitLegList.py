@@ -42,7 +42,7 @@ class SuitLeg:
 
         distance = (self.posB - self.posA).length()
         self.legTime = distance / ToontownGlobals.SuitWalkSpeed
-        self.endTime = self.startTime + self.legTime
+        self.endTime = self.startTime + self.getLegTime()
 
     def getStartTime(self):
         return self.startTime
