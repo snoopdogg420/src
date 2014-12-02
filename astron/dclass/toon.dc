@@ -314,6 +314,7 @@ from toontown.parties.GlobalPartyManager/AI/UD import GlobalPartyManager/AI/UD
 from toontown.toon import DistributedNPCEvent/AI
 from toontown.event import DistributedEvent/AI
 from toontown.event import DistributedExperimentEvent/AI
+from toontown.event import DistributedScienceFair/AI
 
 struct GiftItem {
   blob Item;
@@ -3422,10 +3423,12 @@ dclass DistributedNPCEvent : DistributedNPCToon {
 
 dclass DistributedEvent : DistributedObject {
   start() broadcast ram;
+};
+
+dclass DistributedExperimentEvent : DistributedEvent {
   setVisGroups(uint32[]) broadcast ram;
   createBlimp(int32) broadcast ram;
 };
 
-dclass DistributedExperimentEvent : DistributedEvent {
+dclass DistributedScienceFair : DistributedObject {
 };
-
