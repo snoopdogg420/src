@@ -111,6 +111,18 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                 self.currDesired = 0
         self.suitCountAdjust = 0
 
+    def resetSuitHoodInfo(self, zoneId):
+        print zoneId
+
+        for index in xrange(len(self.SuitHoodInfo)):
+            currHoodInfo = self.SuitHoodInfo[index]
+            if currHoodInfo[self.SUIT_HOOD_INFO_ZONE] == zoneId:
+                self.hoodInfoIdx = index
+
+        self.baseNumSuits = (
+            self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_MIN] +
+            self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_MAX]) / 2
+
     def cleanup(self):
         taskMgr.remove(self.taskName('sptUpkeepPopulation'))
         taskMgr.remove(self.taskName('sptAdjustPopulation'))
@@ -958,7 +970,12 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if level is None:
             level = random.choice(self.SuitHoodInfo[self.hoodInfoIdx][self.SUIT_HOOD_INFO_LVL])
         if type is None:
-            typeChoices = range(max(level - 4, 1), min(level, self.MAX_SUIT_TYPES) + 1)
+            if level == 12:
+                typeChoices = [8]
+            elif level == 11:
+                typeChoices = [7, 8]
+            else:
+                typeChoices = range(max(level - 4, 1), min(level, self.MAX_SUIT_TYPES) + 1)
             type = random.choice(typeChoices)
         else:
             level = min(max(level, type), type + 4)
