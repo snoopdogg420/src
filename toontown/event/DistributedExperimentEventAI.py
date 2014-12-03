@@ -8,8 +8,7 @@ import time
 
 class DistributedExperimentEventAI(DistributedEventAI):
     notify = directNotify.newCategory('DistributedExperimentEventAI')
-    DifficultyTime = 120
-
+    
     def __init__(self, air):
         DistributedEventAI.__init__(self, air)
 
@@ -27,18 +26,16 @@ class DistributedExperimentEventAI(DistributedEventAI):
 
         self.setObjective(1)
 
-        taskMgr.doMethodLater(self.DifficultyTime, self.increaseDifficulty, 'increaseDifficulty-%s' % id(self))
         self.createBlimp()
 
         DistributedEventAI.start(self)
 
-    def increaseDifficulty(self, task):
+    def increaseDifficulty(self):
         if self.currentDifficulty == self.maxDifficulty:
             return
 
         self.currentDifficulty += 1
         self.suitPlanner.resetSuitHoodInfo(30000 + self.currentDifficulty)
-        taskMgr.doMethodLater(self.DifficultyTime, self.increaseDifficulty, 'increaseDifficulty-%s' % id(self))
 
     def createBlimp(self):
         self.sendUpdate('createBlimp', [int(time.time())])

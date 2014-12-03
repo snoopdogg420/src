@@ -25,3 +25,6 @@ class DistributedEventAI(DistributedObjectAI):
             av = self.air.doId2do[avId]
             av.currentEvent = self
             av.setClientInterest(self.zoneId)
+
+    def messageParticipants(self, message):
+        self.sendUpdate('messageParticipants', [message])

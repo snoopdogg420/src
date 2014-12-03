@@ -23,3 +23,9 @@ class ExperimentEventSuitObjective(ExperimentEventObjective):
 
     def suitKilled(self, suit):
         self.incrementCount()
+        
+    def objectiveComplete(self):
+        ExperimentEventObjective.objectiveComplete(self)
+        
+        self.experimentEvent.messageParticipants('You have completed the objective. The cogs have increased in difficulty!')
+        self.experimentEvent.increaseDifficulty()

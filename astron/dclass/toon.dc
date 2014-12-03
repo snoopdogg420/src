@@ -3422,6 +3422,7 @@ dclass DistributedNPCExperimentEvent : DistributedNPCToon {
 
 dclass DistributedEvent : DistributedObject {
   start() broadcast ram;
+  messageParticipants(string message) broadcast;
 };
 
 dclass DistributedExperimentEvent : DistributedEvent {
