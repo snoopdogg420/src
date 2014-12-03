@@ -2,7 +2,7 @@
 from pandac.PandaModules import *
 
 
-hashVal = 2405310741
+hashVal = 2408909676
 
 
 from toontown.cogdominium import DistributedCogdoInterior, DistributedCogdoBattleBldg, DistributedCogdoElevatorExt, DistributedCogdoElevatorInt, DistributedCogdoBarrel, DistCogdoGame, DistCogdoLevelGame, DistCogdoBoardroomGame, DistCogdoCraneGame, DistCogdoMazeGame, DistCogdoFlyingGame, DistCogdoCrane, DistCogdoCraneMoneyBag, DistCogdoCraneCog
@@ -50,7 +50,7 @@ from toontown.uberdog.DistributedSecurityMgr import DistributedSecurityMgr
 from toontown.event import DistributedEvent, DistributedExperimentEvent, DistributedScienceFair
 from otp.distributed import Account, ObjectServer, DistributedDistrict, DistributedDirectory, DistributedTestObject, CentralLogger
 from toontown.estate import DistributedCannon, DistributedTarget, EstateManager, DistributedEstate, DistributedHouse, DistributedHouseInterior, DistributedGarden, DistributedHouseDoor, DistributedBankMgr, DistributedMailbox, DistributedFurnitureManager, DistributedFurnitureItem, DistributedBank, DistributedCloset, DistributedTrunk, DistributedPhone, DistributedFireworksCannon, DistributedLawnDecor, DistributedGardenPlot, DistributedGardenBox, DistributedFlower, DistributedGagTree, DistributedStatuary, DistributedToonStatuary, DistributedChangingStatuary, DistributedAnimatedStatuary, DistributedPlantBase, DistributedLawnDecor
-from toontown.toon import DistributedToon, DistributedNPCToonBase, DistributedNPCToon, DistributedSmartNPC, DistributedSmartNPC, DistributedNPCSpecialQuestGiver, DistributedNPCFlippyInToonHall, DistributedNPCScientist, DistributedNPCClerk, DistributedNPCTailor, DistributedNPCBlocker, DistributedNPCFisherman, DistributedNPCPartyPerson, DistributedNPCPetclerk, DistributedNPCKartClerk, DistributedNPCYin, DistributedNPCYang, DistributedNPCBanker, DistributedNPCEvent
+from toontown.toon import DistributedToon, DistributedNPCToonBase, DistributedNPCToon, DistributedSmartNPC, DistributedSmartNPC, DistributedNPCSpecialQuestGiver, DistributedNPCFlippyInToonHall, DistributedNPCScientist, DistributedNPCClerk, DistributedNPCTailor, DistributedNPCBlocker, DistributedNPCFisherman, DistributedNPCPartyPerson, DistributedNPCPetclerk, DistributedNPCKartClerk, DistributedNPCYin, DistributedNPCYang, DistributedNPCBanker, DistributedNPCExperimentEvent
 from toontown.tutorial import DistributedBattleTutorial, TutorialManager
 from toontown.coderedemption.TTCodeRedemptionMgr import TTCodeRedemptionMgr
 from toontown.distributed.NonRepeatableRandomSourceAI import NonRepeatableRandomSourceAI

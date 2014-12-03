@@ -2,11 +2,11 @@ from toontown.toon.DistributedNPCToonAI import DistributedNPCToonAI
 import time
 
 
-class DistributedNPCEventAI(DistributedNPCToonAI):
+class DistributedNPCExperimentEventAI(DistributedNPCToonAI):
     def __init__(self, air, npcId):
         DistributedNPCToonAI.__init__(self, air, npcId)
 
-        self.eventManager = None
+        self.scienceFair = None
         self.participants = []
 
     def announceGenerate(self):
@@ -15,8 +15,8 @@ class DistributedNPCEventAI(DistributedNPCToonAI):
         taskMgr.doMethodLater(10, self.startEvent, 'startEvent-%s' % id(self))
         self.setCountdownStartTime(int(time.time()))
 
-    def setEventManager(self, eventManager):
-        self.eventManager = eventManager
+    def setScienceFair(self, scienceFair):
+        self.scienceFair = scienceFair
 
     def requestJoin(self, avId):
         if avId not in self.participants:
@@ -38,7 +38,7 @@ class DistributedNPCEventAI(DistributedNPCToonAI):
 
     def startEvent(self, task):
         if self.participants:
-            self.eventManager.createEvent(self.participants)
+            self.scienceFair.createEvent(self.participants)
             self.participants = []
             self.d_setParticipants(self.participants)
         taskMgr.doMethodLater(10, self.startEvent, 'startEvent-%s' % id(self))

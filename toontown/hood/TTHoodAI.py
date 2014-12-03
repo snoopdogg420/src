@@ -8,8 +8,7 @@ from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownGlobals
 from toontown.ai import DistributedTrickOrTreatTargetAI
 from toontown.ai import DistributedWinterCarolingTargetAI
-from toontown.event.DistributedExperimentEventAI import DistributedExperimentEventAI
-from toontown.event.EventManagerAI import EventManagerAI
+from toontown.event.DistributedScienceFairAI import DistributedScienceFairAI
 
 
 class TTHoodAI(HoodAI.HoodAI):
@@ -20,7 +19,7 @@ class TTHoodAI(HoodAI.HoodAI):
 
         self.trolley = None
         self.classicChar = None
-        self.eventManager = None
+        self.scienceFair = None
 
         self.startup()
 
@@ -80,7 +79,7 @@ class TTHoodAI(HoodAI.HoodAI):
                 butterfly.start()
 
     def createExperimentEvent(self):
-        self.eventManager = EventManagerAI(self.air, self.zoneId,
-                                           DistributedExperimentEventAI, 91919)
-        self.eventManager.npc.d_setPos(-17, 43, 0.036)
-        self.eventManager.npc.d_setH(512.285)
+        self.scienceFair = DistributedScienceFairAI(self.air, 91919)
+        self.scienceFair.generateWithRequired(self.zoneId)
+        self.scienceFair.npc.d_setPos(-17, 43, 0.036)
+        self.scienceFair.npc.d_setH(512.285)

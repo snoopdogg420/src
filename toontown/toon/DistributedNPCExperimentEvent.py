@@ -1,9 +1,7 @@
-from otp.ai.MagicWordGlobal import *
-
 from toontown.toon.DistributedNPCToon import DistributedNPCToon
 
 
-class DistributedNPCEvent(DistributedNPCToon):
+class DistributedNPCExperimentEvent(DistributedNPCToon):
     def __init__(self, cr):
         DistributedNPCToon.__init__(self, cr)
 

@@ -311,8 +311,8 @@ from toontown.cogdominium import DistCogdoCrane/AI
 from toontown.cogdominium import DistCogdoCraneMoneyBag/AI
 from toontown.cogdominium import DistCogdoCraneCog/AI
 from toontown.parties.GlobalPartyManager/AI/UD import GlobalPartyManager/AI/UD
-from toontown.toon import DistributedNPCEvent/AI
 from toontown.event import DistributedEvent/AI
+from toontown.toon import DistributedNPCExperimentEvent/AI
 from toontown.event import DistributedExperimentEvent/AI
 from toontown.event import DistributedScienceFair/AI
 
@@ -3392,7 +3392,6 @@ dclass TTIFriendsManager : DistributedObjectGlobal {
 
 };
 
-
 dclass DistributedPhaseEventMgr : DistributedObject {
   setNumPhases(uint8) required broadcast ram;
   setDates(datetime []) broadcast required;
@@ -3412,7 +3411,7 @@ dclass DistributedTrashcanZeroMgr : DistributedPhaseEventMgr {
 dclass DistributedSillyMeterMgr : DistributedPhaseEventMgr {
 };
 
-dclass DistributedNPCEvent : DistributedNPCToon {
+dclass DistributedNPCExperimentEvent : DistributedNPCToon {
   requestJoin(uint32 avId) clsend airecv;
   requestLeave(uint32 avId) clsend airecv;
   notifyJoin(uint32 avId) broadcast;
