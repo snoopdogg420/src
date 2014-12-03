@@ -1,3 +1,4 @@
+from toontown.event import ExperimentEventObjectives
 from toontown.event.DistributedEventAI import DistributedEventAI
 from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
 from toontown.dna.DNAStorage import DNAStorage
@@ -15,6 +16,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner = None
         self.currentDifficulty = 0
         self.maxDifficulty = 3
+        self.currentObjective = None
 
     def start(self):
         self.suitPlanner = DistributedSuitPlannerAI(self.air, self.zoneId, self.setupDNA)
@@ -22,6 +24,8 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner.d_setZoneId(self.zoneId)
         self.suitPlanner.resetSuitHoodInfo(30000)
         self.suitPlanner.initTasks()
+
+        self.setObjective(1)
 
         taskMgr.doMethodLater(self.DifficultyTime, self.increaseDifficulty, 'increaseDifficulty-%s' % id(self))
         self.createBlimp()
@@ -63,3 +67,16 @@ class DistributedExperimentEventAI(DistributedEventAI):
 
         self.setVisGroups(visGroups.values())
         suitPlanner.initDNAInfo()
+
+    def setObjectiveCount(self, count):
+        self.sendUpdate('setObjectiveCount', [count])
+
+    def setObjective(self, objectiveId):
+        self.currentObjective = None
+        if objectiveId:
+            self.currentObjective = ExperimentEventObjectives.makeObjective(objectiveId, self)
+        self.sendUpdate('setObjective', [objectiveId])
+
+    def completeObjective(self):
+        self.sendUpdate('completeObjective', [])
+        self.setObjective(0)

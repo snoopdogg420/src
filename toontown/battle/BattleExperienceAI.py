@@ -156,6 +156,12 @@ def assignRewards(activeToons, toonSkillPtsGained, suitsKilled, zoneId, helpfulT
         if toon != None:
             activeToonList.append(toon)
 
+    if activeToonList:
+        toon = activeToonList[0]
+        if toon.currentEvent:
+            for suit in suitsKilled:
+                messenger.send('suit-killed-%s' % toon.currentEvent.doId, [suit])
+
     for toon in activeToonList:
         for i in xrange(len(ToontownBattleGlobals.Tracks)):
             uberIndex = ToontownBattleGlobals.LAST_REGULAR_GAG_LEVEL + 1

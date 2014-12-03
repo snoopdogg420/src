@@ -3427,6 +3427,9 @@ dclass DistributedEvent : DistributedObject {
 dclass DistributedExperimentEvent : DistributedEvent {
   setVisGroups(uint32[]) broadcast ram;
   createBlimp(int32) broadcast ram;
+  setObjective(int8) broadcast ram;
+  setObjectiveCount(uint16) broadcast ram;
+  completeObjective() broadcast;
 };
 
 dclass DistributedScienceFair : DistributedObject {

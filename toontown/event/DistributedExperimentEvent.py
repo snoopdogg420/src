@@ -1,6 +1,8 @@
 from pandac.PandaModules import Vec4
 from direct.interval.IntervalGlobal import Sequence, Func, Wait
 from direct.actor.Actor import Actor
+from toontown.event import ExperimentEventObjectives
+from toontown.event.ExperimentEventObjectiveGUI import ExperimentEventObjectiveGUI
 from toontown.event.DistributedEvent import DistributedEvent
 from toontown.hood import ZoneUtil
 from toontown.dna.DNAStorage import DNAStorage
@@ -18,6 +20,7 @@ class DistributedExperimentEvent(DistributedEvent):
         self.music = base.loadMusic('phase_4/audio/bgm/TE_battle.ogg')
         self.musicSequence = None
 
+        self.objectiveGui = None
         self.blimp = None
 
     def start(self):
@@ -62,3 +65,22 @@ class DistributedExperimentEvent(DistributedEvent):
         self.blimp.loop('flying')
         self.blimp.setPos(144, -188, 55)
         self.blimp.setHpr(140, 0, 5)
+
+    def setObjective(self, objectiveId):
+        if objectiveId == 0:
+            self.completeObjective()
+            return
+
+        objectiveInfo = ExperimentEventObjectives.getObjectiveInfo(objectiveId)
+        self.objectiveGui = ExperimentEventObjectiveGUI(*objectiveInfo)
+        self.objectiveGui.setPos(0, 0, 0.8)
+        self.objectiveGui.fadeIn()
+
+    def setObjectiveCount(self, count):
+        if self.objectiveGui:
+            self.objectiveGui.updateProgress(count)
+
+    def completeObjective(self):
+        if self.objectiveGui:
+            self.objectiveGui.fadeOutDestroy()
+            self.objectiveGui = None

@@ -193,6 +193,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self._gmDisabled = False
         self.promotionStatus = [0, 0, 0, 0]
         self.buffs = []
+        self.currentEvent = None
 
     def generate(self):
         DistributedPlayerAI.DistributedPlayerAI.generate(self)
