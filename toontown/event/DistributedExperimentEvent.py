@@ -1,6 +1,7 @@
 from direct.interval.IntervalGlobal import Sequence, Func, Wait
 from pandac.PandaModules import Vec4
 
+from otp.ai.MagicWordGlobal import *
 from toontown.event import ExperimentEventObjectives
 from toontown.event.DistributedEvent import DistributedEvent
 from toontown.event.ExperimentBlimp import ExperimentBlimp
@@ -97,3 +98,14 @@ class DistributedExperimentEvent(DistributedEvent):
 
     def requestExperimentToon(self):
         self.sendUpdate('requestExperimentToon', [base.localAvatar.doId])
+
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
+def blimp(phase):
+    if not (0 <= phase <= 3):
+        return 'Invalid phase.'
+    for event in base.cr.doFindAllInstances(DistributedExperimentEvent):
+        event.blimp.request('Phase%d' % phase, 0)
+        break
+    else:
+        return "Couldn't find a blimp."

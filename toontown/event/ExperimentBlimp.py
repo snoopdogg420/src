@@ -5,7 +5,6 @@ from direct.interval.IntervalGlobal import Func
 from direct.interval.IntervalGlobal import Sequence, LerpHprInterval, Wait
 from panda3d.core import NodePath, Vec3, Texture
 
-from otp.ai.MagicWordGlobal import *
 from toontown.suit.BossCog import BossCog
 from toontown.suit.SuitDNA import SuitDNA
 
@@ -18,9 +17,10 @@ CASHBOT_SCREEN_INDEX = 4
 SELLBOT_SCREEN_INDEX = 5
 
 
-class BossbotScene(NodePath):
+class BossbotScene(NodePath, FSM):
     def __init__(self):
         NodePath.__init__(self, 'BossbotScene')
+        FSM.__init__(self, 'BossbotScene')
 
         self.background = loader.loadModel('phase_12/models/bossbotHQ/BanquetInterior_1.bam')
         self.background.reparentTo(self)
@@ -30,8 +30,8 @@ class BossbotScene(NodePath):
         dna.newBossCog('c')
         self.boss.setDNA(dna)
         self.boss.reparentTo(self)
-        self.boss.setPos(0, 236.89, 0)
-        self.boss.loop('neutral')
+        self.boss.setPosHpr(0, 236.89, 0, 180, 0, 0)
+        self.boss.loop('Bb_neutral')
 
     def delete(self):
         if self.boss is not None:
@@ -44,19 +44,67 @@ class BossbotScene(NodePath):
 
         NodePath.removeNode(self)
 
+    def enterPhase0(self):
+        pass
 
-class LawbotScene:
-    def delete(self):
+    def enterPhase1(self):
+        pass
+
+    def enterPhase2(self):
         pass
 
 
-class CashbotScene:
+class LawbotScene(NodePath, FSM):
+    def __init__(self):
+        NodePath.__init__(self, 'LawbotScene')
+        FSM.__init__(self, 'LawbotScene')
+
     def delete(self):
         pass
 
+    def enterPhase0(self):
+        pass
 
-class SellbotScene:
+    def enterPhase1(self):
+        pass
+
+    def enterPhase2(self):
+        pass
+
+
+class CashbotScene(NodePath, FSM):
+    def __init__(self):
+        NodePath.__init__(self, 'CashbotScene')
+        FSM.__init__(self, 'CashbotScene')
+
     def delete(self):
+        pass
+
+    def enterPhase0(self):
+        pass
+
+    def enterPhase1(self):
+        pass
+
+    def enterPhase2(self):
+        pass
+
+
+class SellbotScene(NodePath, FSM):
+    def __init__(self):
+        NodePath.__init__(self, 'SellbotScene')
+        FSM.__init__(self, 'SellbotScene')
+
+    def delete(self):
+        pass
+
+    def enterPhase0(self):
+        pass
+
+    def enterPhase1(self):
+        pass
+
+    def enterPhase2(self):
         pass
 
 
@@ -183,6 +231,10 @@ class ExperimentBlimp(Actor, FSM):
         Lawbot C.J., and the Bossbot C.E.O.). They will be standing still in a
         neutral animation inside of their respective headquarters.
         """
+        self.bossbotScene.request('Phase0')
+        self.lawbotScene.request('Phase0')
+        self.cashbotScene.request('Phase0')
+        self.sellbotScene.request('Phase0')
         self.setScreen(BOSSBOT_SCREEN_INDEX)
 
     def enterPhase2(self, timestamp):
@@ -190,7 +242,10 @@ class ExperimentBlimp(Actor, FSM):
         Phase 2 describes the blimp in the same state as phase 1, however, the
         boss Cogs' subordinates have joined in on the spectating.
         """
-        pass
+        self.bossbotScene.request('Phase1')
+        self.lawbotScene.request('Phase1')
+        self.cashbotScene.request('Phase1')
+        self.sellbotScene.request('Phase1')
 
     def enterPhase3(self, timestamp):
         """
@@ -198,7 +253,10 @@ class ExperimentBlimp(Actor, FSM):
         both the boss Cogs, and their subordinates are cheering over the
         destruction of Toontown Central.
         """
-        pass
+        self.bossbotScene.request('Phase2')
+        self.lawbotScene.request('Phase2')
+        self.cashbotScene.request('Phase2')
+        self.sellbotScene.request('Phase2')
 
     def startFlying(self, timestamp):
         self.loop('flying')
@@ -221,28 +279,17 @@ class ExperimentBlimp(Actor, FSM):
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.bossbotScene)
             self.camera.setPosHpr(0, 203.5, 23.5, 0, 354, 0)
-            tvScreen.setTexture(ts, buffer.getTexture(), 1)
+            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
         elif screenIndex == LAWBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.lawbotScene)
             self.camera.setPosHpr(-3.84, -29.84, 93.08, 0, 348, 0)
-            tvScreen.setTexture(ts, buffer.getTexture(), 1)
+            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
         elif screenIndex == CASHBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.cashbotScene)
-            tvScreen.setTexture(ts, buffer.getTexture(), 1)
+            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
         elif screenIndex == SELLBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.sellbotScene)
-            tvScreen.setTexture(ts, buffer.getTexture(), 1)
-
-
-@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
-def blimp(phase):
-    if not (0 <= phase <= 3):
-        return 'Invalid phase.'
-    for event in base.cr.doFindAll('DistributedExperimentEvent'):
-        event.blimp.request('Phase%d' % phase, 0)
-        break
-    else:
-        return "Couldn't find a blimp."
+            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
