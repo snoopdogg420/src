@@ -25,6 +25,8 @@ class DistributedExperimentEvent(DistributedEvent):
         self.blimpTrack = None
 
     def start(self):
+        self.requestExperimentToon()
+
         taskMgr.remove('TT-birds')
 
         base.musicManager.stopAllSounds()
@@ -53,6 +55,9 @@ class DistributedExperimentEvent(DistributedEvent):
         if self.blimpTrack is not None:
             self.blimpTrack.finish()
             self.blimpTrack = None
+
+        if self.objectiveGui:
+            self.objectiveGui.destroy()
 
         base.musicManager.stopAllSounds()
         base.unlockMusic()
@@ -100,3 +105,13 @@ class DistributedExperimentEvent(DistributedEvent):
         if self.objectiveGui:
             self.objectiveGui.fadeOutDestroy()
             self.objectiveGui = None
+
+    def setExperimentToon(self, avId):
+        base.localAvatar.altDoId = avId
+        self.cr.doId2do[avId] = base.localAvatar
+        base.localAvatar.dclass = self.cr.dclassesByName['DistributedExperimentToon']
+
+        self.sendUpdate('setExperimentToonResponse', [avId])
+
+    def requestExperimentToon(self):
+        self.sendUpdate('requestExperimentToon', [base.localAvatar.doId])

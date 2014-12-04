@@ -617,7 +617,7 @@ class Movie(DirectObject.DirectObject):
                     adict['petId'] = petId
                 if track == SOS:
                     targetId = ta[TOON_TGT_COL]
-                    if targetId == base.localAvatar.doId:
+                    if targetId == base.localAvatar.altDoId:
                         target = base.localAvatar
                         adict['targetType'] = 'callee'
                     elif toon == base.localAvatar:
@@ -900,11 +900,11 @@ class Movie(DirectObject.DirectObject):
                     continue
                 if a['group'] == ATK_TGT_GROUP:
                     for target in targetField:
-                        if target['died'] and target['toon'].doId == base.localAvatar.doId:
+                        if target['died'] and target['toon'].doId == base.localAvatar.altDoId:
                             isLocalToonSad = True
 
                 elif a['group'] == ATK_TGT_SINGLE:
-                    if targetField['died'] and targetField['toon'].doId == base.localAvatar.doId:
+                    if targetField['died'] and targetField['toon'].doId == base.localAvatar.altDoId:
                         isLocalToonSad = True
                 if isLocalToonSad:
                     break

@@ -175,6 +175,7 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             self.oldPos = None
             self.questMap = None
             self.prevToonIdx = 0
+            self.altDoId = None
 
     def setDNA(self, dna):
         base.localAvatarStyle = dna
@@ -1978,3 +1979,13 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
                 self.canEarnAchievements = True
 
         DistributedToon.DistributedToon.setAchievements(self, achievements)
+
+    def sendUpdate(self, fieldName, args=[], sendToId=None):
+        if self.cr:
+            if self.altDoId is None:
+                self.altDoId = self.doId
+            dg = self.dclass.clientFormatUpdate(
+                fieldName, sendToId or self.altDoId, args)
+            self.cr.send(dg)
+        else:
+            assert self.notify.error("sendUpdate failed, because self.cr is not set")

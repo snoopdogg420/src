@@ -341,6 +341,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         __builtins__['localAvatar'] = base.localAvatar
         NametagGlobals.setMe(base.localAvatar)
         localAvatar.doId = avatarId
+        localAvatar.altDoId = avatarId
         self.localAvatarDoId = avatarId
         parentId = None
         zoneId = None

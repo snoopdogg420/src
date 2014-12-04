@@ -418,6 +418,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.sendUpdate('setDNAString', [string])
 
     def setDNAString(self, string):
+        self.dnaString = string
         self.dna.makeFromNetString(string)
         if not self.verifyDNA():
             self.notify.warning('Avatar %d has an invalid DNA string.' % self.doId)
@@ -2488,6 +2489,8 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         taskMgr.doMethodLater(self.healFrequency, self.toonUpTask, self.uniqueName('safeZoneToonUp'))
 
     def toonUpTask(self, task):
+        return Task.done # TODO: Fix me D:! I keep making the HP 145!
+
         self.toonUp(1)
         self.__waitForNextToonUp()
         return Task.done
