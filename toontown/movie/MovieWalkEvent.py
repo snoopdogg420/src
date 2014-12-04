@@ -1,6 +1,6 @@
 from direct.interval.IntervalGlobal import Sequence, Parallel, Func, Wait
 from direct.task.Task import Task
-from pandac.PandaModules import ClockObject, Mat3, Vec3, Point3
+from panda3d.core import ClockObject, Mat3, Vec3, Point3
 
 from otp.movie.MovieEvent import MovieEvent
 from otp.otpbase import OTPGlobals
@@ -8,7 +8,7 @@ from otp.otpbase import OTPGlobals
 
 class MovieWalkEvent(MovieEvent):
     def __init__(self, avatar, duration, speed=OTPGlobals.ToonForwardSpeed,
-                 animName='run', animPlayRate=1, sfx=None):
+                 animName='walk', animPlayRate=1, sfx=None):
         self.avatar = avatar
         self.duration = duration
         self.speed = speed
@@ -27,14 +27,10 @@ class MovieWalkEvent(MovieEvent):
         # Construct the walk track:
         walkTrack = Parallel()
         if self.animName is not None:
-            walkTrack.append(
-                Func(self.avatar.setPlayRate, self.animPlayRate, self.animName)
-            )
+            walkTrack.append(Func(self.avatar.setPlayRate, self.animPlayRate, self.animName))
             walkTrack.append(Func(self.avatar.loop, self.animName))
         if self.sfx is not None:
-            walkTrack.append(
-                Func(base.playSfx, self.sfx, looping=1, node=self.avatar)
-            )
+            walkTrack.append(Func(base.playSfx, self.sfx, looping=1, node=self.avatar))
         walkTrack.append(Func(taskMgr.add, self.step, self.stepTaskName, 25))
         track.append(walkTrack)
 
