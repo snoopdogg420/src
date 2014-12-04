@@ -5,6 +5,9 @@ from direct.interval.IntervalGlobal import Func
 from direct.interval.IntervalGlobal import Sequence, LerpHprInterval, Wait
 from panda3d.core import Vec3, Texture
 
+from otp.ai.MagicWordGlobal import *
+from toontown.event.DistributedExperimentEvent import DistributedExperimentEvent
+
 
 STATIC_SCREEN_INDEX = 0
 CHAIRMAN_SCREEN_INDEX = 1
@@ -52,17 +55,6 @@ class ExperimentBlimp(Actor, FSM):
         self.tv = loader.loadModel('phase_4/models/events/blimp_tv.bam')
         self.tv.reparentTo(self)
 
-        self.tvIval = None
-
-        self.flyTrack = Sequence(
-            LerpHprInterval(self, 3.5, Vec3(140, 0, 5),
-                            startHpr=Vec3(140, 0, -5), blendType='easeInOut',
-                            fluid=1),
-            LerpHprInterval(self, 3.5, Vec3(140, 0, -5),
-                            startHpr=Vec3(140, 0, 5), blendType='easeInOut',
-                            fluid=1)
-        )
-
         self.staticScreenTex = loader.loadTexture('phase_4/maps/blimp_tv_map_01.png')
         self.staticScreenTex.setMinfilter(Texture.FTLinearMipmapLinear)
         self.staticScreenTex.setMagfilter(Texture.FTLinear)
@@ -76,7 +68,26 @@ class ExperimentBlimp(Actor, FSM):
 
         self.camera = base.makeCamera(self.buffer)
 
+        self.tvIval = None
+
+        self.flyTrack = Sequence(
+            LerpHprInterval(self, 3.5, Vec3(140, 0, 5),
+                            startHpr=Vec3(140, 0, -5), blendType='easeInOut',
+                            fluid=1),
+            LerpHprInterval(self, 3.5, Vec3(140, 0, -5),
+                            startHpr=Vec3(140, 0, 5), blendType='easeInOut',
+                            fluid=1)
+        )
+
     def cleanup(self):
+        if self.flyTrack is not None:
+            self.stopFlying()
+            self.flyTrack = None
+
+        if self.tvIval is not None:
+            self.tvIval.finish()
+            self.tvIval = None
+
         if self.camera is not None:
             self.camera.removeNode()
             self.camera = None
@@ -92,14 +103,6 @@ class ExperimentBlimp(Actor, FSM):
         if self.staticScreenTex is not None:
             self.staticScreenTex.clear()
             self.staticScreenTex = None
-
-        if self.flyTrack is not None:
-            self.stopFlying()
-            self.flyTrack = None
-
-        if self.tvIval is not None:
-            self.tvIval.finish()
-            self.tvIval = None
 
         if self.tv is not None:
             self.tv.removeNode()
@@ -209,3 +212,9 @@ class ExperimentBlimp(Actor, FSM):
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.sellbotScene)
             tvScreen.setTexture(ts, buffer.getTexture(), 1)
+
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[int])
+def blimp(phase):
+    for event in base.cr.doFindAllInstances(DistributedExperimentEvent):
+        event.blimp.request('Phase%d' % phase)
