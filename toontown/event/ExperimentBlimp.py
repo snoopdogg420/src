@@ -3,10 +3,11 @@ from direct.distributed.ClockDelta import globalClockDelta
 from direct.fsm.FSM import FSM
 from direct.interval.IntervalGlobal import Func
 from direct.interval.IntervalGlobal import Sequence, LerpHprInterval, Wait
-from panda3d.core import Vec3, Texture
+from panda3d.core import NodePath, Vec3, Texture
 
 from otp.ai.MagicWordGlobal import *
-from toontown.event.DistributedExperimentEvent import DistributedExperimentEvent
+from toontown.suit.BossCog import BossCog
+from toontown.suit.SuitDNA import SuitDNA
 
 
 STATIC_SCREEN_INDEX = 0
@@ -17,9 +18,31 @@ CASHBOT_SCREEN_INDEX = 4
 SELLBOT_SCREEN_INDEX = 5
 
 
-class BossbotScene:
+class BossbotScene(NodePath):
+    def __init__(self):
+        NodePath.__init__(self, 'BossbotScene')
+
+        self.background = loader.loadModel('phase_12/models/bossbotHQ/BanquetInterior_1.bam')
+        self.background.reparentTo(self)
+
+        self.boss = BossCog()
+        dna = SuitDNA()
+        dna.newBossCog('c')
+        self.boss.setDNA(dna)
+        self.boss.reparentTo(self)
+        self.boss.setPos(0, 236.89, 0)
+        self.boss.loop('neutral')
+
     def delete(self):
-        pass
+        if self.boss is not None:
+            self.boss.delete()
+            self.boss = None
+
+        if self.background is not None:
+            self.background.removeNode()
+            self.background = None
+
+        NodePath.removeNode(self)
 
 
 class LawbotScene:
@@ -160,7 +183,7 @@ class ExperimentBlimp(Actor, FSM):
         Lawbot C.J., and the Bossbot C.E.O.). They will be standing still in a
         neutral animation inside of their respective headquarters.
         """
-        pass
+        self.setScreen(BOSSBOT_SCREEN_INDEX)
 
     def enterPhase2(self, timestamp):
         """
@@ -218,5 +241,8 @@ class ExperimentBlimp(Actor, FSM):
 def blimp(phase):
     if not (0 <= phase <= 3):
         return 'Invalid phase.'
-    for event in base.cr.doFindAllInstances(DistributedExperimentEvent):
+    for event in base.cr.doFindAll('DistributedExperimentEvent'):
         event.blimp.request('Phase%d' % phase, 0)
+        break
+    else:
+        return "Couldn't find a blimp."
