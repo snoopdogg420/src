@@ -1,13 +1,12 @@
-from pandac.PandaModules import Vec4
-from direct.interval.IntervalGlobal import Sequence, Func, Wait
 from direct.actor.Actor import Actor
+from direct.interval.IntervalGlobal import LerpHprInterval
+from direct.interval.IntervalGlobal import Sequence, Func, Wait
+from panda3d.core import Vec3
+from pandac.PandaModules import Vec4
+
 from toontown.event import ExperimentEventObjectives
-from toontown.event.ExperimentEventObjectiveGUI import ExperimentEventObjectiveGUI
 from toontown.event.DistributedEvent import DistributedEvent
-from toontown.hood import ZoneUtil
-from toontown.dna.DNAStorage import DNAStorage
-from toontown.dna.DNAParser import loadDNAFileAI
-import time
+from toontown.event.ExperimentEventObjectiveGUI import ExperimentEventObjectiveGUI
 
 
 class DistributedExperimentEvent(DistributedEvent):
@@ -21,7 +20,9 @@ class DistributedExperimentEvent(DistributedEvent):
         self.musicSequence = None
 
         self.objectiveGui = None
+
         self.blimp = None
+        self.blimpTrack = None
 
     def start(self):
         taskMgr.remove('TT-birds')
@@ -45,7 +46,13 @@ class DistributedExperimentEvent(DistributedEvent):
         self.musicSequence.finish()
         self.musicSequence = None
 
-        self.blimp.cleanup()
+        if self.blimp is not None:
+            self.blimp.cleanup()
+            self.blimp = None
+
+        if self.blimpTrack is not None:
+            self.blimpTrack.finish()
+            self.blimpTrack = None
 
         base.musicManager.stopAllSounds()
         base.unlockMusic()
@@ -58,13 +65,22 @@ class DistributedExperimentEvent(DistributedEvent):
         self.cr.sendSetZoneMsg(self.zoneId, visGroups)
 
     def createBlimp(self, timestamp):
-        # TODO: Make the blimp fly around the playground
         self.blimp = Actor(loader.loadModel('phase_4/models/events/blimp_mod.bam'))
         self.blimp.loadAnims({'flying': 'phase_4/models/events/blimp_chan_flying.bam'})
         self.blimp.reparentTo(render)
         self.blimp.loop('flying')
         self.blimp.setPos(144, -188, 55)
         self.blimp.setHpr(140, 0, 5)
+
+        self.blimpTrack = Sequence(
+            LerpHprInterval(self.blimp, 3.5, Vec3(140, 0, 5),
+                            startHpr=Vec3(140, 0, -5), blendType='easeInOut',
+                            fluid=1),
+            LerpHprInterval(self.blimp, 3.5, Vec3(140, 0, -5),
+                            startHpr=Vec3(140, 0, 5), blendType='easeInOut',
+                            fluid=1)
+        )
+        self.blimpTrack.loop()
 
     def setObjective(self, objectiveId):
         if objectiveId == 0:
