@@ -80,12 +80,6 @@ class DistributedBattle(DistributedBattleBase.DistributedBattleBase):
         suitPos = point[0]
         suitHpr = VBase3(point[1], 0.0, 0.0)
         toon = self.toons[0]
-
-        # We need to check if this is the toon we actually want.
-        if toon.doId != base.localAvatar.altDoId: # This means we arent dealing with our local toon
-            if toon.doId != toon.altDoId: # Check if we are dealing with an experiment toon
-                toon = self.cr.doId2do[toon.altDoId] # Get the correct toon that we need to move
-
         point = self.toonPoints[0][0]
         toonPos = point[0]
         toonHpr = VBase3(point[1], 0.0, 0.0)

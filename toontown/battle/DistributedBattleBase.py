@@ -946,7 +946,15 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
 
     def getToon(self, toonId):
         if toonId in self.cr.doId2do:
-            return self.cr.doId2do[toonId]
+            toon = self.cr.doId2do[toonId]
+
+            # We need to check if this is the toon we actually want.
+            if toon.doId != base.localAvatar.altDoId: # This means we arent dealing with our local toon
+                if toon.doId != toon.altDoId: # Check if we are dealing with an experiment toon
+                    return self.cr.doId2do[toon.altDoId] # Get the correct toon that we need to move
+
+            return toon
+
         else:
             self.notify.warning('getToon() - toon: %d not in repository!' % toonId)
             return None
