@@ -175,7 +175,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
             self.oldPos = None
             self.questMap = None
             self.prevToonIdx = 0
-            self.altDoId = None
 
     def setDNA(self, dna):
         base.localAvatarStyle = dna
@@ -1984,6 +1983,8 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
         if self.cr:
             if self.altDoId is None:
                 self.altDoId = self.doId
+            if sendToId == self.doId:
+                sendToId = self.altDoId
             dg = self.dclass.clientFormatUpdate(
                 fieldName, sendToId or self.altDoId, args)
             self.cr.send(dg)

@@ -633,6 +633,7 @@ dclass DistributedToon : DistributedPlayer {
   setAnimalSound(uint8 index) ram broadcast ownrecv;
   setBuffs(uint32[] = []) required ownrecv db;
   setClientInterest(uint32 zoneId) ownrecv;
+  setAltDoId(uint32) broadcast ram;
 };
 
 dclass DistributedCCharBase : DistributedObject {
@@ -3632,4 +3633,5 @@ dclass DistributedExperimentToon : DistributedToon {
   setAnimalSound(uint8 index) ram broadcast ownrecv;
   setBuffs(uint32[] = []) ownrecv;
   setClientInterest(uint32 zoneId) ownrecv;
+  setAltDoId(uint32) broadcast ram;
 };

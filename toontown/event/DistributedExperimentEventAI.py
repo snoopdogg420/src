@@ -105,7 +105,10 @@ class DistributedExperimentEventAI(DistributedEventAI):
         newAv.inventory = InventoryBase(newAv)
         newAv.gameAccess = ToontownGlobals.AccessFull
         newAv.currentEvent = self
+        newAv.altDoId = avId
         newAv.generateWithRequired(self.zoneId)
+
+        newAv.d_setAltDoId(av.doId)
 
         self.experimentToons[avId] = newAv
         self.acceptOnce('distObjDelete-%s' % avId, self.deleteExperimentToon, [avId])

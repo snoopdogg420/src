@@ -194,6 +194,7 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.promotionStatus = [0, 0, 0, 0]
         self.buffs = []
         self.currentEvent = None
+        self.altDoId = None
 
     def generate(self):
         DistributedPlayerAI.DistributedPlayerAI.generate(self)
@@ -4302,6 +4303,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setClientInterest(self, zoneId):
         self.sendUpdate('setClientInterest', [zoneId])
+
+    def d_setAltDoId(self, altDoId):
+        self.sendUpdate('setAltDoId', [altDoId])
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
 def cheesyEffect(value, hood=0, expire=0):

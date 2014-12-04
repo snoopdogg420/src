@@ -185,6 +185,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         self.canEarnAchievements = False
         self.promotionStatus = [0, 0, 0, 0]
         self.buffs = []
+        self.altDoId = None
 
     def disable(self):
         for soundSequence in self.soundSequenceList:
@@ -2650,6 +2651,9 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def setClientInterest(self, zoneId):
         self.cr.sendSetZoneMsg(zoneId)
+
+    def setAltDoId(self, altDoId):
+        self.altDoId = altDoId
 
 @magicWord(category=CATEGORY_COMMUNITY_MANAGER)
 def globalTeleport():
