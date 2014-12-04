@@ -22,6 +22,7 @@ class DistributedExperimentEvent(DistributedEvent):
         self.objectiveGui = None
 
         self.blimp = None
+        self.blimpTv = None
         self.blimpTrack = None
 
     def start(self):
@@ -48,13 +49,17 @@ class DistributedExperimentEvent(DistributedEvent):
         self.musicSequence.finish()
         self.musicSequence = None
 
-        if self.blimp is not None:
-            self.blimp.cleanup()
-            self.blimp = None
-
         if self.blimpTrack is not None:
             self.blimpTrack.finish()
             self.blimpTrack = None
+
+        if self.blimpTv is not None:
+            self.blimpTv.removeNode()
+            self.blimpTv = None
+
+        if self.blimp is not None:
+            self.blimp.cleanup()
+            self.blimp = None
 
         if self.objectiveGui:
             self.objectiveGui.destroy()
@@ -76,6 +81,9 @@ class DistributedExperimentEvent(DistributedEvent):
         self.blimp.loop('flying')
         self.blimp.setPos(144, -188, 55)
         self.blimp.setHpr(140, 0, 5)
+
+        self.blimpTv = loader.loadModel('phase_4/models/events/blimp_tv.bam')
+        self.blimpTv.reparentTo(self.blimp)
 
         self.blimpTrack = Sequence(
             LerpHprInterval(self.blimp, 3.5, Vec3(140, 0, 5),
