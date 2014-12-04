@@ -1,6 +1,6 @@
 from otp.avatar.Avatar import Avatar
 from otp.movie.Movie import Movie
-from otp.nametag.NametagGroup import NametagGroup
+from toontown.nametag import NametagGlobals
 from toontown.suit import Suit, SuitDNA
 from toontown.toon import Toon, ToonDNA
 
@@ -17,14 +17,17 @@ class ToontownMovie(Movie):
 
         toon.setName(name)
         toon.setPickable(0)
-        toon.setPlayerType(NametagGroup.CCNonPlayer)
+        toon.setPlayerType(NametagGlobals.CCNonPlayer)
 
         if addActive:
             toon.addActive()
 
         if not isinstance(dna, ToonDNA.ToonDNA):
-            dna = ToonDNA.ToonDNA()
-            dna.newToonRandom(seed=dna)
+            if isinstance(dna, basestring):
+                dna = ToonDNA.ToonDNA(str=dna)
+            else:
+                dna = ToonDNA.ToonDNA()
+                dna.newToonRandom(seed=dna)
 
         toon.setDNA(dna)
 
@@ -43,9 +46,12 @@ class ToontownMovie(Movie):
         if addActive:
             suit.addActive()
 
-        if dna is None:
-            dna = SuitDNA.SuitDNA()
-            dna.newSuitRandom()
+        if not isinstance(dna, SuitDNA.SuitDNA):
+            if isinstance(dna, basestring):
+                dna = SuitDNA.SuitDNA(str=dna)
+            else:
+                dna = SuitDNA.SuitDNA()
+                dna.newSuitRandom()
 
         suit.setDNA(dna)
 
@@ -56,8 +62,6 @@ class ToontownMovie(Movie):
         return suit
 
     def cleanup(self):
-        Movie.cleanup(self)
-
         for toon in list(self.toons):
             if toon in Avatar.ActiveAvatars:
                 toon.removeActive()
@@ -69,3 +73,5 @@ class ToontownMovie(Movie):
                 suit.removeActive()
             suit.delete()
             self.suits.remove(suit)
+
+        Movie.cleanup(self)
