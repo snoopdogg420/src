@@ -66,8 +66,8 @@ class DistributedExperimentEvent(DistributedEvent):
         self.blimp = ExperimentBlimp()
         self.blimp.reparentTo(render)
         self.blimp.setPosHpr(144, -188, 55, 140, 0, 5)
-        self.blimp.startFlying()
-        self.blimp.request('Phase0')
+        self.blimp.startFlying(timestamp)
+        self.blimp.request('Phase0', timestamp)
 
     def setObjective(self, objectiveId):
         if objectiveId == 0:

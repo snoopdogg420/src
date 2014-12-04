@@ -1,14 +1,15 @@
+from direct.distributed.ClockDelta import globalClockDelta
+from direct.distributed.PyDatagram import *
+
+from toontown.dna.DNAParser import loadDNAFileAI
+from toontown.dna.DNAStorage import DNAStorage
+from toontown.event import ExperimentEventObjectives
+from toontown.event.DistributedEventAI import DistributedEventAI
+from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
 from toontown.toon.DistributedExperimentToonAI import DistributedExperimentToonAI
 from toontown.toon.Experience import Experience
 from toontown.toon.InventoryBase import InventoryBase
 from toontown.toonbase import ToontownGlobals
-from toontown.event import ExperimentEventObjectives
-from toontown.event.DistributedEventAI import DistributedEventAI
-from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
-from toontown.dna.DNAStorage import DNAStorage
-from toontown.dna.DNAParser import loadDNAFileAI
-from direct.distributed.PyDatagram import *
-import time
 
 
 class DistributedExperimentEventAI(DistributedEventAI):
@@ -44,7 +45,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner.resetSuitHoodInfo(30000 + self.currentDifficulty)
 
     def createBlimp(self):
-        self.sendUpdate('createBlimp', [int(time.time())])
+        self.sendUpdate('createBlimp', [globalClockDelta.getRealNetworkTime(bits=32)])
 
     def setVisGroups(self, visGroups):
         self.sendUpdate('setVisGroups', [visGroups])
