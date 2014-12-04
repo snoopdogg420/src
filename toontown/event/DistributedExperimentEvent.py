@@ -1,3 +1,4 @@
+from direct.distributed.ClockDelta import globalClockDelta
 from direct.interval.IntervalGlobal import Sequence, Func, Wait
 from pandac.PandaModules import Vec4
 
@@ -105,7 +106,7 @@ def blimp(phase):
     if not (0 <= phase <= 3):
         return 'Invalid phase.'
     for event in base.cr.doFindAllInstances(DistributedExperimentEvent):
-        event.blimp.request('Phase%d' % phase, 0)
+        event.blimp.request('Phase%d' % phase, globalClockDelta.getRealNetworkTime(bits=32))
         break
     else:
         return "Couldn't find a blimp."

@@ -59,8 +59,59 @@ class LawbotScene(NodePath, FSM):
         NodePath.__init__(self, 'LawbotScene')
         FSM.__init__(self, 'LawbotScene')
 
+        self.background = loader.loadModel('phase_11/models/lawbotHQ/LawbotCourtroom3.bam')
+        self.background.reparentTo(self)
+
+        self.boss = BossCog()
+        dna = SuitDNA()
+        dna.newBossCog('l')
+        self.boss.setDNA(dna)
+        self.boss.reparentTo(self)
+        self.boss.setPosHpr(-3.7, 0, 71.24, 180, 0, 0)
+        self.boss.loop('Bb_neutral')
+
+        self.chair0 = loader.loadModel('phase_11/models/lawbotHQ/LB_chairA.bam')
+        self.chair0.setPosHpr(-16.5, 3.73, 81.58, 23.2, 0, 0)
+        self.chair0.reparentTo(self)
+
+        self.chair1 = loader.loadModel('phase_11/models/lawbotHQ/LB_chairA.bam')
+        self.chair1.setPosHpr(8.5, 3.73, 81.58, 336.8, 0, 0)
+        self.chair1.reparentTo(self)
+
+        self.chair2 = loader.loadModel('phase_11/models/lawbotHQ/LB_couchA.bam')
+        self.chair2.setPosHpr(-16.28, 19.88, 81.58, 23.2, 0, 0)
+        self.chair2.reparentTo(self)
+
+        self.chair3 = loader.loadModel('phase_11/models/lawbotHQ/LB_couchA.bam')
+        self.chair3.setPosHpr(8.55, 19.42, 81.58, 333.43, 0, 0)
+        self.chair3.reparentTo(self)
+
     def delete(self):
-        pass
+        if self.chair3 is not None:
+            self.chair3.removeNode()
+            self.chair3 = None
+
+        if self.chair2 is not None:
+            self.chair2.removeNode()
+            self.chair2 = None
+
+        if self.chair1 is not None:
+            self.chair1.removeNode()
+            self.chair1 = None
+
+        if self.chair0 is not None:
+            self.chair0.removeNode()
+            self.chair0 = None
+
+        if self.boss is not None:
+            self.boss.delete()
+            self.boss = None
+
+        if self.background is not None:
+            self.background.removeNode()
+            self.background = None
+
+        NodePath.removeNode(self)
 
     def enterPhase0(self):
         pass
@@ -77,8 +128,27 @@ class CashbotScene(NodePath, FSM):
         NodePath.__init__(self, 'CashbotScene')
         FSM.__init__(self, 'CashbotScene')
 
+        self.background = loader.loadModel('phase_10/models/cogHQ/EndVault.bam')
+        self.background.reparentTo(self)
+
+        self.boss = BossCog()
+        dna = SuitDNA()
+        dna.newBossCog('m')
+        self.boss.setDNA(dna)
+        self.boss.reparentTo(self)
+        self.boss.setPosHpr(34, -112.54, 5.86, 235.3, 0, 0)
+        self.boss.loop('Bb_neutral')
+
     def delete(self):
-        pass
+        if self.boss is not None:
+            self.boss.delete()
+            self.boss = None
+
+        if self.background is not None:
+            self.background.removeNode()
+            self.background = None
+
+        NodePath.removeNode(self)
 
     def enterPhase0(self):
         pass
@@ -95,8 +165,27 @@ class SellbotScene(NodePath, FSM):
         NodePath.__init__(self, 'SellbotScene')
         FSM.__init__(self, 'SellbotScene')
 
+        self.background = loader.loadModel('phase_9/models/cogHQ/SellbotHQLobby.bam')
+        self.background.reparentTo(self)
+
+        self.boss = BossCog()
+        dna = SuitDNA()
+        dna.newBossCog('s')
+        self.boss.setDNA(dna)
+        self.boss.reparentTo(self)
+        self.boss.setPosHpr(6.36, 34.23, 0, 169.7, 0, 0)
+        self.boss.loop('Bb_neutral')
+
     def delete(self):
-        pass
+        if self.boss is not None:
+            self.boss.delete()
+            self.boss = None
+
+        if self.background is not None:
+            self.background.removeNode()
+            self.background = None
+
+        NodePath.removeNode(self)
 
     def enterPhase0(self):
         pass
@@ -235,7 +324,46 @@ class ExperimentBlimp(Actor, FSM):
         self.lawbotScene.request('Phase0')
         self.cashbotScene.request('Phase0')
         self.sellbotScene.request('Phase0')
-        self.setScreen(BOSSBOT_SCREEN_INDEX)
+        self.tvIval = Sequence(
+            Func(self.setScreen, BOSSBOT_SCREEN_INDEX),
+            Wait(5),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, BOSSBOT_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, LAWBOT_SCREEN_INDEX),
+            Wait(5),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, LAWBOT_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, CASHBOT_SCREEN_INDEX),
+            Wait(5),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, CASHBOT_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, SELLBOT_SCREEN_INDEX),
+            Wait(5),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, SELLBOT_SCREEN_INDEX),
+            Wait(0.1),
+            Func(self.setScreen, STATIC_SCREEN_INDEX),
+            Wait(0.1)
+        )
+        self.tvIval.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+
+    def exitPhase1(self):
+        if self.tvIval is not None:
+            self.tvIval.finish()
+            self.tvIval = None
 
     def enterPhase2(self, timestamp):
         """
@@ -288,8 +416,10 @@ class ExperimentBlimp(Actor, FSM):
         elif screenIndex == CASHBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.cashbotScene)
+            self.camera.setPosHpr(59.27, -132.77, 23.56, 48.01, 0, 0)
             tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
         elif screenIndex == SELLBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.sellbotScene)
+            self.camera.setPosHpr(0.9, -0.6, 17.72, 354.81, 0, 0)
             tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
