@@ -216,5 +216,7 @@ class ExperimentBlimp(Actor, FSM):
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def blimp(phase):
+    if not (0 <= phase <= 3):
+        return 'Invalid phase.'
     for event in base.cr.doFindAllInstances(DistributedExperimentEvent):
-        event.blimp.request('Phase%d' % phase)
+        event.blimp.request('Phase%d' % phase, 0)
