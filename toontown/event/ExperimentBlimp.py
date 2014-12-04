@@ -136,7 +136,7 @@ class CashbotScene(NodePath, FSM):
         dna.newBossCog('m')
         self.boss.setDNA(dna)
         self.boss.reparentTo(self)
-        self.boss.setPosHpr(34, -112.54, 5.86, 235.3, 0, 0)
+        self.boss.setPosHpr(25.03, -117.47, 2.92, 210.96, 0, 0)
         self.boss.loop('Bb_neutral')
 
     def delete(self):
@@ -416,7 +416,7 @@ class ExperimentBlimp(Actor, FSM):
         elif screenIndex == CASHBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
             self.camera.reparentTo(self.cashbotScene)
-            self.camera.setPosHpr(59.27, -132.77, 23.56, 48.01, 0, 0)
+            self.camera.setPosHpr(48.05, -142.49, 20.16, 48.01, 0, 0)
             tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
         elif screenIndex == SELLBOT_SCREEN_INDEX:
             tvScreen.setTexScale(ts, 1, 1.15)
