@@ -22,6 +22,8 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.maxDifficulty = 3
         self.currentObjective = None
 
+        self.phase = 0
+
     def start(self):
         self.suitPlanner = DistributedSuitPlannerAI(self.air, self.zoneId, self.setupDNA)
         self.suitPlanner.generateWithRequired(self.zoneId)
@@ -82,6 +84,11 @@ class DistributedExperimentEventAI(DistributedEventAI):
     def completeObjective(self):
         self.sendUpdate('completeObjective', [])
         self.setObjective(0)
+
+    def setPhase(self, phase):
+        self.phase = phase
+
+        self.sendUpdate('setPhase', [phase, globalClockDelta.getRealNetworkTime(bits=32)])
 
     def joinEvent(self, avId):
         DistributedEventAI.joinEvent(self, avId)

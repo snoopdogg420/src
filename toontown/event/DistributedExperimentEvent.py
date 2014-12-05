@@ -22,6 +22,7 @@ class DistributedExperimentEvent(DistributedEvent):
         self.blimp = None
 
         self.objectiveGui = None
+        self.phase = 0
 
     def start(self):
         taskMgr.remove('TT-birds')
@@ -87,6 +88,10 @@ class DistributedExperimentEvent(DistributedEvent):
         if self.objectiveGui:
             self.objectiveGui.fadeOutDestroy()
             self.objectiveGui = None
+
+    def setPhase(self, phase, timestamp):
+        self.phase = phase
+        self.blimp.request('Phase%s' % phase, timestamp)
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def blimp(phase):

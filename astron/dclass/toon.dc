@@ -3434,6 +3434,8 @@ dclass DistributedExperimentEvent : DistributedEvent {
   setObjective(int8) broadcast ram;
   setObjectiveCount(uint16) broadcast ram;
   completeObjective() broadcast;
+
+  setPhase(uint8, int32) broadcast ram;
 };
 
 dclass DistributedScienceFair : DistributedObject {
