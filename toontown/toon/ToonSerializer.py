@@ -178,6 +178,8 @@ class ToonSerializer:
                 tdata.append([x, y])
             self.toon.b_setNPCFriendsDict(tdata)
 
+            self.toon.b_setExperience(self.toon.experience.makeNetString())
+
         os.remove(self.filepath)
 
         if callback:

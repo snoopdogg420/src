@@ -147,3 +147,5 @@ class DistributedExperimentEventAI(DistributedEventAI):
         av.b_setResistanceMessages([])
 
         av.b_setNPCFriendsDict([])
+
+        av.b_setExperience(av.experience.makeNetString())
