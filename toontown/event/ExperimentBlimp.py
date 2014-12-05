@@ -286,6 +286,11 @@ class ExperimentBlimp(Actor, FSM):
 
         Actor.cleanup(self)
 
+    def defaultExit(self):
+        if self.tvIval is not None:
+            self.tvIval.finish()
+            self.tvIval = None
+
     def enterPhase0(self, timestamp):
         """
         Phase 0 describes the blimp when it is almost always displaying a
@@ -307,11 +312,6 @@ class ExperimentBlimp(Actor, FSM):
             Func(self.setScreen, STATIC_SCREEN_INDEX)
         )
         self.tvIval.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
-
-    def exitPhase0(self):
-        if self.tvIval is not None:
-            self.tvIval.finish()
-            self.tvIval = None
 
     def enterPhase1(self, timestamp):
         """
@@ -359,11 +359,6 @@ class ExperimentBlimp(Actor, FSM):
             Wait(0.1)
         )
         self.tvIval.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
-
-    def exitPhase1(self):
-        if self.tvIval is not None:
-            self.tvIval.finish()
-            self.tvIval = None
 
     def enterPhase2(self, timestamp):
         """
