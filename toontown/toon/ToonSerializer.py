@@ -7,10 +7,10 @@ import os
 class ToonSerializer:
     def __init__(self, toon):
         self.toon = toon
-        self.filepath = 'toondata/%s.td' % self.toon.doId
+        self.filepath = 'backups/toondata/%s.td' % self.toon.doId
 
-        if not os.path.exists('toondata'):
-            os.makedirs('toondata')
+        if not os.path.exists('backups/toondata'):
+            os.makedirs('backups/toondata')
 
     def saveToon(self, callback=None):
         with open(self.filepath, 'wb') as f:
