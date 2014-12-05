@@ -43,6 +43,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
 
         self.currentDifficulty += 1
         self.suitPlanner.resetSuitHoodInfo(30000 + self.currentDifficulty)
+        self.suitPlanner.flySuits()
 
     def createBlimp(self):
         self.sendUpdate('createBlimp', [globalClockDelta.getRealNetworkTime(bits=32)])
