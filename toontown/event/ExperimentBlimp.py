@@ -165,7 +165,7 @@ class CashbotScene(TelevisionScene, FSM):
         dna.newBossCog('m')
         self.boss.setDNA(dna)
         self.boss.reparentTo(self)
-        self.boss.setPosHpr(21.66, -117.47, 2.92, 48.01, 0, 0)
+        self.boss.setPosHpr(21.66, -117.47, 2.92, 228.01, 0, 0)
         self.boss.loop('Bb_neutral')
 
         self.subordinates = []
