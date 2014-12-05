@@ -2,8 +2,8 @@ from direct.actor.Actor import Actor
 from direct.distributed.ClockDelta import globalClockDelta
 from direct.fsm.FSM import FSM
 from direct.interval.IntervalGlobal import Func
-from direct.interval.IntervalGlobal import Sequence, LerpHprInterval, Wait
-from panda3d.core import NodePath, Vec3, Texture
+from direct.interval.IntervalGlobal import Sequence, Wait
+from panda3d.core import NodePath, Texture
 
 from toontown.suit.BossCog import BossCog
 from toontown.suit.SuitDNA import SuitDNA
@@ -16,10 +16,44 @@ LAWBOT_SCREEN_INDEX = 3
 CASHBOT_SCREEN_INDEX = 4
 SELLBOT_SCREEN_INDEX = 5
 
+TELEVISION_TRACK_0 = (
+    (STATIC_SCREEN_INDEX, 45), (CHAIRMAN_SCREEN_INDEX, 0.25),
+    (STATIC_SCREEN_INDEX, 0.5), (CHAIRMAN_SCREEN_INDEX, 0.1),
+    (STATIC_SCREEN_INDEX, 0.1), (CHAIRMAN_SCREEN_INDEX, 0.1)
+)
+TELEVISION_TRACK_1 = (
+    (STATIC_SCREEN_INDEX, 0.1), (SELLBOT_SCREEN_INDEX, 0.1),
+    (STATIC_SCREEN_INDEX, 0.1), (BOSSBOT_SCREEN_INDEX, 5),
+    (STATIC_SCREEN_INDEX, 0.1), (BOSSBOT_SCREEN_INDEX, 0.1),
+    (STATIC_SCREEN_INDEX, 0.1), (LAWBOT_SCREEN_INDEX, 5),
+    (STATIC_SCREEN_INDEX, 0.1), (LAWBOT_SCREEN_INDEX, 0.1),
+    (STATIC_SCREEN_INDEX, 0.1), (CASHBOT_SCREEN_INDEX, 5),
+    (STATIC_SCREEN_INDEX, 0.1), (CASHBOT_SCREEN_INDEX, 0.1),
+    (STATIC_SCREEN_INDEX, 0.1), (SELLBOT_SCREEN_INDEX, 5)
+)
+TELEVISION_TRACK_2 = TELEVISION_TRACK_1
+TELEVISION_TRACK_3 = TELEVISION_TRACK_2
 
-class BossbotScene(NodePath, FSM):
+
+class TelevisionScene(NodePath):
+    def __init__(self, name):
+        NodePath.__init__(self, name)
+
+        self.cameraPosHpr = (0, 0, 0, 0, 0, 0)
+
+    def delete(self):
+        NodePath.removeNode(self)
+
+    def setCameraPosHpr(self, x, y, z, h, p, r):
+        self.cameraPosHpr = (x, y, z, h, p, r)
+
+    def getCameraPosHpr(self):
+        return self.cameraPosHpr
+
+
+class BossbotScene(TelevisionScene, FSM):
     def __init__(self):
-        NodePath.__init__(self, 'BossbotScene')
+        TelevisionScene.__init__(self, 'BossbotScene')
         FSM.__init__(self, 'BossbotScene')
 
         self.background = loader.loadModel('phase_12/models/bossbotHQ/BanquetInterior_1.bam')
@@ -42,10 +76,10 @@ class BossbotScene(NodePath, FSM):
             self.background.removeNode()
             self.background = None
 
-        NodePath.removeNode(self)
+        TelevisionScene.delete(self)
 
     def enterPhase0(self):
-        pass
+        self.setCameraPosHpr(0, 203.5, 23.5, 0, 354, 0)
 
     def enterPhase1(self):
         pass
@@ -54,9 +88,9 @@ class BossbotScene(NodePath, FSM):
         pass
 
 
-class LawbotScene(NodePath, FSM):
+class LawbotScene(TelevisionScene, FSM):
     def __init__(self):
-        NodePath.__init__(self, 'LawbotScene')
+        TelevisionScene.__init__(self, 'LawbotScene')
         FSM.__init__(self, 'LawbotScene')
 
         self.background = loader.loadModel('phase_11/models/lawbotHQ/LawbotCourtroom3.bam')
@@ -70,38 +104,32 @@ class LawbotScene(NodePath, FSM):
         self.boss.setPosHpr(-3.7, 0, 71.24, 180, 0, 0)
         self.boss.loop('Bb_neutral')
 
-        self.chair0 = loader.loadModel('phase_11/models/lawbotHQ/LB_chairA.bam')
-        self.chair0.setPosHpr(-16.5, 3.73, 81.58, 23.2, 0, 0)
-        self.chair0.reparentTo(self)
+        self.chairs = []
+        chairModel = loader.loadModel('phase_11/models/lawbotHQ/LB_chairA.bam')
+        for x, y, z, h, p, r in ((-16.5, 3.73, 81.58, 23.2, 0, 0),
+                                 (8.5, 3.73, 81.58, 336.8, 0, 0)):
+            chair = chairModel.copyTo(self)
+            chair.setPosHpr(x, y, z, h, p, r)
+            self.chairs.append(chair)
+        chairModel.removeNode()
 
-        self.chair1 = loader.loadModel('phase_11/models/lawbotHQ/LB_chairA.bam')
-        self.chair1.setPosHpr(8.5, 3.73, 81.58, 336.8, 0, 0)
-        self.chair1.reparentTo(self)
-
-        self.chair2 = loader.loadModel('phase_11/models/lawbotHQ/LB_couchA.bam')
-        self.chair2.setPosHpr(-16.28, 19.88, 81.58, 23.2, 0, 0)
-        self.chair2.reparentTo(self)
-
-        self.chair3 = loader.loadModel('phase_11/models/lawbotHQ/LB_couchA.bam')
-        self.chair3.setPosHpr(8.55, 19.42, 81.58, 333.43, 0, 0)
-        self.chair3.reparentTo(self)
+        self.couches = []
+        couchModel = loader.loadModel('phase_11/models/lawbotHQ/LB_couchA.bam')
+        for x, y, z, h, p, r in ((-16.28, 19.88, 81.58, 23.2, 0, 0),
+                                 (8.55, 19.42, 81.58, 333.43, 0, 0)):
+            couch = couchModel.copyTo(self)
+            couch.setPosHpr(x, y, z, h, p, r)
+            self.couches.append(couch)
+        couchModel.removeNode()
 
     def delete(self):
-        if self.chair3 is not None:
-            self.chair3.removeNode()
-            self.chair3 = None
+        for couch in self.couches[:]:
+            couch.removeNode()
+            self.couches.remove(couch)
 
-        if self.chair2 is not None:
-            self.chair2.removeNode()
-            self.chair2 = None
-
-        if self.chair1 is not None:
-            self.chair1.removeNode()
-            self.chair1 = None
-
-        if self.chair0 is not None:
-            self.chair0.removeNode()
-            self.chair0 = None
+        for chair in self.chairs[:]:
+            chair.removeNode()
+            self.chairs.remove(chair)
 
         if self.boss is not None:
             self.boss.delete()
@@ -111,10 +139,10 @@ class LawbotScene(NodePath, FSM):
             self.background.removeNode()
             self.background = None
 
-        NodePath.removeNode(self)
+        TelevisionScene.delete(self)
 
     def enterPhase0(self):
-        pass
+        self.setCameraPosHpr(-3.84, -29.84, 93.08, 0, 348, 0)
 
     def enterPhase1(self):
         pass
@@ -123,9 +151,9 @@ class LawbotScene(NodePath, FSM):
         pass
 
 
-class CashbotScene(NodePath, FSM):
+class CashbotScene(TelevisionScene, FSM):
     def __init__(self):
-        NodePath.__init__(self, 'CashbotScene')
+        TelevisionScene.__init__(self, 'CashbotScene')
         FSM.__init__(self, 'CashbotScene')
 
         self.background = loader.loadModel('phase_10/models/cogHQ/EndVault.bam')
@@ -148,10 +176,10 @@ class CashbotScene(NodePath, FSM):
             self.background.removeNode()
             self.background = None
 
-        NodePath.removeNode(self)
+        TelevisionScene.delete(self)
 
     def enterPhase0(self):
-        pass
+        self.setCameraPosHpr(48.05, -142.49, 20.16, 48.01, 0, 0)
 
     def enterPhase1(self):
         pass
@@ -160,9 +188,9 @@ class CashbotScene(NodePath, FSM):
         pass
 
 
-class SellbotScene(NodePath, FSM):
+class SellbotScene(TelevisionScene, FSM):
     def __init__(self):
-        NodePath.__init__(self, 'SellbotScene')
+        TelevisionScene.__init__(self, 'SellbotScene')
         FSM.__init__(self, 'SellbotScene')
 
         self.background = loader.loadModel('phase_9/models/cogHQ/SellbotHQLobby.bam')
@@ -185,10 +213,10 @@ class SellbotScene(NodePath, FSM):
             self.background.removeNode()
             self.background = None
 
-        NodePath.removeNode(self)
+        TelevisionScene.delete(self)
 
     def enterPhase0(self):
-        pass
+        self.setCameraPosHpr(0.9, -0.6, 17.72, 354.81, 0, 0)
 
     def enterPhase1(self):
         pass
@@ -197,74 +225,38 @@ class SellbotScene(NodePath, FSM):
         pass
 
 
-class ExperimentBlimp(Actor, FSM):
-    notify = directNotify.newCategory('ExperimentBlimp')
-
-    TV_TRACK_PHASE_0 = (
-        (STATIC_SCREEN_INDEX, 45), (CHAIRMAN_SCREEN_INDEX, 0.25),
-        (STATIC_SCREEN_INDEX, 0.5), (CHAIRMAN_SCREEN_INDEX, 0.1),
-        (STATIC_SCREEN_INDEX, 0.1), (CHAIRMAN_SCREEN_INDEX, 0.1)
-    )
-    TV_TRACK_PHASE_1 = (
-        (STATIC_SCREEN_INDEX, 0.1), (SELLBOT_SCREEN_INDEX, 0.1),
-        (STATIC_SCREEN_INDEX, 0.1), (BOSSBOT_SCREEN_INDEX, 5),
-        (STATIC_SCREEN_INDEX, 0.1), (BOSSBOT_SCREEN_INDEX, 0.1),
-        (STATIC_SCREEN_INDEX, 0.1), (LAWBOT_SCREEN_INDEX, 5),
-        (STATIC_SCREEN_INDEX, 0.1), (LAWBOT_SCREEN_INDEX, 0.1),
-        (STATIC_SCREEN_INDEX, 0.1), (CASHBOT_SCREEN_INDEX, 5),
-        (STATIC_SCREEN_INDEX, 0.1), (CASHBOT_SCREEN_INDEX, 0.1),
-        (STATIC_SCREEN_INDEX, 0.1), (SELLBOT_SCREEN_INDEX, 5)
-    )
-    TV_TRACK_PHASE_2 = TV_TRACK_PHASE_1
-    TV_TRACK_PHASE_3 = TV_TRACK_PHASE_2
-
+class ExperimentTelevision(NodePath, FSM):
     def __init__(self):
-        Actor.__init__(self, None, None, None, flattenable=0, setFinal=1)
-        FSM.__init__(self, 'ExperimentBlimp')
+        NodePath.__init__(self, 'ExperimentTelevision')
+        FSM.__init__(self, 'ExperimentTelevision')
 
-        self.loadModel('phase_4/models/events/blimp_mod.bam')
-        self.loadAnims({'flying': 'phase_4/models/events/blimp_chan_flying.bam'})
+        self.model = loader.loadModel('phase_4/models/events/blimp_tv.bam')
+        self.model.reparentTo(self)
 
-        self.tv = loader.loadModel('phase_4/models/events/blimp_tv.bam')
-        self.tv.reparentTo(self)
+        self.staticTex = loader.loadTexture('phase_4/maps/blimp_tv_map_01.png')
+        self.staticTex.setMinfilter(Texture.FTLinearMipmapLinear)
+        self.staticTex.setMagfilter(Texture.FTLinear)
 
-        self.staticScreenTex = loader.loadTexture('phase_4/maps/blimp_tv_map_01.png')
-        self.staticScreenTex.setMinfilter(Texture.FTLinearMipmapLinear)
-        self.staticScreenTex.setMagfilter(Texture.FTLinear)
-
-        self.chairmanScreenTex = loader.loadTexture('phase_4/maps/blimp_tv_map_CM.png')
-        self.chairmanScreenTex.setMinfilter(Texture.FTLinearMipmapLinear)
-        self.chairmanScreenTex.setMagfilter(Texture.FTLinear)
+        self.chairmanTex = loader.loadTexture('phase_4/maps/blimp_tv_map_CM.png')
+        self.chairmanTex.setMinfilter(Texture.FTLinearMipmapLinear)
+        self.chairmanTex.setMagfilter(Texture.FTLinear)
 
         self.bossbotScene = BossbotScene()
         self.lawbotScene = LawbotScene()
         self.cashbotScene = CashbotScene()
         self.sellbotScene = SellbotScene()
 
-        self.buffer = base.win.makeTextureBuffer('tv', 960, 540)
-        self.buffer.setSort(-100)
+        self.buffer = base.win.makeTextureBuffer('television', 960, 540)
+        self.buffer.setSort(-1)
 
         self.camera = base.makeCamera(self.buffer)
 
-        self.flyTrack = Sequence(
-            LerpHprInterval(self, 3.5, Vec3(140, 0, 5),
-                            startHpr=Vec3(140, 0, -5), blendType='easeInOut',
-                            fluid=1),
-            LerpHprInterval(self, 3.5, Vec3(140, 0, -5),
-                            startHpr=Vec3(140, 0, 5), blendType='easeInOut',
-                            fluid=1)
-        )
+        self.track = None
 
-        self.tvTrack = None
-
-    def cleanup(self):
-        if self.tvTrack is not None:
-            self.tvTrack.finish()
-            self.tvTrack = None
-
-        if self.flyTrack is not None:
-            self.stopFlying()
-            self.flyTrack = None
+    def delete(self):
+        if self.track is not None:
+            self.track.finish()
+            self.track = None
 
         if self.camera is not None:
             self.camera.removeNode()
@@ -290,122 +282,129 @@ class ExperimentBlimp(Actor, FSM):
             self.bossbotScene.delete()
             self.bossbotScene = None
 
-        if self.chairmanScreenTex is not None:
-            self.chairmanScreenTex.clear()
-            self.chairmanScreenTex = None
+        if self.chairmanTex is not None:
+            self.chairmanTex.clear()
+            self.chairmanTex = None
 
-        if self.staticScreenTex is not None:
-            self.staticScreenTex.clear()
-            self.staticScreenTex = None
+        if self.staticTex is not None:
+            self.staticTex.clear()
+            self.staticTex = None
 
-        if self.tv is not None:
-            self.tv.removeNode()
-            self.tv = None
+        if self.model is not None:
+            self.model.removeNode()
+            self.model = None
 
-        Actor.cleanup(self)
-
-    def defaultExit(self):
-        if self.tvTrack is not None:
-            self.tvTrack.finish()
-            self.tvTrack = None
+        NodePath.removeNode(self)
 
     def enterPhase0(self, timestamp):
-        """
-        Phase 0 describes the blimp when it is almost always displaying a
-        static image on its monitor. It will, however, flash a drawing of the
-        Chairman every 45 seconds.
-        """
-        self.tvTrack = Sequence()
-        for screenIndex, duration in self.TV_TRACK_PHASE_0:
-            self.tvTrack.append(Func(self.setScreen, screenIndex))
-            self.tvTrack.append(Wait(duration))
-        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+        self.setTrack(TELEVISION_TRACK_0, timestamp=timestamp)
 
     def enterPhase1(self, timestamp):
-        """
-        Phase 1 describes the blimp when it is constantly flickering through
-        the first four boss Cogs (the Sellbot V.P., the Cashbot C.F.O., the
-        Lawbot C.J., and the Bossbot C.E.O.). They will be standing still in a
-        neutral animation inside of their respective headquarters.
-        """
         self.bossbotScene.request('Phase0')
         self.lawbotScene.request('Phase0')
         self.cashbotScene.request('Phase0')
         self.sellbotScene.request('Phase0')
 
-        self.tvTrack = Sequence()
-        for screenIndex, duration in self.TV_TRACK_PHASE_1:
-            self.tvTrack.append(Func(self.setScreen, screenIndex))
-            self.tvTrack.append(Wait(duration))
-        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+        self.setTrack(TELEVISION_TRACK_1, timestamp=timestamp)
 
     def enterPhase2(self, timestamp):
-        """
-        Phase 2 describes the blimp in the same state as phase 1, however, the
-        boss Cogs' subordinates have joined in on the spectating.
-        """
         self.bossbotScene.request('Phase1')
         self.lawbotScene.request('Phase1')
         self.cashbotScene.request('Phase1')
         self.sellbotScene.request('Phase1')
 
-        self.tvTrack = Sequence()
-        for screenIndex, duration in self.TV_TRACK_PHASE_2:
-            self.tvTrack.append(Func(self.setScreen, screenIndex))
-            self.tvTrack.append(Wait(duration))
-        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+        self.setTrack(TELEVISION_TRACK_2, timestamp=timestamp)
 
     def enterPhase3(self, timestamp):
-        """
-        Phase 3 describes the blimp in the same state as phase 2, however, the
-        both the boss Cogs, and their subordinates are cheering over the
-        destruction of Toontown Central.
-        """
         self.bossbotScene.request('Phase2')
         self.lawbotScene.request('Phase2')
         self.cashbotScene.request('Phase2')
         self.sellbotScene.request('Phase2')
 
-        self.tvTrack = Sequence()
-        for screenIndex, duration in self.TV_TRACK_PHASE_3:
-            self.tvTrack.append(Func(self.setScreen, screenIndex))
-            self.tvTrack.append(Wait(duration))
-        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+        self.setTrack(TELEVISION_TRACK_3, timestamp=timestamp)
 
-    def startFlying(self, timestamp):
-        self.loop('flying')
-        self.flyTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
-
-    def stopFlying(self):
-        self.flyTrack.finish()
-        self.stop()
+    def defaultExit(self):
+        if self.track is not None:
+            self.track.finish()
+            self.track = None
 
     def setScreen(self, screenIndex):
-        tvScreen = self.tv.find('**/tv_screen')
+        tvScreen = self.find('**/tv_screen')
         ts = tvScreen.findTextureStage('*')
-        if screenIndex == STATIC_SCREEN_INDEX:
+        if screenIndex in (STATIC_SCREEN_INDEX, CHAIRMAN_SCREEN_INDEX):
             tvScreen.setTexScale(ts, 1, 1)
-            tvScreen.setTexture(ts, self.staticScreenTex, 1)
-        elif screenIndex == CHAIRMAN_SCREEN_INDEX:
-            tvScreen.setTexScale(ts, 1, 1)
-            tvScreen.setTexture(ts, self.chairmanScreenTex, 1)
-        elif screenIndex == BOSSBOT_SCREEN_INDEX:
+            if screenIndex == STATIC_SCREEN_INDEX:
+                tvScreen.setTexture(ts, self.staticTex, 1)
+            elif screenIndex == CHAIRMAN_SCREEN_INDEX:
+                tvScreen.setTexture(ts, self.chairmanTex, 1)
+        elif screenIndex in (BOSSBOT_SCREEN_INDEX, LAWBOT_SCREEN_INDEX,
+                             CASHBOT_SCREEN_INDEX, SELLBOT_SCREEN_INDEX):
             tvScreen.setTexScale(ts, 1, 1.15)
-            self.camera.reparentTo(self.bossbotScene)
-            self.camera.setPosHpr(0, 203.5, 23.5, 0, 354, 0)
+            if screenIndex == BOSSBOT_SCREEN_INDEX:
+                self.camera.reparentTo(self.bossbotScene)
+                self.camera.setPosHpr(*self.bossbotScene.getCameraPosHpr())
+            elif screenIndex == LAWBOT_SCREEN_INDEX:
+                self.camera.reparentTo(self.lawbotScene)
+                self.camera.setPosHpr(*self.lawbotScene.getCameraPosHpr())
+            elif screenIndex == CASHBOT_SCREEN_INDEX:
+                self.camera.reparentTo(self.cashbotScene)
+                self.camera.setPosHpr(*self.cashbotScene.getCameraPosHpr())
+            elif screenIndex == SELLBOT_SCREEN_INDEX:
+                self.camera.reparentTo(self.sellbotScene)
+                self.camera.setPosHpr(*self.sellbotScene.getCameraPosHpr())
             tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
-        elif screenIndex == LAWBOT_SCREEN_INDEX:
-            tvScreen.setTexScale(ts, 1, 1.15)
-            self.camera.reparentTo(self.lawbotScene)
-            self.camera.setPosHpr(-3.84, -29.84, 93.08, 0, 348, 0)
-            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
-        elif screenIndex == CASHBOT_SCREEN_INDEX:
-            tvScreen.setTexScale(ts, 1, 1.15)
-            self.camera.reparentTo(self.cashbotScene)
-            self.camera.setPosHpr(48.05, -142.49, 20.16, 48.01, 0, 0)
-            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
-        elif screenIndex == SELLBOT_SCREEN_INDEX:
-            tvScreen.setTexScale(ts, 1, 1.15)
-            self.camera.reparentTo(self.sellbotScene)
-            self.camera.setPosHpr(0.9, -0.6, 17.72, 354.81, 0, 0)
-            tvScreen.setTexture(ts, self.buffer.getTexture(), 1)
+
+    def setTrack(self, track, timestamp=0.0):
+        self.track = Sequence()
+        for screenIndex, duration in track:
+            self.track.append(Func(self.setScreen, screenIndex))
+            self.track.append(Wait(duration))
+        self.track.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+
+
+class ExperimentBlimp(Actor, FSM):
+    def __init__(self):
+        Actor.__init__(self, None, None, None, flattenable=0, setFinal=1)
+        FSM.__init__(self, 'ExperimentBlimp')
+
+        self.loadModel('phase_4/models/events/blimp_mod.bam')
+        self.loadAnims({'flying': 'phase_4/models/events/blimp_chan_flying.bam'})
+
+        self.television = ExperimentTelevision()
+        self.television.reparentTo(self)
+
+        self.flyTrack = Sequence(
+            self.hprInterval(3.5, (140, 0, -5), blendType='easeInOut'),
+            self.hprInterval(3.5, (140, 0, 5), blendType='easeInOut')
+        )
+
+    def cleanup(self):
+        if self.flyTrack is not None:
+            self.flyTrack.finish()
+            self.flyTrack = None
+
+        if self.television is not None:
+            self.television.delete()
+            self.television = None
+
+        Actor.cleanup(self)
+
+    def enterPhase0(self, timestamp):
+        self.television.request('Phase0', timestamp)
+
+    def enterPhase1(self, timestamp):
+        self.television.request('Phase1', timestamp)
+
+    def enterPhase2(self, timestamp):
+        self.television.request('Phase2', timestamp)
+
+    def enterPhase3(self, timestamp):
+        self.television.request('Phase3', timestamp)
+
+    def startFlying(self, timestamp):
+        self.flyTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+        self.loop('flying')
+
+    def stopFlying(self):
+        self.stop()
+        self.flyTrack.finish()
