@@ -5,6 +5,7 @@ from direct.interval.IntervalGlobal import Func
 from direct.interval.IntervalGlobal import Sequence, Wait
 from panda3d.core import NodePath, Texture
 
+from toontown.suit import Suit
 from toontown.suit.BossCog import BossCog
 from toontown.suit.SuitDNA import SuitDNA
 
@@ -82,10 +83,10 @@ class BossbotScene(TelevisionScene, FSM):
         self.setCameraPosHpr(0, 203.5, 23.5, 0, 354, 0)
 
     def enterPhase1(self):
-        pass
+        self.setCameraPosHpr(0, 203.5, 23.5, 0, 354, 0)
 
     def enterPhase2(self):
-        pass
+        self.setCameraPosHpr(0, 203.5, 23.5, 0, 354, 0)
 
 
 class LawbotScene(TelevisionScene, FSM):
@@ -145,10 +146,10 @@ class LawbotScene(TelevisionScene, FSM):
         self.setCameraPosHpr(-3.84, -29.84, 93.08, 0, 348, 0)
 
     def enterPhase1(self):
-        pass
+        self.setCameraPosHpr(-3.84, -29.84, 93.08, 0, 348, 0)
 
     def enterPhase2(self):
-        pass
+        self.setCameraPosHpr(-3.84, -29.84, 93.08, 0, 348, 0)
 
 
 class CashbotScene(TelevisionScene, FSM):
@@ -164,10 +165,27 @@ class CashbotScene(TelevisionScene, FSM):
         dna.newBossCog('m')
         self.boss.setDNA(dna)
         self.boss.reparentTo(self)
-        self.boss.setPosHpr(25.03, -117.47, 2.92, 210.96, 0, 0)
+        self.boss.setPosHpr(21.66, -117.47, 2.92, 48.01, 0, 0)
         self.boss.loop('Bb_neutral')
 
+        self.subordinates = []
+        for name, (x, y, z, h, p, r) in (('rb', (33.41, -135.55, 14.68, 251.57, 0, 0)),
+                                         ('mb', (38.75, -126.4, 14.68, 210.96, 0, 0))):
+            subordinate = Suit.Suit()
+            dna = SuitDNA()
+            dna.newSuit(name)
+            subordinate.setDNA(dna)
+            subordinate.nametag.setNametag2d(None)
+            subordinate.nametag.setNametag3d(None)
+            subordinate.reparentTo(hidden)
+            subordinate.setPosHpr(x, y, z, h, p, r)
+            self.subordinates.append(subordinate)
+
     def delete(self):
+        for subordinate in self.subordinates[:]:
+            subordinate.delete()
+            self.subordinates.remove(subordinate)
+
         if self.boss is not None:
             self.boss.delete()
             self.boss = None
@@ -182,10 +200,18 @@ class CashbotScene(TelevisionScene, FSM):
         self.setCameraPosHpr(48.05, -142.49, 20.16, 48.01, 0, 0)
 
     def enterPhase1(self):
-        pass
+        self.setCameraPosHpr(48.05, -142.49, 20.16, 48.01, 0, 0)
+
+        for subordinate in self.subordinates:
+            subordinate.loop('neutral')
+            subordinate.reparentTo(self)
 
     def enterPhase2(self):
-        pass
+        self.setCameraPosHpr(48.05, -142.49, 20.16, 48.01, 0, 0)
+
+    def defaultExit(self):
+        for subordinate in self.subordinates:
+            subordinate.reparentTo(hidden)
 
 
 class SellbotScene(TelevisionScene, FSM):
@@ -204,7 +230,25 @@ class SellbotScene(TelevisionScene, FSM):
         self.boss.setPosHpr(6.36, 34.23, 0, 169.7, 0, 0)
         self.boss.loop('Bb_neutral')
 
+        self.subordinates = []
+        for name, (x, y, z, h, p, r) in (('mh', (-2.76, 16.68, 11.63, 195.95, 0, 0)),
+                                         ('ms', (7.18, 14.98, 12.57, 153.43, 0, 0)),
+                                         ('tf', (-1.55, 62.22, 15.27, 180, 0, 0))):
+            subordinate = Suit.Suit()
+            dna = SuitDNA()
+            dna.newSuit(name)
+            subordinate.setDNA(dna)
+            subordinate.nametag.setNametag2d(None)
+            subordinate.nametag.setNametag3d(None)
+            subordinate.reparentTo(hidden)
+            subordinate.setPosHpr(x, y, z, h, p, r)
+            self.subordinates.append(subordinate)
+
     def delete(self):
+        for subordinate in self.subordinates[:]:
+            subordinate.delete()
+            self.subordinates.remove(subordinate)
+
         if self.boss is not None:
             self.boss.delete()
             self.boss = None
@@ -219,10 +263,18 @@ class SellbotScene(TelevisionScene, FSM):
         self.setCameraPosHpr(0.9, -0.6, 17.72, 354.81, 0, 0)
 
     def enterPhase1(self):
-        pass
+        self.setCameraPosHpr(0.9, -0.6, 17.72, 354.81, 0, 0)
+
+        for subordinate in self.subordinates:
+            subordinate.loop('neutral')
+            subordinate.reparentTo(self)
 
     def enterPhase2(self):
-        pass
+        self.setCameraPosHpr(0.9, -0.6, 17.72, 354.81, 0, 0)
+
+    def defaultExit(self):
+        for subordinate in self.subordinates:
+            subordinate.reparentTo(hidden)
 
 
 class ExperimentTelevision(NodePath, FSM):
