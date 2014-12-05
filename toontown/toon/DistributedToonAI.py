@@ -46,6 +46,7 @@ from toontown.racing import RaceGlobals
 from toontown.shtiker import CogPageGlobals
 from toontown.suit import SuitDNA
 from toontown.toon import NPCToons
+from toontown.toon.ToonSerializer import ToonSerializer
 from toontown.toonbase import TTLocalizer
 from toontown.toonbase import ToontownAccessAI
 from toontown.toonbase import ToontownBattleGlobals
@@ -194,7 +195,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         self.promotionStatus = [0, 0, 0, 0]
         self.buffs = []
         self.currentEvent = None
-        self.altDoId = None
 
     def generate(self):
         DistributedPlayerAI.DistributedPlayerAI.generate(self)
@@ -210,6 +210,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         from toontown.toon.DistributedNPCToonBaseAI import DistributedNPCToonBaseAI
         if not isinstance(self, DistributedNPCToonBaseAI):
             self.sendUpdate('setDefaultShard', [self.air.districtId])
+
+        toonSerializer = ToonSerializer(self)
+        toonSerializer.restoreToon()
 
     def setLocation(self, parentId, zoneId):
         DistributedPlayerAI.DistributedPlayerAI.setLocation(self, parentId, zoneId)
@@ -231,6 +234,9 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
                     if ToontownGlobals.GoofySpeedway not in tpAccess:
                         tpAccess.append(ToontownGlobals.GoofySpeedway)
                         self.b_setTeleportAccess(tpAccess)
+
+        if self.currentEvent:
+            self.currentEvent.toonChangedZone(self.doId, zoneId)
 
     def sendDeleteEvent(self):
         if simbase.wantPets:
@@ -624,6 +630,12 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def getNPCFriendsDict(self):
         return self.NPCFriendsDict
+
+    def getNPCFriendsList(self):
+        NPCFriendsList = []
+        for friend in self.NPCFriendsDict.keys():
+            NPCFriendsList.append((friend, self.NPCFriendsDict[friend]))
+        return NPCFriendsList
 
     def b_setNPCFriendsDict(self, NPCFriendsList):
         self.setNPCFriendsDict(NPCFriendsList)
@@ -2490,8 +2502,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
         taskMgr.doMethodLater(self.healFrequency, self.toonUpTask, self.uniqueName('safeZoneToonUp'))
 
     def toonUpTask(self, task):
-        return Task.done # TODO: Fix me D:! I keep making the HP 145!
-
         self.toonUp(1)
         self.__waitForNextToonUp()
         return Task.done
@@ -4303,9 +4313,6 @@ class DistributedToonAI(DistributedPlayerAI.DistributedPlayerAI, DistributedSmoo
 
     def setClientInterest(self, zoneId):
         self.sendUpdate('setClientInterest', [zoneId])
-
-    def d_setAltDoId(self, altDoId):
-        self.sendUpdate('setAltDoId', [altDoId])
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
 def cheesyEffect(value, hood=0, expire=0):

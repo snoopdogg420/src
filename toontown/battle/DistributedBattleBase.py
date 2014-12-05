@@ -821,7 +821,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
     def __handleSuitJoinDone(self, suit, ts):
         self.notify.debug('suit: %d is now pending' % suit.doId)
         if self.hasLocalToon():
-            self.d_joinDone(base.localAvatar.altDoId, suit.doId)
+            self.d_joinDone(base.localAvatar.doId, suit.doId)
 
     def __makeSuitPending(self, suit):
         self.notify.debug('__makeSuitPending(%d)' % suit.doId)
@@ -865,7 +865,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
     def __handleToonJoinDone(self, toon, ts):
         self.notify.debug('__handleToonJoinDone() - pending: %d' % toon.doId)
         if self.hasLocalToon():
-            self.d_joinDone(base.localAvatar.altDoId, toon.doId)
+            self.d_joinDone(base.localAvatar.doId, toon.doId)
 
     def __makeToonPending(self, toon, ts):
         self.notify.debug('__makeToonPending(%d)' % toon.doId)
@@ -946,15 +946,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
 
     def getToon(self, toonId):
         if toonId in self.cr.doId2do:
-            toon = self.cr.doId2do[toonId]
-
-            # We need to check if this is the toon we actually want.
-            if toon.doId != base.localAvatar.altDoId: # This means we arent dealing with our local toon
-                if toon.doId != toon.altDoId: # Check if we are dealing with an experiment toon
-                    return self.cr.doId2do[toon.altDoId] # Get the correct toon that we need to move
-
-            return toon
-
+            return self.cr.doId2do[toonId]
         else:
             self.notify.warning('getToon() - toon: %d not in repository!' % toonId)
             return None
@@ -1128,23 +1120,23 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
                             track = -1
                             level = -1
                             targetId = -1
-            self.d_requestAttack(base.localAvatar.altDoId, track, level, targetId)
+            self.d_requestAttack(base.localAvatar.doId, track, level, targetId)
         elif mode == 'Run':
             self.notify.debug('got a run')
-            self.d_toonRequestRun(base.localAvatar.altDoId)
+            self.d_toonRequestRun(base.localAvatar.doId)
         elif mode == 'SOS':
             targetId = response['id']
             self.notify.debug('got an SOS for friend: %d' % targetId)
-            self.d_requestAttack(base.localAvatar.altDoId, SOS, -1, targetId)
+            self.d_requestAttack(base.localAvatar.doId, SOS, -1, targetId)
         elif mode == 'NPCSOS':
             targetId = response['id']
             self.notify.debug('got an NPCSOS for friend: %d' % targetId)
-            self.d_requestAttack(base.localAvatar.altDoId, NPCSOS, -1, targetId)
+            self.d_requestAttack(base.localAvatar.doId, NPCSOS, -1, targetId)
         elif mode == 'PETSOS':
             targetId = response['id']
             trickId = response['trickId']
             self.notify.debug('got an PETSOS for pet: %d' % targetId)
-            self.d_requestAttack(base.localAvatar.altDoId, PETSOS, trickId, targetId)
+            self.d_requestAttack(base.localAvatar.doId, PETSOS, trickId, targetId)
         elif mode == 'PETSOSINFO':
             petProxyId = response['id']
             self.notify.debug('got a PETSOSINFO for pet: %d' % petProxyId)
@@ -1153,19 +1145,19 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
                 proxyGenerateMessage = 'petProxy-%d-generated' % petProxyId
                 messenger.send(proxyGenerateMessage)
             else:
-                self.d_requestPetProxy(base.localAvatar.altDoId, petProxyId)
+                self.d_requestPetProxy(base.localAvatar.doId, petProxyId)
             noAttack = 1
         elif mode == 'Pass':
             targetId = response['id']
             self.notify.debug('got a Pass')
-            self.d_requestAttack(base.localAvatar.altDoId, PASS, -1, -1)
+            self.d_requestAttack(base.localAvatar.doId, PASS, -1, -1)
         elif mode == 'UnAttack':
-            self.d_requestAttack(base.localAvatar.altDoId, UN_ATTACK, -1, -1)
+            self.d_requestAttack(base.localAvatar.doId, UN_ATTACK, -1, -1)
             noAttack = 1
         elif mode == 'Fire':
             target = response['target']
             targetId = self.activeSuits[target].doId
-            self.d_requestAttack(base.localAvatar.altDoId, FIRE, -1, targetId)
+            self.d_requestAttack(base.localAvatar.doId, FIRE, -1, targetId)
         else:
             self.notify.warning('unknown battle response')
             return
@@ -1180,7 +1172,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
         self.notify.debug('WaitForInput timed out')
         if self.localToonActive():
             self.notify.debug('battle timed out')
-            self.d_timeout(base.localAvatar.altDoId)
+            self.d_timeout(base.localAvatar.doId)
 
     def enterMakeMovie(self, ts = 0):
         self.notify.debug('enterMakeMovie()')
@@ -1205,7 +1197,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
     def __handleMovieDone(self):
         self.notify.debug('__handleMovieDone()')
         if self.hasLocalToon():
-            self.d_movieDone(base.localAvatar.altDoId)
+            self.d_movieDone(base.localAvatar.doId)
         self.movie.reset()
 
     def exitPlayMovie(self):
@@ -1406,7 +1398,7 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
     def __adjustDone(self):
         self.notify.debug('__adjustDone()')
         if self.hasLocalToon():
-            self.d_adjustDone(base.localAvatar.altDoId)
+            self.d_adjustDone(base.localAvatar.doId)
         self.adjustFsm.request('NotAdjusting')
 
     def enterAdjusting(self, ts):

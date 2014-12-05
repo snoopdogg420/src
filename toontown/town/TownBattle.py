@@ -458,15 +458,7 @@ class TownBattle(StateData.StateData):
         if resetActivateMode:
             self.__enterPanels(self.numToons, self.localNum)
             for i in xrange(len(toons)):
-
-                # For the laff meter we want to check if we have an experiment toon
-                toon = toons[i]
-                if toon.doId != base.localAvatar.altDoId: # This means we arent dealing with our local toon
-                    if toon.altDoId: # Check if they have an altDoId
-                        if toon.altDoId != toon.doId: # Check if they have more then one toon
-                            toon = base.cr.doId2do[toon.altDoId] # Use their experiment toon
-
-                self.toonPanels[i].setLaffMeter(toon)
+                self.toonPanels[i].setLaffMeter(toons[i])
 
             if currStateName == 'ChooseCog':
                 self.chooseCogPanel.adjustCogs(self.numCogs, self.luredIndices, self.trappedIndices, self.track)

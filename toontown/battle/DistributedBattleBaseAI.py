@@ -727,7 +727,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def toonRequestRun(self):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.ignoreResponses == 1:
             self.notify.debug('ignoring response from toon: %d' % toonId)
             return
@@ -758,13 +757,11 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def toonRequestJoin(self, x, y, z):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         self.notify.debug('toonRequestJoin(%d)' % toonId)
         self.signupToon(toonId, x, y, z)
 
     def toonDied(self):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         self.notify.debug('toonDied(%d)' % toonId)
         if toonId in self.toons:
             toon = self.getToon(toonId)
@@ -902,7 +899,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def adjustDone(self):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.ignoreAdjustingResponses == 1:
             self.notify.debug('adjustDone() - ignoring toon: %d' % toonId)
             return
@@ -919,7 +915,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def timeout(self):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.ignoreResponses == 1:
             self.notify.debug('timeout() - ignoring toon: %d' % toonId)
             return
@@ -938,7 +933,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def movieDone(self):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.ignoreResponses == 1:
             self.notify.debug('movieDone() - ignoring toon: %d' % toonId)
             return
@@ -958,7 +952,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def rewardDone(self):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         stateName = self.fsm.getCurrentState().getName()
         if self.ignoreResponses == 1:
             self.notify.debug('rewardDone() - ignoring toon: %d' % toonId)
@@ -986,7 +979,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def joinDone(self, avId):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.toons.count(toonId) == 0:
             self.notify.warning('joinDone() - toon: %d not in toon list' % toonId)
             return
@@ -1002,7 +994,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def requestAttack(self, track, level, av):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.ignoreResponses == 1:
             self.notify.debug('requestAttack() - ignoring toon: %d' % toonId)
             return
@@ -1096,7 +1087,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
 
     def requestPetProxy(self, av):
         toonId = self.air.getAvatarIdFromSender()
-        toonId = self.air.doId2do[toonId].doId
         if self.ignoreResponses == 1:
             self.notify.debug('requestPetProxy() - ignoring toon: %d' % toonId)
             return
@@ -1571,7 +1561,6 @@ class DistributedBattleBaseAI(DistributedObjectAI.DistributedObjectAI, BattleBas
                     continue
                 if not (hasattr(suit, 'dna') and suit.dna):
                     toonId = self.air.getAvatarIdFromSender()
-                    toonId = self.air.doId2do[toonId].doId
                     self.notify.warning('_movieDone avoiding crash, sender=%s but suit has no dna' % toonId)
                     self.air.writeServerEvent('suspicious', toonId, '_movieDone avoiding crash, suit has no dna')
                     continue

@@ -24,8 +24,6 @@ class DistributedExperimentEvent(DistributedEvent):
         self.objectiveGui = None
 
     def start(self):
-        self.requestExperimentToon()
-
         taskMgr.remove('TT-birds')
 
         base.musicManager.stopAllSounds()
@@ -42,8 +40,6 @@ class DistributedExperimentEvent(DistributedEvent):
         aspect2d.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
 
     def delete(self):
-        DistributedEvent.delete(self)
-
         self.musicSequence.finish()
         self.musicSequence = None
 
@@ -60,6 +56,8 @@ class DistributedExperimentEvent(DistributedEvent):
         self.cr.playGame.hood.startSky()
         render.setColorScale(Vec4(1, 1, 1, 1))
         aspect2d.setColorScale(Vec4(1, 1, 1, 1))
+
+        DistributedEvent.delete(self)
 
     def setVisGroups(self, visGroups):
         self.cr.sendSetZoneMsg(self.zoneId, visGroups)
@@ -89,17 +87,6 @@ class DistributedExperimentEvent(DistributedEvent):
         if self.objectiveGui:
             self.objectiveGui.fadeOutDestroy()
             self.objectiveGui = None
-
-    def setExperimentToon(self, avId):
-        base.localAvatar.altDoId = avId
-        self.cr.doId2do[avId] = base.localAvatar
-        base.localAvatar.dclass = self.cr.dclassesByName['DistributedExperimentToon']
-
-        self.sendUpdate('setExperimentToonResponse', [avId])
-
-    def requestExperimentToon(self):
-        self.sendUpdate('requestExperimentToon', [base.localAvatar.doId])
-
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def blimp(phase):

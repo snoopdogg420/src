@@ -161,7 +161,7 @@ class DistributedBattle(DistributedBattleBase.DistributedBattleBase):
     def __handleFaceOffDone(self):
         self.notify.debug('FaceOff done')
         if len(self.toons) > 0 and base.localAvatar == self.toons[0]:
-            self.d_faceOffDone(base.localAvatar.altDoId)
+            self.d_faceOffDone(base.localAvatar.doId)
 
     def exitFaceOff(self):
         self.notify.debug('exitFaceOff()')
@@ -194,7 +194,7 @@ class DistributedBattle(DistributedBattleBase.DistributedBattleBase):
     def handleRewardDone(self):
         self.notify.debug('Reward done')
         if self.hasLocalToon():
-            self.d_rewardDone(base.localAvatar.altDoId)
+            self.d_rewardDone(base.localAvatar.doId)
         self.movie.resetReward()
         messenger.send('resumeAfterReward')
 

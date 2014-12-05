@@ -1978,15 +1978,3 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
                 self.canEarnAchievements = True
 
         DistributedToon.DistributedToon.setAchievements(self, achievements)
-
-    def sendUpdate(self, fieldName, args=[], sendToId=None):
-        if self.cr:
-            if self.altDoId is None:
-                self.altDoId = self.doId
-            if sendToId == self.doId:
-                sendToId = self.altDoId
-            dg = self.dclass.clientFormatUpdate(
-                fieldName, sendToId or self.altDoId, args)
-            self.cr.send(dg)
-        else:
-            assert self.notify.error("sendUpdate failed, because self.cr is not set")

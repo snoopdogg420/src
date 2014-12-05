@@ -6,10 +6,9 @@ from toontown.dna.DNAStorage import DNAStorage
 from toontown.event import ExperimentEventObjectives
 from toontown.event.DistributedEventAI import DistributedEventAI
 from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
-from toontown.toon.DistributedExperimentToonAI import DistributedExperimentToonAI
 from toontown.toon.Experience import Experience
 from toontown.toon.InventoryBase import InventoryBase
-from toontown.toonbase import ToontownGlobals
+from toontown.toon.ToonSerializer import ToonSerializer
 
 
 class DistributedExperimentEventAI(DistributedEventAI):
@@ -22,7 +21,6 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.currentDifficulty = 0
         self.maxDifficulty = 3
         self.currentObjective = None
-        self.experimentToons = {}
 
     def start(self):
         self.suitPlanner = DistributedSuitPlannerAI(self.air, self.zoneId, self.setupDNA)
@@ -85,59 +83,49 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.sendUpdate('completeObjective', [])
         self.setObjective(0)
 
-    def setParticipants(self, participants):
-        self.participants = participants
+    def joinEvent(self, avId):
+        DistributedEventAI.joinEvent(self, avId)
 
-        for avId in self.participants:
-            self.createExperimentToon(avId)
+        self.makeFreshToon(avId)
 
-            av = self.air.doId2do[avId]
-            av.currentEvent = self
-            av.setClientInterest(self.zoneId)
+    def leaveEvent(self, avId):
+        self.restoreToon(avId)
 
-    def createExperimentToon(self, avId):
+        DistributedEventAI.leaveEvent(self, avId)
+
+    def toonChangedZone(self, avId, zoneId):
+        self.leaveEvent(avId)
+
+    def restoreToon(self, avId):
         av = self.air.doId2do[avId]
+        toonSerializer = ToonSerializer(av)
+        toonSerializer.restoreToon()
 
-        newAv = DistributedExperimentToonAI(self.air)
-        newAv.setName(av.name)
-        newAv.setDNAString(av.dnaString)
-        newAv.experience = Experience(owner=newAv)
-        newAv.inventory = InventoryBase(newAv)
-        newAv.gameAccess = ToontownGlobals.AccessFull
-        newAv.currentEvent = self
-        newAv.altDoId = avId
-        newAv.generateWithRequired(self.zoneId)
-
-        newAv.d_setAltDoId(av.doId)
-
-        self.experimentToons[avId] = newAv
-        self.acceptOnce('distObjDelete-%s' % avId, self.deleteExperimentToon, [avId])
-
-        datagram = PyDatagram()
-        datagram.addServerHeader(
-            newAv.doId,
-            self.air.ourChannel,
-            STATESERVER_OBJECT_SET_OWNER)
-        datagram.addChannel(avId + (1001L<<32))
-        self.air.send(datagram)
-
-    def requestExperimentToon(self, avId):
-        av = self.experimentToons[avId]
-        self.air.doId2do[avId] = av
-        self.sendUpdateToAvatarId(avId, 'setExperimentToon', [av.doId])
-
-    def setExperimentToonResponse(self, avId):
+    def makeFreshToon(self, avId):
         av = self.air.doId2do[avId]
+        toonSerializer = ToonSerializer(av)
+        toonSerializer.saveToon(callback=self.__resetToonStats)
 
+    def __resetToonStats(self, av):
         av.b_setMaxHp(15)
         av.b_setHp(15)
-        av.b_setExperience(av.experience.makeNetString())
+
+        av.b_setMaxCarry(20)
+        av.b_setMoney(0)
+        av.b_setQuestCarryLimit(1)
+
         av.b_setTrackAccess([0, 0, 0, 0, 1, 1, 0])
         av.b_setTrackBonusLevel([-1, -1, -1, -1, -1, -1, -1])
-        av.b_setMaxCarry(20)
+
+        av.experience = Experience(owner=av)
+        av.b_setExperience(av.experience.makeNetString())
+
+        av.inventory = InventoryBase(av)
         av.inventory.maxOutInv()
         av.b_setInventory(av.inventory.makeNetString())
-        av.b_setMoney(0)
+
+        av.b_setPinkSlips(1)
+
         av.b_setCogMerits([0, 0, 0, 0])
         av.b_setCogParts([0, 0, 0, 0])
         av.b_setCogTypes([0, 0, 0, 0])
@@ -147,10 +135,8 @@ class DistributedExperimentEventAI(DistributedEventAI):
         av.b_setCogRadar([0, 0, 0, 0])
         av.b_setBuildingRadar([0, 0, 0, 0])
         av.b_setPromotionStatus([0, 0, 0, 0])
-        av.b_setQuestCarryLimit(1)
+
         av.b_setQuests([])
         av.b_setResistanceMessages([])
-        av.b_setPinkSlips(1)
 
-    def deleteExperimentToon(self, avId):
-        self.experimentToons[avId].requestDelete()
+        av.b_setNPCFriendsDict([])

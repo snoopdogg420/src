@@ -10,19 +10,23 @@ class DistributedScienceFairAI(DistributedObjectAI):
         self.npc = None
         self.npcId = npcId
         self.events = []
-        
+
     def generateWithRequired(self, zoneId):
         DistributedObjectAI.generateWithRequired(self, zoneId)
-        
-        self.npc = NPCToons.createNPC(self.air, self.npcId, 
-                                      NPCToons.NPCToonDict[self.npcId], 
+
+        self.npc = NPCToons.createNPC(self.air, self.npcId,
+                                      NPCToons.NPCToonDict[self.npcId],
                                       self.zoneId)
         self.npc.setScienceFair(self)
-        
+
     def createEvent(self, participants):
         zoneId = self.air.allocateZone()
         event = DistributedExperimentEventAI(self.air)
         event.generateWithRequired(zoneId)
-        event.setParticipants(participants)
+
+        for avId in participants:
+            av = self.air.doId2do[avId]
+            av.setClientInterest(event.zoneId)
+
         event.start()
         self.events.append(event)
