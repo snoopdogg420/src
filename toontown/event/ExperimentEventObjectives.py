@@ -7,7 +7,7 @@ ICON_INDEX = 2
 
 
 objectiveInfo = {
-  1: ['Defeat 5 cogs', 5, loader.loadModel('phase_3/models/gui/cog_icons').find('**/*cog')]
+  1: ['Defeat 5 Cogs', 5, loader.loadModel('phase_3/models/gui/cog_icons').find('**/*cog')]
 }
 
 

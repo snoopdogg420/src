@@ -27,7 +27,7 @@ class ExperimentEventSuitObjective(ExperimentEventObjective):
     def objectiveComplete(self):
         ExperimentEventObjective.objectiveComplete(self)
 
-        self.experimentEvent.messageParticipants('You have completed the objective. The cogs have increased in difficulty!')
+        self.experimentEvent.messageParticipants('You have completed the objective. The Cogs have increased in difficulty!')
         self.experimentEvent.increaseDifficulty()
         self.experimentEvent.setPhase(1)
 
