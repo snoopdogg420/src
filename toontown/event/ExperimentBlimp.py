@@ -200,14 +200,27 @@ class SellbotScene(NodePath, FSM):
 class ExperimentBlimp(Actor, FSM):
     notify = directNotify.newCategory('ExperimentBlimp')
 
+    TV_TRACK_PHASE_0 = (
+        (STATIC_SCREEN_INDEX, 45), (CHAIRMAN_SCREEN_INDEX, 0.25),
+        (STATIC_SCREEN_INDEX, 0.5), (CHAIRMAN_SCREEN_INDEX, 0.1),
+        (STATIC_SCREEN_INDEX, 0.1), (CHAIRMAN_SCREEN_INDEX, 0.1)
+    )
+    TV_TRACK_PHASE_1 = (
+        (STATIC_SCREEN_INDEX, 0.1), (SELLBOT_SCREEN_INDEX, 0.1),
+        (STATIC_SCREEN_INDEX, 0.1), (BOSSBOT_SCREEN_INDEX, 5),
+        (STATIC_SCREEN_INDEX, 0.1), (BOSSBOT_SCREEN_INDEX, 0.1),
+        (STATIC_SCREEN_INDEX, 0.1), (LAWBOT_SCREEN_INDEX, 5),
+        (STATIC_SCREEN_INDEX, 0.1), (LAWBOT_SCREEN_INDEX, 0.1),
+        (STATIC_SCREEN_INDEX, 0.1), (CASHBOT_SCREEN_INDEX, 5),
+        (STATIC_SCREEN_INDEX, 0.1), (CASHBOT_SCREEN_INDEX, 0.1),
+        (STATIC_SCREEN_INDEX, 0.1), (SELLBOT_SCREEN_INDEX, 5)
+    )
+    TV_TRACK_PHASE_2 = TV_TRACK_PHASE_1
+    TV_TRACK_PHASE_3 = TV_TRACK_PHASE_2
+
     def __init__(self):
         Actor.__init__(self, None, None, None, flattenable=0, setFinal=1)
         FSM.__init__(self, 'ExperimentBlimp')
-
-        self.bossbotScene = BossbotScene()
-        self.lawbotScene = LawbotScene()
-        self.cashbotScene = CashbotScene()
-        self.sellbotScene = SellbotScene()
 
         self.loadModel('phase_4/models/events/blimp_mod.bam')
         self.loadAnims({'flying': 'phase_4/models/events/blimp_chan_flying.bam'})
@@ -223,12 +236,15 @@ class ExperimentBlimp(Actor, FSM):
         self.chairmanScreenTex.setMinfilter(Texture.FTLinearMipmapLinear)
         self.chairmanScreenTex.setMagfilter(Texture.FTLinear)
 
+        self.bossbotScene = BossbotScene()
+        self.lawbotScene = LawbotScene()
+        self.cashbotScene = CashbotScene()
+        self.sellbotScene = SellbotScene()
+
         self.buffer = base.win.makeTextureBuffer('tv', 960, 540)
         self.buffer.setSort(-100)
 
         self.camera = base.makeCamera(self.buffer)
-
-        self.tvIval = None
 
         self.flyTrack = Sequence(
             LerpHprInterval(self, 3.5, Vec3(140, 0, 5),
@@ -239,14 +255,16 @@ class ExperimentBlimp(Actor, FSM):
                             fluid=1)
         )
 
+        self.tvTrack = None
+
     def cleanup(self):
+        if self.tvTrack is not None:
+            self.tvTrack.finish()
+            self.tvTrack = None
+
         if self.flyTrack is not None:
             self.stopFlying()
             self.flyTrack = None
-
-        if self.tvIval is not None:
-            self.tvIval.finish()
-            self.tvIval = None
 
         if self.camera is not None:
             self.camera.removeNode()
@@ -255,18 +273,6 @@ class ExperimentBlimp(Actor, FSM):
         if self.buffer is not None:
             base.graphicsEngine.removeWindow(self.buffer)
             self.buffer = None
-
-        if self.chairmanScreenTex is not None:
-            self.chairmanScreenTex.clear()
-            self.chairmanScreenTex = None
-
-        if self.staticScreenTex is not None:
-            self.staticScreenTex.clear()
-            self.staticScreenTex = None
-
-        if self.tv is not None:
-            self.tv.removeNode()
-            self.tv = None
 
         if self.sellbotScene is not None:
             self.sellbotScene.delete()
@@ -284,12 +290,24 @@ class ExperimentBlimp(Actor, FSM):
             self.bossbotScene.delete()
             self.bossbotScene = None
 
+        if self.chairmanScreenTex is not None:
+            self.chairmanScreenTex.clear()
+            self.chairmanScreenTex = None
+
+        if self.staticScreenTex is not None:
+            self.staticScreenTex.clear()
+            self.staticScreenTex = None
+
+        if self.tv is not None:
+            self.tv.removeNode()
+            self.tv = None
+
         Actor.cleanup(self)
 
     def defaultExit(self):
-        if self.tvIval is not None:
-            self.tvIval.finish()
-            self.tvIval = None
+        if self.tvTrack is not None:
+            self.tvTrack.finish()
+            self.tvTrack = None
 
     def enterPhase0(self, timestamp):
         """
@@ -297,25 +315,15 @@ class ExperimentBlimp(Actor, FSM):
         static image on its monitor. It will, however, flash a drawing of the
         Chairman every 45 seconds.
         """
-        self.tvIval = Sequence(
-            Wait(45),
-            Func(self.setScreen, CHAIRMAN_SCREEN_INDEX),
-            Wait(0.25),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.5),
-            Func(self.setScreen, CHAIRMAN_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, CHAIRMAN_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, STATIC_SCREEN_INDEX)
-        )
-        self.tvIval.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+        self.tvTrack = Sequence()
+        for screenIndex, duration in self.TV_TRACK_PHASE_0:
+            self.tvTrack.append(Func(self.setScreen, screenIndex))
+            self.tvTrack.append(Wait(duration))
+        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
 
     def enterPhase1(self, timestamp):
         """
-        Phase 1 describes the blimp when it is constantly flickering between
+        Phase 1 describes the blimp when it is constantly flickering through
         the first four boss Cogs (the Sellbot V.P., the Cashbot C.F.O., the
         Lawbot C.J., and the Bossbot C.E.O.). They will be standing still in a
         neutral animation inside of their respective headquarters.
@@ -324,41 +332,12 @@ class ExperimentBlimp(Actor, FSM):
         self.lawbotScene.request('Phase0')
         self.cashbotScene.request('Phase0')
         self.sellbotScene.request('Phase0')
-        self.tvIval = Sequence(
-            Func(self.setScreen, BOSSBOT_SCREEN_INDEX),
-            Wait(5),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, BOSSBOT_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, LAWBOT_SCREEN_INDEX),
-            Wait(5),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, LAWBOT_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, CASHBOT_SCREEN_INDEX),
-            Wait(5),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, CASHBOT_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, SELLBOT_SCREEN_INDEX),
-            Wait(5),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, SELLBOT_SCREEN_INDEX),
-            Wait(0.1),
-            Func(self.setScreen, STATIC_SCREEN_INDEX),
-            Wait(0.1)
-        )
-        self.tvIval.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+
+        self.tvTrack = Sequence()
+        for screenIndex, duration in self.TV_TRACK_PHASE_1:
+            self.tvTrack.append(Func(self.setScreen, screenIndex))
+            self.tvTrack.append(Wait(duration))
+        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
 
     def enterPhase2(self, timestamp):
         """
@@ -370,6 +349,12 @@ class ExperimentBlimp(Actor, FSM):
         self.cashbotScene.request('Phase1')
         self.sellbotScene.request('Phase1')
 
+        self.tvTrack = Sequence()
+        for screenIndex, duration in self.TV_TRACK_PHASE_2:
+            self.tvTrack.append(Func(self.setScreen, screenIndex))
+            self.tvTrack.append(Wait(duration))
+        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
+
     def enterPhase3(self, timestamp):
         """
         Phase 3 describes the blimp in the same state as phase 2, however, the
@@ -380,6 +365,12 @@ class ExperimentBlimp(Actor, FSM):
         self.lawbotScene.request('Phase2')
         self.cashbotScene.request('Phase2')
         self.sellbotScene.request('Phase2')
+
+        self.tvTrack = Sequence()
+        for screenIndex, duration in self.TV_TRACK_PHASE_3:
+            self.tvTrack.append(Func(self.setScreen, screenIndex))
+            self.tvTrack.append(Wait(duration))
+        self.tvTrack.loop(globalClockDelta.localElapsedTime(timestamp, bits=32))
 
     def startFlying(self, timestamp):
         self.loop('flying')
