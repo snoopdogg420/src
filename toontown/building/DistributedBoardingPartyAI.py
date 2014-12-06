@@ -291,7 +291,7 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                     return
                 group = self.groupListDict.get(leaderId)
                 # Something is wonky
-                if group == Null or (len(group) < 3):
+                if group == None or (len(group) < 3):
                     self.notify.warning('the leader has a group but it is null or too short')
                     self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
                     return
