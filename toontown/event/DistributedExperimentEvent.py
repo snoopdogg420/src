@@ -39,14 +39,19 @@ class DistributedExperimentEvent(DistributedEvent):
         if __debug__:
             skyblue2Filename = Filename('../resources/phase_3.5/maps/skyblue2_invasion.jpg')
             middayskyBFilename = Filename('../resources/phase_3.5/maps/middayskyB_invasion.jpg')
+            toontown_central_tutorial_palette_4amla_1Filename = Filename('../resources/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1_invasion.jpg')
+            toontown_central_tutorial_palette_4amla_1_aFilename = Filename('../resources/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1_a_invasion.rgb')
         else:
             skyblue2Filename = Filename('/phase_3.5/maps/skyblue2_invasion.jpg')
             middayskyBFilename = Filename('/phase_3.5/maps/middayskyB_invasion.jpg')
+            toontown_central_tutorial_palette_4amla_1Filename = Filename('/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1_invasion.jpg')
+            toontown_central_tutorial_palette_4amla_1_aFilename = Filename('/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1_a_invasion.rgb')
         self.cr.playGame.hood.sky.findTexture('skyblue2').read(skyblue2Filename)
         self.cr.playGame.hood.sky.findTexture('middayskyB').read(middayskyBFilename)
+        self.cr.playGame.hood.sky.findTexture('toontown_central_tutorial_palette_4amla_1').read(toontown_central_tutorial_palette_4amla_1Filename, toontown_central_tutorial_palette_4amla_1_aFilename, 0, 0)
 
-        render.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
-        aspect2d.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
+        render.setColorScale(Vec4(0.85, 0.65, 0.65, 1))
+        aspect2d.setColorScale(Vec4(0.85, 0.65, 0.65, 1))
 
     def delete(self):
         self.musicSequence.finish()
@@ -65,11 +70,16 @@ class DistributedExperimentEvent(DistributedEvent):
         if __debug__:
             skyblue2Filename = Filename('../resources/phase_3.5/maps/skyblue2.jpg')
             middayskyBFilename = Filename('../resources/phase_3.5/maps/middayskyB.jpg')
+            toontown_central_tutorial_palette_4amla_1Filename = Filename('../resources/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1.jpg')
+            toontown_central_tutorial_palette_4amla_1_aFilename = Filename('../resources/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1_a.rgb')
         else:
             skyblue2Filename = Filename('/phase_3.5/maps/skyblue2.jpg')
             middayskyBFilename = Filename('/phase_3.5/maps/middayskyB.jpg')
+            toontown_central_tutorial_palette_4amla_1Filename = Filename('/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1.jpg')
+            toontown_central_tutorial_palette_4amla_1_aFilename = Filename('/phase_3.5/maps/toontown_central_tutorial_palette_4amla_1_a.rgb')
         self.cr.playGame.hood.sky.findTexture('skyblue2').read(skyblue2Filename)
         self.cr.playGame.hood.sky.findTexture('middayskyB').read(middayskyBFilename)
+        self.cr.playGame.hood.sky.findTexture('toontown_central_tutorial_palette_4amla_1').read(toontown_central_tutorial_palette_4amla_1Filename, toontown_central_tutorial_palette_4amla_1_aFilename, 0, 0)
 
         render.setColorScale(Vec4(1, 1, 1, 1))
         aspect2d.setColorScale(Vec4(1, 1, 1, 1))
