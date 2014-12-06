@@ -62,7 +62,15 @@ class DistributedExperimentEvent(DistributedEvent):
         base.musicManager.stopAllSounds()
         base.unlockMusic()
 
-        self.cr.playGame.hood.startSky()
+        if __debug__:
+            skyblue2Filename = Filename('../resources/phase_3.5/maps/skyblue2.jpg')
+            middayskyBFilename = Filename('../resources/phase_3.5/maps/middayskyB.jpg')
+        else:
+            skyblue2Filename = Filename('/phase_3.5/maps/skyblue2.jpg')
+            middayskyBFilename = Filename('/phase_3.5/maps/middayskyB.jpg')
+        self.cr.playGame.hood.sky.findTexture('skyblue2').read(skyblue2Filename)
+        self.cr.playGame.hood.sky.findTexture('middayskyB').read(middayskyBFilename)
+
         render.setColorScale(Vec4(1, 1, 1, 1))
         aspect2d.setColorScale(Vec4(1, 1, 1, 1))
 
