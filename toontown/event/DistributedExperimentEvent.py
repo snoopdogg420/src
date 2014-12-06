@@ -1,6 +1,6 @@
 from direct.distributed.ClockDelta import globalClockDelta
 from direct.interval.IntervalGlobal import Sequence, Func, Wait
-from pandac.PandaModules import Vec4
+from panda3d.core import Filename, Vec4
 
 from otp.ai.MagicWordGlobal import *
 from toontown.event import ExperimentEventObjectives
@@ -36,7 +36,15 @@ class DistributedExperimentEvent(DistributedEvent):
             Func(base.playMusic, self.music, looping=1, volume=1, playLocked=True))
         self.musicSequence.start()
 
-        self.cr.playGame.hood.startSpookySky()
+        if __debug__:
+            skyblue2Filename = Filename('../resources/phase_3.5/maps/skyblue2_invasion.jpg')
+            middayskyBFilename = Filename('../resources/phase_3.5/maps/middayskyB_invasion.jpg')
+        else:
+            skyblue2Filename = Filename('/phase_3.5/maps/skyblue2_invasion.jpg')
+            middayskyBFilename = Filename('/phase_3.5/maps/middayskyB_invasion.jpg')
+        self.cr.playGame.hood.sky.findTexture('skyblue2').read(skyblue2Filename)
+        self.cr.playGame.hood.sky.findTexture('middayskyB').read(middayskyBFilename)
+
         render.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
         aspect2d.setColorScale(Vec4(0.40, 0.40, 0.60, 1))
 
