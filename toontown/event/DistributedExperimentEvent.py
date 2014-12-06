@@ -3,10 +3,10 @@ from direct.interval.IntervalGlobal import Sequence, Func, Wait
 from panda3d.core import Filename, Vec4
 
 from otp.ai.MagicWordGlobal import *
-from toontown.event import ExperimentEventObjectives
+from toontown.event import ExperimentChallenges
 from toontown.event.DistributedEvent import DistributedEvent
 from toontown.event.ExperimentBlimp import ExperimentBlimp
-from toontown.event.ExperimentEventObjectiveGUI import ExperimentEventObjectiveGUI
+from toontown.event.ExperimentChallengeGUI import ExperimentChallengeGUI
 
 
 class DistributedExperimentEvent(DistributedEvent):
@@ -21,7 +21,7 @@ class DistributedExperimentEvent(DistributedEvent):
 
         self.blimp = None
 
-        self.objectiveGui = None
+        self.challengeGui = None
         self.phase = 0
 
     def start(self):
@@ -56,8 +56,8 @@ class DistributedExperimentEvent(DistributedEvent):
             self.blimp.cleanup()
             self.blimp = None
 
-        if self.objectiveGui:
-            self.objectiveGui.destroy()
+        if self.challengeGui:
+            self.challengeGui.destroy()
 
         base.musicManager.stopAllSounds()
         base.unlockMusic()
@@ -86,24 +86,24 @@ class DistributedExperimentEvent(DistributedEvent):
         self.blimp.startFlying(timestamp)
         self.blimp.request('Phase0', timestamp)
 
-    def setObjective(self, objectiveId):
-        if objectiveId == 0:
+    def setChallenge(self, challengeId):
+        if challengeId == 0:
             self.completeObjective()
             return
 
-        objectiveInfo = ExperimentEventObjectives.getObjectiveInfo(objectiveId)
-        self.objectiveGui = ExperimentEventObjectiveGUI(*objectiveInfo)
-        self.objectiveGui.setPos(0, 0, 0.8)
-        self.objectiveGui.fadeIn()
+        challengeInfo = ExperimentChallenges.getChallengeInfo(challengeId)
+        self.challengeGui = ExperimentChallengeGUI(*challengeInfo)
+        self.challengeGui.setPos(0, 0, 0.8)
+        self.challengeGui.fadeIn()
 
-    def setObjectiveCount(self, count):
-        if self.objectiveGui:
-            self.objectiveGui.updateProgress(count)
+    def setChallengeCount(self, count):
+        if self.challengeGui:
+            self.challengeGui.updateProgress(count)
 
-    def completeObjective(self):
-        if self.objectiveGui:
-            self.objectiveGui.fadeOutDestroy()
-            self.objectiveGui = None
+    def challengeComplete(self):
+        if self.challengeGui:
+            self.challengeGui.fadeOutDestroy()
+            self.challengeGui = None
 
     def setPhase(self, phase, timestamp):
         self.phase = phase

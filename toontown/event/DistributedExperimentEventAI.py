@@ -3,7 +3,7 @@ from direct.distributed.PyDatagram import *
 
 from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.dna.DNAStorage import DNAStorage
-from toontown.event import ExperimentEventObjectives
+from toontown.event import ExperimentChallenges
 from toontown.event.DistributedEventAI import DistributedEventAI
 from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
 from toontown.toon.Experience import Experience
@@ -20,7 +20,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner = None
         self.currentDifficulty = 0
         self.maxDifficulty = 3
-        self.currentObjective = None
+        self.currentChallenge = None
 
         self.phase = 0
 
@@ -31,7 +31,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.suitPlanner.resetSuitHoodInfo(30000)
         self.suitPlanner.initTasks()
 
-        self.setObjective(1)
+        self.setChallenge(1)
 
         self.createBlimp()
 
@@ -73,18 +73,18 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.setVisGroups(visGroups.values())
         suitPlanner.initDNAInfo()
 
-    def setObjectiveCount(self, count):
-        self.sendUpdate('setObjectiveCount', [count])
+    def setChallengeCount(self, count):
+        self.sendUpdate('setChallengeCount', [count])
 
-    def setObjective(self, objectiveId):
-        self.currentObjective = None
-        if objectiveId:
-            self.currentObjective = ExperimentEventObjectives.makeObjective(objectiveId, self)
-        self.sendUpdate('setObjective', [objectiveId])
+    def setChallenge(self, challengeId):
+        self.currentChallenge = None
+        if challengeId:
+            self.currentObjective = ExperimentChallenges.makeChallenge(challengeId, self)
+        self.sendUpdate('setChallenge', [challengeId])
 
-    def completeObjective(self):
-        self.sendUpdate('completeObjective', [])
-        self.setObjective(0)
+    def challengeComplete(self):
+        self.sendUpdate('challengeComplete', [])
+        self.setChallenge(0)
 
     def setPhase(self, phase):
         self.phase = phase

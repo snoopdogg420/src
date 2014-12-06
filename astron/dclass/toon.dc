@@ -3431,9 +3431,9 @@ dclass DistributedExperimentEvent : DistributedEvent {
   setVisGroups(uint32[]) broadcast ram;
   createBlimp(int32) broadcast ram;
 
-  setObjective(int8) broadcast ram;
-  setObjectiveCount(uint16) broadcast ram;
-  completeObjective() broadcast;
+  setChallenge(int8) broadcast ram;
+  setChallengeCount(uint16) broadcast ram;
+  challengeComplete() broadcast;
 
   setPhase(uint8, int32) broadcast ram;
 };

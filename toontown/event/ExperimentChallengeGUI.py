@@ -4,7 +4,7 @@ from direct.interval.IntervalGlobal import LerpColorScaleInterval, Sequence, Fun
 from toontown.toonbase import ToontownGlobals
 
 
-class ExperimentEventObjectiveGUI(NodePath):
+class ExperimentChallengeGUI(NodePath):
     def __init__(self, description, needed, icon):
         NodePath.__init__(self, 'objective-%s' % id(self))
 
@@ -19,8 +19,8 @@ class ExperimentEventObjectiveGUI(NodePath):
         self.icon.setScale(0.08)
         self.icon.setPos(-0.167, 0, -0.002)
 
-        text = TextNode('objective')
-        text.setText('Objective')
+        text = TextNode('challenge')
+        text.setText('Challenge')
         text.setFont(ToontownGlobals.getSignFont())
         text.setTextColor(0.95, 0.95, 0, 1)
         self.objText = self.background.attachNewNode(text)
@@ -36,10 +36,10 @@ class ExperimentEventObjectiveGUI(NodePath):
         self.objText.setScale(0.015)
         self.objText.setPos(0.048, 0.0, -0.009)
 
-        self.progressBar = DirectWaitBar(guiId='ObjectiveProgressBar', parent=self.background, frameSize=(-0.11, 0.11, -0.007, 0.007), pos=(0.048, 0, -0.0338), text='')
+        self.progressBar = DirectWaitBar(guiId='ChallengeProgressBar', parent=self.background, frameSize=(-0.11, 0.11, -0.007, 0.007), pos=(0.048, 0, -0.0338), text='')
         self.progressBar['range'] = needed
 
-        self.progressText = DirectLabel(guiId='ObjectiveProgressText', parent=self.progressBar, relief=None, pos=(0, 0, -0.0048), text='', textMayChange=1, text_scale=0.014, text_fg=(0.03, 0.83, 0, 1), text_align=TextNode.ACenter, text_font=ToontownGlobals.getSignFont())
+        self.progressText = DirectLabel(guiId='ChallengeProgressText', parent=self.progressBar, relief=None, pos=(0, 0, -0.0048), text='', textMayChange=1, text_scale=0.014, text_fg=(0.03, 0.83, 0, 1), text_align=TextNode.ACenter, text_font=ToontownGlobals.getSignFont())
 
         self.updateProgress(0)
 
