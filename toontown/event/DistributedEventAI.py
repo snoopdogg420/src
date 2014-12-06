@@ -1,12 +1,17 @@
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
+from direct.distributed.ClockDelta import globalClockDelta
+from direct.fsm.FSM import FSM
 from direct.showbase.PythonUtil import Functor
 
+from otp.ai.MagicWordGlobal import *
 
-class DistributedEventAI(DistributedObjectAI):
+
+class DistributedEventAI(DistributedObjectAI, FSM):
     notify = directNotify.newCategory('DistributedEventAI')
 
     def __init__(self, air):
         DistributedObjectAI.__init__(self, air)
+        FSM.__init__(self, self.__class__.__name__)
 
         self.participants = []
 
@@ -34,4 +39,34 @@ class DistributedEventAI(DistributedObjectAI):
 
     def toonChangedZone(self, avId, zoneId):
         pass
+
+    def setState(self, state):
+        self.request(state)
+
+    def d_setState(self, state):
+        self.sendUpdate('setState', [state, globalClockDelta.getRealNetworkTime(bits=32)])
+
+    def b_setState(self, state):
+        self.setState(state)
+        self.d_setState(state)
+
+    def getState(self):
+        return self.state
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, str])
+def event(command, state):
+    invoker = spellbook.getInvoker()
+    event = None
+    for do in simbase.air.doId2do.values():
+        if isinstance(do, DistributedEventAI):
+            if invoker.doId in do.participants:
+                event = do
+                break
+    if event is None:
+        return "You aren't in an event!"
+    if command == 'state':
+        event.b_setState(state)
+        return 'Setting event to state %s.' % state
+    else:
+        return 'Unknown command %s.' % command
 

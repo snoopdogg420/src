@@ -89,13 +89,6 @@ class DistributedExperimentEvent(DistributedEvent):
     def setVisGroups(self, visGroups):
         self.cr.sendSetZoneMsg(self.zoneId, visGroups)
 
-    def createBlimp(self, timestamp):
-        self.blimp = ExperimentBlimp()
-        self.blimp.reparentTo(render)
-        self.blimp.setPosHpr(144, -188, 55, 140, 0, 5)
-        self.blimp.startFlying(timestamp)
-        self.blimp.request('Phase0', timestamp)
-
     def setChallenge(self, challengeId):
         if challengeId == 0:
             self.completeObjective()
@@ -115,9 +108,47 @@ class DistributedExperimentEvent(DistributedEvent):
             self.challengeGui.fadeOutDestroy()
             self.challengeGui = None
 
-    def setPhase(self, phase, timestamp):
-        self.phase = phase
-        self.blimp.request('Phase%s' % phase, timestamp)
+    def enterIntroduction(self, timestamp):
+        pass
+
+    def exitIntroduction(self, timestamp):
+        pass
+
+    def enterPhase0(self, timestamp):
+        if self.blimp is None:
+            self.blimp = ExperimentBlimp()
+            self.blimp.reparentTo(render)
+            self.blimp.setPosHpr(144, -188, 55, 140, 0, 5)
+            self.blimp.startFlying(timestamp)
+        self.blimp.request('Phase0', timestamp)
+
+    def exitPhase0(self, timestamp):
+        pass
+
+    def enterPhase1(self, timestamp):
+        self.blimp.request('Phase1', timestamp)
+
+    def exitPhase1(self, timestamp):
+        pass
+
+    def enterPhase2(self, timestamp):
+        self.blimp.request('Phase2', timestamp)
+
+    def exitPhase2(self, timestamp):
+        pass
+
+    def enterPhase3(self, timestamp):
+        self.blimp.request('Phase3', timestamp)
+
+    def exitPhase3(self, timestamp):
+        pass
+
+    def enterPhase4(self, timestamp):
+        self.blimp.request('Phase4', timestamp)
+
+    def exitPhase4(self, timestamp):
+        pass
+
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def blimp(phase):

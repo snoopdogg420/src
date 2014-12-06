@@ -1,5 +1,4 @@
 from direct.distributed.ClockDelta import globalClockDelta
-from direct.distributed.PyDatagram import *
 
 from toontown.dna.DNAParser import loadDNAFileAI
 from toontown.dna.DNAStorage import DNAStorage
@@ -18,35 +17,24 @@ class DistributedExperimentEventAI(DistributedEventAI):
         DistributedEventAI.__init__(self, air)
 
         self.suitPlanner = None
-        self.currentDifficulty = 0
-        self.maxDifficulty = 3
         self.currentChallenge = None
-
-        self.phase = 0
 
     def start(self):
         self.suitPlanner = DistributedSuitPlannerAI(self.air, self.zoneId, self.setupDNA)
         self.suitPlanner.generateWithRequired(self.zoneId)
         self.suitPlanner.d_setZoneId(self.zoneId)
-        self.suitPlanner.resetSuitHoodInfo(30000)
-        self.suitPlanner.initTasks()
 
-        self.setChallenge(1)
-
-        self.createBlimp()
+        self.b_setState('Phase0')
 
         DistributedEventAI.start(self)
 
-    def increaseDifficulty(self):
-        if self.currentDifficulty == self.maxDifficulty:
+    def setCogDifficulty(self, difficulty):
+        if difficulty > 3:
+            self.notify.warning('Tried setting the cog difficulty too high')
             return
 
-        self.currentDifficulty += 1
-        self.suitPlanner.resetSuitHoodInfo(30000 + self.currentDifficulty)
+        self.suitPlanner.resetSuitHoodInfo(30000 + difficulty)
         self.suitPlanner.flySuits()
-
-    def createBlimp(self):
-        self.sendUpdate('createBlimp', [globalClockDelta.getRealNetworkTime(bits=32)])
 
     def setVisGroups(self, visGroups):
         self.sendUpdate('setVisGroups', [visGroups])
@@ -85,11 +73,6 @@ class DistributedExperimentEventAI(DistributedEventAI):
     def challengeComplete(self):
         self.sendUpdate('challengeComplete', [])
         self.setChallenge(0)
-
-    def setPhase(self, phase):
-        self.phase = phase
-
-        self.sendUpdate('setPhase', [phase, globalClockDelta.getRealNetworkTime(bits=32)])
 
     def joinEvent(self, avId):
         DistributedEventAI.joinEvent(self, avId)
@@ -150,3 +133,42 @@ class DistributedExperimentEventAI(DistributedEventAI):
         av.b_setNPCFriendsDict([])
 
         av.b_setExperience(av.experience.makeNetString())
+
+    def enterIntroduction(self):
+        pass
+
+    def exitIntroduction(self):
+        pass
+
+    def enterPhase0(self):
+        self.suitPlanner.initTasks()
+        self.setCogDifficulty(0)
+
+        self.setChallenge(1)
+
+    def exitPhase0(self):
+        pass
+
+    def enterPhase1(self):
+        self.setCogDifficulty(1)
+
+    def exitPhase1(self):
+        pass
+
+    def enterPhase2(self):
+        self.setCogDifficulty(2)
+
+    def exitPhase2(self):
+        pass
+
+    def enterPhase3(self):
+        self.setCogDifficulty(3)
+
+    def exitPhase3(self):
+        pass
+
+    def enterPhase4(self):
+        pass
+
+    def exitPhase4(self):
+        pass
