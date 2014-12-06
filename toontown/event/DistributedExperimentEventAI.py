@@ -166,9 +166,3 @@ class DistributedExperimentEventAI(DistributedEventAI):
 
     def exitPhase3(self):
         pass
-
-    def enterPhase4(self):
-        pass
-
-    def exitPhase4(self):
-        pass

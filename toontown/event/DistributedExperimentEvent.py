@@ -143,12 +143,6 @@ class DistributedExperimentEvent(DistributedEvent):
     def exitPhase3(self, timestamp):
         pass
 
-    def enterPhase4(self, timestamp):
-        self.blimp.request('Phase4', timestamp)
-
-    def exitPhase4(self, timestamp):
-        pass
-
 
 @magicWord(category=CATEGORY_PROGRAMMER, types=[int])
 def blimp(phase):
