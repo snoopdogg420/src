@@ -27,18 +27,22 @@ class DistributedScienceFair(DistributedObject):
         self.balloonArchway = loader.loadModel('phase_4/models/events/balloon_archway_spiraled.bam')
         self.balloonArchway.reparentTo(render)
         self.balloonArchway.setPosHpr(-24.25, 17.24, 0, 0, 0, 0)
+        self.balloonArchway.flattenStrong()
 
         self.balloonArchway2 = loader.loadModel('phase_4/models/events/balloon_archway_spiraled.bam')
         self.balloonArchway2.reparentTo(render)
         self.balloonArchway2.setPosHpr(-24.25, -31.03, 0, 0, 0, 0)
+        self.balloonArchway2.flattenStrong()
 
         self.balloontowerCake = loader.loadModel('phase_4/models/events/balloon_set_cake.bam')
         self.balloontowerCake.reparentTo(render)
         self.balloontowerCake.setPosHpr(100.77, 10.30, 4, 270, 0, 0)
+        self.balloontowerCake.flattenStrong()
 
         self.balloontowerStar = loader.loadModel('phase_4/models/events/balloon_set_star.bam')
         self.balloontowerStar.reparentTo(render)
         self.balloontowerStar.setPosHpr(100.77, -8.77, 4, 270, 0, 0)
+        self.balloontowerStar.flattenStrong()
 
         #self.tent3 = Actor(loader.loadModel('phase_4/models/events/tele_anim02_repaired.bam'))
         #self.tent3.reparentTo(render)
