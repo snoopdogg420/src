@@ -26,6 +26,7 @@ class DistributedScienceFairAI(DistributedObjectAI):
 
         for avId in participants:
             av = self.air.doId2do[avId]
+            event.joinEvent(avId)
             av.setClientInterest(event.zoneId)
 
         event.start()

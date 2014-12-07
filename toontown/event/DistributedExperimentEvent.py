@@ -92,7 +92,7 @@ class DistributedExperimentEvent(DistributedEvent):
 
     def setChallenge(self, challengeId):
         if challengeId == 0:
-            self.completeObjective()
+            self.completeChallenge()
             return
 
         challengeInfo = ExperimentChallenges.getChallengeInfo(challengeId)
@@ -104,7 +104,7 @@ class DistributedExperimentEvent(DistributedEvent):
         if self.challengeGui:
             self.challengeGui.updateProgress(count)
 
-    def challengeComplete(self):
+    def completeChallenge(self):
         if self.challengeGui:
             self.challengeGui.fadeOutDestroy()
             self.challengeGui = None
