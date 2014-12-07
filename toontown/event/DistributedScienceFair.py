@@ -10,13 +10,13 @@ class DistributedScienceFair(DistributedObject):
         self.tent.reparentTo(render)
         self.tent.setPosHpr(0, 0, 0, 270, 0, 0)
 
-        self.redFlag = Actor(loader.loadModel('phase_4/models/events/event_flag_mod_idle_red.bam'))
-        self.redFlag.loadAnims({'waving': 'phase_4/models/events/event_flag_chan_wave1.bam'})
+        self.redFlag = Actor(loader.loadModel('phase_4/models/events/event-flag-mod.bam'))
+        self.redFlag.loadAnims({'waving': 'phase_4/models/events/event-flag-anim.bam'})
         self.redFlag.reparentTo(self.tent.find('**/flag1_jnt'))
         self.redFlag.loop('waving')
 
-        self.blueFlag = Actor(loader.loadModel('phase_4/models/events/event_flag_mod_idle_blue.bam'))
-        self.blueFlag.loadAnims({'waving': 'phase_4/models/events/event_flag_chan_wave1.bam'})
+        self.blueFlag = Actor(loader.loadModel('phase_4/models/events/event-flag-mod.bam'))
+        self.blueFlag.loadAnims({'waving': 'phase_4/models/events/event-flag-anim.bam'})
         self.blueFlag.reparentTo(self.tent.find('**/flag2_jnt'))
         self.blueFlag.loop('waving')
 
