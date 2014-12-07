@@ -1057,7 +1057,8 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
             self.startTimer(ts)
         if self.needAdjustTownBattle == 1:
             self.__adjustTownBattle()
-        return None
+        if self.cr.event:
+            self.cr.event.hideChallengeGui()
 
     def exitWaitForInput(self):
         self.notify.debug('exitWaitForInput()')
@@ -1066,7 +1067,8 @@ class DistributedBattleBase(DistributedNode.DistributedNode, BattleBase):
             base.camLens.setMinFov(self.camFov/(4./3.))
             self.ignore(self.localToonBattleEvent)
             self.__stopTimer()
-        return None
+        if self.cr.event:
+            self.cr.event.showChallengeGui()
 
     def __handleLocalToonBattleEvent(self, response):
         mode = response['mode']

@@ -61,6 +61,7 @@ class DistributedExperimentEvent(DistributedEvent):
             self.blimp.cleanup()
             self.blimp = None
 
+        base.setCellsActive(base.bottomCells[:2], 1)
         if self.challengeGui:
             self.challengeGui.destroy()
 
@@ -96,8 +97,8 @@ class DistributedExperimentEvent(DistributedEvent):
 
         challengeInfo = ExperimentChallenges.getChallengeInfo(challengeId)
         self.challengeGui = ExperimentChallengeGUI(*challengeInfo)
-        self.challengeGui.setPos(0, 0, 0.8)
-        self.challengeGui.fadeIn()
+        self.challengeGui.setPos(0.92, 0, 0.17)
+        self.showChallengeGui()
 
     def setChallengeCount(self, count):
         if self.challengeGui:
@@ -107,6 +108,22 @@ class DistributedExperimentEvent(DistributedEvent):
         if self.challengeGui:
             self.challengeGui.fadeOutDestroy()
             self.challengeGui = None
+
+    def showChallengeGui(self):
+        if self.challengeGui is None:
+            return
+
+        if not self.challengeGui.visible:
+            self.challengeGui.fadeIn()
+            base.setCellsActive([base.bottomCells[1], base.bottomCells[2]], 0)
+
+    def hideChallengeGui(self):
+        if self.challengeGui is None:
+            return
+
+        if self.challengeGui.visible:
+            self.challengeGui.fadeOut()
+            base.setCellsActive([base.bottomCells[1], base.bottomCells[2]], 1)
 
     def enterIntroduction(self, timestamp):
         pass

@@ -9,6 +9,7 @@ class ExperimentChallengeGUI(NodePath):
         NodePath.__init__(self, 'objective-%s' % id(self))
 
         self.needed = needed
+        self.visible = False
 
         gui = loader.loadModel('phase_5/models/cogdominium/tt_m_gui_csa_flyThru')
         self.background = gui.find('**/*background').copyTo(self)
@@ -43,7 +44,7 @@ class ExperimentChallengeGUI(NodePath):
 
         self.updateProgress(0)
 
-        self.reparentTo(aspect2d)
+        self.reparentTo(base.a2dBottomLeft)
         self.stash()
 
     def updateProgress(self, count):
@@ -51,6 +52,7 @@ class ExperimentChallengeGUI(NodePath):
         self.progressText['text'] = '%s/%s' % (count, self.needed)
 
     def fadeIn(self):
+        self.visible = True
         Sequence(Func(self.unstash),
                  Func(self.setTransparency, 1),
                  LerpColorScaleInterval(self, 1, Vec4(1, 1, 1, 1), startColorScale=Vec4(1, 1, 1, 0)),
@@ -58,6 +60,7 @@ class ExperimentChallengeGUI(NodePath):
                  Func(self.clearTransparency)).start()
 
     def fadeOut(self):
+        self.visible = False
         Sequence(Func(self.setTransparency, 1),
                  LerpColorScaleInterval(self, 1, Vec4(1, 1, 1, 0), startColorScale=Vec4(1, 1, 1, 1)),
                  Func(self.clearColorScale),
@@ -65,6 +68,7 @@ class ExperimentChallengeGUI(NodePath):
                  Func(self.stash)).start()
 
     def fadeOutDestroy(self):
+        self.visible = False
         Sequence(Func(self.setTransparency, 1),
                  LerpColorScaleInterval(self, 1, Vec4(1, 1, 1, 0), startColorScale=Vec4(1, 1, 1, 1)),
                  Func(self.clearColorScale),
