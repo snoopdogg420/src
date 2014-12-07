@@ -23,6 +23,7 @@ class ExperimentGagReward(ExperimentReward):
             trackChoice = random.choice(possibleTracks)
             av.trackArray[trackChoice] = 1
             av.d_setTrackAccess(av.trackArray)
+            av.b_setMaxCarry(av.maxCarry + 10)
 
     def notifyReward(self):
         self.messageParticipants('You have earned a new Gag track!')
