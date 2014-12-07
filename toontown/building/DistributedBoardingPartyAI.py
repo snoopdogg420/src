@@ -508,6 +508,8 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         elif avId in self.avIdDict:
             leaderId = self.avIdDict[avId]
             self.removeFromGroup(leaderId, avId)
+        if avId in self.mergeDict:
+            self.mergeDict.pop(avId)
 
     def toonInZone(self, avId):
         if avId in self.avIdDict:
