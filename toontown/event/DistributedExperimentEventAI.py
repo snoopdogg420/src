@@ -78,6 +78,9 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.sendUpdate('challengeComplete', [])
         self.setChallenge(0)
 
+    def getInitialChallengeId(self):
+        return min(len(self.participants), 5)
+
     def joinEvent(self, avId):
         DistributedEventAI.joinEvent(self, avId)
 
@@ -149,7 +152,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.barrelPlanner.start()
         self.setCogDifficulty(0)
 
-        self.setChallenge(1)
+        self.setChallenge(self.getInitialChallengeId())
 
     def exitPhase0(self):
         pass
