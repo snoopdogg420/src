@@ -38,3 +38,6 @@ class ExperimentChallenge(DirectObject):
         self.unregisterHook()
         self.experimentEvent.challengeComplete()
         self.completionBlock(self)
+
+    def messageParticipants(self, message):
+        self.experimentEvent.messageParticipants(message)
