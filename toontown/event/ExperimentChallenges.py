@@ -21,11 +21,11 @@ challengeInfo = {
 
 
 challenges = {
-  1: (ExperimentSuitChallenge, [initialChallengeCompleteBlock, 2, 1, 12, 'any']),
-  2: (ExperimentSuitChallenge, [initialChallengeCompleteBlock, 4, 1, 12, 'any']),
-  3: (ExperimentSuitChallenge, [initialChallengeCompleteBlock, 6, 1, 12, 'any']),
-  4: (ExperimentSuitChallenge, [initialChallengeCompleteBlock, 8, 1, 12, 'any']),
-  5: (ExperimentSuitChallenge, [initialChallengeCompleteBlock, 10, 1, 12, 'any'])
+  1: (ExperimentSuitChallenge, [initialChallengeCompletionBlock, 2, 1, 12, 'any']),
+  2: (ExperimentSuitChallenge, [initialChallengeCompletionBlock, 4, 1, 12, 'any']),
+  3: (ExperimentSuitChallenge, [initialChallengeCompletionBlock, 6, 1, 12, 'any']),
+  4: (ExperimentSuitChallenge, [initialChallengeCompletionBlock, 8, 1, 12, 'any']),
+  5: (ExperimentSuitChallenge, [initialChallengeCompletionBlock, 10, 1, 12, 'any'])
 }
 
 
