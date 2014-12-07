@@ -315,6 +315,7 @@ from toontown.event import DistributedEvent/AI
 from toontown.toon import DistributedNPCExperimentEvent/AI
 from toontown.event import DistributedExperimentEvent/AI
 from toontown.event import DistributedScienceFair/AI
+from toontown.event import DistributedExperimentBarrel/AI
 
 struct GiftItem {
   blob Item;
@@ -3431,10 +3432,16 @@ dclass DistributedEvent : DistributedObject {
 dclass DistributedExperimentEvent : DistributedEvent {
   setVisGroups(uint32[]) broadcast ram;
 
-  setChallenge(int8) broadcast ram;
-  setChallengeCount(uint16) broadcast ram;
+  setChallenge(uint8) broadcast ram;
+  setChallengeCount(uint8) broadcast ram;
   challengeComplete() broadcast;
 };
 
 dclass DistributedScienceFair : DistributedObject {
+};
+
+dclass DistributedExperimentBarrel : DistributedNode {
+  setType(uint8) broadcast required ram;
+  requestGrab(uint32) clsend airecv;
+  setGrab(uint32) broadcast;
 };

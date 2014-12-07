@@ -5,6 +5,7 @@ from toontown.dna.DNAStorage import DNAStorage
 from toontown.event import ExperimentChallenges
 from toontown.event.DistributedEventAI import DistributedEventAI
 from toontown.suit.DistributedSuitPlannerAI import DistributedSuitPlannerAI
+from toontown.event.ExperimentBarrelPlannerAI import ExperimentBarrelPlannerAI
 from toontown.toon.Experience import Experience
 from toontown.toon.InventoryBase import InventoryBase
 from toontown.toon.ToonSerializer import ToonSerializer
@@ -17,12 +18,15 @@ class DistributedExperimentEventAI(DistributedEventAI):
         DistributedEventAI.__init__(self, air)
 
         self.suitPlanner = None
+        self.barrelPlanner = None
         self.currentChallenge = None
 
     def start(self):
         self.suitPlanner = DistributedSuitPlannerAI(self.air, self.zoneId, self.setupDNA)
         self.suitPlanner.generateWithRequired(self.zoneId)
         self.suitPlanner.d_setZoneId(self.zoneId)
+
+        self.barrelPlanner = ExperimentBarrelPlannerAI(self)
 
         self.b_setState('Phase0')
 
@@ -142,6 +146,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
 
     def enterPhase0(self):
         self.suitPlanner.initTasks()
+        self.barrelPlanner.start()
         self.setCogDifficulty(0)
 
         self.setChallenge(1)
