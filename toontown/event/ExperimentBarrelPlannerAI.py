@@ -1,5 +1,5 @@
 from toontown.event.DistributedExperimentBarrelAI import DistributedExperimentBarrelAI
-from toontown.event import ExperimentBarrelBase
+from toontown.event.ExperimentBarrelBase import ExperimentBarrelBase
 import random
 
 
