@@ -1,4 +1,5 @@
 from toontown.event.DistributedExperimentBarrelAI import DistributedExperimentBarrelAI
+from toontown.event import ExperimentBarrelBase
 import random
 
 
@@ -27,11 +28,6 @@ BarrelPosHpr = [(37.963, -26.464, 4.025, 48.889, 0, 0),
  (-20.639, 69.441, 0.029, -157.822, 0, 0),
  (21.564, 44.777, 4.983, -247.421, 0, 0),
  (15.858, 27.424, 4.025, -221.450, 0, 0)]
-
-
-GAG_BARREL = 1
-TOONUP_BARREL = 2
-EXPERIENCE_BARREL = 3
 
 
 class ExperimentBarrelPlannerAI:
@@ -66,8 +62,7 @@ class ExperimentBarrelPlannerAI:
             usedPositions.append(pos)
 
             barrel = DistributedExperimentBarrelAI(self.air)
-            barrel.setType(random.choice([GAG_BARREL, TOONUP_BARREL,
-                                          EXPERIENCE_BARREL]))
+            barrel.setType(random.choice(ExperimentBarrelBase.BARREL_TYPES))
             barrel.generateWithRequired(self.zoneId)
             barrel.b_setPosHpr(*pos)
             self.activeBarrels.append(barrel)

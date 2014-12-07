@@ -5,19 +5,16 @@ from direct.interval.IntervalGlobal import Parallel, Sequence, Func, Wait
 from direct.interval.IntervalGlobal import LerpScaleInterval
 from toontown.effects.DustCloud import DustCloud
 from toontown.toonbase import ToontownGlobals
+from toontown.event.ExperimentBarrelBase import ExperimentBarrelBase
 
 
-GAG_BARREL = 1
-TOONUP_BARREL = 2
-EXPERIENCE_BARREL = 3
-
-
-class DistributedExperimentBarrel(DistributedNode):
+class DistributedExperimentBarrel(ExperimentBarrelBase, DistributedNode):
     notify = directNotify.newCategory('DistributedExperimentBarrel')
     BARREL_SCALE = 0.5
     SPHERE_RADIUS = 3.8
 
     def __init__(self, cr):
+        ExperimentBarrelBase.__init__(self)
         DistributedNode.__init__(self, cr)
 
         self.barrel = None
@@ -26,8 +23,6 @@ class DistributedExperimentBarrel(DistributedNode):
         self.collNode = None
         self.collNodePath = None
         self.animTrack = None
-
-        self.type = None
 
     def announceGenerate(self):
         DistributedNode.announceGenerate(self)
@@ -106,6 +101,3 @@ class DistributedExperimentBarrel(DistributedNode):
                                   Func(self.barrel.setScale,
                                        self.BARREL_SCALE))
         self.animTrack.start()
-
-    def setType(self, type):
-        self.type = type

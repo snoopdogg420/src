@@ -1,27 +1,17 @@
+from toontown.event.ExperimentBarrelBase import ExperimentBarrelBase
 from direct.distributed.DistributedNodeAI import DistributedNodeAI
 import random
 import math
 
 
-GAG_BARREL = 1
-TOONUP_BARREL = 2
-EXPERIENCE_BARREL = 3
-
-
-class DistributedExperimentBarrelAI(DistributedNodeAI):
+class DistributedExperimentBarrelAI(ExperimentBarrelBase, DistributedNodeAI):
     notify = directNotify.newCategory('DistributedExperimentBarrelAI')
 
     def __init__(self, air):
+        ExperimentBarrelBase.__init__(self)
         DistributedNodeAI.__init__(self, air)
 
-        self.type = None
         self.usedBy = []
-
-    def setType(self, type):
-        self.type = type
-
-    def getType(self):
-        return self.type
 
     def requestGrab(self, avId):
         if avId in self.usedBy:
@@ -51,10 +41,10 @@ class DistributedExperimentBarrelAI(DistributedNodeAI):
         av.d_setExperience(av.experience.makeNetString())
 
     def setGrab(self, avId):
-        if self.type == GAG_BARREL:
+        if self.type == self.GAG_BARREL:
             self.gagGrab(avId)
-        elif self.type == TOONUP_BARREL:
+        elif self.type == self.TOONUP_BARREL:
             self.toonupGrab(avId)
-        elif self.type == EXPERIENCE_BARREL:
+        elif self.type == self.EXPERIENCE_BARREL:
             self.experienceGrab(avId)
         self.sendUpdate('setGrab', [avId])
