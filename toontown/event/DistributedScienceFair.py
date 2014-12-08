@@ -34,14 +34,20 @@ class DistributedScienceFair(DistributedObject):
         self.balloonArchway2.setPosHpr(-24.25, -31.03, 0, 0, 0, 0)
         self.balloonArchway2.flattenStrong()
 
+        self.balloonArchway3 = loader.loadModel('phase_4/models/events/balloon_archway_spiraled.bam')
+        self.balloonArchway3.reparentTo(render)
+        self.balloonArchway3.setPosHpr(99.6, 0.65, 4, 272.39, 0, 0)
+        self.balloonArchway3.setScale(1.21)
+        self.balloonArchway3.flattenStrong()
+
         self.balloontowerCake = loader.loadModel('phase_4/models/events/balloon_set_cake.bam')
         self.balloontowerCake.reparentTo(render)
-        self.balloontowerCake.setPosHpr(100.77, 10.30, 4, 270, 0, 0)
+        self.balloontowerCake.setPosHpr(95.65, 6.75, 4, 270, 0, 0)
         self.balloontowerCake.flattenStrong()
 
         self.balloontowerStar = loader.loadModel('phase_4/models/events/balloon_set_star.bam')
         self.balloontowerStar.reparentTo(render)
-        self.balloontowerStar.setPosHpr(100.77, -8.77, 4, 270, 0, 0)
+        self.balloontowerStar.setPosHpr(95.70, -5.56, 4, 270, 0, 0)
         self.balloontowerStar.flattenStrong()
 
         #self.tent3 = Actor(loader.loadModel('phase_4/models/events/tele_anim02_repaired.bam'))
@@ -69,6 +75,10 @@ class DistributedScienceFair(DistributedObject):
         if self.balloonArchway2 is not None:
             self.balloonArchway2.removeNode()
             self.balloonArchway2 = None
+
+        if self.balloonArchway3 is not None:
+            self.balloonArchway3.removeNode()
+            self.balloonArchway3 = None
 
         if self.balloontowerCake is not None:
             self.balloontowerCake.removeNode()
