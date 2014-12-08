@@ -85,6 +85,10 @@ class DistributedScienceFair(DistributedObject):
             self.balloonArchway3.removeNode()
             self.balloonArchway3 = None
 
+        if self.barrierCircle is not None:
+             self.barrierCircle.removeNode()
+             self.barrierCircle = None
+
         if self.balloontowerCake is not None:
             self.balloontowerCake.removeNode()
             self.balloontowerCake = None
