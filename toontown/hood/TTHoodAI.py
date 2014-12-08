@@ -81,5 +81,5 @@ class TTHoodAI(HoodAI.HoodAI):
     def createExperimentEvent(self):
         self.scienceFair = DistributedScienceFairAI(self.air, 91919)
         self.scienceFair.generateWithRequired(self.zoneId)
-        self.scienceFair.npc.d_setPos(-17, 43, 0.036)
-        self.scienceFair.npc.d_setH(512.285)
+        self.scienceFair.npc.d_setPos(-13, 58, 0.025)
+        self.scienceFair.npc.d_setH(-259.496)

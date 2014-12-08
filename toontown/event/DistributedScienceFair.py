@@ -52,7 +52,7 @@ class DistributedScienceFair(DistributedObject):
 
         self.barrierCircle = loader.loadModel('phase_4/models/events/barrier_circle_sf.bam')
         self.barrierCircle.reparentTo(render)
-        self.barrierCircle.setPosHpr(-14.67, 51.93, 0, 270, 0, 0)
+        self.barrierCircle.setPosHpr(-14.67, 51.93, 0.025, 287.10, 0, 0)
         self.barrierCircle.flattenStrong()
 
         #self.tent3 = Actor(loader.loadModel('phase_4/models/events/tele_anim02_repaired.bam'))
