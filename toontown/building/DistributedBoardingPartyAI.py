@@ -263,6 +263,11 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                     self.notify.warning('leaderId not in self.avIdDict or inviteeId not in self.avIdDict');
                     self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
                     return
+                # Does the leader still have a group?
+                if leaderId not in self.groupListDict:
+                    self.notify.warning('the leader does not have a group?');
+                    self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
+                    return
                 # They should STILL be the leaders.. right?
                 if leaderId != self.avIdDict[leaderId]:
                     self.notify.warning('leaderId != self.avIdDict[leaderId]');
@@ -284,6 +289,12 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                     self.sendUpdateToAvatarId(inviterId, 'postInviteNotQualify', [inviteeId, reason, 0])
                     self.sendUpdateToAvatarId(inviteeId, 'postMessageInvitationFailed', [inviterId])
                     return
+                group = self.groupListDict.get(leaderId)
+                # Something is wonky
+                if group == None or (len(group) < 3):
+                    self.notify.warning('the leader has a group but it is null or too short')
+                    self.sendUpdateToAvatarId(inviteeId, 'postSomethingMissing', [])
+                    return
                 # get the memberList of the invitee and add it into the leaders group
                 memberList = self.getGroupMemberList(inviteeId)
                 for memberId in memberList:
@@ -291,7 +302,6 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
                 # get rid of the old group (invitee is always the old leader)
                 self.groupListDict.pop(inviteeId)
                 # notify everybody of their new group info
-                group = self.groupListDict.get(leaderId)
                 self.sendUpdateToAvatarId(inviterId, 'postInviteAccepted', [oldId])
                 self.sendUpdate('postGroupInfo', [leaderId, group[0], group[1], group[2]])
                 return
@@ -498,6 +508,8 @@ class DistributedBoardingPartyAI(DistributedObjectAI.DistributedObjectAI, Boardi
         elif avId in self.avIdDict:
             leaderId = self.avIdDict[avId]
             self.removeFromGroup(leaderId, avId)
+        if avId in self.mergeDict:
+            self.mergeDict.pop(avId)
 
     def toonInZone(self, avId):
         if avId in self.avIdDict:
