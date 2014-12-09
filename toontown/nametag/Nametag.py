@@ -124,9 +124,9 @@ class Nametag:
         return self.chatButton
 
     def hasChatButton(self):
-        if (self.chatType == NametagGlobals.CHAT) and self.chatHidden:
+        if (self.chatBalloonType == NametagGlobals.CHAT_BALLOON) and self.chatHidden:
             return False
-        if (self.chatType == NametagGlobals.THOUGHT_BALLOON) and self.thoughtHidden:
+        if (self.chatBalloonType == NametagGlobals.THOUGHT_BALLOON) and self.thoughtHidden:
             return False
         return self.chatButton != NametagGlobals.noButton
 
