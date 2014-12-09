@@ -736,7 +736,7 @@ class DistributedBuilding(DistributedObject.DistributedObject):
 
         openDoors = getOpenInterval(self, self.leftDoor, self.rightDoor, self.openSfx, None)
         toonDoorPosHpr = self.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(self.block)
-        useFarExitPoints = toonDoorPosHpr.getPos().getZ() > 1.0
+        useFarExitPoints = toonDoorPosHpr.getPos(render).getZ() > 1.0
         runOutAll = Parallel()
         i = 0
         for victor in self.victorList:

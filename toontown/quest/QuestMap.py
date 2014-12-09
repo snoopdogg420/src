@@ -161,8 +161,8 @@ class QuestMap(DirectFrame):
                 interiorZoneId = (zoneId - (zoneId%100)) + 500 + blockNumber
                 if npcZoneId == interiorZoneId:
                     self.putBuildingMarker(
-                        base.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(blockNumber).getPos(),
-                        base.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(blockNumber).getHpr(),
+                        base.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(blockNumber).getPos(render),
+                        base.cr.playGame.dnaStore.getDoorPosHprFromBlockNumber(blockNumber).getHpr(render),
                         mapIndex=mapIndex)
 
     def transformAvPos(self, pos):
