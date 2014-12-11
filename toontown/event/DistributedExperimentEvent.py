@@ -167,8 +167,6 @@ class DistributedExperimentEvent(DistributedEvent):
         pass
 
     def enterCredits(self, timestamp):
-        pass
-
         self.cleanupDestruction()
 
         self.credits = ExperimentCredits()
