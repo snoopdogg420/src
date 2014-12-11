@@ -76,3 +76,7 @@ class ExperimentBarrelPlannerAI:
         for barrel in self.activeBarrels:
             barrel.requestDelete()
         self.activeBarrels = []
+
+    def cleanup(self):
+        self.stop()
+        self.deleteBarrels()

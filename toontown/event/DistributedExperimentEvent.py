@@ -7,6 +7,7 @@ from toontown.event import ExperimentChallenges
 from toontown.event.DistributedEvent import DistributedEvent
 from toontown.event.ExperimentBlimp import ExperimentBlimp
 from toontown.event.ExperimentChallengeGUI import ExperimentChallengeGUI
+from toontown.event.ExperimentCredits import ExperimentCredits
 
 
 class DistributedExperimentEvent(DistributedEvent):
@@ -18,6 +19,7 @@ class DistributedExperimentEvent(DistributedEvent):
         self.introMusic = base.loadMusic('phase_4/audio/bgm/TE_battle_intro.ogg')
         self.music = base.loadMusic('phase_4/audio/bgm/TE_battle.ogg')
         self.musicSequence = None
+        self.credits = None
 
         self.blimp = None
 
@@ -54,19 +56,25 @@ class DistributedExperimentEvent(DistributedEvent):
         aspect2d.setColorScale(Vec4(0.85, 0.65, 0.65, 1))
 
     def delete(self):
-        self.musicSequence.finish()
-        self.musicSequence = None
+        self.cleanupDestruction()
 
-        if self.blimp is not None:
+        base.musicManager.stopAllSounds()
+        base.unlockMusic()
+
+        DistributedEvent.delete(self)
+
+    def cleanupDestruction(self):
+        if self.musicSequence:
+            self.musicSequence.finish()
+            self.musicSequence = None
+
+        if self.blimp:
             self.blimp.cleanup()
             self.blimp = None
 
         base.setCellsActive(base.bottomCells[:2], 1)
         if self.challengeGui:
             self.challengeGui.destroy()
-
-        base.musicManager.stopAllSounds()
-        base.unlockMusic()
 
         if __debug__:
             skyblue2Filename = Filename('../resources/phase_3.5/maps/skyblue2.jpg')
@@ -84,8 +92,6 @@ class DistributedExperimentEvent(DistributedEvent):
 
         render.setColorScale(Vec4(1, 1, 1, 1))
         aspect2d.setColorScale(Vec4(1, 1, 1, 1))
-
-        DistributedEvent.delete(self)
 
     def setVisGroups(self, visGroups):
         self.cr.sendSetZoneMsg(self.zoneId, visGroups)
@@ -139,25 +145,36 @@ class DistributedExperimentEvent(DistributedEvent):
             self.blimp.startFlying(timestamp)
         self.blimp.request('Phase0', timestamp)
 
-    def exitPhase0(self, timestamp):
+    def exitPhase0(self):
         pass
 
     def enterPhase1(self, timestamp):
         self.blimp.request('Phase1', timestamp)
 
-    def exitPhase1(self, timestamp):
+    def exitPhase1(self):
         pass
 
     def enterPhase2(self, timestamp):
         self.blimp.request('Phase2', timestamp)
 
-    def exitPhase2(self, timestamp):
+    def exitPhase2(self):
         pass
 
     def enterPhase3(self, timestamp):
         self.blimp.request('Phase3', timestamp)
 
-    def exitPhase3(self, timestamp):
+    def exitPhase3(self):
+        pass
+
+    def enterCredits(self, timestamp):
+        pass
+
+        self.cleanupDestruction()
+
+        self.credits = ExperimentCredits()
+        self.credits.start()
+
+    def exitCredits(self):
         pass
 
 

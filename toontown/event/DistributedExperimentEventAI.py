@@ -46,6 +46,7 @@ class DistributedExperimentEventAI(DistributedEventAI):
     def setupDNA(self, suitPlanner):
         if suitPlanner.dnaStore:
             return None
+
         suitPlanner.dnaStore = DNAStorage()
         loadDNAFileAI(suitPlanner.dnaStore, 'phase_4/dna/toontown_central_sz.pdna')
 
@@ -173,4 +174,18 @@ class DistributedExperimentEventAI(DistributedEventAI):
         self.setCogDifficulty(3)
 
     def exitPhase3(self):
+        pass
+
+    def enterCredits(self):
+        self.setChallenge(0)
+
+        if self.barrelPlanner:
+            self.barrelPlanner.cleanup()
+            self.barrelPlanner = None
+
+        if self.suitPlanner:
+            self.suitPlanner.cleanup()
+            self.suitPlanner = None
+
+    def exitCredits(self):
         pass
