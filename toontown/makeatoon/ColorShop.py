@@ -54,7 +54,7 @@ class ColorShop(StateData.StateData):
         self.acceptOnce('next', self.__handleForward)
         choicePool = [self.getGenderColorList(self.dna), self.getGenderColorList(self.dna), self.getGenderColorList(self.dna)]
         self.shuffleButton.setChoicePool(choicePool)
-        self.accept(self.shuffleFetchMsg, self.changeColor)
+        self.accept(self.shuffleFetchMsg, self.__randomizeColor)
         self.acceptOnce('MAT-newToonCreated', self.shuffleButton.cleanHistory)
 
     def showButtons(self):
@@ -128,7 +128,6 @@ class ColorShop(StateData.StateData):
         self.parentFrame.hide()
         self.shuffleFetchMsg = 'ColorShopShuffle'
         self.shuffleButton = ShuffleButton.ShuffleButton(self, self.shuffleFetchMsg)
-        return
 
     def unload(self):
         self.gui.removeNode()
@@ -199,6 +198,17 @@ class ColorShop(StateData.StateData):
         newColor = colorList[self.legChoice]
         self.dna.legColor = newColor
         self.toon.swapToonColor(self.dna)
+
+    def __randomizeColor(self):
+        colorList = self.getGenderColorList(self.dna)
+
+        colors = []
+        for _ in xrange(3):
+            colors.append(random.choice(colorList))
+
+        self.__swapHeadColor(colors[0])
+        self.__swapArmColor(colors[1])
+        self.__swapLegColor(colors[2])
 
     def __updateScrollButtons(self, choice, length, lButton, rButton):
         if choice == (self.startColor - 1) % length:
