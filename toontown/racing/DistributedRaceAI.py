@@ -349,6 +349,9 @@ class DistributedRaceAI(DistributedObjectAI, FSM):
                 if kartingHistory[genre + 4] >= RaceGlobals.QualifiedRaces[i] and avTrophies[RaceGlobals.AllQualsList[genre][i]] != 1:
                     avTrophies[RaceGlobals.AllQualsList[genre][i]] = 1
                     trophies.append(RaceGlobals.AllQualsList[genre][i])
+        for i, history in enumerate(kartingHistory):
+            if history > 255:
+                kartingHistory[i] = 255
         av.b_setKartingHistory(kartingHistory)
         pKartingBest = av.getKartingPersonalBestAll()
         trackIndex = TTLocalizer.KartRace_TrackNames.keys().index(self.trackId)
