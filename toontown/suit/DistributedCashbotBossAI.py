@@ -388,6 +388,21 @@ class DistributedCashbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
             toon = self.air.doId2do.get(avId)
             if toon:
                 toon.doResistanceEffect(self.rewardId)
+            
+            if simbase.config.GetBool('cfo-staff-event', False):
+                withStaff = False
+                for avId in self.involvedToons:
+                    av = self.air.doId2do.get(avId)
+                        if av:
+                            if av.accessLevel > 100:
+                                withStaff = True
+                                break
+            
+                if withStaff:
+                    participants = simbase.backups.load('cfo-staff-event', ('participants',), default={'doIds': []})
+                    if avId not in participants['doIds']:
+                        participants['doIds'].append(toon.doId)
+                    simbase.backups.save('cfo-staff-event', ('participants',), participants)
 
     def enterOff(self):
         DistributedBossCogAI.DistributedBossCogAI.enterOff(self)
