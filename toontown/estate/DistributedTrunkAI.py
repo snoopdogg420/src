@@ -96,6 +96,11 @@ class DistributedTrunkAI(DistributedClosetAI):
         elif finished == 1:
             # The user pressed the cancel button. All we need to do is free him.
             # Reset the removed items and our user.
+            av.b_setHat(hatIdx, hatTexture, hatColor)
+            av.b_setGlasses(glassesIdx, glassesTexture, glassesColor)
+            av.b_setBackpack(backpackIdx, backpackTexture, backpackColor)
+            av.b_setShoes(shoesIdx, shoesTexture, shoesColor)
+
             self.removedHats = []
             self.removedGlasses = []
             self.removedBackpacks = []
