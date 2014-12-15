@@ -344,6 +344,10 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
                 toon.stopLookAround()
                 toon.stopSmooth()
 
+        for panel in self.cr.openAvatarPanels:
+            if panel:
+                panel.cleanupDialog()
+
         if self.hasLocalToon():
             self.toMovieMode()
 
