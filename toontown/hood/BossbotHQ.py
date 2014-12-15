@@ -17,5 +17,5 @@ class BossbotHQ(CogHood):
     def enter(self, requestStatus):
         CogHood.enter(self, requestStatus)
 
-        localAvatar.setCameraFov(ToontownGlobals.CogHQCameraFov)
+        base.localAvatar.setCameraFov(ToontownGlobals.CogHQCameraFov)
         base.camLens.setNearFar(ToontownGlobals.BossbotHQCameraNear, ToontownGlobals.BossbotHQCameraFar)

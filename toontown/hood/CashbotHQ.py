@@ -14,7 +14,7 @@ class CashbotHQ(CogHood):
     def enter(self, requestStatus):
         CogHood.enter(self, requestStatus)
 
-        localAvatar.setCameraFov(ToontownGlobals.CogHQCameraFov)
+        base.localAvatar.setCameraFov(ToontownGlobals.CogHQCameraFov)
         base.camLens.setNearFar(ToontownGlobals.CashbotHQCameraNear, ToontownGlobals.CashbotHQCameraFar)
 
     def spawnTitleText(self, zoneId, floorNum=None):
