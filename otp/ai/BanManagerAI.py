@@ -117,7 +117,7 @@ class BanManagerAI(DirectObject):
 
 
 @magicWord(category=CATEGORY_MODERATOR, types=[str])
-def kick(reason):
+def kick(reason='No reason specified'):
     """
     Kick the target from the game server.
     """
@@ -129,7 +129,7 @@ def kick(reason):
         target.GetPuppetConnectionChannel(target.doId),
         simbase.air.ourChannel, CLIENTAGENT_EJECT)
     datagram.addUint16(155)
-    datagram.addString('You were kicked by a moderator for the following reason: "%s"\n\nBehave next time!' % reason)
+    datagram.addString('You were kicked by a moderator for the following reason: %s' % reason)
     simbase.air.send(datagram)
     return "Kicked %s from the game server!" % target.getName()
 
