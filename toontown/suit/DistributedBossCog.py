@@ -338,15 +338,15 @@ class DistributedBossCog(DistributedAvatar.DistributedAvatar, BossCog.BossCog):
         return Sequence()
 
     def controlToons(self):
+        for panel in self.cr.openAvatarPanels:
+            if panel:
+                panel.cleanupDialog()
+
         for toonId in self.involvedToons:
             toon = self.cr.doId2do.get(toonId)
             if toon:
                 toon.stopLookAround()
                 toon.stopSmooth()
-
-        for panel in self.cr.openAvatarPanels:
-            if panel:
-                panel.cleanupDialog()
 
         if self.hasLocalToon():
             self.toMovieMode()
