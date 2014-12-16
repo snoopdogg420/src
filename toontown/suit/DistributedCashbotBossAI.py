@@ -503,6 +503,26 @@ class DistributedCashbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FS
 
 
 @magicWord(category=CATEGORY_ADMINISTRATOR)
+def restartCraneRound():
+    """
+    Restarts the crane round in the CFO.
+    """
+    invoker = spellbook.getInvoker()
+    boss = None
+    for do in simbase.air.doId2do.values():
+        if isinstance(do, DistributedCashbotBossAI):
+            if invoker.doId in do.involvedToons:
+                boss = do
+                break
+    if not boss:
+        return "You aren't in a CFO!"
+    boss.exitIntroduction()
+    boss.b_setState('PrepareBattleThree')
+    boss.b_setState('BattleThree')
+    return 'Restarting the crane round...'
+
+
+@magicWord(category=CATEGORY_ADMINISTRATOR)
 def skipCFO():
     """
     Skips to the final round of the CFO.
