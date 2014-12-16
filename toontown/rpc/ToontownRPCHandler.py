@@ -197,7 +197,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
 
         self.rpc_messageChannel(channel, message)
 
-    @rpcmethod(accessLevel=SYSTEM_ADMINISTRATOR)
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_messageStaff(self, message):
         """
         Summary:
@@ -209,7 +209,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         """
         self.rpc_messageChannel(OtpDoGlobals.OTP_STAFF_CHANNEL, message)
 
-    @rpcmethod(accessLevel=ADMINISTRATOR)
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_messageUser(self, userId, message):
         """
         Summary:
@@ -224,7 +224,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         if accountId is not None:
             self.rpc_messageAccount(accountId, message)
 
-    @rpcmethod(accessLevel=ADMINISTRATOR)
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_messageAccount(self, accountId, message):
         """
         Summary:
@@ -238,7 +238,7 @@ class ToontownRPCHandler(ToontownRPCHandlerBase):
         channel = accountId + (1003L<<32)
         self.rpc_messageChannel(channel, message)
 
-    @rpcmethod(accessLevel=ADMINISTRATOR)
+    @rpcmethod(accessLevel=MODERATOR)
     def rpc_messageAvatar(self, avId, message):
         """
         Summary:
