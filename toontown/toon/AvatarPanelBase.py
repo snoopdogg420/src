@@ -212,12 +212,14 @@ class AvatarPanelBase(AvatarPanel.AvatarPanel):
 
     def cleanupDialog(self):
         if self.dialog:
+            base.cr.openAvatarPanels.discard(self)
             self.dialog.ignore('exitingStoppedState')
             self.dialog.cleanup()
             self.dialog = None
         return
 
     def requestStopped(self):
+        base.cr.openAvatarPanels.add(self)
         if not base.cr.playGame.getPlace().fsm.getCurrentState().getName() == 'stickerBook':
             if base.cr.playGame.getPlace().fsm.hasStateNamed('stopped'):
                 base.cr.playGame.getPlace().fsm.request('stopped')

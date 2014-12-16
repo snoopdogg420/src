@@ -106,6 +106,7 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         self.streetSign = None
         self.furnitureManager = None
         self.objectManager = None
+        self.openAvatarPanels = set()
         self.friendsMap = {}
         self.friendsOnline = {}
         self.friendsMapPending = 0
