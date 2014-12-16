@@ -157,13 +157,14 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
                 else:
                     color += 1
 
+            base.setCellsActive(base.leftCells, 0)
+
         else:
             self.toonPanels = None
         for avId in self.exitedAvIdList:
             if avId not in self.exitedToonsWithPanels:
                 self.exitMessageForToon(avId)
 
-        return
 
     def setPlayHole(self):
         self.notify.debug('GOLF COURSE: received setPlayHole')
@@ -199,6 +200,8 @@ class DistributedGolfCourse(DistributedObject.DistributedObject, FSM, DelayDelet
                 self.request('Cleanup')
             else:
                 self.notify.warning('GOLF COURSE: Attempting to clean up twice')
+
+            base.setCellsActive(base.leftCells, 1)
 
     def onstage(self):
         self.notify.debug('GOLF COURSE: onstage')
