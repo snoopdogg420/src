@@ -766,7 +766,6 @@ class ToontownClientRepository(OTPClientRepository.OTPClientRepository):
         return 1
 
     def removeFriend(self, avatarId):
-        # base.localAvatar.sendUpdate('friendsNotify', [base.localAvatar.doId, 1], sendToId=avatarId)
         self.ttiFriendsManager.d_removeFriend(avatarId)
 
     def clearFriendState(self):
