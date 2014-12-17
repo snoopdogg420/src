@@ -3,13 +3,14 @@ from toontown.building import FADoorCodes
 from otp.ai.MagicWordGlobal import *
 from toontown.hood import ZoneUtil
 from toontown.quest import Quests
-from direct.directnotify.DirectNotifyGlobal import directNotify
+
 
 QuestIdIndex = 0
 QuestFromNpcIdIndex = 1
 QuestToNpcIdIndex = 2
 QuestRewardIdIndex = 3
 QuestProgressIndex = 4
+
 
 class QuestManagerAI:
     notify = directNotify.newCategory('QuestManagerAI')
@@ -376,26 +377,46 @@ class QuestManagerAI:
         for i in xrange(0, len(avQuests), 5):
             questDesc = avQuests[i : i + 5]
             questClass = Quests.getQuest(questDesc[QuestIdIndex])
+
+            # Check if the Quest isnt already complete
             if questClass.getCompletionStatus(av, questDesc) == Quests.INCOMPLETE:
-                if isinstance(questClass, Quests.CogQuest):
+
+                # Check if we are dealing with a RecoverItemQuest
+                if isinstance(questClass, Quests.RecoverItemQuest):
+
+                    # Iterate through all the Cogs that were killed in the battle
                     for suit in suitsKilled:
-                        if questClass.doesCogCount(av.doId, suit, taskZoneId, suit['activeToons']):
-                            questDesc[QuestProgressIndex] += 1
-                elif isinstance(questClass, Quests.RecoverItemQuest):
-                    if questClass.getHolder() != Quests.AnyFish:
-                        for suit in suitsKilled:
-                            if questClass.doesCogCount(av.doId, suit, taskZoneId, suit['activeToons']):
-                                baseChance = questClass.getPercentChance()
-                                amountRemaining = questClass.getNumItems() - questDesc[QuestProgressIndex]
-                                chance = Quests.calcRecoverChance(amountRemaining, baseChance)
-                                if chance >= baseChance:
-                                    questDesc[QuestProgressIndex] += 1
-                                    recoveredItems.append(questClass.getItem())
-                                else:
-                                    unrecoveredItems.append(questClass.getItem())
+
+                        # Because the RecoveItemQuest class doesn't have a
+                        # function to see if a Cog counts. We need to manually
+                        # check if the Cog is valid for the Quest
+                        if (questClass.getHolder() == Quests.Any) or \
+                            (questClass.getHolderType() == 'type' and \
+                            questClass.getHolder() == suit['type']) or \
+                            (questClass.getHolderType() == 'track' and \
+                            questClass.getHolder() == suit['track']) or \
+                            (questClass.getHolderType() == 'level' and \
+                            questClass.getHolder() <= suit['level']):
+
+                            # It looks like the Cog was valid. Lets see if they
+                            # found what they were looking for.
+                            baseChance = questClass.getPercentChance()
+                            amountRemaining = questClass.getNumItems() - questDesc[QuestProgressIndex]
+                            chance = Quests.calcRecoverChance(amountRemaining, baseChance)
+
+                            # They found it! Give them their reward!
+                            if chance >= baseChance:
+                                questDesc[QuestProgressIndex] += 1
+                                recoveredItems.append(questClass.getItem())
+
+                            # Better luck next time :(
+                            else:
+                                unrecoveredItems.append(questClass.getItem())
+
             questList.append(questDesc)
 
         av.b_setQuests(questList)
+
         return (recoveredItems, unrecoveredItems)
 
     def toonKilledBuilding(self, av, type, difficulty, floors, zoneId, activeToons):
