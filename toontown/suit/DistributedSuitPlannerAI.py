@@ -55,8 +55,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
             if not hasattr(self.__class__, 'CogdoPopAdjusted'):
                 self.__class__.CogdoPopAdjusted = True
                 for index in xrange(len(self.SuitHoodInfo)):
-                    SuitBuildingGlobals[self.zoneId][0] = int(0.5 + self.CogdoPopFactor * SuitBuildingGlobals[self.zoneId][0])
-                    SuitBuildingGlobals[self.zoneId][1] = int(0.5 + self.CogdoPopFactor * SuitBuildingGlobals[self.zoneId][1])
+                    SuitBuildingGlobals.buildingMinMax[self.zoneId][0] = int(0.5 + self.CogdoPopFactor * SuitBuildingGlobals.buildingMinMax[self.zoneId][0])
+                    SuitBuildingGlobals.buildingMinMax[self.zoneId][1] = int(0.5 + self.CogdoPopFactor * SuitBuildingGlobals.buildingMinMax[self.zoneId][1])
         self.hoodInfoIdx = -1
         for index in xrange(len(self.SuitHoodInfo)):
             currHoodInfo = self.SuitHoodInfo[index]
@@ -250,6 +250,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         blockNumber = None
         if self.notify.getDebug():
             self.notify.debug('Choosing origin from %d+%d possibles.' % (len(streetPoints), len(blockNumbers)))
+        if cogdoTakeover is None:
+            cogdoTakeover = random.random() > self.CogdoRatio
         while startPoint == None and len(blockNumbers) > 0:
             bn = random.choice(blockNumbers)
             blockNumbers.remove(bn)
@@ -604,7 +606,12 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                     suitType = SuitDNA.getSuitType(suitName)
                     suitTrack = SuitDNA.getSuitDept(suitName)
                 (suitLevel, suitType, suitTrack) = self.pickLevelTypeAndTrack(None, suitType, suitTrack)
-                building.suitTakeOver(suitTrack, suitLevel, None)
+
+                isCogdo = random.random() > self.CogdoRatio
+                if isCogdo:
+                    building.cogdoTakeOver(suitLevel, None)
+                else:
+                    building.suitTakeOver(suitTrack, suitLevel, None)
 
         # Save the building manager's state:
         self.buildingMgr.save()
