@@ -26,4 +26,4 @@ want-chestnut-park-construction #t
 want-phone-quest #f
 
 # Staff events:
-cfo-staff-event #t
+cfo-staff-event #f
