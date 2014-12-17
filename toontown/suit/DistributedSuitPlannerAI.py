@@ -251,7 +251,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if self.notify.getDebug():
             self.notify.debug('Choosing origin from %d+%d possibles.' % (len(streetPoints), len(blockNumbers)))
         if cogdoTakeover is None:
-            cogdoTakeover = random.random() > self.CogdoRatio
+            cogdoTakeover = random.random() < self.CogdoRatio
         while startPoint == None and len(blockNumbers) > 0:
             bn = random.choice(blockNumbers)
             blockNumbers.remove(bn)
@@ -607,7 +607,7 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
                     suitTrack = SuitDNA.getSuitDept(suitName)
                 (suitLevel, suitType, suitTrack) = self.pickLevelTypeAndTrack(None, suitType, suitTrack)
 
-                isCogdo = random.random() > self.CogdoRatio
+                isCogdo = random.random() < self.CogdoRatio
                 if isCogdo:
                     building.cogdoTakeOver(suitLevel, None)
                 else:
