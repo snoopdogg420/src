@@ -3385,7 +3385,10 @@ dclass TTIFriendsManager : DistributedObjectGlobal {
   receiveTalkWhisper(uint32 fromId, string message);
 
   battleSOS(uint32 toId) clsend;
+  setBattleSOS(uint32 fromId);
+
   teleportGiveup(uint32 toId) clsend;
+  setTeleportGiveup(uint32 fromId);
 
   whisperSCToontaskTo(uint32, uint32, uint32, uint32, uint8) clsend;
   setWhisperSCToontaskFrom(uint32, uint32, uint32, uint32, uint8);

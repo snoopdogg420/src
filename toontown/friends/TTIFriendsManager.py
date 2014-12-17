@@ -121,13 +121,13 @@ class TTIFriendsManager(DistributedObjectGlobal):
     def d_battleSOS(self, toId):
         self.sendUpdate('battleSOS', [toId])
 
-    def battleSOS(self, fromId):
+    def setBattleSOS(self, fromId):
         base.localAvatar.battleSOS(fromId)
 
     def d_teleportGiveup(self, toId):
         self.sendUpdate('teleportGiveup', [toId])
 
-    def teleportGiveup(self, fromId):
+    def setTeleportGiveup(self, fromId):
         base.localAvatar.teleportGiveup(fromId)
 
     def d_whisperSCToontaskTo(self, toId, taskId, toNpcId, toonProgress, msgIndex):
