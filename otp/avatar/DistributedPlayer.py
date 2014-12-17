@@ -400,30 +400,21 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         self.lastFailedTeleportMessage[fromId] = now
         return 1
 
-    def d_teleportResponse(self, avId, available, shardId, hoodId, zoneId, sendToId = None):
-        teleportNotify.debug('sending teleportResponse%s' % ((avId,
-          available,
-          shardId,
-          hoodId,
-          zoneId,
-          sendToId),))
-        self.sendUpdate('teleportResponse', [avId,
-         available,
-         shardId,
-         hoodId,
-         zoneId], sendToId)
+    def d_teleportResponse(self, avId, available, shardId, hoodId, zoneId, sendToId):
+        teleportNotify.debug('sending teleportResponse%s' % ((avId, available,
+            shardId, hoodId, zoneId, sendToId),)
+        )
+
+        base.cr.ttiFriendsManager.d_teleportResponse(sendToId, available,
+            shardId, hoodId, zoneId
+        )
 
     def teleportResponse(self, avId, available, shardId, hoodId, zoneId):
-        teleportNotify.debug('received teleportResponse%s' % ((avId,
-          available,
-          shardId,
-          hoodId,
-          zoneId),))
-        messenger.send('teleportResponse', [avId,
-         available,
-         shardId,
-         hoodId,
-         zoneId])
+        teleportNotify.debug('received teleportResponse%s' % ((avId, available,
+            shardId, hoodId, zoneId),)
+        )
+
+        messenger.send('teleportResponse', [avId, available, shardId, hoodId, zoneId])
 
     def d_teleportGiveup(self, requesterId, sendToId):
         teleportNotify.debug('sending teleportGiveup(%s) to %s' % (requesterId, sendToId))

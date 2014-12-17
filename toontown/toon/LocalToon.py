@@ -1935,25 +1935,6 @@ class LocalToon(DistributedToon.DistributedToon, LocalAvatar.LocalAvatar):
     def doTeleportResponse(self, fromAvatar, toAvatar, avId, available, shardId, hoodId, zoneId, sendToId):
         localAvatar.d_teleportResponse(avId, available, shardId, hoodId, zoneId, sendToId)
 
-    def d_teleportResponse(self, avId, available, shardId, hoodId, zoneId, sendToId = None):
-        if base.config.GetBool('want-tptrack', False):
-            if available == 1:
-                self.notify.debug('sending teleportResponseToAI')
-                self.sendUpdate('teleportResponseToAI', [avId,
-                 available,
-                 shardId,
-                 hoodId,
-                 zoneId,
-                 sendToId])
-            else:
-                self.sendUpdate('teleportResponse', [avId,
-                 available,
-                 shardId,
-                 hoodId,
-                 zoneId], sendToId)
-        else:
-            DistributedPlayer.DistributedPlayer.d_teleportResponse(self, avId, available, shardId, hoodId, zoneId, sendToId)
-
     def startQuestMap(self):
         if self.questMap:
             self.questMap.start()

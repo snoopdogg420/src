@@ -52,9 +52,8 @@ class FriendHandle:
             shardId, hoodId, zoneId),)
         )
 
-        base.localAvatar.sendUpdate('teleportResponse', [avId, available,
-             shardId, hoodId, zoneId],
-             sendToId=self.doId
+        base.cr.ttiFriendsManager.d_teleportResponse(self.doId, available,
+            shardId, hoodId, zoneId
         )
 
     def d_teleportGiveup(self, requesterId):

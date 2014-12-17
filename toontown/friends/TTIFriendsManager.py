@@ -46,21 +46,21 @@ class TTIFriendsManager(DistributedObjectGlobal):
 
     def teleportQuery(self, fromId):
         if not hasattr(base, 'localAvatar'):
-            self.sendUpdate('routeTeleportResponse', [ fromId, 0, 0, 0, 0 ])
+            self.sendUpdate('teleportResponse', [ fromId, 0, 0, 0, 0 ])
             return
         if not hasattr(base.localAvatar, 'getTeleportAvailable') or not hasattr(base.localAvatar, 'ghostMode'):
-            self.sendUpdate('routeTeleportResponse', [ fromId, 0, 0, 0, 0 ])
+            self.sendUpdate('teleportResponse', [ fromId, 0, 0, 0, 0 ])
             return
         if not base.localAvatar.getTeleportAvailable() or base.localAvatar.ghostMode:
             if hasattr(base.cr.identifyFriend(fromId), 'getName'):
                 base.localAvatar.setSystemMessage(fromId, OTPLocalizer.WhisperFailedVisit % base.cr.identifyFriend(fromId).getName())
-            self.sendUpdate('routeTeleportResponse', [ fromId, 0, 0, 0, 0 ])
+            self.sendUpdate('teleportResponse', [ fromId, 0, 0, 0, 0 ])
             return
 
         hoodId = base.cr.playGame.getPlaceId()
         if hasattr(base.cr.identifyFriend(fromId), 'getName'):
             base.localAvatar.setSystemMessage(fromId, OTPLocalizer.WhisperComingToVisit % base.cr.identifyFriend(fromId).getName())
-        self.sendUpdate('routeTeleportResponse', [
+        self.sendUpdate('teleportResponse', [
             fromId,
             base.localAvatar.getTeleportAvailable(),
             base.localAvatar.defaultShard,
@@ -68,7 +68,12 @@ class TTIFriendsManager(DistributedObjectGlobal):
             base.localAvatar.getZoneId()
         ])
 
-    def teleportResponse(self, fromId, available, shardId, hoodId, zoneId):
+    def d_teleportResponse(self, toId, available, shardId, hoodId, zoneId):
+        self.sendUpdate('teleportResponse', [toId, available, shardId,
+            hoodId, zoneId]
+        )
+
+    def setTeleportResponse(self, fromId, available, shardId, hoodId, zoneId):
         base.localAvatar.teleportResponse(fromId, available, shardId, hoodId, zoneId)
 
     def d_whisperSCTo(self, toId, msgIndex):

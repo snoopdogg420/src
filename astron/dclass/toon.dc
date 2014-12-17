@@ -3363,8 +3363,9 @@ dclass TTIFriendsManager : DistributedObjectGlobal {
 
   routeTeleportQuery(uint32 toId) clsend;
   teleportQuery(uint32 fromId);
-  routeTeleportResponse(uint32 fromId, uint8 tpAvailable, uint32 defaultShard, uint32 hoodId, uint32 zoneId) clsend;
-  teleportResponse(uint32 toId, uint8 tpAvailable, uint32 defaultShard, uint32 hoodId, uint32 zoneId);
+
+  teleportResponse(uint32 fromId, uint8 tpAvailable, uint32 defaultShard, uint32 hoodId, uint32 zoneId) clsend;
+  setTeleportResponse(uint32 toId, uint8 tpAvailable, uint32 defaultShard, uint32 hoodId, uint32 zoneId);
 
   whisperSCTo(uint32 toId, uint16 msgIndex) clsend;
   setWhisperSCFrom(uint32 fromId, uint16 msgIndex);

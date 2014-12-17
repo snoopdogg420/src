@@ -273,13 +273,7 @@ class Party(Place.Place):
         self.isPartyEnding = partyState
 
     def handleTeleportQuery(self, fromAvatar, toAvatar):
-        if self.isPartyEnding:
-            teleportNotify.debug('party ending, sending teleportResponse')
-            fromAvatar.d_teleportResponse(toAvatar.doId, 0, toAvatar.defaultShard, base.cr.playGame.getPlaceId(), self.getZoneId())
-        elif base.config.GetBool('want-tptrack', False):
-            if toAvatar == localAvatar:
-                localAvatar.doTeleportResponse(fromAvatar, toAvatar, toAvatar.doId, 1, toAvatar.defaultShard, base.cr.playGame.getPlaceId(), self.getZoneId(), fromAvatar.doId)
-            else:
-                self.notify.warning('handleTeleportQuery toAvatar.doId != localAvatar.doId' % (toAvatar.doId, localAvatar.doId))
-        else:
-            fromAvatar.d_teleportResponse(toAvatar.doId, 1, toAvatar.defaultShard, base.cr.playGame.getPlaceId(), self.getZoneId())
+        fromAvatar.d_teleportResponse(toAvatar.doId, int(not self.isPartyEnding),
+            toAvatar.defaultShard, base.cr.playGame.getPlaceId(),
+            self.getZoneId()
+        )

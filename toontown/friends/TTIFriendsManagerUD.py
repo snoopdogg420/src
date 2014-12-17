@@ -313,10 +313,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         # So we will tell the query sender that the toon is unavailable.
         if fromId in self.tpRequests:
             del self.tpRequests[fromId]
-            self.sendUpdateToAvatarId(fromId, 'teleportResponse', [toId, 0, 0, 0, 0])
+            self.sendUpdateToAvatarId(fromId, 'setTeleportResponse', [toId, 0, 0, 0, 0])
             self.notify.warning('Teleport request that was sent by %d to %d timed out.' % (fromId, toId))
 
-    def routeTeleportResponse(self, toId, available, shardId, hoodId, zoneId):
+    def teleportResponse(self, toId, available, shardId, hoodId, zoneId):
         # Here is where the toId and fromId swap (because we are now sending it back)
         fromId = self.air.getAvatarIdFromSender()
 
@@ -329,7 +329,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         if self.tpRequests.get(toId) != fromId:
             self.air.writeServerEvent('suspicious', fromId, 'toon tried to send teleportResponse for a query that isn\'t theirs!')
             return
-        self.sendUpdateToAvatarId(toId, 'teleportResponse', [fromId, available, shardId, hoodId, zoneId])
+        self.sendUpdateToAvatarId(toId, 'setTeleportResponse', [fromId, available, shardId, hoodId, zoneId])
         del self.tpRequests[toId]
 
     def whisperSCTo(self, toId, msgIndex):
