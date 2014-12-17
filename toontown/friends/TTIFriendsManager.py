@@ -118,8 +118,14 @@ class TTIFriendsManager(DistributedObjectGlobal):
     def submitSecretResponse(self, result, avId):
         messenger.send('submitSecretResponse', [result, avId])
 
-    def d_battleSOS(self, fromId, toId):
-        self.sendUpdate('battleSOS', [fromId, toId])
+    def d_battleSOS(self, toId):
+        self.sendUpdate('battleSOS', [toId])
 
-    def battleSOS(self, fromId, toId):
+    def battleSOS(self, fromId):
         base.localAvatar.battleSOS(fromId)
+
+    def d_teleportGiveup(self, toId):
+        self.sendUpdate('teleportGiveup', [toId])
+
+    def teleportGiveup(self, fromId):
+        base.localAvatar.teleportGiveup(fromId)

@@ -425,19 +425,23 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
          hoodId,
          zoneId])
 
-    def d_teleportGiveup(self, requesterId, sendToId = None):
+    def d_teleportGiveup(self, requesterId, sendToId):
         teleportNotify.debug('sending teleportGiveup(%s) to %s' % (requesterId, sendToId))
-        self.sendUpdate('teleportGiveup', [requesterId], sendToId)
+
+        base.cr.ttiFriendsManager.d_teleportGiveup(sendToId)
 
     def teleportGiveup(self, requesterId):
         teleportNotify.debug('received teleportGiveup(%s)' % (requesterId,))
         avatar = base.cr.identifyAvatar(requesterId)
+
         if not self._isValidWhisperSource(avatar):
             self.notify.warning('teleportGiveup from non-toon %s' % requesterId)
             return
-        if avatar != None:
-            self.setSystemMessage(requesterId, OTPLocalizer.WhisperGiveupVisit % avatar.getName())
-        return
+
+        if avatar is not None:
+            self.setSystemMessage(requesterId,
+                OTPLocalizer.WhisperGiveupVisit % avatar.getName()
+            )
 
     def b_teleportGreeting(self, avId):
         if hasattr(self, 'ghostMode') and self.ghostMode:

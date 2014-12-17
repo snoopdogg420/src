@@ -382,7 +382,7 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         ResistanceChat.doEffect(msgIndex, self, nearbyToons)
 
     def d_battleSOS(self, requesterId, sendToId):
-        self.cr.ttiFriendsManager.d_battleSOS(requesterId, sendToId)
+        self.cr.ttiFriendsManager.d_battleSOS(sendToId)
 
     def battleSOS(self, requesterId):
         avatar = base.cr.identifyAvatar(requesterId)

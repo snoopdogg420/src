@@ -403,6 +403,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
         self.sendUpdateToAvatarId(requester, 'submitSecretResponse', [5, 0])
 
     # -- Other --
-    def battleSOS(self, fromId, toId):
-        self.sendUpdateToAvatarId(toId, 'battleSOS', [fromId, 0])
+    def battleSOS(self, toId):
+        requester = self.air.getAvatarIdFromSender()
+        self.sendUpdateToAvatarId(toId, 'battleSOS', [requester])
 
+    def teleportGiveup(self, toId):
+        requester = self.air.getAvatarIdFromSender()
+        self.sendUpdateToAvatarId(toId, 'teleportGiveup', [requester])
