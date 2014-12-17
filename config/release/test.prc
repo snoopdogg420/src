@@ -11,7 +11,7 @@ shard-mid-pop 150
 want-housing #t
 want-pets #f
 want-parties #f
-want-cogdominiums #f
+want-cogdominiums #t
 want-achievements #f
 boarding-group-merges #t
 

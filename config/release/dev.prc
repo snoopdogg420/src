@@ -22,7 +22,7 @@ dc-file astron/dclass/otp.dc
 # Core features:
 want-pets #f
 want-parties #f
-want-cogdominiums #f
+want-cogdominiums #t
 want-achievements #f
 
 # Chat:
