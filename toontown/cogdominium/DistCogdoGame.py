@@ -11,6 +11,7 @@ from toontown.minigame.MinigameRulesPanel import MinigameRulesPanel
 from toontown.cogdominium.CogdoGameRulesPanel import CogdoGameRulesPanel
 from toontown.minigame import MinigameGlobals
 from toontown.toonbase import TTLocalizer as TTL
+from toontown.hood import ZoneUtil
 
 
 class DistCogdoGame(DistCogdoGameBase, DistributedObject):
@@ -141,11 +142,7 @@ class DistCogdoGame(DistCogdoGameBase, DistributedObject):
         return CogdoGameConsts.getDifficulty(self.getSafezoneId())
 
     def getSafezoneId(self):
-        if self.exteriorZoneOverride is not None:
-            return self.exteriorZoneOverride
-        if hasattr(base, 'cogdoGameSafezoneId'):
-            return CogdoGameConsts.getSafezoneId(base.cogdoGameSafezoneId)
-        return CogdoGameConsts.getSafezoneId(self.exteriorZone)
+        return ZoneUtil.getHoodId(self.zoneId)
 
     def enterNotLoaded(self):
         pass
