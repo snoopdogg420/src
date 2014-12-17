@@ -1,6 +1,9 @@
-from direct.directnotify import DirectNotifyGlobal
 from toontown.cogdominium.DistCogdoLevelGameAI import DistCogdoLevelGameAI
+from toontown.cogdominium import CogdoCraneGameSpec
+
 
 class DistCogdoCraneGameAI(DistCogdoLevelGameAI):
-    notify = DirectNotifyGlobal.directNotify.newCategory("DistCogdoCraneGameAI")
+    notify = directNotify.newCategory('DistCogdoCraneGameAI')
 
+    def getLevelSpec(self):
+        return CogdoCraneGameSpec.levelSpec
