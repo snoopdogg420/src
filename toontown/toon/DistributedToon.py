@@ -585,25 +585,26 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
 
     def whisperSCToontaskTo(self, taskId, toNpcId, toonProgress, msgIndex, sendToId):
         messenger.send('wakeup')
-        self.sendUpdate('setWhisperSCToontaskFrom', [self.doId,
-         taskId,
-         toNpcId,
-         toonProgress,
-         msgIndex], sendToId)
+
+        base.cr.ttiFriendsManager.d_whisperSCToontaskTo(sendToId, taskId,
+            toNpcId, toonProgress, msgIndex
+        )
 
     def setWhisperSCToontaskFrom(self, fromId, taskId, toNpcId, toonProgress, msgIndex):
         sender = base.cr.identifyFriend(fromId)
-        if sender == None:
+        if sender is None:
             return
+
         if not localAvatar.acceptingNonFriendWhispers:
             if not self.isAvFriend(fromId):
                 return
+
         if fromId in self.ignoreList:
             self.d_setWhisperIgnored(fromId)
+
         chatString = TTSCDecoders.decodeTTSCToontaskMsg(taskId, toNpcId, toonProgress, msgIndex)
         if chatString:
             self.displayWhisper(fromId, chatString, WTQuickTalker)
-        return
 
     def setMaxNPCFriends(self, max):
         max &= 32767

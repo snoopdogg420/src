@@ -402,7 +402,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
         self.sendUpdateToAvatarId(requester, 'submitSecretResponse', [5, 0])
 
-    # -- Other --
+    # -- Routes --
     def battleSOS(self, toId):
         requester = self.air.getAvatarIdFromSender()
         self.sendUpdateToAvatarId(toId, 'battleSOS', [requester])
@@ -410,3 +410,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
     def teleportGiveup(self, toId):
         requester = self.air.getAvatarIdFromSender()
         self.sendUpdateToAvatarId(toId, 'teleportGiveup', [requester])
+
+    def whisperSCToontaskTo(self, toId, taskId, toNpcId, toonProgress, msgIndex):
+        requester = self.air.getAvatarIdFromSender()
+
+        self.sendUpdateToAvatarId(toId, 'setWhisperSCToontaskFrom', [requester,
+            taskId, toNpcId, toonProgress, msgIndex]
+        )

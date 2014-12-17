@@ -129,3 +129,13 @@ class TTIFriendsManager(DistributedObjectGlobal):
 
     def teleportGiveup(self, fromId):
         base.localAvatar.teleportGiveup(fromId)
+
+    def d_whisperSCToontaskTo(self, toId, taskId, toNpcId, toonProgress, msgIndex):
+        self.sendUpdate('whisperSCToontaskTo', [toId, taskId, toNpcId,
+            toonProgress, msgIndex]
+        )
+
+    def setWhisperSCToontaskFrom(self, fromId, taskId, toNpcId, toonProgress, msgIndex):
+        base.localAvatar.setWhisperSCToontaskFrom(fromId, taskId, toNpcId,
+            toonProgress, msgIndex
+        )
