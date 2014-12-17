@@ -3389,6 +3389,9 @@ dclass TTIFriendsManager : DistributedObjectGlobal {
 
   whisperSCToontaskTo(uint32, uint32, uint32, uint32, uint8) clsend;
   setWhisperSCToontaskFrom(uint32, uint32, uint32, uint32, uint8);
+
+  sleepAutoReply(uint32 toId) clsend;
+  setSleepAutoReply(uint32 fromId);
 };
 
 

@@ -139,3 +139,9 @@ class TTIFriendsManager(DistributedObjectGlobal):
         base.localAvatar.setWhisperSCToontaskFrom(fromId, taskId, toNpcId,
             toonProgress, msgIndex
         )
+
+    def d_sleepAutoReply(self, toId):
+        self.sendUpdate('sleepAutoReply', [toId])
+
+    def setSleepAutoReply(self, fromId):
+        base.localAvatar.setSleepAutoReply(fromId)

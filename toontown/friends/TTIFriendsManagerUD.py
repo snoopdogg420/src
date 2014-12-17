@@ -413,7 +413,10 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def whisperSCToontaskTo(self, toId, taskId, toNpcId, toonProgress, msgIndex):
         requester = self.air.getAvatarIdFromSender()
-
         self.sendUpdateToAvatarId(toId, 'setWhisperSCToontaskFrom', [requester,
             taskId, toNpcId, toonProgress, msgIndex]
         )
+
+    def sleepAutoReply(self, toId):
+        requester = self.air.getAvatarIdFromSender()
+        self.sendUpdateToAvatarId(toId, 'setSleepAutoReply', [requester])
