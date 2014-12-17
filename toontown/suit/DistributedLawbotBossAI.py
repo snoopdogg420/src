@@ -655,8 +655,7 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
                 toon.b_promote(self.deptIndex)
 
     def giveCogSummonReward(self, toon, prefDeptIndex, prefSummonType):
-        cogLevel = int(self.toonLevels / self.maxToonLevels * SuitDNA.suitsPerDept)
-        cogLevel = min(cogLevel, SuitDNA.suitsPerDept - 1)
+        cogLevel = self.toonLevels - 1
         deptIndex = prefDeptIndex
         summonType = prefSummonType
         hasSummon = toon.hasParticularCogSummons(prefDeptIndex, cogLevel, prefSummonType)
@@ -880,7 +879,8 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
         self.sendUpdate('setBattleDifficulty', [batDiff])
 
     def calcAndSetBattleDifficulty(self):
-        self.b_setBattleDifficulty(self.getToonDifficulty())
+        self.toonLevels = self.getToonDifficulty()
+        self.b_setBattleDifficulty(self.toonLevels)
 
 
 @magicWord(category=CATEGORY_ADMINISTRATOR)
@@ -901,6 +901,7 @@ def skipCJ():
         return "You can't skip this round."
     boss.exitIntroduction()
     boss.b_setState('PrepareBattleThree')
+
 
 @magicWord(category=CATEGORY_ADMINISTRATOR)
 def killCJ():
