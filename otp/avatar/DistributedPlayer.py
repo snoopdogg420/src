@@ -163,15 +163,8 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         return
 
     def whisperSCCustomTo(self, msgIndex, sendToId, toPlayer):
-        if toPlayer:
-            base.cr.playerFriendsManager.sendSCCustomWhisper(sendToId, msgIndex)
-            return
-        if sendToId not in base.cr.doId2do:
-            messenger.send('wakeup')
-            base.cr.ttiFriendsManager.d_whisperSCCustomTo(sendToId, msgIndex)
-            return
         messenger.send('wakeup')
-        self.sendUpdate('setWhisperSCCustomFrom', [self.doId, msgIndex], sendToId)
+        base.cr.ttiFriendsManager.d_whisperSCCustomTo(sendToId, msgIndex)
 
     def _isValidWhisperSource(self, source):
         return True
