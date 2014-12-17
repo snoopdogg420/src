@@ -13,6 +13,7 @@ from toontown.cogdominium.DistributedCogdoElevatorIntAI import DistributedCogdoE
 from toontown.cogdominium.CogdoLayout import CogdoLayout
 import copy
 from toontown.cogdominium.DistCogdoCraneGameAI import DistCogdoCraneGameAI
+from toontown.toon import NPCToons
 
 
 class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
@@ -81,6 +82,9 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
             State.State('Off', self.enterOff, self.exitOff, [
                 'WaitForAllToonsInside'])], 'Off', 'Off', onUndefTransition = ClassicFSM.ClassicFSM.ALLOW)
         self.fsm.enterInitialState()
+
+        interiorZone = elevator.bldg.getExteriorAndInteriorZoneId()[1]
+        self.setShopOwnerNpcId(NPCToons.zone2NpcDict[interiorZone])
 
     def delete(self):
         self.ignoreAll()
@@ -567,3 +571,9 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
 
     def exitReward(self):
         pass
+
+    def setShopOwnerNpcId(self, npcId):
+        self.shopOwnerNpcId = npcId
+
+    def getShopOwnerNpcId(self):
+        return self.shopOwnerNpcId

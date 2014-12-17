@@ -30,6 +30,7 @@ PAINTING_DICT = {'s': 'tt_m_ara_crg_paintingMoverShaker',
  'm': 'tt_m_ara_crg_paintingMoverShaker',
  'c': 'tt_m_ara_crg_paintingMoverShaker'}
 
+
 class DistributedCogdoInterior(DistributedObject.DistributedObject):
     id = 0
     cageHeights = [11.36, 0.01]
@@ -114,9 +115,6 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
 
     def setShopOwnerNpcId(self, npcId):
         self.shopOwnerNpcId = npcId
-
-    def getShopOwnerNpcId(self):
-        return self.shopOwnerNpcId
 
     def setSOSNpcId(self, npcId):
         self.SOSToonName = NPCToons.getNPCName(npcId)
