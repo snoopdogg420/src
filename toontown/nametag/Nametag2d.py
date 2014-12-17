@@ -13,6 +13,7 @@ from toontown.toontowngui.Clickable2d import Clickable2d
 class Nametag2d(Nametag, Clickable2d, MarginVisible):
     CONTENTS_SCALE = 0.25
 
+    CHAT_TEXT_MAX_ROWS = 6
     CHAT_TEXT_WORD_WRAP = 8
 
     CHAT_BALLOON_ALPHA = 0.4
@@ -266,6 +267,24 @@ class Nametag2d(Nametag, Clickable2d, MarginVisible):
         self.contents.setPos(origin)
 
         if self.chatBalloon is not None:
+            self.chatBalloon.removeNode()
+            self.chatBalloon = None
+
+            self.contents.node().removeAllChildren()
+
+            if (self.cell in base.leftCells) or (self.cell in base.rightCells):
+                text = self.getChatText().replace('\x01WLDisplay\x01', '').replace('\x02', '')
+                textWidth = self.chatTextNode.calcWidth(text)
+                if (textWidth / self.CHAT_TEXT_WORD_WRAP) > self.CHAT_TEXT_MAX_ROWS:
+                    self.chatTextNode.setWordwrap(textWidth / (self.CHAT_TEXT_MAX_ROWS-0.5))
+            else:
+                self.chatTextNode.setWordwrap(self.CHAT_TEXT_WORD_WRAP)
+
+            model = self.getChatBalloonModel()
+            modelWidth = self.getChatBalloonWidth()
+            modelHeight = self.getChatBalloonHeight()
+            self.drawChatBalloon(model, modelWidth, modelHeight)
+
             nodePath = self.chatBalloon.textNodePath
 
             left, right, bottom, top = self.chatTextNode.getFrameActual()
