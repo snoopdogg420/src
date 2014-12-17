@@ -12,12 +12,9 @@ class DistCogdoMazeGameAI(DistributedMinigameAI, FSM):
     TIMER_EXPIRED_TASK_NAME = 'CogdoMazeGameTimerExpired'
 
     def __init__(self, air, id):
-        try:
-            self.DistMazeCogdoGameAI_initialized
-        except:
-            self.DistMazeCogdoGameAI_initialized = 1
-            DistributedMinigameAI.__init__(self, air, id)
-            self.toonsInDoor = []
+        DistributedMinigameAI.__init__(self, air, id)
+
+        self.toonsInDoor = []
 
     def delete(self):
         DistributedMinigameAI.delete(self)
@@ -72,7 +69,6 @@ class DistCogdoMazeGameAI(DistributedMinigameAI, FSM):
     def setExpectedAvatars(self, avIds):
         DistributedMinigameAI.setExpectedAvatars(self, avIds)
         self._initLocks()
-
 
     def areAllPlayersReady(self):
         for state in self.stateDict.values():
@@ -144,3 +140,7 @@ class DistCogdoMazeGameAI(DistributedMinigameAI, FSM):
 
     def exitPlay(self):
         taskMgr.remove(self.taskName(DistCogdoMazeGameAI.TIMER_EXPIRED_TASK_NAME))
+
+    def getInteriorId(self):
+        return self.zoneId
+

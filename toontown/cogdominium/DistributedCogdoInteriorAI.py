@@ -90,8 +90,7 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
                 'WaitForAllToonsInside'])], 'Off', 'Off', onUndefTransition = ClassicFSM.ClassicFSM.ALLOW)
         self.fsm.enterInitialState()
 
-        interiorZone = elevator.bldg.getExteriorAndInteriorZoneId()[1]
-        self.setShopOwnerNpcId(NPCToons.zone2NpcDict[interiorZone][0])
+        self.setShopOwnerNpcId(NPCToons.zone2NpcDict[self.zoneId][0])
 
     def delete(self):
         self.ignoreAll()
