@@ -14,7 +14,7 @@ from toontown.catalog import CatalogFlooringItem
 from toontown.catalog import CatalogMouldingItem
 from toontown.catalog import CatalogWainscotingItem
 from toontown.dna.DNAParser import DNADoor
-WindowPlugNames = ('**/windowcut_c*', '**/windowcut_e*')
+WindowPlugNames = ('**/windowcut_a*', '**/windowcut_b*', '**/windowcut_c*', '**/windowcut_d*', '**/windowcut_e*', '**/windowcut_f*')
 RoomNames = ('**/group2', '**/group1')
 WallNames = ('ceiling*', 'wall_side_middle*', 'wall_front_middle*', 'windowcut_*')
 MouldingNames = ('wall_side_top*', 'wall_front_top*')
@@ -78,13 +78,13 @@ class DistributedHouseInterior(DistributedObject.DistributedObject):
             else:
                 viewBase = plugNodes[0].getParent().attachNewNode('view')
                 viewBase.setTransform(plugNodes[0].getTransform())
-                plug = plugNodes[1].getParent().attachNewNode('plug')
+                plug = plugNodes[0].getParent().attachNewNode('plug')
                 plugNodes.reparentTo(plug)
                 plug.flattenLight()
                 self.windowSlots.append((plug, viewBase))
 
-        self.windowSlots[0][0].setPosHpr(16.0, -12.0, 5.51, -90, 0, 0)
-        self.windowSlots[1][0].setPosHpr(-12.0, 26.0, 5.51, 0, 0, 0)
+        self.windowSlots[2][1].setPosHpr(16.0, -12.0, 5.51, -90, 0, 0)
+        self.windowSlots[4][1].setPosHpr(-12.0, 26.0, 5.51, 0, 0, 0)
         self.__colorWalls()
         self.__setupWindows()
         messenger.send('houseInteriorLoaded-%d' % self.zoneId)
@@ -137,20 +137,24 @@ class DistributedHouseInterior(DistributedObject.DistributedObject):
             node.setColorScale(*(HouseGlobals.archWood + (1,)))
 
     def __setupWindows(self):
+        for plug, viewBase in self.windowSlots:
+            if plug:
+                plug.show()
+            if viewBase:
+                viewBase.getChildren().detach()
+
         if not self.windows:
             self.notify.info('No windows in interior; returning.')
             return
-        for plug, viewBase in self.windowSlots:
-            for item in self.windows:
-                if plug:
-                    plug.hide()
-                if viewBase:
-                    model = item.loadModel()
-                    model.setPos(plug.getPos())
-                    model.setHpr(plug.getHpr())
-                    model.reparentTo(self.interior)
-                    if self.exteriorWindowsHidden:
-                        model.findAllMatches('**/outside').stash()
+        for item in self.windows:
+            plug, viewBase = self.windowSlots[item.placement]
+            if plug:
+                plug.hide()
+            if viewBase:
+                model = item.loadModel()
+                model.reparentTo(viewBase)
+                if self.exteriorWindowsHidden:
+                    model.findAllMatches('**/outside').stash()
                     
     def hideExteriorWindows(self):
         self.exteriorWindowsHidden = 1

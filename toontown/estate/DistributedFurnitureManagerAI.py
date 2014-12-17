@@ -108,7 +108,7 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
                 hasCloset = True
                 break
 
-        if not hasCloset:
+        if not hasCloset and self.ownerId != 0:
             item = CatalogFurnitureItem(500)  # the basic closet...
             item.posHpr = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
             items.append(item)
@@ -330,32 +330,34 @@ class DistributedFurnitureManagerAI(DistributedObjectAI):
         pass
 
     def moveWallpaperFromAttic(self, index, room):
-        return ToontownGlobals.FM_InvalidIndex
-
         retcode = ToontownGlobals.FM_SwappedItem
         wallpaper = self.getAtticFurniture(self.atticWallpaper, index)
         if wallpaper is None:
             self.air.writeServerEvent('suspicious', avId=self.air.getAvatarIdFromSender(), issue='Invalid wallpaper at index %s' % index)
             return ToontownGlobals.FM_InvalidIndex
+
         if room > 1:
             self.air.writeServerEvent('suspicious', avId=self.air.getAvatarIdFromSender(), issue='Tried to apply a wallpaper in an invalid room %d!' % room)
             return ToontownGlobals.FM_InvalidItem
-        interiorIndex = room + wallpaper.getSurfaceType()
-        interiorIndex += wallpaper.getSurfaceType() - 1
-        print room
-        print interiorIndex
+        interiorIndex = room*4
+        if isinstance(wallpaper, CatalogMouldingItem):
+            interiorIndex += 1
+        elif isinstance(wallpaper, CatalogFlooringItem):
+            interiorIndex += 2
+        elif isinstance(wallpaper, CatalogWainscotingItem):
+            interiorIndex += 3
         atticIndex = self.atticWallpaper.index(wallpaper)
         self.atticWallpaper[atticIndex] = self.wallpaper[interiorIndex]
         self.d_setAtticWallpaper(self.getAtticWallpaper())
         self.wallpaper[interiorIndex] = wallpaper
         self.applyWallpaper()
+
         return retcode
 
     def deleteWallpaperFromAttic(self, blob, index):
-        return # TODO
-
         wallpaper = self.getAtticFurniture(blob, index)
-        self.atticWallpaper.remove(wallpaper)
+        if wallpaper in self.atticWallpaper:
+            self.atticWallpaper.remove(wallpaper)
         self.b_setAtticWallpaper(self.getAtticWallpaper())
 
     def moveWindowToAttic(self, slot):

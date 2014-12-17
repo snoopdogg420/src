@@ -180,6 +180,15 @@ class LoadEstateFSM(FSM):
         if self.state != 'CreateEstate':
             return # We must have aborted or something...
         self.estateId = estateId
+
+        # Update our account so we can store this new estate object.
+        self.mgr.air.dbInterface.updateObject(
+            self.mgr.air.dbId,
+            self.accountId,
+            self.mgr.air.dclassesByName['AccountAI'],
+            { 'ESTATE_ID': estateId }
+        )
+
         self.demand('LoadEstate')
 
     def enterLoadEstate(self):
@@ -192,6 +201,9 @@ class LoadEstateFSM(FSM):
 
     def __gotEstate(self, estate):
         self.estate = estate
+        
+        self.estate.toons = self.toonIds
+        self.estate.updateToons()
 
         # Gotcha! Now we need to load houses:
         self.demand('LoadHouses')
