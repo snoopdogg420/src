@@ -84,7 +84,7 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         self.fsm.enterInitialState()
 
         interiorZone = elevator.bldg.getExteriorAndInteriorZoneId()[1]
-        self.setShopOwnerNpcId(NPCToons.zone2NpcDict[interiorZone])
+        self.setShopOwnerNpcId(NPCToons.zone2NpcDict[interiorZone][0])
 
     def delete(self):
         self.ignoreAll()
