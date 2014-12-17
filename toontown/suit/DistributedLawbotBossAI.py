@@ -20,6 +20,8 @@ from toontown.suit import DistributedLawbotBossSuitAI
 from toontown.coghq import DistributedLawbotCannonAI
 from toontown.coghq import DistributedLawbotChairAI
 from toontown.toonbase import ToontownBattleGlobals
+import math
+
 
 class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM):
     notify = DirectNotifyGlobal.directNotify.newCategory('DistributedLawbotBossAI')
@@ -516,24 +518,17 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
         self.numToonsAtStart = len(self.involvedToons)
 
     def getToonDifficulty(self):
-        highestCogSuitLevel = 0
-        totalCogSuitLevels = 0.0
-        totalNumToons = 0.0
+        totalCogSuitTier = 0
+        totalToons = 0
+
         for toonId in self.involvedToons:
             toon = simbase.air.doId2do.get(toonId)
             if toon:
-                toonLevel = toon.getNumPromotions(self.dept)
-                totalCogSuitLevels += toonLevel
-                totalNumToons += 1
-                if toon.cogLevels > highestCogSuitLevel:
-                    highestCogSuitLevel = toonLevel
+                totalToons += 1
+                totalCogSuitTier += toon.cogTypes[1]
 
-        if not totalNumToons:
-            totalNumToons = 1.0
-        averageLevel = totalCogSuitLevels / totalNumToons
-        self.notify.debug('toons average level = %f, highest level = %d' % (averageLevel, highestCogSuitLevel))
-        retval = min(averageLevel, self.maxToonLevels)
-        return retval
+        averageTier = math.floor(totalCogSuitTier / totalToons) + 1
+        return int(averageTier)
 
     def __saySomething(self, task = None):
         index = None
@@ -874,8 +869,6 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
             self.weightPerToon[toonId] = newWeight
             self.notify.debug('toon %d has weight of %d' % (toonId, newWeight))
 
-        return
-
     def b_setBattleDifficulty(self, batDiff):
         self.setBattleDifficulty(batDiff)
         self.d_setBattleDifficulty(batDiff)
@@ -887,12 +880,8 @@ class DistributedLawbotBossAI(DistributedBossCogAI.DistributedBossCogAI, FSM.FSM
         self.sendUpdate('setBattleDifficulty', [batDiff])
 
     def calcAndSetBattleDifficulty(self):
-        self.toonLevels = self.getToonDifficulty()
-        numDifficultyLevels = len(ToontownGlobals.LawbotBossDifficultySettings)
-        battleDifficulty = int(self.toonLevels / self.maxToonLevels * numDifficultyLevels)
-        if battleDifficulty >= numDifficultyLevels:
-            battleDifficulty = numDifficultyLevels - 1
-        self.b_setBattleDifficulty(battleDifficulty)
+        self.b_setBattleDifficulty(self.getToonDifficulty())
+
 
 @magicWord(category=CATEGORY_ADMINISTRATOR)
 def skipCJ():
