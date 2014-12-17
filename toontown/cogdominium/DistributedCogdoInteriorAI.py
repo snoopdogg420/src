@@ -13,11 +13,16 @@ from toontown.cogdominium.DistributedCogdoElevatorIntAI import DistributedCogdoE
 from toontown.cogdominium.CogdoLayout import CogdoLayout
 import copy
 from toontown.cogdominium.DistCogdoCraneGameAI import DistCogdoCraneGameAI
+from toontown.cogdominium.DistCogdoMazeGameAI import DistCogdoMazeGameAI
+from toontown.cogdominium.DistCogdoFlyingGameAI import DistCogdoFlyingGameAI
 from toontown.toon import NPCToons
 
 
 class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
     notify = directNotify.newCategory('DistributedCogoInteriorAI')
+    MAZE_GAME = 1
+    CRANE_GAME = 2
+    FLYING_GAME = 3
 
     def __init__(self, air, elevator):
         DistributedObjectAI.DistributedObjectAI.__init__(self, air)
@@ -52,6 +57,8 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         self.ignoreElevatorDone = 0
         self.ignoreReserveJoinDone = 0
         self.toonIds = copy.copy(elevator.seats)
+
+        self.gameType = self.MAZE_GAME
 
         for toonId in self.toonIds:
             if toonId is not None:
@@ -334,7 +341,13 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
                     if toon:
                         self.accept(toon.getGoneSadMessage(), Functor(self._handleToonWentSad, toonId))
 
-            game = DistCogdoCraneGameAI(self.air, self)
+            if self.gameType == self.MAZE_GAME:
+                game = DistCogdoMazeGameAI(self.air, self)
+            elif self.gameType == self.CRANE_GAME:
+                game = DistCogdoCraneGameAI(self.air, self)
+            elif self.gameType == self.FLYING_GAME:
+                game = DistCogdoFlyingGameAI(self.air, self)
+
             game.generateWithRequired(self.zoneId)
 
         return game
