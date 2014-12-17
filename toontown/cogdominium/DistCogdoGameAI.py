@@ -16,11 +16,15 @@ class DistCogdoGameAI(DistributedObjectAI):
         DistributedObjectAI.__init__(self, air)
 
         self._interior = interior
+        self.difficultyOverrides = [0, 0]
+
         self.loadFSM = ClassicFSM.ClassicFSM('DistCogdoGameAI.loaded', [
             State.State('NotLoaded', self.enterNotLoaded, self.exitNotLoaded, [
                 'Loaded']),
             State.State('Loaded', self.enterLoaded, self.exitLoaded, [
                 'NotLoaded'])], 'NotLoaded', 'NotLoaded')
+        self.loadFSM.enterInitialState()
+
         self.fsm = ClassicFSM.ClassicFSM('DistCogdoGameAI', [
             State.State('Intro', self.enterIntro, self.exitIntro, [
                 'Game']),
@@ -30,6 +34,7 @@ class DistCogdoGameAI(DistributedObjectAI):
                 'Off']),
             State.State('Off', self.enterOff, self.exitOff, [
                 'Intro'])], 'Off', 'Off')
+        self.fsm.enterInitialState()
 
     def generate(self):
         DistributedObjectAI.generate(self)
@@ -40,12 +45,17 @@ class DistCogdoGameAI(DistributedObjectAI):
     def getInteriorId(self):
         return self._interior.doId
 
+    def getExteriorZone(self):
+        return self._interior.extZoneId
+
+    def getDifficultyOverrides(self):
+        return self.difficultyOverrides
+
     def getToonIds(self):
         toonIds = []
         for toonId in self._interior.getToons()[0]:
             if toonId:
                 toonIds.append(toonId)
-
         return toonIds
 
     def getNumPlayers(self):

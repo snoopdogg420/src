@@ -11,7 +11,7 @@ from toontown.minigame.MinigameRulesPanel import MinigameRulesPanel
 from toontown.cogdominium.CogdoGameRulesPanel import CogdoGameRulesPanel
 from toontown.minigame import MinigameGlobals
 from toontown.toonbase import TTLocalizer as TTL
-SCHELLGAMES_DEV = __debug__ and base.config.GetBool('schellgames-dev', False)
+
 
 class DistCogdoGame(DistCogdoGameBase, DistributedObject):
     notify = directNotify.newCategory('DistCogdoGame')
@@ -229,12 +229,10 @@ class DistCogdoGame(DistCogdoGameBase, DistributedObject):
         return self._startTime
 
     def enterGame(self):
-        if SCHELLGAMES_DEV:
-            self.acceptOnce('escape', messenger.send, ['magicWord', ['~endgame']])
+        pass
 
     def exitGame(self):
-        if SCHELLGAMES_DEV:
-            self.ignore('escape')
+        pass
 
     def setGameFinish(self, timestamp):
         self._finishTime = globalClockDelta.networkToLocalTime(timestamp)

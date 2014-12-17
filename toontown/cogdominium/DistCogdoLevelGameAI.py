@@ -26,9 +26,6 @@ class DistCogdoLevelGameAI(DistributedLevelAI, DistCogdoGameAI):
         DistCogdoGameAI.generate(self)
         self.startHandleEdits()
 
-    def requestDelete(self):
-        DistCogdoGameAI.requestDelete(self)
-
     def delete(self):
         self.stopHandleEdits()
         DistCogdoGameAI.delete(self)

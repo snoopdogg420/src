@@ -1,3 +1,8 @@
+from toontown.cogdominium.DistCogdoCraneGameAI import DistCogdoCraneGameAI
+from toontown.cogdominium.DistCogdoMazeGameAI import DistCogdoMazeGameAI
+from toontown.cogdominium.DistCogdoFlyingGameAI import DistCogdoFlyingGameAI
+from toontown.cogdominium import CogdoGameConsts
+
 from toontown.toonbase.ToontownBattleGlobals import *
 from otp.ai.AIBaseGlobal import *
 from direct.distributed.ClockDelta import *
@@ -12,22 +17,17 @@ from direct.task import Timer
 from toontown.cogdominium.DistributedCogdoElevatorIntAI import DistributedCogdoElevatorIntAI
 from toontown.cogdominium.CogdoLayout import CogdoLayout
 import copy
-from toontown.cogdominium.DistCogdoCraneGameAI import DistCogdoCraneGameAI
-from toontown.cogdominium.DistCogdoMazeGameAI import DistCogdoMazeGameAI
-from toontown.cogdominium.DistCogdoFlyingGameAI import DistCogdoFlyingGameAI
+
 from toontown.toon import NPCToons
 
 
 class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
     notify = directNotify.newCategory('DistributedCogoInteriorAI')
-    MAZE_GAME = 1
-    CRANE_GAME = 2
-    FLYING_GAME = 3
 
-    def __init__(self, air, elevator):
+    def __init__(self, air, elevator, gameType=CogdoGameConsts.MazeGame):
         DistributedObjectAI.DistributedObjectAI.__init__(self, air)
 
-        (self.extZoneId, self.zoneId) = elevator.bldg.getExteriorAndInteriorZoneId()
+        self.extZoneId, self.zoneId = elevator.bldg.getExteriorAndInteriorZoneId()
         self._numFloors = elevator.bldg.planner.numFloors
         self.layout = elevator.bldg._cogdoLayout
         self.avatarExitEvents = []
@@ -58,7 +58,7 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         self.ignoreReserveJoinDone = 0
         self.toonIds = copy.copy(elevator.seats)
 
-        self.gameType = self.MAZE_GAME
+        self.gameType = gameType
 
         for toonId in self.toonIds:
             if toonId is not None:
@@ -90,7 +90,8 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
                 'WaitForAllToonsInside'])], 'Off', 'Off', onUndefTransition = ClassicFSM.ClassicFSM.ALLOW)
         self.fsm.enterInitialState()
 
-        self.setShopOwnerNpcId(NPCToons.zone2NpcDict[self.zoneId][0])
+        npcId = NPCToons.zone2NpcDict.get(self.zoneId, [0])[0]
+        self.setShopOwnerNpcId(npcId)
 
     def delete(self):
         self.ignoreAll()
@@ -336,16 +337,18 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         if not self.isBossFloor(self.currentFloor):
             for toonId in self.toonIds:
                 if toonId:
-                    toon = self.air.getDo(toonId)
+                    toon = self.air.doId2do.get(toonId)
                     if toon:
                         self.accept(toon.getGoneSadMessage(), Functor(self._handleToonWentSad, toonId))
 
-            if self.gameType == self.MAZE_GAME:
+            if self.gameType == CogdoGameConsts.MazeGame:
                 game = DistCogdoMazeGameAI(self.air, self)
-            elif self.gameType == self.CRANE_GAME:
+            elif self.gameType == CogdoGameConsts.CraneGame:
                 game = DistCogdoCraneGameAI(self.air, self)
-            elif self.gameType == self.FLYING_GAME:
+            elif self.gameType == CogdoGameConsts.FlyingGame:
                 game = DistCogdoFlyingGameAI(self.air, self)
+            elif self.gameType == CogdoGameConsts.BoardroomGame:
+                game = DistCogdoBoardroomGameAI(self.air, self)
 
             game.generateWithRequired(self.zoneId)
 
@@ -399,11 +402,13 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         pass
 
     def __createFloorBattle(self):
-        if self.isBossFloor(self.currentFloor):
-            bossBattle = 1
-        else:
-            bossBattle = 0
-        self.battle = DistributedBattleBldgAI.DistributedBattleBldgAI(self.air, self.zoneId, self.__handleRoundDone, self.__handleBattleDone, bossBattle = bossBattle)
+        bossBattle = self.isBossFloor(self.currentFloor)
+
+        self.battle = DistributedBattleBldgAI.DistributedBattleBldgAI(self.air,
+            self.zoneId, self.__handleRoundDone, self.__handleBattleDone,
+            bossBattle=bossBattle
+        )
+
         self.battle.suitsKilled = self.suitsKilled
         self.battle.suitsKilledPerFloor = self.suitsKilledPerFloor
         self.battle.battleCalc.toonSkillPtsGained = self.toonSkillPtsGained
@@ -416,6 +421,7 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         self.battle.helpfulToons = self.helpfulToons
         self.battle.setInitialMembers(self.toons, self.suits)
         self.battle.generateWithRequired(self.zoneId)
+
         mult = getCreditMultiplier(self.currentFloor)
         if self.air.suitInvasionManager.getInvading():
             mult *= getInvasionMultiplier()

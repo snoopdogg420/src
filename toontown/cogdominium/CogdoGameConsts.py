@@ -1,5 +1,7 @@
 from toontown.minigame.MinigameGlobals import getSafezoneId, DifficultyOverrideMult, QuantizeDifficultyOverride, NoDifficultyOverride, getDifficulty
 from toontown.minigame.MinigameGlobals import NoTrolleyZoneOverride as NoExteriorZoneOverride
+
+
 MaxPlayers = 4
 MessageLabelBlinkTime = 0.25
 MessageLabelFadeTime = 0.25
@@ -11,3 +13,7 @@ LaffRewardRange = 112
 LaffPenalty = 50
 PenthouseElevatorInPath = '**/elevatorIN_node'
 PenthouseElevatorOutPath = '**/elevatorOUT_node'
+MazeGame = 0
+CraneGame = 1
+FlyingGame = 2
+BoardroomGame = 3

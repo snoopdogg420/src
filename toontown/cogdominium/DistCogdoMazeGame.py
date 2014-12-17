@@ -14,8 +14,6 @@ class DistCogdoMazeGame(DistCogdoGame, DistCogdoMazeGameBase):
         DistCogdoGame.__init__(self, cr)
         self.game = CogdoMazeGame(self)
         self._numSuits = (0, 0, 0)
-        if __debug__ and base.config.GetBool('schellgames-dev', True):
-            self.accept('onCodeReload', self.__sgOnCodeReload)
 
     def delete(self):
         del self.randomNumGen
