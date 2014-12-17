@@ -1,5 +1,15 @@
 from direct.showbase import PythonUtil
 from pandac.PandaModules import VBase4
+
+
+class CogdoMazeLockInfo:
+    def __init__(self, toonId, tileX, tileY, locked = True):
+        self.toonId = toonId
+        self.locked = locked
+        self.tileX = tileX
+        self.tileY = tileY
+
+
 GameActions = PythonUtil.Enum(('EnterDoor',
  'RevealDoor',
  'OpenDoor',
