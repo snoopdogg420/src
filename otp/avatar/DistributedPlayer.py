@@ -189,16 +189,8 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         return
 
     def whisperSCEmoteTo(self, emoteId, sendToId, toPlayer):
-        print 'whisperSCEmoteTo %s %s %s' % (emoteId, sendToId, toPlayer)
-        if toPlayer:
-            base.cr.playerFriendsManager.sendSCEmoteWhisper(sendToId, emoteId)
-            return
-        if sendToId not in base.cr.doId2do:
-            messenger.send('wakeup')
-            base.cr.ttiFriendsManager.d_whisperSCEmoteTo(sendToId, emoteId)
-            return
         messenger.send('wakeup')
-        self.sendUpdate('setWhisperSCEmoteFrom', [self.doId, emoteId], sendToId)
+        base.cr.ttiFriendsManager.d_whisperSCEmoteTo(sendToId, emoteId)
 
     def setWhisperSCEmoteFrom(self, fromId, emoteId):
         handle = base.cr.identifyAvatar(fromId)
