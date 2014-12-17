@@ -17,7 +17,7 @@ class DistributedFurnitureItemAI(DistributedSmoothNodeAI):
 
     def announceGenerate(self):
         x, y, z, h, p, r = self.catalogItem.posHpr
-        self.b_setPosHpr(x, y, z, h, p, r)
+        self.b_setPosHpr(x, y, z, h, 0, 0)
 
     def getItem(self):
         return (self.furnitureMgr.doId, self.catalogItem.getBlob(CatalogItem.Customization))
@@ -28,7 +28,7 @@ class DistributedFurnitureItemAI(DistributedSmoothNodeAI):
             self.air.writeServerEvent('suspicious', avId=senderId, issue='DistributedFurnitureItemAI.requestPosHpr Tried to move furniture without being the director!')
             return
 
-        self.catalogItem.posHpr = x, y, z, h, p, r
+        self.catalogItem.posHpr = x, y, z, h, 0, 0
 
         if not final and self.mode != HouseGlobals.FURNITURE_MODE_START:
             self.b_setMode(HouseGlobals.FURNITURE_MODE_START, senderId)
@@ -36,7 +36,7 @@ class DistributedFurnitureItemAI(DistributedSmoothNodeAI):
             self.b_setMode(HouseGlobals.FURNITURE_MODE_STOP, 0)
             return
 
-        self.sendUpdate('setSmPosHpr', [x, y, z, h, p, r, t])
+        self.sendUpdate('setSmPosHpr', [x, y, z, h, 0, 0, t])
 
     def setMode(self, mode, avId):
         self.mode = mode
@@ -44,7 +44,7 @@ class DistributedFurnitureItemAI(DistributedSmoothNodeAI):
 
         if mode == HouseGlobals.FURNITURE_MODE_STOP:
             x, y, z, h, p, r = self.catalogItem.posHpr
-            self.b_setPosHpr(x, y, z, h, p, r)
+            self.b_setPosHpr(x, y, z, h, 0, 0)
 
     def d_setMode(self, mode, avId):
         self.sendUpdate('setMode', [mode, avId])

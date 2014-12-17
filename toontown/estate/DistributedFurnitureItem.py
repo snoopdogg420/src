@@ -94,14 +94,7 @@ class DistributedFurnitureItem(DistributedHouseItem.DistributedHouseItem, Distri
 
     def sendRequestPosHpr(self, final, x, y, z, h, p, r):
         t = globalClockDelta.getFrameNetworkTime()
-        self.sendUpdate('requestPosHpr', (final,
-         x,
-         y,
-         z,
-         h,
-         p,
-         r,
-         t))
+        self.sendUpdate('requestPosHpr', (final, x, y, z, h, 0, 0, t))
 
     def setMode(self, mode, avId):
         if mode == HouseGlobals.FURNITURE_MODE_START:
@@ -122,12 +115,7 @@ class DistributedFurnitureItem(DistributedHouseItem.DistributedHouseItem, Distri
         else:
             pos = self.getPos(self.transmitRelativeTo)
             hpr = self.getHpr(self.transmitRelativeTo)
-        return (pos[0],
-         pos[1],
-         pos[2],
-         hpr[0],
-         hpr[1],
-         hpr[2])
+        return (pos[0], pos[1], pos[2], hpr[0], 0, 0)
 
     def __comparePosHpr(self, a, b, threshold):
         for i in xrange(len(a)):
