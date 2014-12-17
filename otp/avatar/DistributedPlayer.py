@@ -143,14 +143,8 @@ class DistributedPlayer(DistributedAvatar.DistributedAvatar, PlayerBase.PlayerBa
         print 'WhisperPlayer type %s from %s: %s' % (whisperType, playerId, chatString)
 
     def whisperSCTo(self, msgIndex, sendToId, toPlayer):
-        if toPlayer:
-            base.cr.playerFriendsManager.sendSCWhisper(sendToId, msgIndex)
-        elif sendToId not in base.cr.doId2do:
-            messenger.send('wakeup')
-            base.cr.ttiFriendsManager.d_whisperSCTo(sendToId, msgIndex)
-        else:
-            messenger.send('wakeup')
-            self.sendUpdate('setWhisperSCFrom', [self.doId, msgIndex], sendToId)
+        messenger.send('wakeup')
+        base.cr.ttiFriendsManager.d_whisperSCTo(sendToId, msgIndex)
 
     def setWhisperSCFrom(self, fromId, msgIndex):
         handle = base.cr.identifyAvatar(fromId)
