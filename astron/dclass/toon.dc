@@ -3385,6 +3385,7 @@ dclass TTIFriendsManager : DistributedObjectGlobal {
   sendTalkWhisper(uint32 toId, string message) clsend;
   receiveTalkWhisper(uint32 fromId, string message);
 
+  battleSOS(uint32 fromId, uint32 toId) clsend;
 };
 
 

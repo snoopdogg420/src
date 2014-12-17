@@ -3,7 +3,6 @@ from otp.otpbase import OTPLocalizer
 from toontown.hood import ZoneUtil
 
 class TTIFriendsManager(DistributedObjectGlobal):
-
     def d_removeFriend(self, friendId):
         self.sendUpdate('removeFriend', [friendId])
 
@@ -119,3 +118,8 @@ class TTIFriendsManager(DistributedObjectGlobal):
     def submitSecretResponse(self, result, avId):
         messenger.send('submitSecretResponse', [result, avId])
 
+    def d_battleSOS(self, fromId, toId):
+        self.sendUpdate('battleSOS', [fromId, toId])
+
+    def battleSOS(self, fromId, toId):
+        base.localAvatar.battleSOS(fromId)

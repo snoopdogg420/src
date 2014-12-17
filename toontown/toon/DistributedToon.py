@@ -381,16 +381,19 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
             self.setChatAbsolute(chatString, CFSpeech | CFTimeout)
         ResistanceChat.doEffect(msgIndex, self, nearbyToons)
 
-    def d_battleSOS(self, requesterId, sendToId = None):
-        self.sendUpdate('battleSOS', [requesterId], sendToId)
+    def d_battleSOS(self, requesterId, sendToId):
+        self.cr.ttiFriendsManager.d_battleSOS(requesterId, sendToId)
 
     def battleSOS(self, requesterId):
         avatar = base.cr.identifyAvatar(requesterId)
-        if isinstance(avatar, DistributedToon) or isinstance(avatar, FriendHandle.FriendHandle):
-            self.setSystemMessage(requesterId, TTLocalizer.MovieSOSWhisperHelp % avatar.getName(), whisperType=WTBattleSOS)
-        elif avatar is not None:
+
+        if isinstance(avatar, (DistributedToon, FriendHandle.FriendHandle)):
+            self.setSystemMessage(requesterId,
+                TTLocalizer.MovieSOSWhisperHelp % avatar.getName(),
+                whisperType=WTBattleSOS
+            )
+        elif avatar:
             self.notify.warning('got battleSOS from non-toon %s' % requesterId)
-        return
 
     def getDialogueArray(self, *args):
         if hasattr(self, 'animalSound'):

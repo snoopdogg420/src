@@ -194,6 +194,7 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
 
     def announceGenerate(self):
         DistributedObjectGlobalUD.announceGenerate(self)
+
         self.onlineToons = []
         self.tpRequests = {}
         self.whisperRequests = {}
@@ -400,3 +401,8 @@ class TTIFriendsManagerUD(DistributedObjectGlobalUD):
             return
 
         self.sendUpdateToAvatarId(requester, 'submitSecretResponse', [5, 0])
+
+    # -- Other --
+    def battleSOS(self, fromId, toId):
+        self.sendUpdateToAvatarId(toId, 'battleSOS', [fromId, 0])
+

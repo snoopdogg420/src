@@ -3,8 +3,8 @@ from toontown.toonbase import ToontownGlobals
 import copy
 from toontown.chat import ToonChatGarbler
 
-class FriendHandle:
 
+class FriendHandle:
     def __init__(self, doId, name, style, petId, isAPet = False):
         self.doId = doId
         self.style = style
@@ -40,7 +40,7 @@ class FriendHandle:
         return idString + '-' + str(self.getDoId())
 
     def d_battleSOS(self, requesterId):
-        base.localAvatar.sendUpdate('battleSOS', [requesterId], sendToId=self.doId)
+        base.cr.ttiFriendsManager.d_battleSOS(requesterId, self.doId)
 
     def d_teleportQuery(self, requesterId):
         teleportNotify.debug('sending d_teleportQuery(%s)' % (requesterId,))
