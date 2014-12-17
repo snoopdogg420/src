@@ -115,6 +115,9 @@ class DistributedCogdoInterior(DistributedObject.DistributedObject):
     def setShopOwnerNpcId(self, npcId):
         self.shopOwnerNpcId = npcId
 
+    def getShopOwnerNpcId(self):
+        return self.shopOwnerNpcId
+
     def setSOSNpcId(self, npcId):
         self.SOSToonName = NPCToons.getNPCName(npcId)
 
