@@ -5130,3 +5130,32 @@ def nametagStyle(nametagStyle):
     target = spellbook.getTarget()
     target.b_setNametagStyle(nametagStyle)
     return 'Nametag style set to: %s.' % TTLocalizer.NametagFontNames[nametagStyle]
+
+@magicWord(category=CATEGORY_PROGRAMMER, types=[str, int, int])
+def disguise(command, suitIndex, value):
+    invoker = spellbook.getInvoker()
+
+    if suitIndex > 3:
+        return 'Invalid suit index: %s' % suitIndex
+    if value < 0:
+        return 'Invalid value: %s' % value
+
+    if command == 'parts':
+        invoker.cogParts[suitIndex] = 0
+        for _ in xrange(value):
+            invoker.giveGenericCogPart('fullSuit', suitIndex)
+        return 'Parts set.'
+    elif command == 'tier':
+        invoker.cogTypes[suitIndex] = value
+        invoker.d_setCogTypes(invoker.cogTypes)
+        return 'Tier set.'
+    elif command == 'level':
+        invoker.cogLevels[suitIndex] = value
+        invoker.d_setCogLevels(invoker.cogLevels)
+        return 'Level set.'
+    elif command == 'merits':
+        invoker.cogMerits[suitIndex] = value
+        invoker.d_setCogMerits(invoker.cogMerits)
+        return 'Merits set.'
+    else:
+        return 'Unknow command: %s' % command
