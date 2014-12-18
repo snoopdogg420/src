@@ -10,6 +10,7 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         DistCogdoGameAI.__init__(self, air, interior)
 
         self.finishedToons = []
+        self.winnerToons = []
         self.eagleInterest = {}
         self.eagleCooldown = []
 
@@ -54,6 +55,8 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
             self.handleHitWhirlwind(avId)
         elif action == CogdoFlyingGameGlobals.AI.GameActions.LandOnWinPlatform:
             self.handleLandOnWinPlatform(avId)
+        elif action == CogdoFlyingGameGlobals.AI.GameActions.WinStateFinished:
+            self.handleWinStateFinished(avId)
 
     def handleEnterEagleInterest(self, avId, eagleId):
         # Check if the eagle is in the eagleCooldown mode
@@ -109,6 +112,20 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
 
             # Notify the players that everyone has finished
             self.d_doAction(CogdoFlyingGameGlobals.AI.GameActions.GotoWinState, 0)
+
+    def handleWinStateFinished(self, avId):
+        # Check if the avId is in winnerToons
+        if avId in self.winnerToons:
+            return
+
+        # Add the avId to the winnerToons
+        self.winnerToons.append(avId)
+
+        # Check if all the players have won
+        if len(self.winnerToons) == self.getNumPlayers():
+
+            # Looks like all the players have won, lets request the Finish state.
+            self.fsm.request('Finish')
 
     def requestPickUp(self, pickupNum, pickupType):
         # Get the sender's avId
