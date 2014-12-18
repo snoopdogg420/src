@@ -13,10 +13,21 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         self.eagleCooldown = []
 
         # I hate how long these variable names are...
+        self.deathDamage = CogdoFlyingGameGlobals.AI.SafezoneId2DeathDamage[self.getHoodId()]
         self.eagleDamage = CogdoFlyingGameGlobals.AI.SafezoneId2LegalEagleDamage[self.getHoodId()]
 
     def getNetworkTime(self):
         return globalClockDelta.getRealNetworkTime()
+
+    def damageAvId(self, avId, damage):
+        # Get the av
+        av = self.air.doId2do.get(avId)
+
+        # Check if the av exists
+        if av:
+
+            # Damage the av
+            av.setHp(av.getHp() - damage)
 
     def requestAction(self, action, data):
         # Get the sender's avId
@@ -64,10 +75,8 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         # Add the eagleId to the eagleCooldown
         self.eagleEnterCooldown(eagleId)
 
-        # Remove the health from the player
-        av = self.air.doId2do.get(avId)
-        if av:
-            av.b_setHp(av.getHp() - self.eagleDamage)
+        # Damage the player
+        self.damageAvId(avId, self.eagleDamage)
 
     def requestPickUp(self, pickupNum, pickupType):
         # Get the sender's avId
@@ -124,6 +133,10 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         )
 
     def handleDied(self, avId):
+        # Damage the av
+        self.damageAvId(avId, self.deathDamage)
+
+        # Send the toonDied update
         self.d_toonDied(avId)
 
     def d_toonDied(self, avId):
