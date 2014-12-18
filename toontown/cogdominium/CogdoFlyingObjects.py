@@ -375,7 +375,6 @@ class CogdoFlyingPlatform:
         if parent is not None:
             self._model.reparentTo(parent)
         self._initCollisions()
-        self._model.flattenStrong()
 
     def __str__(self):
         return '<%s model=%s, type=%s>' % (self.__class__.__name__, self._model, self._type)
