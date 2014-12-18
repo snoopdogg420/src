@@ -177,7 +177,7 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
     def handleSpawn(self, avId):
         self.d_toonSpawn(avId)
 
-    def toonSpawn(self, avId):
+    def d_toonSpawn(self, avId):
         self.sendUpdate('toonSpawn', [avId, self.getNetworkTime()])
 
     def toonSetBlades(self, todo0, todo1):
