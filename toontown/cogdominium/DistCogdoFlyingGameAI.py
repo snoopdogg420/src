@@ -121,7 +121,7 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
     def getEagleCooldownTaskName(self, eagleId):
         return '%s-%s-cooldown' % (id(self), eagleId)
 
-    def eagleCooldownTask(self, task, eagleId):
+    def eagleCooldownTask(self, eagleId):
         # Remove the eagle from the eagleCooldown
         self.eagleCooldown.remove(eagleId)
 
