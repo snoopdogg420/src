@@ -2,6 +2,7 @@ from direct.distributed.ClockDelta import globalClockDelta
 from direct.distributed.DistributedObjectAI import DistributedObjectAI
 from direct.fsm import ClassicFSM, State
 from otp.ai.Barrier import Barrier
+from toontown.hood import ZoneUtil
 
 
 class SadCallbackToken:
@@ -182,3 +183,6 @@ class DistCogdoGameAI(DistributedObjectAI):
 
     def announceGameDone(self):
         self._interior._gameDone()
+
+    def getHoodId(self):
+        return ZoneUtil.getHoodId(self.getExteriorZone())

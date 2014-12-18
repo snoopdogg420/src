@@ -12,6 +12,9 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         self.eagleInterest = {}
         self.eagleCooldown = []
 
+        # I hate how long these variable names are...
+        self.eagleDamage = CogdoFlyingGameGlobals.AI.SafezoneId2LegalEagleDamage[self.getHoodId()]
+
     def getNetworkTime(self):
         return globalClockDelta.getRealNetworkTime()
 
@@ -24,9 +27,11 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
             self.handleEnterEagleInterest(avId, data)
         elif action == CogdoFlyingGameGlobals.AI.GameActions.RequestExitEagleInterest:
             self.handleExitEagleInterest(avId, data)
+        elif action == CogdoFlyingGameGlobals.AI.GameActions.HitLegalEagle:
+            self.handleHitEagle(avId, data)
 
     def handleEnterEagleInterest(self, avId, eagleId):
-        # Check if the eagle is cooldown mode
+        # Check if the eagle is in the eagleCooldown mode
         if eagleId in self.eagleCooldown:
             return
 
@@ -48,9 +53,17 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         # Remove the eagle from the eagleInterest
         del self.eagleInterest[eagleId]
 
-        # TODO: Put the eagle into cooldown
         # Send the update saying the eagle no longer has interest in the toon
         self.d_toonClearAsEagleTarget(avId, eagleId)
+
+    def handleHitEagle(self, avId, eagleId):
+        # Add the eagleId to the eagleCooldown
+        self.eagleEnterCooldown(eagleId)
+
+        # Remove the health from the player
+        av = self.air.doId2do.get(avId)
+        if av:
+            av.b_setHp(av.getHp() - self.eagleDamage)
 
     def requestPickUp(self, pickupNum, pickupType):
         # Get the sender's avId
@@ -69,8 +82,32 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
     def d_doAction(self, action, data):
         self.sendUpdate('doAction', [action, data])
 
-    def eagleExitCooldown(self, todo0, todo1):
-        pass
+    def eagleEnterCooldown(self, eagleId):
+        # Check if the eagle is already in the eagleCooldown down
+        if eagleId in self.eagleCooldown:
+            return
+
+        # Add the eagleId to the eagleCooldown
+        self.eagleCooldown.append(eagleId)
+
+        # Set a task to remove the eagle from eagleCooldown
+        taskMgr.doMethodLater(CogdoFlyingGameGlobals.LegalEagle.CooldownTime,
+            self.eagleCooldownTask, self.getEagleCooldownTaskName(eagleId),
+            extraArgs=[eagleId]
+        )
+
+    def getEagleCooldownTaskName(self, eagleId):
+        return '%s-%s-cooldown' % (id(self), eagleId)
+
+    def eagleCooldownTask(self, task, eagleId):
+        # Remove the eagle from the eagleCooldown
+        self.eagleCooldown.remove(eagleId)
+
+        # Send the update stating that the eagle has completed its cooldown
+        self.d_eagleExitCooldown(eagleId)
+
+    def d_eagleExitCooldown(self, eagleId):
+        self.sendUpdate('eagleExitCooldown', [eagleId, self.getNetworkTime()])
 
     def d_toonSetAsEagleTarget(self, avId, eagleId):
         self.sendUpdate('toonSetAsEagleTarget', [avId, eagleId,
