@@ -49,6 +49,8 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
             self.handleDied(avId)
         elif action == CogdoFlyingGameGlobals.AI.GameActions.HitMinion:
             self.handleHitMinion(avId)
+        elif action == CogdoFlyingGameGlobals.AI.GameActions.HitWhirlwind:
+            self.handleHitWhirlwind(avId)
 
     def handleEnterEagleInterest(self, avId, eagleId):
         # Check if the eagle is in the eagleCooldown mode
@@ -86,6 +88,10 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
     def handleHitMinion(self, avId):
         # Damage the player
         self.damageAvId(avId, self.minionDamage)
+
+    def handleHitWhirlwind(self, avId):
+        # Damage the player
+        self.damageAvId(avId, self.whirlwindDamage)
 
     def requestPickUp(self, pickupNum, pickupType):
         # Get the sender's avId
