@@ -574,7 +574,8 @@ class DistributedSuitPlannerAI(DistributedObjectAI.DistributedObjectAI, SuitPlan
         if self.pendingBuildingHeights.count(buildingHeight) > 0:
             self.pendingBuildingHeights.remove(buildingHeight)
         building = self.buildingMgr.getBuilding(blockNumber)
-        building.cogdoTakeOver(difficulty, buildingHeight)
+        if building:
+            building.cogdoTakeOver(difficulty, buildingHeight)
 
     def recycleBuilding(self):
         bmin = SuitBuildingGlobals.buildingMinMax[self.zoneId][0]
