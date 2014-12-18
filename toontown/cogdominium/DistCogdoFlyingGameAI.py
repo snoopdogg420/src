@@ -30,7 +30,7 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         if av:
 
             # Damage the av
-            av.setHp(av.getHp() - damage)
+            av.takeDamage(damage)
 
     def requestAction(self, action, data):
         # Get the sender's avId
