@@ -13,8 +13,11 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
         self.eagleCooldown = []
 
         # I hate how long these variable names are...
+        # The damage constants:
         self.deathDamage = CogdoFlyingGameGlobals.AI.SafezoneId2DeathDamage[self.getHoodId()]
+        self.whirlwindDamage = CogdoFlyingGameGlobals.AI.SafezoneId2WhirlwindDamage[self.getHoodId()]
         self.eagleDamage = CogdoFlyingGameGlobals.AI.SafezoneId2LegalEagleDamage[self.getHoodId()]
+        self.minionDamage = CogdoFlyingGameGlobals.AI.SafezoneId2MinionDamage[self.getHoodId()]
 
     def getNetworkTime(self):
         return globalClockDelta.getRealNetworkTime()
