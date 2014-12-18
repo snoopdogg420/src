@@ -29,6 +29,10 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
             self.handleExitEagleInterest(avId, data)
         elif action == CogdoFlyingGameGlobals.AI.GameActions.HitLegalEagle:
             self.handleHitEagle(avId, data)
+        elif action == CogdoFlyingGameGlobals.AI.GameActions.Spawn:
+            self.handleSpawn(avId)
+        elif action == CogdoFlyingGameGlobals.AI.GameActions.Died:
+            self.handleDied(avId)
 
     def handleEnterEagleInterest(self, avId, eagleId):
         # Check if the eagle is in the eagleCooldown mode
@@ -119,11 +123,17 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
             self.getNetworkTime()]
         )
 
-    def toonDied(self, todo0, todo1):
-        pass
+    def handleDied(self, avId):
+        self.d_toonDied(avId)
 
-    def toonSpawn(self, todo0, todo1):
-        pass
+    def d_toonDied(self, avId):
+        self.sendUpdate('toonDied', [avId, self.getNetworkTime()])
+
+    def handleSpawn(self, avId):
+        self.d_toonSpawn(avId)
+
+    def toonSpawn(self, avId):
+        self.sendUpdate('toonSpawn', [avId, self.getNetworkTime()])
 
     def toonSetBlades(self, todo0, todo1):
         pass
