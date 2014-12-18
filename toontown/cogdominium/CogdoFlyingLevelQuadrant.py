@@ -55,7 +55,7 @@ class CogdoFlyingLevelQuadrant:
         for np in self._model.find('**/static').getChildren():
             np.wrtReparentTo(self._model)
 
-        self._model.flattenMedium()
+        self._model.flattenStrong()
 
     def _initPlatforms(self, parent):
         platformModels = self._model.findAllMatches('**/%s' % Globals.Level.PlatformName)

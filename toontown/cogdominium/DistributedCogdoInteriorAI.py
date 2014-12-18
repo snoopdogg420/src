@@ -24,7 +24,7 @@ from toontown.toon import NPCToons
 class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
     notify = directNotify.newCategory('DistributedCogoInteriorAI')
 
-    def __init__(self, air, elevator, gameType=CogdoGameConsts.MazeGame):
+    def __init__(self, air, elevator, gameType=CogdoGameConsts.FlyingGame):
         DistributedObjectAI.DistributedObjectAI.__init__(self, air)
 
         self.extZoneId, self.zoneId = elevator.bldg.getExteriorAndInteriorZoneId()
@@ -330,7 +330,12 @@ class DistributedCogdoInteriorAI(DistributedObjectAI.DistributedObjectAI):
         self.__resetResponses()
         self._game = self._createGame()
         self.d_setState('Elevator')
-        self.timer.startCallback(BattleBase.ELEVATOR_T + ElevatorData[ELEVATOR_NORMAL]['openTime'] + BattleBase.SERVER_BUFFER_TIME, self.__serverElevatorDone)
+
+        self.timer.startCallback(BattleBase.ELEVATOR_T + \
+            ElevatorData[ELEVATOR_NORMAL]['openTime'] + \
+            BattleBase.SERVER_BUFFER_TIME,
+            self.__serverElevatorDone
+        )
 
     def _createGame(self):
         game = None

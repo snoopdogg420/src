@@ -5,15 +5,18 @@ from DistCogdoGame import DistCogdoGame
 import CogdoFlyingGameGlobals
 import CogdoFlyingGameGlobals as Globals
 
+
 class DistCogdoFlyingGame(DistCogdoGame):
     notify = directNotify.newCategory('DistCogdoFlyingGame')
 
     def __init__(self, cr):
         DistCogdoGame.__init__(self, cr)
+
         self.game = CogdoFlyingGame(self)
 
     def delete(self):
         del self.game
+
         DistCogdoGame.delete(self)
 
     def getTitle(self):
@@ -110,6 +113,7 @@ class DistCogdoFlyingGame(DistCogdoGame):
 
     def enterLoaded(self):
         DistCogdoGame.enterLoaded(self)
+
         self._remoteActionEventName = self.uniqueName('doAction')
         self.game.load()
         self.game.initPlayers()

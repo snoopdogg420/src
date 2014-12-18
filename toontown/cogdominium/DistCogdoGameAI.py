@@ -20,21 +20,21 @@ class DistCogdoGameAI(DistributedObjectAI):
 
         self.loadFSM = ClassicFSM.ClassicFSM('DistCogdoGameAI.loaded', [
             State.State('NotLoaded', self.enterNotLoaded, self.exitNotLoaded, [
-                'Loaded']),
+                        'Loaded']),
             State.State('Loaded', self.enterLoaded, self.exitLoaded, [
-                'NotLoaded'])], 'NotLoaded', 'NotLoaded')
-        self.loadFSM.enterInitialState()
+                        'NotLoaded'])], 'NotLoaded', 'NotLoaded')
 
         self.fsm = ClassicFSM.ClassicFSM('DistCogdoGameAI', [
-            State.State('Intro', self.enterIntro, self.exitIntro, [
-                'Game']),
-            State.State('Game', self.enterGame, self.exitGame, [
-                'Finish']),
-            State.State('Finish', self.enterFinish, self.exitFinish, [
-                'Off']),
-            State.State('Off', self.enterOff, self.exitOff, [
-                'Intro'])], 'Off', 'Off')
-        self.fsm.enterInitialState()
+            State.State('Intro', self.enterIntro, self.exitIntro,
+                       ['Game']),
+            State.State('Game', self.enterGame, self.exitGame,
+                       ['Finish']),
+            State.State('Finish', self.enterFinish, self.exitFinish,
+                       ['Off']),
+            State.State('Off', self.enterOff, self.exitOff,
+                       ['Intro'])],
+            'Off', 'Off'
+        )
 
     def generate(self):
         DistributedObjectAI.generate(self)
@@ -118,7 +118,7 @@ class DistCogdoGameAI(DistributedObjectAI):
         pass
 
     def enterLoaded(self):
-        pass
+        self.sendUpdate('setVisible')
 
     def exitLoaded(self):
         pass
