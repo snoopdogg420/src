@@ -9,6 +9,7 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
     def __init__(self, air, interior):
         DistCogdoGameAI.__init__(self, air, interior)
 
+        self.finishedToons = []
         self.eagleInterest = {}
         self.eagleCooldown = []
 
@@ -51,6 +52,8 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
             self.handleHitMinion(avId)
         elif action == CogdoFlyingGameGlobals.AI.GameActions.HitWhirlwind:
             self.handleHitWhirlwind(avId)
+        elif action == CogdoFlyingGameGlobals.AI.GameActions.LandOnWinPlatform:
+            self.handleLandOnWinPlatform(avId)
 
     def handleEnterEagleInterest(self, avId, eagleId):
         # Check if the eagle is in the eagleCooldown mode
@@ -92,6 +95,20 @@ class DistCogdoFlyingGameAI(DistCogdoGameAI):
     def handleHitWhirlwind(self, avId):
         # Damage the player
         self.damageAvId(avId, self.whirlwindDamage)
+
+    def handleLandOnWinPlatform(self, avId):
+        # Check if the avId is in the finishedToons
+        if avId in self.finishedToons:
+            return
+
+        # Added the avId to the finishedToons
+        self.finishedToons.append(avId)
+
+        # Check if all the players have finished
+        if len(self.finishedToons) == self.getNumPlayers():
+
+            # Notify the players that everyone has finished
+            self.d_doAction(CogdoFlyingGameGlobals.AI.GameActions.GotoWinState, 0)
 
     def requestPickUp(self, pickupNum, pickupType):
         # Get the sender's avId
