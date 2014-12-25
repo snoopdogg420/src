@@ -102,7 +102,6 @@ class PetAvatarPanel(AvatarPanel.AvatarPanel):
                     self.__refreshPetInfo(av)
 
                 self.avatar.updateMoodFromServer(refresh)
-        return
 
     def __checkPetProximity(self, task = None):
         if self.petIsLocal:

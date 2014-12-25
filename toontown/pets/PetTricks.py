@@ -72,7 +72,6 @@ def getSoundIval(trickId):
                 soundIval.append(SoundInterval(sound))
 
             return soundIval
-    return
 
 
 def getTrickIval(pet, trickId):

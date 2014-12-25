@@ -1754,9 +1754,6 @@ class DistributedToon(DistributedPlayer.DistributedPlayer, Toon.Toon, Distribute
         def getPetId(self):
             return self.petId
 
-        def getPetId(self):
-            return self.petId
-
         def hasPet(self):
             return self.petId != 0
 

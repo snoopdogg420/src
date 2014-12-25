@@ -18,7 +18,6 @@ class PetChase(Impulse.Impulse):
         self.lookAtNode.hide()
         self.vel = None
         self.rotVel = None
-        return
 
     def setTarget(self, target):
         self.target = target
@@ -30,13 +29,13 @@ class PetChase(Impulse.Impulse):
         del self.vel
         del self.rotVel
 
-    def _setMover(self, mover):
+    def setMover(self, mover):
         Impulse.Impulse._setMover(self, mover)
         self.lookAtNode.reparentTo(self.nodePath)
         self.vel = self.VecType(0)
         self.rotVel = self.VecType(0)
 
-    def _process(self, dt):
+    def process(self, dt):
         Impulse.Impulse._process(self, dt)
         me = self.nodePath
         target = self.target
@@ -69,3 +68,9 @@ class PetChase(Impulse.Impulse):
         if vH:
             self.rotVel.setX(vH)
             self.mover.addRotShove(self.rotVel)
+
+    def clearMover(self, mover):
+        pass # TODO
+
+    def setMinDist(self, minDist):
+        self.minDist = minDist

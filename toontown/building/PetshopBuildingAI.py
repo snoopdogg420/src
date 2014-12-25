@@ -3,7 +3,7 @@ import DistributedPetshopInteriorAI
 import DoorTypes
 from pandac.PandaModules import *
 from toontown.hood import ZoneUtil
-# from toontown.pets import DistributedPetAI, PetTraits, PetUtil
+from toontown.pets import DistributedPetAI, PetTraits, PetUtil
 from toontown.toon import NPCToons
 from toontown.toonbase import ToontownGlobals
 

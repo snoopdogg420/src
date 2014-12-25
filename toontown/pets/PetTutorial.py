@@ -37,7 +37,6 @@ class PetTutorial(DirectFrame, FSM.FSM):
         buttons.removeNode()
         gui.removeNode()
         self.request('Page1')
-        return
 
     def enterPage1(self, *args):
         self.title['text'] = (TTLocalizer.PetTutorialTitle1,)

@@ -74,6 +74,12 @@ class LoadHouseFSM(FSM):
         self.demand('LoadHouse')
 
     def enterLoadHouse(self):
+        # Check if we need to spawn a doodle
+        petId = self.toon.get('setPetId')[0]
+        if petId != 0:
+            self.mgr.air.sendActivate(petId, self.mgr.air.districtId, self.estate.zoneId,
+                                      self.mgr.air.dclassesByName['DistributedPetAI'], {})
+
         # Activate the house:
         self.mgr.air.sendActivate(self.houseId, self.mgr.air.districtId, self.estate.zoneId,
                                   self.mgr.air.dclassesByName['DistributedHouseAI'],
@@ -404,3 +410,6 @@ class EstateManagerAI(DistributedObjectAI):
 
     def _lookupEstate(self, toon):
         return self.toon2estate.get(toon)
+
+    def getOwnerFromZone(self, avId):
+        return False

@@ -2,11 +2,9 @@ from pandac.PandaModules import *
 from direct.showbase import DirectObject
 
 class Impulse(DirectObject.DirectObject):
-
     def __init__(self):
         self.mover = None
         self.nodePath = None
-        return
 
     def destroy(self):
         pass
@@ -23,7 +21,6 @@ class Impulse(DirectObject.DirectObject):
         if self.mover == mover:
             self.mover = None
             self.nodePath = None
-        return
 
     def isCpp(self):
         return 0

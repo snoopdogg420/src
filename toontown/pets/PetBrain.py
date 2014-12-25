@@ -30,7 +30,6 @@ class PetBrain(DirectObject.DirectObject):
             self.pscPrior = PStatCollector('App:Show code:petThink:UpdatePriorities')
             self.pscAware = PStatCollector('App:Show code:petThink:ShuffleAwareness')
             self.pscResc = PStatCollector('App:Show code:petThink:Reschedule')
-        return
 
     def destroy(self):
         taskMgr.remove(self.getTeleportTaskName())
@@ -279,7 +278,6 @@ class PetBrain(DirectObject.DirectObject):
         self.setFocus(None)
         self.pet.actionFSM.request('Movie')
         self.inMovie = 1
-        return
 
     def _endMovie(self):
         self.inMovie = 0
@@ -369,7 +367,6 @@ class PetBrain(DirectObject.DirectObject):
             if avatar is not None:
                 if self.getFocus() == avatar:
                     self._wander()
-        return
 
     def _handlePhraseObserve(self, observe):
 
@@ -497,11 +494,9 @@ class PetBrain(DirectObject.DirectObject):
         def becomeAwareOf(avId, self = self):
             self.avAwareness[avId] = None
             self._addGoalsReAvatar(avId)
-            return
 
         if len(self.avAwareness) < PetConstants.MaxAvatarAwareness:
             becomeAwareOf(avId)
-            return
 
         def calcInterest(avId, self = self):
             if avId == self.pet.ownerId:
@@ -521,7 +516,6 @@ class PetBrain(DirectObject.DirectObject):
         if minInterestAvId != avId:
             self._removeAwarenessOf(minInterestAvId)
             becomeAwareOf(avId)
-        return
 
     def _removeAwarenessOf(self, avId):
         if avId in self.avAwareness:
@@ -540,11 +534,14 @@ class PetBrain(DirectObject.DirectObject):
         self.pet.lerpMoods({'excitement': 0.7,
          'loneliness': -.4})
         self._considerBecomeAwareOf(avId)
-        return
 
     def _handleAvatarLeave(self, avId):
         PetBrain.notify.debug('%s._handleAvatarLeave: %s' % (self.pet.doId, avId))
         if avId not in self.nearbyAvs:
+            if avId == self.pet.ownerId:
+                self._handleOwnerLeave()
+            elif avId == self.pet.estateOwnerId:
+                self._handleEstateOwnerLeave()
             PetBrain.notify.warning('av %s not in self.nearbyAvs' % avId)
             return
         del self.nearbyAvs[avId]

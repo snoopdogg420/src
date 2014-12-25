@@ -301,7 +301,6 @@ class Pet(Avatar.Avatar):
             holidayIds = base.cr.newsManager.getHolidayIdList()
             if (ToontownGlobals.APRIL_FOOLS_COSTUMES in holidayIds or ToontownGlobals.SILLYMETER_EXT_HOLIDAY in holidayIds) and not mood == 'confusion':
                 self.speakMood(mood)
-                return
             else:
                 self.clearChat()
         else:

@@ -36,7 +36,6 @@ class PetDetailPanel(DirectFrame):
         self.update(pet)
         buttons.removeNode()
         gui.removeNode()
-        return
 
     def cleanup(self):
         del self.labels
@@ -74,5 +73,3 @@ class PetDetailPanel(DirectFrame):
                     else:
                         bar['value'] = length + FUDGE_FACTOR
                         bar['text'] = (str(int(hp)) + ' ' + TTLocalizer.Laff,)
-
-        return
